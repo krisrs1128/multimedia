@@ -9,16 +9,28 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
-knitr::opts_chunk$set(collapse = TRUE, warning = FALSE, message = FALSE, comment = "#>")
+knitr::opts_chunk$set(
+  collapse = TRUE, 
+  warning = FALSE, 
+  message = FALSE, 
+  comment = "#>",
+  dev.args = list(bg = "transparent")
+)
+
+#knitr::knit_hooks$set(output = multimedia::ansi_aware_handler)
+options(crayon.enabled = TRUE)
 ```
 
 ```{r setup}
-library(multimedia)
+source("load.R")
 library(tidyverse)
 library(ggraph)
+
 exper <- demo_joy()
 exper
 ```
+
+### Specification
 
 ```{r}
 model <- multimedia(
@@ -37,3 +49,12 @@ ggraph(model@edges) +
   geom_node_label(aes(label = name, fill = node_type))
 ```
 
+### Estimation
+
+```{r}
+model <- estimate(model, exper)
+model@outcome@estimates
+model@mediation@estimates
+```
+
+### Effects

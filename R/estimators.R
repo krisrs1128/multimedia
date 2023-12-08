@@ -50,6 +50,21 @@ lm_sampler <- function(fits, new_data = NULL) {
   }
 }
 
+mediation_formula <- function(edges) {
+  edges <- edges %E>%
+    filter(state == "active")
+
+  mediators <- edges %N>%
+    filter(node_type == "mediator") |>
+    pull(name)
+  predictors <- edges %N>%
+    filter(node_type %in% c("pretreatment", "treatment")) |>
+    pull(name)
+
+  glue("{paste0(mediators, collapse = '+')} ~ {paste0(predictors, collapse = '+')}") |>
+    as.formula()
+}
+
 outcome_formula <- function(edges) {
   edges <- edges %E>%
     filter(state == "active")
@@ -68,9 +83,15 @@ outcome_formula <- function(edges) {
 
 #' @export
 estimate <- function(model, exper) {
-  outcome_est <- model@outcome@estimator
+  # estimate mediation model
   mediation_est <- model@mediation@estimator
+  model@mediation@estimates <- mediation_est(
+    mediation_formula(model@edges),
+    exper_df(exper)
+  )
 
+  # estimate outcome model
+  outcome_est <- model@outcome@estimator
   model@outcome@estimates <- outcome_est(
     outcome_formula(model@edges),
     exper_df(exper)
