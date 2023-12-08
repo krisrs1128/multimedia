@@ -43,10 +43,14 @@ expand_edges <- function(input, output, input_name, output_name) {
     mutate(state = "active")
 }
 
-#' @importFrom dplyr bind_cols select
 #' @importFrom SummarizedExperiment assay colData
+exper_df <- function(exper) {
+  bind_cols(t(assay(exper)), as_tibble(colData(exper)))
+}
+
+#' @importFrom dplyr bind_cols select
 match_names <- function(names, exper, env) {
-  bind_cols(t(assay(exper)), as_tibble(colData(exper))) |>
+  exper_df(exper) |>
     select(eval(names, env)) |>
     colnames()
 }

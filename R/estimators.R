@@ -49,3 +49,32 @@ lm_sampler <- function(fits, new_data = NULL) {
     y_hats[[i]] <- predict(fits[[i]], newdata = new_data)
   }
 }
+
+outcome_formula <- function(edges) {
+  edges <- edges %E>%
+    filter(state == "active")
+
+  response <- edges %N>%
+    filter(node_type == "outcome") |>
+    pull(name)
+  predictors <- edges %N>%
+    filter(!(node_type == "outcome")) |>
+    pull(name)
+
+  glue("{paste0(response, collapse = '+')} ~ {paste0(predictors, collapse = '+')}") |>
+    as.formula()
+
+}
+
+#' @export
+estimate <- function(model, exper) {
+  outcome_est <- model@outcome@estimator
+  mediation_est <- model@mediation@estimator
+
+  model@outcome@estimates <- outcome_est(
+    outcome_formula(model@edges),
+    exper_df(exper)
+  )
+
+  model
+}

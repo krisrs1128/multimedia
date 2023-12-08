@@ -20,7 +20,7 @@ setMethod("show", "multimedia", function(object) {
     cat(glue("Pretreatment: {pretreatment}"), "\n")
   }
 
-  cat("\n", col_magenta("[Models]"), "\n")
+  cat(col_magenta("[Models]"), "\n")
   cat(glue("mediation: {fit_type(object@mediation)} {object@mediation@model_type}."), "\n")
   cat(glue("outcome: {fit_type(object@outcome)} {object@outcome@model_type}."), "\n")
 })
