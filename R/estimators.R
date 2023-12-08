@@ -49,7 +49,3 @@ lm_sampler <- function(fits, new_data = NULL) {
     y_hats[[i]] <- predict(fits[[i]], newdata = new_data)
   }
 }
-
-setMethod("show", "model", function(object) {
-  print(glue("{fit_type(object)} {object@model_type}."))
-})
