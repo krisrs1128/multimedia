@@ -20,15 +20,14 @@ sub_formula <- function(formula, yj) {
 #' plm(y1 + y2 ~ x1 + x2, mat)
 parallelize <- function(f) {
   function(formula, ...) {
-    result <- list()
+    models <- list()
 
     ys <- lhs.vars(formula)
     for (j in seq_along(ys)) {
       fmla <- sub_formula(formula, ys[j])
-      result[[ys[j]]] <- f(fmla, ...)
+      models[[ys[j]]] <- f(fmla, ...)
     }
-
-    result
+    models
   }
 }
 
@@ -43,12 +42,63 @@ lm_model <- function() {
   )
 }
 
+#' @importFrom dplyr bind_cols
 lm_sampler <- function(fits, new_data = NULL) {
   y_hats <- list()
   for (i in seq_along(fits)) {
     y_hats[[i]] <- predict(fits[[i]], newdata = new_data)
   }
+  names(y_hats) <- names(fits)
+  bind_cols(y_hats)
 }
+
+setMethod("sample", "model", function(x, size, new_data = NULL, ...) {
+  if (missing(size)) {
+    size <- 1
+  }
+  if (is.null(x@estimates)) {
+    cli_abort("Cannot sample an unfitted model.")
+  }
+
+  replicate(size, x@sampler(x@estimates, new_data), simplify = FALSE) |>
+    bind_rows(.id = "replicate")
+})
+
+default_treatment <- function(edges, estimates) {
+  treatment_names <- edges |> 
+    filter(node_type == "treatment") |> 
+    pull(name)
+
+  model.frame(estimates[[1]]) |>
+    select(any_of(treatment_names))
+}
+
+setMethod("sample", "multimedia", function(x, size, pretreatment = NULL, treatment_mediator = NULL, treatment_outcome = NULL, mediators = NULL, ...) {
+  if (missing(size)) {
+    size <- 1
+  }
+  f_out <- x@outcome
+  f_med <- x@mediation
+
+  # fill in treatments with defaults 
+  if (is.null(treatment_mediator)) {
+    treatment_mediator <- default_treatment(x@edges, f_med@estimates)
+  }
+  if (is.null(treatment_outcome)) {
+    treatment_outcome <- default_treatment(x@edges, f_out@estimates)
+  }
+
+  # if mediators are not provided, sample them
+  if (is.null(mediators)) {
+    mediator_covariates <- bind_cols(pretreatment, treatment_mediator)
+    mediators <- f_med@sampler(f_med@estimates, mediator_covariates)
+  }
+
+  # sample outcome given everything else
+  outcome_covariates <- bind_cols(pretreatment, treatment_outcome, mediators)
+  outcomes <- f_out@sampler(f_out@estimates, outcome_covariates)
+  list(mediators = mediators, outcomes = outcomes)
+})
 
 mediation_formula <- function(edges) {
   edges <- edges %E>%
@@ -78,7 +128,6 @@ outcome_formula <- function(edges) {
 
   glue("{paste0(response, collapse = '+')} ~ {paste0(predictors, collapse = '+')}") |>
     as.formula()
-
 }
 
 #' @export
