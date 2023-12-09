@@ -46,23 +46,13 @@ lm_model <- function() {
 lm_sampler <- function(fits, new_data = NULL) {
   y_hats <- list()
   for (i in seq_along(fits)) {
-    y_hats[[i]] <- predict(fits[[i]], newdata = new_data)
+    sigma <- summary(fits[[i]])$sigma
+    y_ <- predict(fits[[i]], newdata = new_data)
+    y_hats[[i]] <- y_ + rnorm(length(y_), 0, sigma)
   }
   names(y_hats) <- names(fits)
   bind_cols(y_hats)
 }
-
-setMethod("sample", "model", function(x, size, new_data = NULL, ...) {
-  if (missing(size)) {
-    size <- 1
-  }
-  if (is.null(x@estimates)) {
-    cli_abort("Cannot sample an unfitted model.")
-  }
-
-  replicate(size, x@sampler(x@estimates, new_data), simplify = FALSE) |>
-    bind_rows(.id = "replicate")
-})
 
 default_treatment <- function(edges, estimates) {
   treatment_names <- edges |> 
@@ -73,7 +63,7 @@ default_treatment <- function(edges, estimates) {
     select(any_of(treatment_names))
 }
 
-setMethod("sample", "multimedia", function(x, size, pretreatment = NULL, treatment_mediator = NULL, treatment_outcome = NULL, mediators = NULL, ...) {
+setMethod("sample", "multimedia", function(x, size, pretreatment = NULL, t_mediator = NULL, t_outcome = NULL, mediators = NULL, ...) {
   if (missing(size)) {
     size <- 1
   }
@@ -81,21 +71,21 @@ setMethod("sample", "multimedia", function(x, size, pretreatment = NULL, treatme
   f_med <- x@mediation
 
   # fill in treatments with defaults 
-  if (is.null(treatment_mediator)) {
-    treatment_mediator <- default_treatment(x@edges, f_med@estimates)
+  if (is.null(t_mediator)) {
+    t_mediator <- default_treatment(x@edges, f_med@estimates)
   }
-  if (is.null(treatment_outcome)) {
-    treatment_outcome <- default_treatment(x@edges, f_out@estimates)
+  if (is.null(t_outcome)) {
+    t_outcome <- default_treatment(x@edges, f_out@estimates)
   }
 
   # if mediators are not provided, sample them
   if (is.null(mediators)) {
-    mediator_covariates <- bind_cols(pretreatment, treatment_mediator)
+    mediator_covariates <- bind_cols(pretreatment, t_mediator)
     mediators <- f_med@sampler(f_med@estimates, mediator_covariates)
   }
 
   # sample outcome given everything else
-  outcome_covariates <- bind_cols(pretreatment, treatment_outcome, mediators)
+  outcome_covariates <- bind_cols(pretreatment, t_outcome, mediators)
   outcomes <- f_out@sampler(f_out@estimates, outcome_covariates)
   list(mediators = mediators, outcomes = outcomes)
 })
