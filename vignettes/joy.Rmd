@@ -57,4 +57,22 @@ model@outcome@estimates
 model@mediation@estimates
 ```
 
+Sample the full model at original treatment.
+
+```{r}
+sample(model)
+```
+
+Sample at new mediator and outcome treatments.
+
+```{r}
+t1 <- tibble(treatment = rep("Treatment", 3))
+t2 <- tibble(treatment = rep("Control", 3))
+sample(model, t_mediator = t1, t_outcome = t2)
+```
+
 ### Effects
+
+```{r}
+```
+

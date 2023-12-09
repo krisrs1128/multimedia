@@ -1,6 +1,7 @@
 
 tmp <- purrr::map(list.files("../R", full = TRUE), source)
 library(glue)
+library(vctrs)
 library(tidygraph)
 library(cli)
 library(SummarizedExperiment)
