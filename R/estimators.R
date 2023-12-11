@@ -43,14 +43,19 @@ lm_model <- function() {
 }
 
 #' @importFrom dplyr bind_cols
-lm_sampler <- function(fits, new_data = NULL) {
+lm_sampler <- function(fits, new_data = NULL, indices = NULL) {
+  if (is.null(indices)) {
+    indices <- seq_along(fits)
+  }
+
+  nm <- names(fits)
   y_hats <- list()
-  for (i in seq_along(fits)) {
+  for (i in indices) {
     sigma <- summary(fits[[i]])$sigma
     y_ <- predict(fits[[i]], newdata = new_data)
-    y_hats[[i]] <- y_ + rnorm(length(y_), 0, sigma)
+    y_hats[[nm[i]]] <- y_ + rnorm(length(y_), 0, sigma)
   }
-  names(y_hats) <- names(fits)
+
   bind_cols(y_hats)
 }
 
@@ -63,22 +68,57 @@ default_treatment <- function(edges, estimates) {
     select(any_of(treatment_names))
 }
 
-path_defaults <- function(x, t_mediator, t_outcome) {
-  f_out <- x@outcome
-  f_med <- x@mediation
-
+path_defaults <- function(x, t_mediator = NULL, t_outcome = NULL) {
   # fill in treatments with defaults
   if (is.null(t_mediator)) {
-    t_mediator <- default_treatment(x@edges, f_med@estimates)
+    t_mediator <- default_treatment(x@edges, x@mediation@estimates)
   }
   if (is.null(t_outcome)) {
-    t_outcome <- default_treatment(x@edges, f_out@estimates)
+    t_outcome <- default_treatment(x@edges, x@outcome@estimates)
   }
-  list(f_out = f_out, f_med = f_med, t_mediator = t_mediator, t_outcome = t_outcome)
+
+  # apply treatments to all mediators/outcomes
+  if (!is(t_mediator, "list")) {
+    t_mediator <- t_mediator |>
+      replicate(n_mediators(x), expr = _, simplify = FALSE) |>
+      set_names(mediators(x))
+  }
+  if (!is(t_outcome, "list")) {
+    t_outcome <- t_outcome |>
+      replicate(n_outcomes(x), expr = _, simplify = FALSE) |>
+      set_names(outcomes(x))
+  }
+
+  list(
+    t_mediator = t_mediator,
+    t_outcome = t_outcome
+  )
 }
 
-setMethod("sample", "multimedia", function(x, size, pretreatment = NULL, t_mediator = NULL,
-                                           t_outcome = NULL, mediators = NULL, ...) {
+mediators <- function(object) {
+  object@edges |>
+    filter(node_type == "mediator") |>
+    pull(name)
+}
+
+outcomes <- function(object) {
+  object@edges |>
+    filter(node_type == "outcome") |>
+    pull(name)
+}
+
+n_mediators <- function(object) {
+  length(mediators(object))
+}
+
+n_outcomes <- function(object) {
+  length(outcomes(object))
+}
+
+setMethod("sample", "multimedia", function(
+    x, size, pretreatment = NULL,
+    t_mediator = NULL,
+    t_outcome = NULL, mediators = NULL, ...) {
   if (missing(size)) {
     size <- 1
   }
@@ -86,30 +126,49 @@ setMethod("sample", "multimedia", function(x, size, pretreatment = NULL, t_media
   # if mediators are not provided, sample them
   d <- path_defaults(x, t_mediator, t_outcome)
   if (is.null(mediators)) {
-    mediator_covariates <- bind_cols(pretreatment, d$t_mediator)
-    mediators <- d$f_med@sampler(d$f_med@estimates, mediator_covariates)
+    mediators <- list()
+    for (i in seq_along(d$t_mediator)) {
+      mediators[[i]] <- bind_cols(pretreatment, d$t_mediator[[i]]) |>
+        x@mediation@sampler(x@mediation@estimates, new_data = _, i)
+    }
+    mediators <- bind_cols(mediators)
   }
 
   # sample outcome given everything else
-  outcome_covariates <- bind_cols(pretreatment, d$t_outcome, mediators)
-  outcomes <- d$f_out@sampler(d$f_out@estimates, outcome_covariates)
+  outcomes <- list()
+  for (i in seq_along(d$t_outcome)) {
+    outcomes[[i]] <- bind_cols(pretreatment, d$t_outcome[[i]], mediators) |>
+      x@outcome@sampler(x@outcome@estimates, new_data = _, i)
+  }
+
   list(mediators = mediators, outcomes = outcomes)
 })
 
 setMethod("predict", "multimedia", function(
     object, pretreatment = NULL,
     t_mediator = NULL, t_outcome = NULL, mediators = NULL, ...) {
-  # if mediators are not provided, sample them
   d <- path_defaults(object, t_mediator, t_outcome)
   if (is.null(mediators)) {
-    mediator_covariates <- bind_cols(pretreatment, d$t_mediator)
-    mediators <- map_dfc(d$f_med@estimates, ~ predict(., mediator_covariates))
+    nm <- names(d$t_mediator)
+    mediators <- list()
+    for (i in seq_along(d$t_mediator)) {
+      mediator_covariates <- bind_cols(pretreatment, d$t_mediator[[i]])
+      mediators[[nm[i]]] <- predict(
+        object@mediation@estimates[[i]],
+        mediator_covariates
+      )
+    }
+    mediators <- bind_cols(mediators)
   }
 
   # sample outcome given everything else
-  outcome_covariates <- bind_cols(pretreatment, d$t_outcome, mediators)
-  outcomes <- map_dfc(d$f_out@estimates, ~ predict(., outcome_covariates))
-  list(mediators = mediators, outcomes = outcomes)
+  nm <- names(d$t_outcome)
+  outcomes <- list()
+  for (i in seq_along(d$t_outcome)) {
+    outcomes[[nm[i]]] <- bind_cols(pretreatment, d$t_outcome[[i]], mediators) |>
+      predict(object@outcome@estimates[[i]], newdata = _)
+  }
+  list(mediators = mediators, outcomes = bind_cols(outcomes))
 })
 
 mediation_formula <- function(edges) {
