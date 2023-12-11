@@ -55,38 +55,60 @@ lm_sampler <- function(fits, new_data = NULL) {
 }
 
 default_treatment <- function(edges, estimates) {
-  treatment_names <- edges |> 
-    filter(node_type == "treatment") |> 
+  treatment_names <- edges |>
+    filter(node_type == "treatment") |>
     pull(name)
 
   model.frame(estimates[[1]]) |>
     select(any_of(treatment_names))
 }
 
-setMethod("sample", "multimedia", function(x, size, pretreatment = NULL, t_mediator = NULL, t_outcome = NULL, mediators = NULL, ...) {
-  if (missing(size)) {
-    size <- 1
-  }
+path_defaults <- function(x, t_mediator, t_outcome) {
   f_out <- x@outcome
   f_med <- x@mediation
 
-  # fill in treatments with defaults 
+  # fill in treatments with defaults
   if (is.null(t_mediator)) {
     t_mediator <- default_treatment(x@edges, f_med@estimates)
   }
   if (is.null(t_outcome)) {
     t_outcome <- default_treatment(x@edges, f_out@estimates)
   }
+  list(f_out = f_out, f_med = f_med, t_mediator = t_mediator, t_outcome = t_outcome)
+}
+
+setMethod("sample", "multimedia", function(x, size, pretreatment = NULL, t_mediator = NULL,
+                                           t_outcome = NULL, mediators = NULL, ...) {
+  if (missing(size)) {
+    size <- 1
+  }
 
   # if mediators are not provided, sample them
+  d <- path_defaults(x, t_mediator, t_outcome)
   if (is.null(mediators)) {
-    mediator_covariates <- bind_cols(pretreatment, t_mediator)
-    mediators <- f_med@sampler(f_med@estimates, mediator_covariates)
+    mediator_covariates <- bind_cols(pretreatment, d$t_mediator)
+    mediators <- d$f_med@sampler(d$f_med@estimates, mediator_covariates)
   }
 
   # sample outcome given everything else
-  outcome_covariates <- bind_cols(pretreatment, t_outcome, mediators)
-  outcomes <- f_out@sampler(f_out@estimates, outcome_covariates)
+  outcome_covariates <- bind_cols(pretreatment, d$t_outcome, mediators)
+  outcomes <- d$f_out@sampler(d$f_out@estimates, outcome_covariates)
+  list(mediators = mediators, outcomes = outcomes)
+})
+
+setMethod("predict", "multimedia", function(
+    object, pretreatment = NULL,
+    t_mediator = NULL, t_outcome = NULL, mediators = NULL, ...) {
+  # if mediators are not provided, sample them
+  d <- path_defaults(object, t_mediator, t_outcome)
+  if (is.null(mediators)) {
+    mediator_covariates <- bind_cols(pretreatment, d$t_mediator)
+    mediators <- map_dfc(d$f_med@estimates, ~ predict(., mediator_covariates))
+  }
+
+  # sample outcome given everything else
+  outcome_covariates <- bind_cols(pretreatment, d$t_outcome, mediators)
+  outcomes <- map_dfc(d$f_out@estimates, ~ predict(., outcome_covariates))
   list(mediators = mediators, outcomes = outcomes)
 })
 
