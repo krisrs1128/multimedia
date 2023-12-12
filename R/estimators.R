@@ -77,7 +77,6 @@ treatments <- function(object) {
   retrieve_names(object, "treatment")
 }
 
-
 n_mediators <- function(object) {
   length(mediators(object))
 }
@@ -88,18 +87,20 @@ n_outcomes <- function(object) {
 
 setMethod("sample", "multimedia", function(
     x, size, pretreatment = NULL,
-    t_mediator = NULL,
-    t_outcome = NULL, mediators = NULL, ...) {
+    profile = NULL,
+    mediators = NULL, ...) {
   if (missing(size)) {
     size <- 1
   }
+  if (is.null(profile)) {
+    profile <- setup_profile(x)
+  }
 
   # if mediators are not provided, sample them
-  d <- profile_defaults(x, t_mediator, t_outcome)
   if (is.null(mediators)) {
     mediators <- list()
-    for (i in seq_along(d@t_mediator)) {
-      mediators[[i]] <- bind_cols(pretreatment, d@t_mediator[[i]]) |>
+    for (i in seq_along(profile@t_mediator)) {
+      mediators[[i]] <- bind_cols(pretreatment, profile@t_mediator[[i]]) |>
         x@mediation@sampler(x@mediation@estimates, new_data = _, i)
     }
     mediators <- bind_cols(mediators)
@@ -107,23 +108,29 @@ setMethod("sample", "multimedia", function(
 
   # sample outcome given everything else
   outcomes <- list()
-  for (i in seq_along(d@t_outcome)) {
-    outcomes[[i]] <- bind_cols(pretreatment, d@t_outcome[[i]], mediators) |>
+  for (i in seq_along(profile@t_outcome)) {
+    outcomes[[i]] <- bind_cols(
+      pretreatment,
+      profile@t_outcome[[i]],
+      mediators
+    ) |>
       x@outcome@sampler(x@outcome@estimates, new_data = _, i)
   }
 
-  list(mediators = mediators, outcomes = outcomes)
+  list(mediators = mediators, outcomes = bind_cols(outcomes))
 })
 
 setMethod("predict", "multimedia", function(
-    object, pretreatment = NULL,
-    t_mediator = NULL, t_outcome = NULL, mediators = NULL, ...) {
-  d <- profile_defaults(object, t_mediator, t_outcome)
+    object, profile = NULL, mediators = NULL, pretreatment = NULL,
+    ...) {
+  if (is.null(profile)) {
+    profile <- setup_profile(object)
+  }
   if (is.null(mediators)) {
-    nm <- names(d@t_mediator)
+    nm <- names(profile@t_mediator)
     mediators <- list()
-    for (i in seq_along(d@t_mediator)) {
-      mediator_covariates <- bind_cols(pretreatment, d@t_mediator[[i]])
+    for (i in seq_along(profile@t_mediator)) {
+      mediator_covariates <- bind_cols(pretreatment, profile@t_mediator[[i]])
       mediators[[nm[i]]] <- predict(
         object@mediation@estimates[[i]],
         mediator_covariates
@@ -133,10 +140,14 @@ setMethod("predict", "multimedia", function(
   }
 
   # sample outcome given everything else
-  nm <- names(d@t_outcome)
+  nm <- names(profile@t_outcome)
   outcomes <- list()
-  for (i in seq_along(d@t_outcome)) {
-    outcomes[[nm[i]]] <- bind_cols(pretreatment, d@t_outcome[[i]], mediators) |>
+  for (i in seq_along(profile@t_outcome)) {
+    outcomes[[nm[i]]] <- bind_cols(
+      pretreatment,
+      profile@t_outcome[[i]],
+      mediators
+    ) |>
       predict(object@outcome@estimates[[i]], newdata = _)
   }
   list(mediators = mediators, outcomes = bind_cols(outcomes))

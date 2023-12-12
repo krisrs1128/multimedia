@@ -25,7 +25,12 @@ graph_specification <- function(outcomes, treatments, mediators, pretreatment) {
 
   suppressMessages(
     purrr::reduce(edges, graph_join) %N>%
-      mutate(node_type = factor(node_type, levels = c("pretreatment", "treatment", "mediator", "outcome"))) |>
+      mutate(
+        node_type = factor(
+          node_type,
+          levels = c("pretreatment", "treatment", "mediator", "outcome")
+        )
+      ) |>
       arrange(node_type, name)
   )
 }
