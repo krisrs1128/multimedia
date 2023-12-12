@@ -1,11 +1,17 @@
+#' @importFrom dplyr n_distinct
+check_profile <- function(object) {
+  if (is(object@t_mediator, "list")) {
+    m_samples <- map(object@t_mediator, nrow)
+    y_samples <- map(object@t_outcome, nrow)
+    if (n_distinct(y_samples) != 1) {
+      cli_abort("Number of rows in treatment profile must agree across all outcomes.")
+    }
 
-setClass(
-  "treatment_profile",
-  representation(
-    t_mediator = "ANY",
-    t_outcome = "ANY"
-  )
-)
+    if (!all(m_samples %in% y_samples)) {
+      cli_abort("Number of samples in treatment profile must agree across mediators and outcomes.")
+    }
+  }
+}
 
 default_treatment <- function(model, estimates) {
   if (is(estimates, "list")) {
@@ -16,8 +22,7 @@ default_treatment <- function(model, estimates) {
     select(any_of(treatments(model)))
 }
 
-profile_defaults <- function(x, t_mediator = NULL, t_outcome = NULL) {
-  # fill in treatments with defaults
+setup_profile <- function(x, t_mediator = NULL, t_outcome = NULL) {
   if (is.null(t_mediator)) {
     t_mediator <- default_treatment(x, x@mediation@estimates)
   }
@@ -39,3 +44,12 @@ profile_defaults <- function(x, t_mediator = NULL, t_outcome = NULL) {
 
   new("treatment_profile", t_mediator = t_mediator, t_outcome = t_outcome)
 }
+
+setClass(
+  "treatment_profile",
+  representation(
+    t_mediator = "ANY",
+    t_outcome = "ANY"
+  ),
+  validity = check_profile
+)
