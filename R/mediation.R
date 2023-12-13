@@ -8,24 +8,41 @@ setClass(
   )
 )
 
+#' @export
+setClass(
+  "mediation_data",
+  representation(
+    mediators = "data.frame",
+    outcomes = "data.frame",
+    treatments = "data.frame",
+    pretreatments = "data.frame"
+  )
+)
+
+#' @importFrom purrr map
+bind_mediation <- function(exper) {
+  map_dfc(slotNames(exper), ~ slot(exper, .))
+}
+
+#' @importFrom purrr reduce
 #' @importFrom tidygraph graph_join %N>%
-graph_specification <- function(outcomes, treatments, mediators, pretreatment) {
+graph_specification <- function(outcomes, treatments, mediators, pretreatments) {
   edges <- list(
     expand_edges(treatments, mediators, "treatment", "mediator"),
     expand_edges(mediators, outcomes, "mediator", "outcome"),
     expand_edges(treatments, outcomes, "treatment", "outcome")
   )
 
-  if (length(pretreatment) > 0) {
+  if (length(pretreatments) > 0) {
     new_edges <- list(
-      expand_edges(pretreatment, outcomes, "pretreatment", "outcome"),
-      expand_edges(pretreatment, mediators, "pretreatment", "mediator")
+      expand_edges(pretreatments, outcomes, "pretreatments", "outcome"),
+      expand_edges(pretreatments, mediators, "pretreatments", "mediator")
     )
     edges <- c(edges, new_edges)
   }
 
   suppressMessages(
-    purrr::reduce(edges, graph_join) %N>%
+    reduce(edges, graph_join) %N>%
       mutate(
         node_type = factor(
           node_type,
@@ -54,28 +71,52 @@ exper_df <- function(exper) {
   bind_cols(t(assay(exper)), as_tibble(colData(exper)))
 }
 
-#' @importFrom dplyr bind_cols select
-match_names <- function(names, exper, env) {
-  exper_df(exper) |>
-    select(eval(names, env)) |>
-    colnames()
+#' @export
+mediation_data <- function(x, outcomes, treatments, mediators,
+                           pretreatments = NULL) {
+  result <- NULL
+  if ("SummarizedExperiment" %in% class(x)) {
+    result <- from_summarized_experiment(
+      x,
+      outcomes,
+      treatments,
+      mediators,
+      pretreatments
+    )
+  }
+
+  result
 }
 
-#' @export
-multimedia <- function(exper, outcomes, treatments, mediators = NULL,
-                       pretreatment = NULL,
-                       outcome_estimator = lm_model(),
-                       mediation_estimator = lm_model()) {
+#' @importFrom dplyr bind_cols select
+from_summarized_experiment <- function(exper, outcomes, treatments, mediators,
+                                       pretreatments) {
   vars <- list(
     outcomes = quote(outcomes),
     treatments = quote(treatments),
     mediators = quote(mediators),
-    pretreatment = quote(pretreatment)
+    pretreatments = quote(pretreatments)
   )
 
+  exper <- exper_df(exper)
+  result <- list()
   for (i in seq_along(vars)) {
-    vars[[i]] <- match_names(vars[[i]], exper, environment())
+    result[[names(vars)[i]]] <- select(exper, eval(vars[[i]]))
   }
+
+  do.call(\(...) new("mediation_data", ...), result)
+}
+
+#' @export
+multimedia <- function(mediation_data,
+                       outcome_estimator = lm_model(),
+                       mediation_estimator = lm_model()) {
+  vars <- list(
+    outcomes = colnames(mediation_data@outcomes),
+    treatments = colnames(mediation_data@treatments),
+    mediators = colnames(mediation_data@mediators),
+    pretreatments = colnames(mediation_data@pretreatments)
+  )
 
   new(
     "multimedia",

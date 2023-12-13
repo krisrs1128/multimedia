@@ -130,7 +130,6 @@ setMethod("predict", "multimedia", function(
     profile <- setup_profile(object)
   }
   if (is.null(mediators)) {
-    browser()
     nm <- names(profile@t_mediator)
     mediators <- list()
     for (i in seq_along(profile@t_mediator)) {
@@ -142,8 +141,6 @@ setMethod("predict", "multimedia", function(
     }
     mediators <- bind_cols(mediators)
   }
-  print("test")
-  print(mediators)
 
   # predict outcome given everything else
   nm <- names(profile@t_outcome)
@@ -195,14 +192,14 @@ estimate <- function(model, exper) {
   mediation_est <- model@mediation@estimator
   model@mediation@estimates <- mediation_est(
     mediation_formula(model@edges),
-    exper_df(exper)
+    bind_mediation(exper)
   )
 
   # estimate outcome model
   outcome_est <- model@outcome@estimator
   model@outcome@estimates <- outcome_est(
     outcome_formula(model@edges),
-    exper_df(exper)
+    bind_mediation(exper)
   )
 
   model
