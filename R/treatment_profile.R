@@ -13,22 +13,13 @@ check_profile <- function(object) {
   }
 }
 
-default_treatment <- function(model, estimates) {
-  if (is(estimates, "list")) {
-    estimates <- estimates[[1]]
-  }
-
-  model.frame(estimates) |>
-    select(any_of(treatments(model)))
-}
-
 #' @export
 setup_profile <- function(x, t_mediator = NULL, t_outcome = NULL) {
   if (is.null(t_mediator)) {
-    t_mediator <- default_treatment(x, x@mediation@estimates)
+    t_mediator <- x@treatments
   }
   if (is.null(t_outcome)) {
-    t_outcome <- default_treatment(x, x@outcome@estimates)
+    t_outcome <- x@treatments
   }
 
   # apply treatments to all mediators/outcomes

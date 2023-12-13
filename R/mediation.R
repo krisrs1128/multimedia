@@ -4,7 +4,8 @@ setClass(
   representation(
     edges = "ANY",
     outcome = "ANY",
-    mediation = "ANY"
+    mediation = "ANY",
+    treatments = "ANY"
   )
 )
 
@@ -42,7 +43,7 @@ graph_specification <- function(outcomes, treatments, mediators, pretreatments) 
   }
 
   suppressMessages(
-    reduce(edges, graph_join) %N>%
+    purrr::reduce(edges, graph_join) %N>%
       mutate(
         node_type = factor(
           node_type,
@@ -121,8 +122,8 @@ multimedia <- function(mediation_data,
   new(
     "multimedia",
     edges = do.call(graph_specification, vars),
-    outcome = lm_model(),
-    mediation = lm_model()
+    outcome = outcome_estimator,
+    mediation = mediation_estimator
   )
 }
 
