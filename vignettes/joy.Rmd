@@ -17,12 +17,11 @@ knitr::opts_chunk$set(
   dev.args = list(bg = "transparent")
 )
 
-knitr::knit_hooks$set(output = multimedia::ansi_aware_handler)
+#knitr::knit_hooks$set(output = multimedia::ansi_aware_handler)
 options(crayon.enabled = TRUE)
 ```
 
 ```{r setup}
-#source("load.R")
 library(multimedia)
 library(tidyverse)
 library(ggraph)
@@ -104,3 +103,14 @@ indirect_overall(model)
 indirect_pathwise(model)
 ```
 
+```{r}
+model <- multimedia(
+    exper, 
+    outcome_estimator = glmnet_model(lambda = seq(0.1, 1, 0.01))
+  ) |>
+  estimate(exper)
+
+direct_effect(model)
+indirect_overall(model)
+indirect_pathwise(model)
+```

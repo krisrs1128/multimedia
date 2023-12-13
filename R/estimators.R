@@ -108,8 +108,7 @@ lm_sampler <- function(fits, new_data = NULL, indices = NULL) {
   bind_cols(y_hats)
 }
 
-#' @importFrom glmnetUtils cv.glmnet.formula
-#' @importFrom glmnet cv.glmnet
+#' @importFrom glmnetUtils cv.glmnet
 #' @export
 glmnet_model <- function(...) {
   new(
