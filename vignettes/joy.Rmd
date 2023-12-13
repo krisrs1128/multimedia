@@ -11,34 +11,30 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE, 
-  warning = FALSE, 
+  warning = FALSE,
   message = FALSE, 
   comment = "#>",
   dev.args = list(bg = "transparent")
 )
 
-#knitr::knit_hooks$set(output = multimedia::ansi_aware_handler)
+knitr::knit_hooks$set(output = multimedia::ansi_aware_handler)
 options(crayon.enabled = TRUE)
 ```
 
 ```{r setup}
-source("load.R")
+#source("load.R")
+library(multimedia)
 library(tidyverse)
 library(ggraph)
 
-exper <- demo_joy()
-exper
+exper <- mediation_data(demo_joy(), "PHQ", "treatment", starts_with("ASV"))
 ```
 
 ### Specification
 
 ```{r}
-model <- multimedia(
-  exper,
-  outcomes = "PHQ",
-  treatments = "treatment",
-  mediators = starts_with("ASV")
-)
+model <- multimedia(exper) |>
+  estimate(exper)
 
 model
 ```
@@ -61,18 +57,50 @@ Sample the full model at original treatment.
 
 ```{r}
 sample(model)
+predict(model)
 ```
 
-Sample at new mediator and outcome treatments.
+Sample at new mediator and outcome treatments. This assumes the same treatment
+applies to all mediators and outcomes.
 
 ```{r}
 t1 <- tibble(treatment = rep("Treatment", 3))
 t2 <- tibble(treatment = rep("Control", 3))
-sample(model, t_mediator = t1, t_outcome = t2)
+profile <- setup_profile(model, t1, t2)
+sample(model, profile)
 ```
+
+Here is a generalization that allows different treatments for individual
+mediators and outcomes.
+
+```{r}
+profile <- setup_profile(model, t1, t2)
+profile@t_mediator[["ASV1"]]$treatment <- "Control"
+sample(model, profile = profile)
+predict(model, profile = profile)
+```
+
+We can also contrast different samples.
+
+```{r}
+contrast_predictions(model, profile, profile)
+contrast_samples(model, profile, profile)
+```
+
 
 ### Effects
 
+This covers the case of one treatment with two levels. Will need to test a few
+more general cases:
+
+* One treatment, many categorical levels.
+* Multiple treatments, many categorical levels.
+* One treatment, continuous.
+* Multiple treatments, continuous.
+
 ```{r}
+direct_effect(model)
+indirect_overall(model)
+indirect_pathwise(model)
 ```
 
