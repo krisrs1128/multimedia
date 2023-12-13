@@ -22,6 +22,7 @@ default_treatment <- function(model, estimates) {
     select(any_of(treatments(model)))
 }
 
+#' @export
 setup_profile <- function(x, t_mediator = NULL, t_outcome = NULL) {
   if (is.null(t_mediator)) {
     t_mediator <- default_treatment(x, x@mediation@estimates)
@@ -45,6 +46,7 @@ setup_profile <- function(x, t_mediator = NULL, t_outcome = NULL) {
   new("treatment_profile", t_mediator = t_mediator, t_outcome = t_outcome)
 }
 
+#' @export
 setClass(
   "treatment_profile",
   representation(

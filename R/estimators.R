@@ -1,3 +1,4 @@
+#' @export
 setClass(
   "model",
   representation(
@@ -85,6 +86,7 @@ n_outcomes <- function(object) {
   length(outcomes(object))
 }
 
+#' @export
 setMethod("sample", "multimedia", function(
     x, size, pretreatment = NULL,
     profile = NULL,
@@ -120,6 +122,7 @@ setMethod("sample", "multimedia", function(
   list(mediators = mediators, outcomes = bind_cols(outcomes))
 })
 
+#' @export
 setMethod("predict", "multimedia", function(
     object, profile = NULL, mediators = NULL, pretreatment = NULL,
     ...) {
@@ -127,6 +130,7 @@ setMethod("predict", "multimedia", function(
     profile <- setup_profile(object)
   }
   if (is.null(mediators)) {
+    browser()
     nm <- names(profile@t_mediator)
     mediators <- list()
     for (i in seq_along(profile@t_mediator)) {
@@ -138,8 +142,10 @@ setMethod("predict", "multimedia", function(
     }
     mediators <- bind_cols(mediators)
   }
+  print("test")
+  print(mediators)
 
-  # sample outcome given everything else
+  # predict outcome given everything else
   nm <- names(profile@t_outcome)
   outcomes <- list()
   for (i in seq_along(profile@t_outcome)) {

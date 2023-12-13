@@ -1,3 +1,4 @@
+#' @export
 setClass(
   "multimedia",
   representation(
