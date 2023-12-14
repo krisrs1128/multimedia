@@ -92,7 +92,7 @@ lm_model <- function() {
 }
 
 #' @importFrom dplyr bind_cols
-lm_sampler <- function(fits, new_data = NULL, indices = NULL) {
+lm_sampler <- function(fits, newdata = NULL, indices = NULL) {
   if (is.null(indices)) {
     indices <- seq_along(fits)
   }
@@ -101,7 +101,7 @@ lm_sampler <- function(fits, new_data = NULL, indices = NULL) {
   y_hats <- list()
   for (i in indices) {
     sigma <- summary(fits[[i]])$sigma
-    y_ <- predict(fits[[i]], newdata = new_data)
+    y_ <- predict(fits[[i]], newdata = newdata)
     y_hats[[nm[i]]] <- y_ + rnorm(length(y_), 0, sigma)
   }
 
@@ -121,7 +121,7 @@ glmnet_model <- function(...) {
 }
 
 #' @export
-glmnet_sampler <- function(fits, new_data = NULL, indices = NULL) {
+glmnet_sampler <- function(fits, newdata = NULL, indices = NULL) {
   if (is.null(indices)) {
     indices <- seq_along(fits)
   }
@@ -132,9 +132,59 @@ glmnet_sampler <- function(fits, new_data = NULL, indices = NULL) {
     lambda <- which(fits[[i]]$lambda == fits[[i]]$lambda.1se)
     n_samples <- length(fits[[i]]$foldid)
     sigma <- deviance(fits[[i]]$glmnet.fit)[lambda] / n_samples
-    y_ <- predict(fits[[i]], newdata = new_data)
+    y_ <- predict(fits[[i]], newdata = newdata)
     y_hats[[nm[i]]] <- y_ + rnorm(length(y_), 0, sigma)
   }
 
   bind_cols(y_hats)
+}
+
+brms_model_params <- function(...) {
+  defaults <- list(chains = 1)
+  modifyList(defaults, list(...))
+}
+
+#' @importFrom brms brm
+#' @importFrom rlang inject !!!
+#' @export
+brms_model <- function(...) {
+  params <- brms_model_params(...)
+  new(
+    "model",
+    estimator = parallelize(\(fmla, data) inject(brm(fmla, data, !!!params))),
+    estimates = NULL,
+    sampler = brms_sampler,
+    model_type = "brms_model()"
+  )
+}
+
+#' @importFrom brms posterior_predict
+#' @export
+brms_sampler <- function(fits, newdata = NULL, indices = NULL) {
+  if (is.null(indices)) {
+    indices <- seq_along(fits)
+  }
+
+  nm <- names(fits)
+  y_hats <- list()
+  for (i in indices) {
+    y_hats[[nm[i]]] <- posterior_predict(
+      fits[[i]],
+      newdata,
+      resp = nm[i],
+      ndraws = 1
+    ) |>
+      as.numeric()
+  }
+  bind_cols(y_hats)
+}
+
+lnm_model <- function() {
+  new(
+    "model",
+    estimator = lnm,
+    estimates = NULL,
+    sampler = lnm_sampler,
+    model_type = "lnm_model()"
+  )
 }
