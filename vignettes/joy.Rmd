@@ -63,8 +63,9 @@ Sample at new mediator and outcome treatments. This assumes the same treatment
 applies to all mediators and outcomes.
 
 ```{r}
-t1 <- tibble(treatment = rep("Treatment", 3))
-t2 <- tibble(treatment = rep("Control", 3))
+levels <- c("Treatment", "Control")
+t1 <- tibble(treatment = factor(rep(levels[1], 3), levels = levels))
+t2 <- tibble(treatment = factor(rep(levels[2], 3), levels = levels))
 profile <- setup_profile(model, t1, t2)
 sample(model, profile)
 ```
@@ -73,7 +74,6 @@ Here is a generalization that allows different treatments for individual
 mediators and outcomes.
 
 ```{r}
-profile <- setup_profile(model, t1, t2)
 profile@t_mediator[["ASV1"]]$treatment <- "Control"
 sample(model, profile = profile)
 predict(model, profile = profile)
@@ -104,10 +104,7 @@ indirect_pathwise(model)
 ```
 
 ```{r}
-model <- multimedia(
-    exper, 
-    outcome_estimator = glmnet_model(lambda = seq(0.1, 1, 0.01))
-  ) |>
+model <- multimedia(exper,  glmnet_model(lambda = seq(0.1, 1, 0.01))) |>
   estimate(exper)
 
 direct_effect(model)
@@ -116,11 +113,7 @@ indirect_pathwise(model)
 ```
 
 ```{r}
-source("load.R")
-model <- multimedia(
-    exper, 
-    outcome_estimator = brms_model()
-  ) |>
+model <- multimedia(exper,  brms_model()) |>
   estimate(exper)
 
 direct_effect(model)
@@ -128,18 +121,25 @@ indirect_overall(model)
 indirect_pathwise(model)
 ```
 
+Here is an example using the logistic normal multinomial as the outcome model.
+
 ```{r}
-source("load.R")
 exper <- mediation_data(demo_police(), starts_with("ASV"), "treatment", starts_with("Diet"))
-model <- multimedia(
-    exper,
-    outcome_estimator = lnm_model()
-  ) |>
+model <- multimedia(exper, lnm_model()) |>
   estimate(exper)
-
-sample(model, profile)
-predict(model, profile)
-direct_effect(model)
 ```
 
+```{r}
+profile <- setup_profile(model, t1, t2)
+y_star <- sample(model, profile, depth = 100)
+p_hat <- predict(model, profile)
+```
+
+The direct and indirect effects are on a relative abundance scale.
+
+```{r}
+direct_effect(model)
+indirect_overall(model)
+indirect_pathwise(model)
+```
 
