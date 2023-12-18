@@ -15,7 +15,7 @@ setMethod("sample", "multimedia", function(
     mediators <- list()
     for (i in seq_along(profile@t_mediator)) {
       mediators[[i]] <- bind_cols(pretreatment, profile@t_mediator[[i]]) |>
-        x@mediation@sampler(x@mediation@estimates, newdata = _, i)
+        x@mediation@sampler(x@mediation@estimates, newdata = _, indices = i, ...)
     }
     mediators <- bind_cols(mediators)
   }
@@ -28,11 +28,19 @@ setMethod("sample", "multimedia", function(
       profile@t_outcome[[i]],
       mediators
     ) |>
-      x@outcome@sampler(x@outcome@estimates, newdata = _, i)
+      x@outcome@sampler(x@outcome@estimates, newdata = _, indices = i)
   }
 
   list(mediators = mediators, outcomes = bind_cols(outcomes))
 })
+
+predict_across <- function(object, newdata, index = 1) {
+  if (is(object, "list")) {
+    return(predict(object[[index]], newdata))
+  }
+
+  predict(object, newdata)[, index]
+}
 
 #' @export
 setMethod("predict", "multimedia", function(
@@ -46,9 +54,10 @@ setMethod("predict", "multimedia", function(
     mediators <- list()
     for (i in seq_along(profile@t_mediator)) {
       mediator_covariates <- bind_cols(pretreatment, profile@t_mediator[[i]])
-      mediators[[nm[i]]] <- predict(
-        object@mediation@estimates[[i]],
-        mediator_covariates
+      mediators[[nm[i]]] <- predict_across(
+        object@mediation@estimates,
+        newdata = mediator_covariates,
+        index = i
       )
     }
     mediators <- bind_cols(mediators)
@@ -63,7 +72,7 @@ setMethod("predict", "multimedia", function(
       profile@t_outcome[[i]],
       mediators
     ) |>
-      predict(object@outcome@estimates[[i]], newdata = _) |>
+      predict_across(object@outcome@estimates, newdata = _, index = i) |>
       as.numeric()
   }
   list(mediators = mediators, outcomes = bind_cols(outcomes))

@@ -13,6 +13,7 @@ check_profile <- function(object) {
   }
 }
 
+#' @importFrom purrr map_lgl
 #' @export
 setup_profile <- function(x, t_mediator = NULL, t_outcome = NULL) {
   if (is.null(t_mediator)) {
@@ -32,6 +33,11 @@ setup_profile <- function(x, t_mediator = NULL, t_outcome = NULL) {
     t_outcome <- t_outcome |>
       replicate(n_outcomes(x), expr = _, simplify = FALSE) |>
       set_names(outcomes(x))
+  }
+
+  if (any(map_lgl(t_mediator[[1]], is.character)) ||
+      any(map_lgl(t_outcome[[1]], is.character))) {
+    cli_abort("All treatment columns must be either numeric or factor variables. Character column detected.")
   }
 
   new("treatment_profile", t_mediator = t_mediator, t_outcome = t_outcome)
