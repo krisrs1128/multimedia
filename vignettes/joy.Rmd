@@ -114,3 +114,32 @@ direct_effect(model)
 indirect_overall(model)
 indirect_pathwise(model)
 ```
+
+```{r}
+source("load.R")
+model <- multimedia(
+    exper, 
+    outcome_estimator = brms_model()
+  ) |>
+  estimate(exper)
+
+direct_effect(model)
+indirect_overall(model)
+indirect_pathwise(model)
+```
+
+```{r}
+source("load.R")
+exper <- mediation_data(demo_police(), starts_with("ASV"), "treatment", starts_with("Diet"))
+model <- multimedia(
+    exper,
+    outcome_estimator = lnm_model()
+  ) |>
+  estimate(exper)
+
+sample(model, profile)
+predict(model, profile)
+direct_effect(model)
+```
+
+
