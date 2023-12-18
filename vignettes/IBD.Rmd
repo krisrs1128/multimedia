@@ -1,0 +1,123 @@
+---
+title: "IBD"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{IBD}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(compositions)
+library(multimedia)
+library(tidyverse)
+library(patchwork)
+library(vroom)
+```
+
+### Load and Preprocess Data
+
+```{r}
+Sys.setenv("VROOM_CONNECTION_SIZE" = 5e6)
+taxa <- read_tsv("https://raw.githubusercontent.com/borenstein-lab/microbiome-metabolome-curated-data/main/data/processed_data/FRANZOSA_IBD_2019/genera.tsv")[, -1]
+metabolites <- read_tsv("https://raw.githubusercontent.com/borenstein-lab/microbiome-metabolome-curated-data/main/data/processed_data/FRANZOSA_IBD_2019/mtb.tsv")[, -1]
+metadata <- read_tsv("https://github.com/borenstein-lab/microbiome-metabolome-curated-data/raw/main/data/processed_data/FRANZOSA_IBD_2019/metadata.tsv")
+```
+
+```{r}
+filter_mean <- function(x, threshold = 4) {
+  col_means <- colMeans(x)
+  x[, col_means > threshold]
+}
+
+simplify_tax_names <- function(x) {
+  colnames(x) <- str_extract(colnames(x), "g__[A-z]+")
+  x
+}
+
+simplify_metab_names <- function(x) {
+  colnames(x) <- colnames(x) |>
+    str_remove_all("[[:punct:|NA| ]]") |>
+    str_replace_all("-", "_")
+  x
+}
+```
+
+```{r}
+taxa <- clr(taxa) |>
+  filter_mean() |>
+  simplify_tax_names()
+
+metabolites <- log(1 + metabolites) |>
+  filter_mean(threshold = 3) |>
+  simplify_metab_names()
+  
+combined <- metabolites |>
+  bind_cols(taxa) |>
+  bind_cols(metadata) |>
+  mutate(treatment = ifelse(Study.Group == "Control", "control", "treatment")) |>
+  as_tibble()
+
+exper <- mediation_data(
+  combined, 
+  colnames(metabolites)[1:20], 
+  "treatment",
+  colnames(taxa)[1:20]
+)
+```
+
+### Lasso Approach
+
+```{r}
+model <- multimedia(exper, glmnet_model(lambda = c(0.01, 0.001))) |>
+  estimate(exper)
+```
+
+```{r}
+direct <- direct_effect(model, profile) |>
+  group_by(outcome) |>
+  summarise(direct_effect = mean(direct_effect)) |>
+  slice_max(abs(direct_effect), n = 10) |>
+  arrange(direct_effect)
+
+combined |>
+  select(any_of(direct$outcome), treatment) |>
+  pivot_longer(-treatment, names_to = "feature") |>
+  mutate(feature = factor(feature, levels = direct$outcome)) |>
+  ggplot() +
+  geom_boxplot(aes(value, feature, fill = treatment))
+```
+
+
+```{r}
+indirect_sorted <- indirect_pathwise(model, profile) |>
+  group_by(outcome, mediator) |>
+  summarise(indirect_effect = mean(indirect_effect)) |>
+  filter(abs(indirect_effect) > 0.26) |>
+  arrange(mediator, indirect_effect)
+```
+
+```{r, fig.width = 12, fig.height = 9}
+p <- list()
+for (i in seq_len(nrow(indirect_sorted))) { 
+  m <- indirect_sorted$mediator[i]
+  y <- indirect_sorted$outcome[i]
+  p[[i]] <- ggplot(combined) +
+    geom_point(
+      aes(.data[[m]], .data[[y]], col = treatment),
+      position = position_jitter(h = 0.5)
+    ) +
+    labs(title = glue("IE = {round(indirect_sorted$indirect_effect[i], 2)}"))
+}
+
+wrap_plots(p, ncol = 5) +
+  plot_layout(guides = "collect")
+```
+
