@@ -69,7 +69,7 @@ expand_edges <- function(input, output, input_name, output_name) {
 
 #' @importFrom SummarizedExperiment assay colData
 exper_df <- function(exper) {
-  bind_cols(t(assay(exper)), as_tibble(colData(exper)))
+  bind_cols(t(assay(exper)), as_tibble(colData(exper), .name_repair = "minimal"))
 }
 
 #' @export
@@ -102,7 +102,8 @@ from_summarized_experiment <- function(exper, outcomes, treatments, mediators,
   exper <- exper_df(exper)
   result <- list()
   for (i in seq_along(vars)) {
-    result[[names(vars)[i]]] <- select(exper, eval(vars[[i]]))
+    result[[names(vars)[i]]] <- select(exper, eval(vars[[i]])) |>
+      mutate(across(where(is.character), as.factor))
   }
 
   do.call(\(...) new("mediation_data", ...), result)

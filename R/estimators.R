@@ -92,7 +92,7 @@ lm_model <- function() {
 }
 
 #' @importFrom dplyr bind_cols
-lm_sampler <- function(fits, newdata = NULL, indices = NULL) {
+lm_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
   if (is.null(indices)) {
     indices <- seq_along(fits)
   }
@@ -101,7 +101,7 @@ lm_sampler <- function(fits, newdata = NULL, indices = NULL) {
   y_hats <- list()
   for (i in indices) {
     sigma <- summary(fits[[i]])$sigma
-    y_ <- predict(fits[[i]], newdata = newdata)
+    y_ <- predict(fits[[i]], newdata = newdata, ...)
     y_hats[[nm[i]]] <- y_ + rnorm(length(y_), 0, sigma)
   }
 
@@ -121,7 +121,7 @@ glmnet_model <- function(...) {
 }
 
 #' @export
-glmnet_sampler <- function(fits, newdata = NULL, indices = NULL) {
+glmnet_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
   if (is.null(indices)) {
     indices <- seq_along(fits)
   }
@@ -132,7 +132,7 @@ glmnet_sampler <- function(fits, newdata = NULL, indices = NULL) {
     lambda <- which(fits[[i]]$lambda == fits[[i]]$lambda.1se)
     n_samples <- length(fits[[i]]$foldid)
     sigma <- deviance(fits[[i]]$glmnet.fit)[lambda] / n_samples
-    y_ <- predict(fits[[i]], newdata = newdata)
+    y_ <- predict(fits[[i]], newdata = newdata, ...)
     y_hats[[nm[i]]] <- y_ + rnorm(length(y_), 0, sigma)
   }
 
@@ -160,7 +160,7 @@ brms_model <- function(...) {
 
 #' @importFrom brms posterior_predict
 #' @export
-brms_sampler <- function(fits, newdata = NULL, indices = NULL) {
+brms_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
   if (is.null(indices)) {
     indices <- seq_along(fits)
   }
@@ -172,7 +172,8 @@ brms_sampler <- function(fits, newdata = NULL, indices = NULL) {
       fits[[i]],
       newdata,
       resp = nm[i],
-      ndraws = 1
+      ndraws = 1,
+      ...
     ) |>
       as.numeric()
   }
@@ -192,6 +193,10 @@ lnm_model <- function() {
 }
 
 #' @export
-lnm_sampler <- function(fit, newdata = NULL, ...) {
-  sample(fit, newdata = newdata)
+lnm_sampler <- function(fit, newdata = NULL, indices = NULL, ...) {
+  y_star <- sample(fit, newdata = newdata, ...)
+  if (is.null(indices)) {
+    return(y_star)
+  }
+  y_star[, indices]
 }
