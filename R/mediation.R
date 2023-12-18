@@ -86,12 +86,28 @@ mediation_data <- function(x, outcomes, treatments, mediators,
     )
   }
 
+  if ("data.frame" %in% class(x)) {
+    result <- from_data_frame(
+      x,
+      outcomes,
+      treatments,
+      mediators,
+      pretreatments
+    )
+  }
+
   result
 }
 
-#' @importFrom dplyr bind_cols select
 from_summarized_experiment <- function(exper, outcomes, treatments, mediators,
                                        pretreatments) {
+  exper_df(exper) |>
+    from_data_frame(outcomes, treatments, mediators, pretreatments)
+}
+
+#' @importFrom dplyr bind_cols select
+from_data_frame <- function(df, outcomes, treatments, mediators, 
+                            pretreatments) {
   vars <- list(
     outcomes = quote(outcomes),
     treatments = quote(treatments),
@@ -99,11 +115,11 @@ from_summarized_experiment <- function(exper, outcomes, treatments, mediators,
     pretreatments = quote(pretreatments)
   )
 
-  exper <- exper_df(exper)
   result <- list()
   for (i in seq_along(vars)) {
-    result[[names(vars)[i]]] <- select(exper, eval(vars[[i]])) |>
-      mutate(across(where(is.character), as.factor))
+    result[[names(vars)[i]]] <- select(df, eval(vars[[i]])) |>
+      mutate(across(where(is.character), as.factor)) |>
+      as_tibble(.name_repair = "minimal")
   }
 
   do.call(\(...) new("mediation_data", ...), result)
