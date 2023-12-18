@@ -1,5 +1,5 @@
 #' @importFrom tibble as_tibble
-random_numeric <- function(nrow, ncol, p = \(n) rnorm(n)) {
+random_numeric <- function(nrow, ncol, p = rnorm) {
   matrix(p(nrow * ncol), nrow = nrow, ncol = ncol) |>
     as_tibble() |>
     rename_with(~ str_remove(., "V"))
@@ -28,7 +28,7 @@ demo_police <- function(n_samples = 100, n_outcomes = 20, n_mediators = 5) {
   treatment <- sample(c("Treatment", "Control"), n_samples, replace = TRUE)
   mediators <- random_numeric(n_samples, n_mediators) |>
     rename_with(~ glue("Diet{.}"))
-  col_data <- random_numeric(n_samples, n_outcomes) |>
+  col_data <- random_numeric(n_samples, n_outcomes, \(n) rpois(n, 100)) |>
     rename_with(~ glue("ASV{.}")) |>
     bind_cols(treatment = treatment) |>
     DataFrame()

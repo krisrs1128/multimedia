@@ -179,6 +179,8 @@ brms_sampler <- function(fits, newdata = NULL, indices = NULL) {
   bind_cols(y_hats)
 }
 
+#' @importFrom miniLNM lnm
+#' @export
 lnm_model <- function() {
   new(
     "model",
@@ -187,4 +189,9 @@ lnm_model <- function() {
     sampler = lnm_sampler,
     model_type = "lnm_model()"
   )
+}
+
+#' @export
+lnm_sampler <- function(fit, newdata = NULL, ...) {
+  sample(fit, newdata = newdata)
 }
