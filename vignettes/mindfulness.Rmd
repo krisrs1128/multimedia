@@ -1,0 +1,92 @@
+---
+title: "IBD"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{IBD}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(patchwork)
+library(glue)
+library(multimedia)
+library(tidyverse)
+data(mindfulness)
+```
+
+```{r}
+combined <- bind_cols(
+  otu_table(mindfulness),
+  data.frame(sample_data(mindfulness))
+) |>
+  mutate(
+    treatment = ifelse(treatment == 0, "Control", "Treatment"),
+    treatment = factor(treatment, levels = c("Control", "Treatment")),
+    subject = factor(subject)
+  )
+
+exper <- mediation_data(
+  combined,
+  taxa_names(mindfulness),
+  "treatment", 
+  starts_with("mediator"),
+  "subject"
+)
+```
+
+```{r}
+model <- multimedia(exper, lnm_model()) |>
+  estimate(exper)
+```
+
+```{r}
+direct <- direct_effect(model)
+
+direct |>
+  group_by(outcome) |>
+  summarise(direct_effect = mean(direct_effect)) |>
+  arrange(abs(direct_effect))
+```
+
+```{r, fig.width = 8, fig.height = 3}
+combined |>
+  select(starts_with("mediator"), treatment) |>
+  pivot_longer(-treatment, names_to = "mediator") |>
+  ggplot() +
+  geom_boxplot(aes(value, mediator, fill = treatment))
+```
+
+```{r}
+indirect <- indirect_pathwise(model) |>
+  mutate(indirect_effect = -indirect_effect) |> # treatment - control
+  arrange(-abs(indirect_effect))  |>
+  select(outcome, mediator, indirect_effect)
+```
+
+```{r, fig.width = 12, fig.height = 6}
+p <- list()
+
+combined_relabund <- combined
+x <- combined[, taxa_names(mindfulness)]
+combined_relabund[, taxa_names(mindfulness)] <- x / rowSums(x)
+
+for (i in 1:12) {
+  m <- indirect$mediator[i]
+  y <- indirect$outcome[i]
+  effect <- indirect$indirect_effect[i]
+  p[[i]] <- ggplot(combined_relabund, aes(.data[[m]], .data[[y]])) +
+    geom_point(aes(col = treatment), alpha = 0.7) +
+    labs(title = glue("IE: {round(effect, 4)}"))
+}
+
+wrap_plots(p, ncol = 4) +
+  plot_layout(guides = "collect")
+```

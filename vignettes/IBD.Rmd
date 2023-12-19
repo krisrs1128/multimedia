@@ -15,11 +15,14 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
+library(brms)
 library(compositions)
+library(glue)
 library(multimedia)
-library(tidyverse)
 library(patchwork)
+library(tidyverse)
 library(vroom)
+theme_set(theme_bw())
 ```
 
 ### Load and Preprocess Data
@@ -38,7 +41,8 @@ filter_mean <- function(x, threshold = 4) {
 }
 
 simplify_tax_names <- function(x) {
-  colnames(x) <- str_extract(colnames(x), "g__[A-z]+")
+  colnames(x) <- str_extract(colnames(x), "g__[A-z]+") |>
+    str_replace("__", "_")
   x
 }
 
@@ -119,5 +123,69 @@ for (i in seq_len(nrow(indirect_sorted))) {
 
 wrap_plots(p, ncol = 5) +
   plot_layout(guides = "collect")
+```
+
+### Zero-Inflated Gaussian Approach
+
+First, we return to the original scaling.
+
+```{r}
+exper2 <- exper
+exper2@outcomes <- exp(exper2@outcomes) - 1
+```
+
+```{r}
+model <- multimedia(
+  exper2,
+  brms_model(family = hurdle_lognormal())
+) |>
+  estimate(exper2)
+```
+
+
+
+```{r}
+indirect <- indirect_pathwise(model)
+
+indirect_sorted <- indirect |>
+  group_by(outcome, mediator) |>
+  summarise(indirect_effect = mean(indirect_effect)) |>
+  group_by(outcome) |>
+  slice_max(abs(indirect_effect), n = 1) |>
+  ungroup() |>
+  slice_max(abs(indirect_effect), n = 10)
+```
+
+```{r, fig.width = 12, fig.height = 9}
+p <- list()
+for (i in seq_len(nrow(indirect_sorted))) { 
+  m <- indirect_sorted$mediator[i]
+  y <- indirect_sorted$outcome[i]
+  p[[i]] <- ggplot(combined) +
+    geom_point(
+      aes(.data[[m]], .data[[y]], col = treatment),
+      position = position_jitter(h = 0.5)
+    ) +
+    labs(title = glue("IE = {round(indirect_sorted$indirect_effect[i], 2)}"))
+}
+
+wrap_plots(p, ncol = 5) +
+  plot_layout(guides = "collect")
+```
+
+```{r}
+direct0 <- direct_effect(model)
+direct <- direct0 |>
+  group_by(outcome) |>
+  summarise(direct_effect = mean(direct_effect)) |>
+  slice_max(abs(direct_effect), n = 10) |>
+  arrange(direct_effect)
+
+combined |>
+  select(any_of(direct$outcome), treatment) |>
+  pivot_longer(-treatment, names_to = "feature") |>
+  mutate(feature = factor(feature, levels = direct$outcome)) |>
+  ggplot() +
+  geom_boxplot(aes(value, feature, fill = treatment))
 ```
 
