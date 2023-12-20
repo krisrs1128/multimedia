@@ -29,6 +29,8 @@ bind_mediation <- function(exper) {
 #' @importFrom tidygraph graph_join %N>%
 graph_specification <- function(outcomes, treatments, mediators, pretreatments) {
   edges <- list(
+    expand_edges(c("1"), mediators, "intercept", "mediator"),
+    expand_edges(c("1"), outcomes, "intercept", "outcome"),
     expand_edges(treatments, mediators, "treatment", "mediator"),
     expand_edges(mediators, outcomes, "mediator", "outcome"),
     expand_edges(treatments, outcomes, "treatment", "outcome")
@@ -36,8 +38,8 @@ graph_specification <- function(outcomes, treatments, mediators, pretreatments) 
 
   if (length(pretreatments) > 0) {
     new_edges <- list(
-      expand_edges(pretreatments, outcomes, "pretreatments", "outcome"),
-      expand_edges(pretreatments, mediators, "pretreatments", "mediator")
+      expand_edges(pretreatments, outcomes, "pretreatment", "outcome"),
+      expand_edges(pretreatments, mediators, "pretreatment", "mediator")
     )
     edges <- c(edges, new_edges)
   }
@@ -47,24 +49,26 @@ graph_specification <- function(outcomes, treatments, mediators, pretreatments) 
       mutate(
         node_type = factor(
           node_type,
-          levels = c("pretreatment", "treatment", "mediator", "outcome")
+          levels = c("intercept", "pretreatment", "treatment", "mediator", "outcome")
         )
       ) |>
-      arrange(node_type, name)
+      arrange(node_type, name) |>
+      mutate(id = row_number())
   )
 }
 
-#' @importFrom tidygraph %E>% as_tbl_graph
+#' @importFrom tidygraph %E>% as_tbl_graph activate
 expand_edges <- function(input, output, input_name, output_name) {
   expand.grid(input, output) |>
-    as_tbl_graph() |>
+    as_tbl_graph(node_key = "name") |>
     mutate(
       node_type = case_when(
         name %in% input ~ input_name,
         name %in% output ~ output_name,
       )
     ) %E>%
-    mutate(state = "active")
+    mutate(state = "active") |>
+    activate(nodes)
 }
 
 #' @importFrom SummarizedExperiment assay colData
