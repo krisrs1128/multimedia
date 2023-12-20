@@ -1,14 +1,14 @@
 #' @export
-contrast_predictions <- function(model, profile1, profile2) {
-  y_hat_1 <- predict(model, profile1)
-  y_hat_2 <- predict(model, profile2)
+contrast_predictions <- function(model, profile1, profile2, ...) {
+  y_hat_1 <- predict(model, profile1, ...)
+  y_hat_2 <- predict(model, profile2, ...)
   path_difference(y_hat_1, y_hat_2)
 }
 
 #' @export
-contrast_samples <- function(model, profile1, profile2) {
-  y1 <- sample(model, profile = profile1)
-  y2 <- sample(model, profile = profile2)
+contrast_samples <- function(model, profile1, profile2, ...) {
+  y1 <- sample(model, profile = profile1, ...)
+  y2 <- sample(model, profile = profile2, ...)
   path_difference(y1, y2)
 }
 
@@ -60,28 +60,37 @@ adjust_defaults <- function(model, t1 = NULL, t2 = NULL, t_mediator = NULL,
 #' @importFrom tidyr pivot_longer
 #' @importFrom glue glue
 #' @export
-direct_effect <- function(model, t1 = NULL, t2 = NULL, t_mediator = NULL) {
-  tmp <- adjust_defaults(model, t1, t2, t_mediator)
-  t1 <- tmp$t1; t2 <- tmp$t2; t_mediator <- tmp$t_mediator
+direct_effect <- function(model, exper = NULL, t1 = 1, t2 = 2) {
+  pretreatment <- NULL
+  if (!is.null(exper)) {
+    pretreatment <- exper@pretreatments
+  }
 
   result <- list()
-  for (i in seq_along(t_mediator)) {
-    profile1 <- setup_profile(model, t_mediator[[i]], t1)
-    profile2 <- setup_profile(model, t_mediator[[i]], t2)
-    result[[i]] <- contrast_predictions(model, profile1, profile2)[["outcomes"]] |>
+  t_ <- model@treatments
+
+  for (i in seq_along(nrow(t_))) {
+    profile1 <- setup_profile(model, t_[i, ], model@treatments[t1, ])
+    profile2 <- setup_profile(model, t_[i, ], model@treatments[t2, ])
+  
+    result[[i]] <- contrast_predictions(
+        model, 
+        profile1, 
+        profile2,
+        pretreatment = pretreatment
+      )[["outcomes"]] |>
       pivot_longer(everything(), names_to = "outcome", values_to = "direct_effect") |>
-      mutate(contrast = parse_name(t1, t2))
+      mutate(contrast = parse_name(t_, t1, t2))
   }
 
   bind_rows(result, .id = "indirect_setting") |>
-    mutate(indirect_setting = names(t_mediator)[as.integer(indirect_setting)]) |>
+    mutate(indirect_setting = t_[[1]][as.integer(indirect_setting)]) |>
     select(outcome, indirect_setting, contrast, direct_effect)
 }
 
-parse_name <- function(t1, t2) {
-  glue("{apply(t1, 1, paste0, collapse=',')} - {apply(t2, 1, paste0, collapse=',')}")
+parse_name <- function(t_, t1, t2) {
+  glue("{apply(t_[t1,], 1, paste0, collapse=',')} - {apply(t_[t2,], 1, paste0, collapse=',')}")
 }
-
 
 #' Overall Indirect Effect
 #' @examples
@@ -91,14 +100,18 @@ parse_name <- function(t1, t2) {
 #' indirect_overall(model, t1, t2, t_outcome)
 #' indirect_overall(model, "Treatment", "Control")
 #' @export
-indirect_overall <- function(model, t1 = NULL, t2 = NULL, t_outcome = NULL) {
+indirect_overall <- function(model, t1 = NULL, t2 = NULL, t_outcome = NULL, 
+                             pretreatment = NULL) {
   tmp <- adjust_defaults(model, t1, t2, NULL, t_outcome)
   t1 <- tmp$t1; t2 <- tmp$t2; t_outcome <- tmp$t_outcome
 
   result <- list()
   for (i in seq_along(t_outcome)) {
-    profile1 <- setup_profile(model, t1, t_outcome[[i]])
-    profile2 <- setup_profile(model, t2, t_outcome[[i]])
+    profile1 <- setup_profile(model, t1, t_outcome[[i]]) |>
+      bind_cols(pretreatment)
+    profile2 <- setup_profile(model, t2, t_outcome[[i]]) |>
+      bind_cols(pretreatment)
+
     result[[i]] <- contrast_predictions(model, profile1, profile2)[["outcomes"]] |>
       pivot_longer(
         everything(), 
@@ -127,7 +140,8 @@ indirect_overall <- function(model, t1 = NULL, t2 = NULL, t_outcome = NULL) {
 #' indirect_pathwise(model, t1, t2, t_outcome)
 #' indirect_pathwise(model, "Treatment", "Control")
 #' @export
-indirect_pathwise <- function(model, t1 = NULL, t2 = NULL, t_outcome = NULL) {
+indirect_pathwise <- function(model, t1 = NULL, t2 = NULL, t_outcome = NULL,
+                              pretreatment = NULL) {
   tmp <- adjust_defaults(model, t1, t2, NULL, t_outcome)
   t1 <- tmp$t1; t2 <- tmp$t2; t_outcome <- tmp$t_outcome
 
@@ -135,7 +149,8 @@ indirect_pathwise <- function(model, t1 = NULL, t2 = NULL, t_outcome = NULL) {
   result <- list()
   m <- mediators(model)
   for (i in seq_along(t_outcome)) {
-    profile2 <- setup_profile(model, t2, t_outcome[[i]])
+    profile2 <- setup_profile(model, t2, t_outcome[[i]]) |>
+      bind_cols(pretreatment)
 
     for (j in seq_along(m)) {
       profile1 <- profile2
