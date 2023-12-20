@@ -26,6 +26,8 @@ matching_indices <- function(edges, nulls = NULL) {
   pull(ids, edge_id)
 }
 
+#' Nullify Active Edges
+#' @export
 nullify <- function(multimedia, nulls = NULL) {
   nulls <- matching_indices(multimedia@edges, nulls)
   multimedia@edges <- multimedia@edges %E>%
