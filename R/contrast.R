@@ -33,18 +33,23 @@ direct_effect <- function(model, exper = NULL, t1 = 1, t2 = 2) {
   result <- list()
   t_ <- model@treatments
 
-  for (i in seq_along(nrow(t_))) {
+  for (i in seq_len(nrow(t_))) {
     profile1 <- setup_profile(model, t_[i, ], model@treatments[t1, ])
     profile2 <- setup_profile(model, t_[i, ], model@treatments[t2, ])
 
-    result[[i]] <- contrast_predictions(
+    y_hat <- contrast_predictions(
       model,
       profile1,
       profile2,
       pretreatment = pretreatment
     )[["outcomes"]] |>
-      pivot_longer(everything(), names_to = "outcome", values_to = "direct_effect") |>
-      mutate(contrast = parse_name(t_, t1, t2))
+    colMeans()
+
+    result[[i]] <- tibble(
+      outcome = names(y_hat),
+      direct_effect = y_hat,
+      contrast = parse_name(t_, t1, t2)
+    )
   }
 
   bind_rows(result, .id = "indirect_setting") |>
@@ -72,7 +77,7 @@ indirect_overall <- function(model, exper = NULL, t1 = 1, t2 = 2) {
 
   t_ <- model@treatments
   result <- list()
-  for (i in seq_along(nrow(t_))) {
+  for (i in seq_len(nrow(t_))) {
     profile1 <- setup_profile(model, model@treatments[t1, ], t_[i, ])
     profile2 <- setup_profile(model, model@treatments[t2, ], t_[i, ])
 
@@ -140,7 +145,7 @@ indirect_pathwise <- function(model, exper = NULL, t1 = 1, t2 = 2) {
         indirect_effect = y_hat,
         mediator = m[j],
         contrast = parse_name(t_, t1, t2),
-        direct_setting = t_[i, 1]
+        direct_setting = t_[[1]][i]
       )
       k <- k + 1
     }

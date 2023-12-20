@@ -5,7 +5,8 @@ setClass(
     estimator = "ANY",
     estimates = "ANY",
     sampler = "ANY",
-    model_type = "ANY"
+    model_type = "ANY",
+    predictor = "ANY"
   )
 )
 
@@ -36,7 +37,7 @@ parallelize <- function(f) {
 edges_df <- function(edges) {
   nodes <- edges %N>%
     as_tibble()
-  
+
   edges %E>%
     as_tibble() |>
     left_join(nodes, by = c("from" = "id")) |>
@@ -105,6 +106,7 @@ lm_model <- function() {
     estimator = parallelize(lm),
     estimates = NULL,
     sampler = lm_sampler,
+    predictor = predict,
     model_type = "lm_model()"
   )
 }
@@ -134,6 +136,7 @@ glmnet_model <- function(...) {
     estimator = parallelize(\(fmla, data) cv.glmnet(fmla, data, ...)),
     estimates = NULL,
     sampler = glmnet_sampler,
+    predictor = predict,
     model_type = "glmnet_model()"
   )
 }
@@ -172,6 +175,7 @@ brms_model <- function(...) {
     estimator = parallelize(\(fmla, data) inject(brm(fmla, data, !!!params))),
     estimates = NULL,
     sampler = brms_sampler,
+    predictor = predict,
     model_type = "brms_model()"
   )
 }
@@ -206,6 +210,7 @@ lnm_model <- function() {
     estimator = lnm,
     estimates = NULL,
     sampler = lnm_sampler,
+    predictor = predict,
     model_type = "lnm_model()"
   )
 }
@@ -217,4 +222,36 @@ lnm_sampler <- function(fit, newdata = NULL, indices = NULL, ...) {
     return(y_star)
   }
   y_star[, indices]
+}
+
+#' Random forest model
+#' @importFrom ranger ranger
+#' @export
+rf_model <- function(...) {
+  new(
+    "model",
+    estimator = parallelize(\(fmla, data) ranger(fmla, data, ...)),
+    estimates = NULL,
+    sampler = rf_sampler,
+    model_type = "rf_model()",
+    predictor = \(object, ...) predict(object, ...)$predictions
+  )
+}
+
+#' @importFrom dplyr bind_cols
+#' @export
+rf_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
+  if (is.null(indices)) {
+    indices <- seq_along(fits)
+  }
+
+  nm <- names(fits)
+  y_hats <- list()
+  for (i in indices) {
+    sigma <- sqrt(fits[[i]]$prediction.error)
+    y_ <- predict(fits[[i]], newdata = newdata, ...)$predictions
+    y_hats[[nm[i]]] <- y_ + rnorm(length(y_), 0, sigma)
+  }
+
+  bind_cols(y_hats)
 }
