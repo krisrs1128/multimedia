@@ -48,12 +48,12 @@ model <- multimedia(exper, lnm_model()) |>
 ```
 
 ```{r}
-direct <- direct_effect(model)
+direct <- direct_effect(model, exper)
 
 direct |>
   group_by(outcome) |>
   summarise(direct_effect = mean(direct_effect)) |>
-  arrange(abs(direct_effect))
+  arrange(-abs(direct_effect))
 ```
 
 ```{r, fig.width = 8, fig.height = 3}
@@ -63,9 +63,8 @@ combined |>
   ggplot() +
   geom_boxplot(aes(value, mediator, fill = treatment))
 ```
-
 ```{r}
-indirect <- indirect_pathwise(model) |>
+indirect <- indirect_pathwise(model, exper) |>
   mutate(indirect_effect = -indirect_effect) |> # treatment - control
   arrange(-abs(indirect_effect))  |>
   select(outcome, mediator, indirect_effect)
@@ -84,9 +83,62 @@ for (i in 1:12) {
   effect <- indirect$indirect_effect[i]
   p[[i]] <- ggplot(combined_relabund, aes(.data[[m]], .data[[y]])) +
     geom_point(aes(col = treatment), alpha = 0.7) +
+    geom_smooth(aes(col = treatment), se = FALSE, formula = y ~ x, method = "lm") +
+    scale_y_sqrt() +
     labs(title = glue("IE: {round(effect, 4)}"))
 }
 
 wrap_plots(p, ncol = 4) +
   plot_layout(guides = "collect")
+```
+
+```{r}
+altered <- model |>
+  nullify("T->M") |>
+  estimate(exper)
+```
+
+```{r fig.width = 10, fig.height = 4}
+new_assign <- exper@treatments[sample(nrow(exper@treatments)), ]
+profile <- setup_profile(model, new_assign, new_assign)
+m1 <- sample(model, profile = profile, pretreatment = exper@pretreatments)
+m2 <- sample(altered, profile = profile, pretreatment = exper@pretreatments)
+
+list(
+  real = bind_cols(exper@treatments, exper@mediators, exper@pretreatments),
+  original = bind_cols(new_assign, m1$mediators, exper@pretreatments),
+  altered = bind_cols(new_assign, m2$mediators, exper@pretreatments)
+) |>
+  bind_rows(.id = "source") |>
+  pivot_longer(starts_with("mediator"), names_to = "mediator") |>
+  ggplot() +
+  geom_boxplot(aes(value, reorder(mediator, value, median), fill = treatment)) +
+  facet_grid(~ source)
+```
+
+```{r}
+altered_direct <- model |>
+  nullify("T->Y") |>
+  estimate(exper)
+
+y1 <- sample(model, profile = profile, pretreatment = exper@pretreatments)
+y2 <- sample(altered_direct, profile = profile, pretreatment = exper@pretreatments)
+
+names(y1$outcomes) <- names(exper@outcomes)
+names(y2$outcomes) <- names(exper@outcomes)
+```
+
+
+```{r, fig.width = 8, fig.height = 12}
+list(
+  original = bind_cols(exper@treatments, exper@outcomes / rowSums(exper@outcomes)),
+  fitted = bind_cols(exper@treatments, y1$outcomes / rowSums(y1$outcomes)),
+  altered = bind_cols(exper@treatments, y2$outcomes / rowSums(y2$outcomes))
+) |>
+  bind_rows(.id = "source") |>
+  pivot_longer(-source:-treatment) |>
+  ggplot() +
+  geom_boxplot(aes(value, reorder(name, value), fill = treatment)) +
+  scale_x_log10() +
+  facet_grid(~ source)
 ```

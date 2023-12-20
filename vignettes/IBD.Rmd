@@ -125,6 +125,29 @@ wrap_plots(p, ncol = 5) +
   plot_layout(guides = "collect")
 ```
 
+
+```{r}
+altered <- model |>
+  nullify("T->M") |>
+  estimate(exper)
+
+altered
+
+profile <- setup_profile(model, exper@treatments, exper@treatments)
+samples <- list(
+  real = exper@mediators,
+  fitted = sample(model, profile = profile)$mediators,
+  altered = sample(altered, profile = profile)$mediators
+) |>
+  bind_rows(.id = "source") |>
+  bind_cols(treatment = rep(exper@treatments$treatment, 3)) |>
+  pivot_longer(starts_with("g_"))
+
+ggplot(samples) +
+  geom_boxplot(aes(value, reorder(name, value), fill = treatment)) +
+  facet_wrap(~ source)
+```
+
 ### Zero-Inflated Gaussian Approach
 
 First, we return to the original scaling.
@@ -188,4 +211,3 @@ combined |>
   ggplot() +
   geom_boxplot(aes(value, feature, fill = treatment))
 ```
-
