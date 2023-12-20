@@ -32,34 +32,52 @@ parallelize <- function(f) {
   }
 }
 
-mediation_formula <- function(edges) {
-  edges <- edges %E>%
-    filter(state == "active")
+#' @importFrom tidygraph %N>%
+edges_df <- function(edges) {
+  nodes <- edges %N>%
+    as_tibble()
+  
+  edges %E>%
+    as_tibble() |>
+    left_join(nodes, by = c("from" = "id")) |>
+    dplyr::rename(
+      node_type_from = node_type,
+      name_from = name
+    ) |>
+    left_join(nodes, by = c("to" = "id")) |>
+    dplyr::rename(
+      node_type_to = node_type,
+      name_to = name
+    )
+}
 
-  mediators <- edges %N>%
-    filter(node_type == "mediator") |>
-    pull(name)
-  predictors <- edges %N>%
-    filter(node_type %in% c("pretreatment", "treatment")) |>
-    pull(name)
+edges_to_formula <- function(edges) {
+  collapse <- \(e, v) {
+    pull(e, eval(v)) |>
+      unique() |>
+      paste0(collapse = "+")
+  }
 
-  glue("{paste0(mediators, collapse = '+')} ~ {paste0(predictors, collapse = '+')}") |>
+  predictors <- collapse(edges, quote(name_from))
+  outcomes <- collapse(edges, quote(name_to))
+  glue("{outcomes} ~ {predictors}") |>
     as.formula()
 }
 
+mediation_formula <- function(edges) {
+  edges %E>%
+    filter(state == "active") |>
+    edges_df() |>
+    filter(node_type_to == "mediator") |>
+    edges_to_formula()
+}
+
 outcome_formula <- function(edges) {
-  edges <- edges %E>%
-    filter(state == "active")
-
-  response <- edges %N>%
-    filter(node_type == "outcome") |>
-    pull(name)
-  predictors <- edges %N>%
-    filter(!(node_type == "outcome")) |>
-    pull(name)
-
-  glue("{paste0(response, collapse = '+')} ~ {paste0(predictors, collapse = '+')}") |>
-    as.formula()
+  edges %E>%
+    filter(state == "active") |>
+    edges_df() |>
+    filter(node_type_to == "outcome") |>
+    edges_to_formula()
 }
 
 #' @export
