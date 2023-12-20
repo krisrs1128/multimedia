@@ -106,25 +106,25 @@ indirect_overall <- function(model, exper = NULL, t1 = 1, t2 = 2) {
     pretreatment <- exper@pretreatments
   }
 
-  result <- list()
   t_ <- model@treatments
-
+  result <- list()
   for (i in seq_along(nrow(t_))) {
     profile1 <- setup_profile(model, model@treatments[t1, ], t_[i, ])
     profile2 <- setup_profile(model, model@treatments[t2, ], t_[i, ])
 
-    result[[i]] <- contrast_predictions(
+    y_hat <- contrast_predictions(
       model,
       profile1,
       profile2,
       pretreatment = pretreatment
     )[["outcomes"]] |>
-      pivot_longer(
-        everything(),
-        names_to = "outcome",
-        values_to = "indirect_effect"
-      ) |>
-      mutate(contrast = parse_name(t_, t1, t2))
+      colMeans()
+
+    result[[i]] <- tibble(
+      outcome = names(y_hat),
+      indirect_effect = y_hat,
+      contrast = parse_name(t_, t1, t2)
+    )
   }
 
   bind_rows(result, .id = "direct_setting") |>
@@ -153,26 +153,31 @@ indirect_pathwise <- function(model, exper = NULL, t1 = 1, t2 = 2) {
   }
 
   k <- 1
-  result <- list()
   m <- mediators(model)
-  for (i in seq_along(t_outcome)) {
-    profile2 <- setup_profile(model, t2, t_outcome[[i]]) |>
-      bind_cols(pretreatment)
+  t_ <- model@treatments
+  result <- list()
+  for (i in seq_len(nrow(t_))) {
+    profile2 <- setup_profile(model, model@treatments[t2, ], t_[i, ])
 
     for (j in seq_along(m)) {
       profile1 <- profile2
-      profile1@t_mediator[[j]] <- t1
-      result[[k]] <- contrast_predictions(model, profile1, profile2)[["outcomes"]] |>
-        pivot_longer(
-          everything(),
-          names_to = "outcome",
-          values_to = "indirect_effect"
-        ) |>
-        mutate(
-          mediator = m[j],
-          contrast = parse_name(t1, t2),
-          direct_setting = names(t_outcome)[i]
-        )
+      profile1@t_mediator[[j]] <- model@treatments[t1, ]
+
+      y_hat <- contrast_predictions(
+        model,
+        profile1,
+        profile2,
+        pretreatment = pretreatment
+      )[["outcomes"]] |>
+        colMeans()
+
+      result[[k]] <- tibble(
+        outcome = names(y_hat),
+        indirect_effect = y_hat,
+        mediator = m[j],
+        contrast = parse_name(t_, t1, t2),
+        direct_setting = t_[i, 1]
+      )
       k <- k + 1
     }
   }
