@@ -4,7 +4,7 @@
 \alias{indirect_pathwise}
 \title{Indirect Effects via Single Mediation Paths}
 \usage{
-indirect_pathwise(model, t1 = NULL, t2 = NULL, t_outcome = NULL)
+indirect_pathwise(model, exper = NULL, t1 = 1, t2 = 2)
 }
 \description{
 Indirect Effects via Single Mediation Paths

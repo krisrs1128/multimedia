@@ -4,7 +4,7 @@
 \alias{indirect_overall}
 \title{Overall Indirect Effect}
 \usage{
-indirect_overall(model, t1 = NULL, t2 = NULL, t_outcome = NULL)
+indirect_overall(model, exper = NULL, t1 = 1, t2 = 2)
 }
 \description{
 Overall Indirect Effect

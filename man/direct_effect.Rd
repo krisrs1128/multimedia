@@ -4,7 +4,7 @@
 \alias{direct_effect}
 \title{Direct Effects from Estimated Model}
 \usage{
-direct_effect(model, t1 = NULL, t2 = NULL, t_mediator = NULL)
+direct_effect(model, exper = NULL, t1 = 1, t2 = 2)
 }
 \description{
 Direct Effects from Estimated Model
