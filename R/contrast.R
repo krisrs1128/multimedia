@@ -19,42 +19,6 @@ path_difference <- function(y1, y2) {
   )
 }
 
-adjust_defaults <- function(model, t1 = NULL, t2 = NULL, t_mediator = NULL,
-                            t_outcome = NULL) {
-  if (is.null(t1) || is.null(t2)) {
-    unique_treatments <- unique(setup_profile(model)@t_outcome[[1]])
-    t1 <- unique_treatments[1, ]
-    t2 <- unique_treatments[2, ]
-  }
-
-  if (is.character(t1) || is.character(t2)) {
-    t1 <- tibble(factor(t1))
-    t2 <- tibble(factor(t2))
-    names(t1) <- treatments(model)[1]
-    names(t2) <- treatments(model)[1]
-  }
-
-  if (is.null(t_mediator)) {
-    t_mediator <- list(t1, t2)
-    names(t_mediator) <- c(t1[[1]], t2[[1]])
-  }
-
-  if (is.null(t_outcome)) {
-    t_outcome <- list(t1, t2)
-    names(t_outcome) <- c(t1[[1]], t2[[1]])
-  }
-
-  if (is.null(names(t_mediator))) {
-    names(t_mediator) <- seq_along(t_mediator)
-  }
-
-  if (is.null(names(t_outcome))) {
-    names(t_outcome) <- seq_along(t_outcome)
-  }
-
-  list(t1 = t1, t2 = t2, t_mediator = t_mediator, t_outcome = t_outcome)
-}
-
 #' Direct Effects from Estimated Model
 #' @importFrom dplyr everything mutate select bind_rows
 #' @importFrom tidyr pivot_longer
