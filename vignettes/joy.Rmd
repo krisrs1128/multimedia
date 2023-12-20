@@ -143,3 +143,12 @@ indirect_overall(model)
 indirect_pathwise(model)
 ```
 
+```{r}
+model <- multimedia(exper, rf_model()) |>
+  estimate(exper)
+
+direct_effect(model, exper)
+indirect_overall(model, exper)
+indirect_pathwise(model, exper)
+```
+

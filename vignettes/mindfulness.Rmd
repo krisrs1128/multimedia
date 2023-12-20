@@ -49,7 +49,6 @@ model <- multimedia(exper, lnm_model()) |>
 
 ```{r}
 direct <- direct_effect(model, exper)
-
 direct |>
   group_by(outcome) |>
   summarise(direct_effect = mean(direct_effect)) |>

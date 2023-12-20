@@ -76,7 +76,6 @@ exper <- mediation_data(
   colnames(taxa)[1:20]
 )
 ```
-
 ### Lasso Approach
 
 ```{r}
@@ -85,7 +84,7 @@ model <- multimedia(exper, glmnet_model(lambda = c(0.01, 0.001))) |>
 ```
 
 ```{r}
-direct <- direct_effect(model, profile) |>
+direct <- direct_effect(model, exper) |>
   group_by(outcome) |>
   summarise(direct_effect = mean(direct_effect)) |>
   slice_max(abs(direct_effect), n = 10) |>
@@ -101,7 +100,7 @@ combined |>
 
 
 ```{r}
-indirect_sorted <- indirect_pathwise(model, profile) |>
+indirect_sorted <- indirect_pathwise(model, exper) |>
   group_by(outcome, mediator) |>
   summarise(indirect_effect = mean(indirect_effect)) |>
   filter(abs(indirect_effect) > 0.26) |>
@@ -147,6 +146,20 @@ ggplot(samples) +
   geom_boxplot(aes(value, reorder(name, value), fill = treatment)) +
   facet_wrap(~ source)
 ```
+
+### Random Forest Approach
+
+```{r}
+model <- multimedia(exper, rf_model(num.trees = 100)) |>
+  estimate(exper)
+
+indirect_sorted <- indirect_pathwise(model, exper) |>
+  group_by(outcome, mediator) |>
+  summarise(indirect_effect = mean(indirect_effect)) |>
+  filter(abs(indirect_effect) > 0.26) |>
+  arrange(mediator, indirect_effect)
+```
+
 
 ### Zero-Inflated Gaussian Approach
 
