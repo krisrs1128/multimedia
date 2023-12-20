@@ -72,13 +72,13 @@ direct_effect <- function(model, exper = NULL, t1 = 1, t2 = 2) {
   for (i in seq_along(nrow(t_))) {
     profile1 <- setup_profile(model, t_[i, ], model@treatments[t1, ])
     profile2 <- setup_profile(model, t_[i, ], model@treatments[t2, ])
-  
+
     result[[i]] <- contrast_predictions(
-        model, 
-        profile1, 
-        profile2,
-        pretreatment = pretreatment
-      )[["outcomes"]] |>
+      model,
+      profile1,
+      profile2,
+      pretreatment = pretreatment
+    )[["outcomes"]] |>
       pivot_longer(everything(), names_to = "outcome", values_to = "direct_effect") |>
       mutate(contrast = parse_name(t_, t1, t2))
   }
@@ -100,29 +100,35 @@ parse_name <- function(t_, t1, t2) {
 #' indirect_overall(model, t1, t2, t_outcome)
 #' indirect_overall(model, "Treatment", "Control")
 #' @export
-indirect_overall <- function(model, t1 = NULL, t2 = NULL, t_outcome = NULL, 
-                             pretreatment = NULL) {
-  tmp <- adjust_defaults(model, t1, t2, NULL, t_outcome)
-  t1 <- tmp$t1; t2 <- tmp$t2; t_outcome <- tmp$t_outcome
+indirect_overall <- function(model, exper = NULL, t1 = 1, t2 = 2) {
+  pretreatment <- NULL
+  if (!is.null(exper)) {
+    pretreatment <- exper@pretreatments
+  }
 
   result <- list()
-  for (i in seq_along(t_outcome)) {
-    profile1 <- setup_profile(model, t1, t_outcome[[i]]) |>
-      bind_cols(pretreatment)
-    profile2 <- setup_profile(model, t2, t_outcome[[i]]) |>
-      bind_cols(pretreatment)
+  t_ <- model@treatments
 
-    result[[i]] <- contrast_predictions(model, profile1, profile2)[["outcomes"]] |>
+  for (i in seq_along(nrow(t_))) {
+    profile1 <- setup_profile(model, model@treatments[t1, ], t_[i, ])
+    profile2 <- setup_profile(model, model@treatments[t2, ], t_[i, ])
+
+    result[[i]] <- contrast_predictions(
+      model,
+      profile1,
+      profile2,
+      pretreatment = pretreatment
+    )[["outcomes"]] |>
       pivot_longer(
-        everything(), 
-        names_to = "outcome", 
+        everything(),
+        names_to = "outcome",
         values_to = "indirect_effect"
       ) |>
-      mutate(contrast = parse_name(t1, t2))
+      mutate(contrast = parse_name(t_, t1, t2))
   }
 
   bind_rows(result, .id = "direct_setting") |>
-    mutate(direct_setting = names(t_outcome)[as.integer(direct_setting)]) |>
+    mutate(direct_setting = t_[[1]][as.integer(direct_setting)]) |>
     select(outcome, direct_setting, contrast, indirect_effect)
 }
 
@@ -140,10 +146,11 @@ indirect_overall <- function(model, t1 = NULL, t2 = NULL, t_outcome = NULL,
 #' indirect_pathwise(model, t1, t2, t_outcome)
 #' indirect_pathwise(model, "Treatment", "Control")
 #' @export
-indirect_pathwise <- function(model, t1 = NULL, t2 = NULL, t_outcome = NULL,
-                              pretreatment = NULL) {
-  tmp <- adjust_defaults(model, t1, t2, NULL, t_outcome)
-  t1 <- tmp$t1; t2 <- tmp$t2; t_outcome <- tmp$t_outcome
+indirect_pathwise <- function(model, exper = NULL, t1 = 1, t2 = 2) {
+  pretreatment <- NULL
+  if (!is.null(exper)) {
+    pretreatment <- exper@pretreatments
+  }
 
   k <- 1
   result <- list()
