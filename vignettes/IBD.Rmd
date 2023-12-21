@@ -178,8 +178,6 @@ model <- multimedia(
   estimate(exper2)
 ```
 
-
-
 ```{r}
 indirect <- indirect_pathwise(model)
 

@@ -141,3 +141,32 @@ list(
   scale_x_log10() +
   facet_grid(~ source)
 ```
+
+### Random Forest Model
+
+```{r}
+exper@outcomes <- log(1 + exper@outcomes)
+model <- multimedia(exper, rf_model()) |>
+  estimate(exper)
+
+de <- direct_effect(model, exper)
+
+de |>
+  group_by(outcome, contrast) |>
+  summarise(direct_effect = mean(direct_effect)) |>
+  arrange(-abs(direct_effect))
+
+ggplot(combined) +
+  geom_boxplot(aes(treatment, log(1 + Akkermansia)))
+
+ie <- indirect_pathwise(model, exper) |>
+  group_by(outcome, mediator, contrst) |>
+  summarise(indirect_effect = mean(indirect_effect)) |>
+  arrange(-abs(indirect_effect))
+
+ie
+
+ggplot(combined) +
+  geom_point(aes(mediator.Cold.cereal, log(1 + Lactobacillus), col = treatment))
+```
+
