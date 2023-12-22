@@ -128,12 +128,18 @@ lm_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
   bind_cols(y_hats)
 }
 
+glmnet_model_params <- function(...) {
+  defaults <- list(nfolds = 3)
+  modifyList(defaults, list(...))
+}
+
 #' @importFrom glmnetUtils cv.glmnet
 #' @export
 glmnet_model <- function(...) {
+  params <- glmnet_model_params(...)
   new(
     "model",
-    estimator = parallelize(\(fmla, data) cv.glmnet(fmla, data, ...)),
+    estimator = parallelize(\(fmla, data) inject(cv.glmnet(fmla, data, !!!params))),
     estimates = NULL,
     sampler = glmnet_sampler,
     predictor = \(object, ...) {
@@ -166,6 +172,18 @@ brms_model_params <- function(...) {
   modifyList(defaults, list(...))
 }
 
+brm_cache <- function(formula, data, ...) {
+  models <- list()
+
+  ys <- lhs.vars(formula)
+  models[[1]] <- brm(sub_formula(formula, ys[1]), data, ...)
+  for (j in seq(2, length(ys))) {
+    fmla <- sub_formula(formula, ys[j])
+    models[[ys[j]]] <- update(models[[1]], fmla, newdata = data, recompile = FALSE, ...)
+  }
+  models
+}
+
 #' @importFrom brms brm
 #' @importFrom rlang inject !!!
 #' @export
@@ -173,10 +191,10 @@ brms_model <- function(...) {
   params <- brms_model_params(...)
   new(
     "model",
-    estimator = parallelize(\(fmla, data) inject(brm(fmla, data, !!!params))),
+    estimator = \(fmla, data) inject(brm_cache(fmla, data, !!!params)),
     estimates = NULL,
     sampler = brms_sampler,
-    predictor = predict,
+    predictor = \(object, ...) predict(object, ...)[, "Estimate"],
     model_type = "brms_model()"
   )
 }
