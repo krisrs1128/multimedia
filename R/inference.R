@@ -42,24 +42,29 @@ nullify <- function(multimedia, nulls = NULL) {
 
 #' @importFrom progress progress_bar
 #' @export
-bootstrap <- function(model, exper, fs = c(direct = direct_effect), B = 100) {
-  stats <- list()
-  pb <- progress_bar$new(total = B, format = "[:bar] :current/:total ETA: :eta")
+bootstrap <- function(model, exper, fs = NULL, B = 100) {
+  if (is.null(fs)) {
+    fs <- list(direct_effect = direct_effect)
+  }
   if (is.null(names(fs))) {
     names(fs) <- seq_along(fs)
   }
 
-  for (b in seq_len(B)) {
-    exper_b <- exper[sample(nrow(exper), nrow(exper), replace = TRUE), ]
-    model_b <- estimate(model, exper_b)
-    for (f in seq_along(fs)) {
-      stats[[b]] <- fs[i](model_b, exper_b) |>
-        bind_rows(.id = "path") |>
-        mutate(path = names(fs)[as.integer(f)])
+  stats <- list()
+  for (f in seq_along(fs)) {
+    nf <- names(fs)[f]
+    cli_text(glue("Bootstrapping {nf}"))
+    stats[[nf]] <- list()
+    pb <- progress_bar$new(total = B, format = "[:bar] :current/:total ETA: :eta")
+    for (b in seq_len(B)) {
+      exper_b <- exper[sample(nrow(exper), nrow(exper), replace = TRUE), ]
+      model_b <- estimate(model, exper_b)
+      stats[[nf]][[b]] <- fs[[f]](model_b, exper_b)
+      pb$tick()
     }
-    pb$tick()
+    stats[[nf]] <- bind_rows(stats[[nf]], .id = "bootstrap")
   }
-  bind_rows(stats, .id = "bootstrap")
+  stats
 }
 
 #' @export
@@ -95,7 +100,7 @@ fdr_summary <- function(contrast, effect = "indirect_overall", q_value = 0.15) {
       group_by(source, outcome) |>
       summarise(indirect_effect = mean(indirect_effect), .group = "drop_last") |>
       arrange(-abs(indirect_effect)) |>
-      ungroup() 
+      ungroup()
   } else if (effect == "indirect_pathwise") {
     fdr <- contrast |>
       group_by(source, outcome, mediator) |>
@@ -107,7 +112,7 @@ fdr_summary <- function(contrast, effect = "indirect_overall", q_value = 0.15) {
       group_by(source, outcome) |>
       summarise(direct_effect = mean(direct_effect), .groups = "drop_last") |>
       arrange(-abs(direct_effect)) |>
-      ungroup() 
+      ungroup()
   }
 
   fdr <- fdr |>
