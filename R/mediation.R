@@ -16,7 +16,7 @@ setClass(
     mediators = "data.frame",
     outcomes = "data.frame",
     treatments = "data.frame",
-    pretreatments = "data.frame"
+    pretreatments = "ANY"
   )
 )
 
@@ -156,3 +156,22 @@ print_sub <- function(x) {
   }
   res
 }
+
+#' @export
+setGeneric("nrow", function(x) nrow(x))
+
+#' @export
+setMethod(nrow, "mediation_data", function(x) {
+  nrow(x@outcomes)
+})
+
+#' @export
+setMethod("[", "mediation_data",
+    function(x, i, j, ..., drop=TRUE) {
+      x@mediators <- x@mediators[i, ]
+      x@outcomes <- x@outcomes[i, ]
+      x@treatments <- x@treatments[i, ]
+      x@pretreatments <- x@pretreatments[i, ]
+      x
+    }
+)
