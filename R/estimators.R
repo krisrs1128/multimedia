@@ -136,7 +136,9 @@ glmnet_model <- function(...) {
     estimator = parallelize(\(fmla, data) cv.glmnet(fmla, data, ...)),
     estimates = NULL,
     sampler = glmnet_sampler,
-    predictor = predict,
+    predictor = \(object, ...) {
+      predict(object, s = object$lambda.1se, ...)[, 1]
+    },
     model_type = "glmnet_model()"
   )
 }
@@ -151,9 +153,8 @@ glmnet_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
   y_hats <- list()
   for (i in indices) {
     lambda <- which(fits[[i]]$lambda == fits[[i]]$lambda.1se)
-    n_samples <- length(fits[[i]]$foldid)
-    sigma <- deviance(fits[[i]]$glmnet.fit)[lambda] / n_samples
-    y_ <- predict(fits[[i]], newdata = newdata, ...)
+    sigma <- deviance(fits[[i]]$glmnet.fit)[lambda] / fits[[i]]$glmnet.fit$nobs
+    y_ <- predict(fits[[i]], newdata = newdata, ...)[, "lambda.1se"]
     y_hats[[nm[i]]] <- y_ + rnorm(length(y_), 0, sigma)
   }
 
