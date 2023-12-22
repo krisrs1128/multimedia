@@ -42,14 +42,21 @@ nullify <- function(multimedia, nulls = NULL) {
 
 #' @importFrom progress progress_bar
 #' @export
-bootstrap <- function(model, exper, f = direct_effect, B = 100) {
+bootstrap <- function(model, exper, fs = c(direct = direct_effect), B = 100) {
   stats <- list()
   pb <- progress_bar$new(total = B, format = "[:bar] :current/:total ETA: :eta")
+  if (is.null(names(fs))) {
+    names(fs) <- seq_along(fs)
+  }
 
   for (b in seq_len(B)) {
     exper_b <- exper[sample(nrow(exper), nrow(exper), replace = TRUE), ]
     model_b <- estimate(model, exper_b)
-    stats[[b]] <- f(model_b, exper_b)
+    for (f in seq_along(fs)) {
+      stats[[b]] <- fs[i](model_b, exper_b) |>
+        bind_rows(.id = "path") |>
+        mutate(path = names(fs)[as.integer(f)])
+    }
     pb$tick()
   }
   bind_rows(stats, .id = "bootstrap")
