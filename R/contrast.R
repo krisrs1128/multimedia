@@ -113,6 +113,7 @@ indirect_overall <- function(model, exper = NULL, t1 = 1, t2 = 2) {
 #' t_outcome <- list(t1, t2)
 #' indirect_pathwise(model, t1, t2, t_outcome)
 #' indirect_pathwise(model, "Treatment", "Control")
+#' @importFrom cli cli_text
 #' @export
 indirect_pathwise <- function(model, exper = NULL, t1 = 1, t2 = 2) {
   pretreatment <- NULL
@@ -125,19 +126,16 @@ indirect_pathwise <- function(model, exper = NULL, t1 = 1, t2 = 2) {
   t_ <- model@treatments
   result <- list()
   for (i in seq_len(nrow(t_))) {
+    cli_text(glue("Indirect effects for direct setting {i}"))
     profile2 <- setup_profile(model, t_[t2, ], t_[i, ])
+    y_hat_2 <- predict(model, profile2, pretreatment = pretreatment)
 
+    pb <- progress_bar$new(total = length(m), format = "[:bar] Mediator: :current/:total ETA: :eta")
     for (j in seq_along(m)) {
       profile1 <- profile2
       profile1@t_mediator[[j]] <- t_[t1, ]
-
-      y_hat <- contrast_predictions(
-        model,
-        profile1,
-        profile2,
-        pretreatment = pretreatment
-      )[["outcomes"]] |>
-        colMeans()
+      y_hat_1 <- predict(model, profile1, pretreatment = pretreatment)
+      y_hat <- colMeans(path_difference(y_hat_1, y_hat_2)[["outcomes"]])
 
       result[[k]] <- tibble(
         outcome = names(y_hat),
@@ -146,6 +144,7 @@ indirect_pathwise <- function(model, exper = NULL, t1 = 1, t2 = 2) {
         contrast = parse_name(t_, t1, t2),
         direct_setting = t_[[1]][i]
       )
+      pb$tick()
       k <- k + 1
     }
   }
