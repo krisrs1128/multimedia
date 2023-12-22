@@ -18,14 +18,16 @@ knitr::opts_chunk$set(
 library(brms)
 library(compositions)
 library(glue)
-library(multimedia)
 library(patchwork)
 library(tidyverse)
 library(vroom)
+library(multimedia)
 theme_set(theme_bw())
 ```
 
 ### Load and Preprocess Data
+
+This loads data from the microbiome-metabolome-curated data repository.
 
 ```{r}
 Sys.setenv("VROOM_CONNECTION_SIZE" = 5e6)
@@ -34,10 +36,11 @@ metabolites <- read_tsv("https://raw.githubusercontent.com/borenstein-lab/microb
 metadata <- read_tsv("https://github.com/borenstein-lab/microbiome-metabolome-curated-data/raw/main/data/processed_data/FRANZOSA_IBD_2019/metadata.tsv")
 ```
 
+Here are some preprocessing functions.
+
 ```{r}
 filter_mean <- function(x, threshold = 4) {
-  col_means <- colMeans(x)
-  x[, col_means > threshold]
+  x[, colMeans(x) > threshold]
 }
 
 simplify_tax_names <- function(x) {
@@ -55,6 +58,10 @@ simplify_metab_names <- function(x) {
   x
 }
 ```
+
+We'll filter quite aggressively so that the examples in this vignette don't take
+too long. We then compile everything into a `mediation_data` object that
+organizes the treatment, mediators, and outcomes.
 
 ```{r}
 taxa <- clr(taxa) |>
@@ -80,10 +87,16 @@ exper <- mediation_data(
 
 ### Lasso Approach
 
+First let's fit sparse regression models for each outcome.
+
 ```{r}
-model <- multimedia(exper, glmnet_model(lambda = c(0.1, 0.01), nfolds = 3)) |>
+model <- multimedia(exper, glmnet_model(lambda = c(0.1, 0.01))) |>
   estimate(exper)
 ```
+
+We can have different direct effects depending on the setting of the mediators.
+Here we'll average over all mediator settings and plot the features with the
+largest direct effects.
 
 ```{r}
 direct <- direct_effect(model, exper) |>
@@ -100,6 +113,11 @@ combined |>
   geom_boxplot(aes(value, feature, fill = treatment))
 ```
 
+Pathwise indirect effects are those that appear when modifying the treatment
+status for a single mediator. Unlike overall indirect effects, they give us
+effects for individual mediator-outcome pairs. Here we'll average over the
+direct treatment settings
+
 ```{r}
 indirect_sorted <- indirect_pathwise(model, exper) |>
   group_by(outcome, mediator) |>
@@ -108,9 +126,16 @@ indirect_sorted <- indirect_pathwise(model, exper) |>
   arrange(mediator, indirect_effect)
 ```
 
+We have a small helper for visualizing the indirect effects.
+
 ```{r, fig.width = 12, fig.height = 9}
 plot_mediators(indirect_sorted, exper)
 ```
+
+We can create models where the effects have been deliberately removed. This can
+be useful for synthetic null testing, for example. Here are simulated samples
+from a "nullified" model without direct effects, a full model with direct
+effects, and the original samples.
 
 ```{r}
 altered <- model |>
@@ -132,14 +157,15 @@ ggplot(samples) +
   facet_wrap(~ source)
 ```
 
+How can we understand the uncertainty of the estimated models? One approach is
+to form the bootstrap distribution of the effects that we care about. It's a
+little problematic to form bootstrap CI's for sparse regression. We can still
+interpret the full bootstrap distributions, though. Effects that have large
+nonzero components have more evidence of being real.
+
 ```{r}
-inferences <- bind_rows(
-  direct = bootstrap(model, exper, direct_effect) |>
-    rename(effect = direct_effect),
-  indirect = bootstrap(model, exper, indirect_overall) |>
-    rename(effect = indirect_effect),
-  .id = "path" 
-)
+fs <- c(direct = direct_effect, indirect = indirect_effect)
+inferences <- bootstrap(model, exper, fs)
 
 inferences |>
   group_by(path, outcome) |>
@@ -151,50 +177,30 @@ inferences |>
   group_by(path) |>
   slice_max(abs(mean), n = 10)
 ```
-### Random Forest Approach
-
-```{r}
-model <- multimedia(exper, rf_model(num.trees = 100)) |>
-  estimate(exper)
-
-indirect_sorted <- indirect_pathwise(model, exper) |>
-  group_by(outcome, mediator) |>
-  summarise(indirect_effect = mean(indirect_effect)) |>
-  filter(abs(indirect_effect) > 0.26) |>
-  arrange(mediator, indirect_effect)
-```
-
-```{r}
-model <- multimedia(exper, rf_model(num.trees = 100))
-stats <- bootstrap(model, exper)
-
-stats |> filter(outcome %in% c("C18_eg_Clser_0072", "C18_eg_Clser_0018", "C18_eg_Clser_0121")) |> ggplot() + geom_histogram(aes(direct_effect)) + facet_wrap(~ outcome)
-
-altered <- nullify(model, "T->Y")
-reference_null <- bootstrap(altered, exper)
-de <- direct_effect(estimate(model, exper), exper)
-de |>
-  arrange(-abs(direct_effect))
-```
 
 ### Zero-Inflated Gaussian Approach
 
-First, we return to the original scaling.
+Ideally, we could also model the zeros. One idea is to apply a hurdle lognormal
+model, since, for the nonnegative part, glmnet is implicitly assuming normal
+errors in the log space. We can do this by returning to the original scaling and
+then applying a BRMS model.
 
 ```{r}
 exper2 <- exper
 exper2@outcomes <- exp(exper2@outcomes) - 1
-```
-
-```{r}
 model <- multimedia(
   exper2,
-  brms_model(family = hurdle_lognormal())
-) |>
+  brms_model(family = hurdle_lognormal(), warmup = 500, iter = 1500)
+  )|>
   estimate(exper2)
 ```
 
+Let's again get pathwise indirect effects. This is relatively slow, since
+prediction in BRMS models is a little slow, and we need to do predictions across
+all outcomes and when substituting all mediators.
+
 ```{r}
+source("load.R")
 indirect <- indirect_pathwise(model)
 indirect_sorted <- indirect |>
   group_by(outcome, mediator) |>
@@ -207,18 +213,20 @@ plot_mediators(indirect_sorted, exper)
 plot_mediators(indirect_sorted[12:24], exper)
 ```
 
+We can also just look at direct effects.
+
 ```{r}
-direct0 <- direct_effect(model)
-direct <- direct0 |>
+direct <- direct_effect(model)
+direct_sorted <- direct |>
   group_by(outcome) |>
   summarise(direct_effect = mean(direct_effect)) |>
   slice_max(abs(direct_effect), n = 10) |>
-  arrange(direct_effect)
+  arrange(-abs(direct_effect))
 
 combined |>
-  select(any_of(direct$outcome), treatment) |>
+  select(any_of(direct_sorted$outcome), treatment) |>
   pivot_longer(-treatment, names_to = "feature") |>
-  mutate(feature = factor(feature, levels = direct$outcome)) |>
+  mutate(feature = factor(feature, levels = direct_sorted$outcome)) |>
   ggplot() +
   geom_boxplot(aes(value, feature, fill = treatment))
 ```

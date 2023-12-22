@@ -1,8 +1,8 @@
 ---
-title: "IBD"
+title: "Mindfulness"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{IBD}
+  %\VignetteIndexEntry{Mindfulness}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -14,15 +14,18 @@ knitr::opts_chunk$set(
 )
 ```
 
+Lots of libraries.
+
 ```{r setup}
-library(ggdist)
+library(compositions)
 library(ggrepel)
-library(glue)
-library(patchwork)
 library(tidyverse)
 library(multimedia)
 data(mindfulness)
 ```
+
+This package works needs a `mediation_data` object to organize the pretreatment,
+treatment, mediator, and outcome variables.
 
 ```{r}
 combined <- bind_cols(
@@ -44,11 +47,15 @@ exper <- mediation_data(
 )
 ```
 
+This estimates a mediation model with linear treatment -> mediator effects and a
+logistic-normal outcome model.
+
 ```{r}
 model <- multimedia(exper, lnm_model()) |>
   estimate(exper)
 ```
 
+Let's look at direct effects.
 
 ```{r}
 direct <- direct_effect(model, exper)
@@ -58,19 +65,15 @@ direct |>
   arrange(-abs(direct_effect))
 ```
 
-```{r, fig.width = 8, fig.height = 3}
-combined |>
-  select(starts_with("mediator"), treatment) |>
-  pivot_longer(-treatment, names_to = "mediator") |>
-  ggplot() +
-  geom_boxplot(aes(value, mediator, fill = treatment))
-```
+Let's do the analogous exercise for the indirect effects.
+
 ```{r}
 indirect <- indirect_pathwise(model, exper) |>
-  mutate(indirect_effect = -indirect_effect) |> # treatment - control
   arrange(-abs(indirect_effect))  |>
   select(outcome, mediator, indirect_effect)
 ```
+
+We can interpret these indirect effects on the relative abundance scale.
 
 ```{r, fig.width = 12, fig.height = 6}
 p <- list()
@@ -79,11 +82,25 @@ exper_rela@outcome <- exper@outcome / rowSums(exper@outcome)
 plot_mediators(indirect, exper_rela)
 ```
 
+### Model Alterations
+
+A lot of hypothesis testing is built on the idea that a simple submodel might
+explain the data just as well as a full, more complicated one. Mediation
+analysis is no exception, and we have a few utilities to zero out effects of
+sets of edges from the usual mediation model. For example, the model below
+removes any effect from the treatment to the mediators.
+
 ```{r}
 altered <- model |>
   nullify("T->M") |>
   estimate(exper)
 ```
+
+We can verify this by sampling a new cohort from the original and the altered
+models. Notice that I re-assigned all the treatments. This removes confounding
+between the treatment and subject level effects -- this effect doesn't exist on
+average across the population because the study was randomized, but we might
+still see associations in our finite sample.
 
 ```{r fig.width = 10, fig.height = 4}
 new_assign <- exper@treatments[sample(nrow(exper@treatments)), ]
@@ -103,20 +120,18 @@ list(
   facet_grid(~ source)
 ```
 
-```{r}
+Here is the analogous alteration that removes all direct effects.
+
+```{r, fig.width = 8, fig.height = 12}
 altered_direct <- model |>
   nullify("T->Y") |>
   estimate(exper)
 
 y1 <- sample(model, profile = profile, pretreatment = exper@pretreatments)
 y2 <- sample(altered_direct, profile = profile, pretreatment = exper@pretreatments)
-
 names(y1$outcomes) <- names(exper@outcomes)
 names(y2$outcomes) <- names(exper@outcomes)
-```
 
-
-```{r, fig.width = 8, fig.height = 12}
 list(
   original = bind_cols(exper@treatments, exper@outcomes / rowSums(exper@outcomes)),
   fitted = bind_cols(exper@treatments, y1$outcomes / rowSums(y1$outcomes)),
@@ -130,15 +145,25 @@ list(
   facet_grid(~ source)
 ```
 
+### Synthetic Null Testing
+
+A standard approach to inference is to apply a bootstrap (this is done in the
+other notebook). A less conventional approach is to calibrate false discovery
+rate thresholds using synthetic null data. To test whether a particular effect
+exists, the idea:
+
+1. Fit a null model where we know a certain effect does not exist.
+1. Simulate synthetic null data from this model.
+1. Use the full model to estimate effects on this synthetic null data. The
+reference distribution of these estimated effects can be used to calibrate false
+discovery thresholds -- we just choose a detection threshold keeps the fraction
+of these negative controls at an acceptably low number.
+
+Here is that idea applied to evaluate direct effects.
+
 ```{r}
 contrast <- null_contrast(model, exper, "T->Y", direct_effect)
 fdr <- fdr_summary(contrast, "direct_effect", 0.05)
-ggplot(fdr, aes(direct_effect, fdr_hat)) +
-  geom_label_repel(data = filter(fdr, keep), aes(label = outcome, fill = source), max.overlaps = 25, size = 3) +
-  geom_point(aes(col = source)) +
-  ylim(-0.1, 0.2) +
-  xlim(-0.3, 0.05)
-
 ggplot(fdr, aes(direct_effect, fdr_hat)) +
   geom_label_repel(data = filter(fdr, keep), aes(label = outcome, fill = source), max.overlaps = 50, size = 3, force = 10) +
   geom_point(aes(col = source)) +
@@ -146,6 +171,7 @@ ggplot(fdr, aes(direct_effect, fdr_hat)) +
   xlim(0.0, 0.05)
 ```
 
+Here is the same idea for overall indirect effects.
 
 ```{r}
 contrast <- null_contrast(model, exper, "M->Y", indirect_overall)
@@ -155,6 +181,8 @@ ggplot(fdr, aes(indirect_effect, fdr_hat)) +
   geom_point(aes(col = source)) +
   geom_label_repel(data = filter(fdr, keep), aes(label = outcome, fill = source), force = 20, size = 3)
 ```
+
+We can do the same thing for pathwise indirects.
 
 ```{r, fig.width = 12, fig.height = 5}
 contrast <- null_contrast(model, exper, "M->Y", indirect_pathwise)
@@ -169,29 +197,37 @@ ggplot(fdr, aes(indirect_effect, fdr_hat)) +
 
 ### Random Forest Model
 
+The LNM makes relatively strong assumptions on the outcome model. What if we
+just apply a centered log ratio to the outcome profiles and then use random
+forests for the outcome?
+
 ```{r}
-exper@outcomes <- log(1 + exper@outcomes)
+exper@outcomes <- clr(exper@outcomes)
 model <- multimedia(exper, rf_model()) |>
   estimate(exper)
 
-de <- direct_effect(model, exper)
+```
 
-de |>
+Here are direct effects.
+
+```{r}
+direct <- direct_effect(model, exper)
+direct |>
   group_by(outcome, contrast) |>
   summarise(direct_effect = mean(direct_effect)) |>
   arrange(-abs(direct_effect))
 
 ggplot(combined) +
-  geom_boxplot(aes(treatment, log(1 + Akkermansia)))
+  geom_boxplot(aes(treatment, Akkermansia))
+```
 
-ie <- indirect_pathwise(model, exper) |>
+These are the indirect effects.
+
+```{r}
+indirect_sorted <- indirect_pathwise(model, exper) |>
   group_by(outcome, mediator, contrst) |>
   summarise(indirect_effect = mean(indirect_effect)) |>
   arrange(-abs(indirect_effect))
 
-ie
-
-ggplot(combined) +
-  geom_point(aes(mediator.Cold.cereal, log(1 + Lactobacillus), col = treatment))
+plot_mediators(indirect_sorted)
 ```
-
