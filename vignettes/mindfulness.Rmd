@@ -15,10 +15,12 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-library(patchwork)
+library(ggdist)
+library(ggrepel)
 library(glue)
-library(multimedia)
+library(patchwork)
 library(tidyverse)
+library(multimedia)
 data(mindfulness)
 ```
 
@@ -47,6 +49,7 @@ model <- multimedia(exper, lnm_model()) |>
   estimate(exper)
 ```
 
+
 ```{r}
 direct <- direct_effect(model, exper)
 direct |>
@@ -71,24 +74,9 @@ indirect <- indirect_pathwise(model, exper) |>
 
 ```{r, fig.width = 12, fig.height = 6}
 p <- list()
-
-combined_relabund <- combined
-x <- combined[, taxa_names(mindfulness)]
-combined_relabund[, taxa_names(mindfulness)] <- x / rowSums(x)
-
-for (i in 1:12) {
-  m <- indirect$mediator[i]
-  y <- indirect$outcome[i]
-  effect <- indirect$indirect_effect[i]
-  p[[i]] <- ggplot(combined_relabund, aes(.data[[m]], .data[[y]])) +
-    geom_point(aes(col = treatment), alpha = 0.7) +
-    geom_smooth(aes(col = treatment), se = FALSE, formula = y ~ x, method = "lm") +
-    scale_y_sqrt() +
-    labs(title = glue("IE: {round(effect, 4)}"))
-}
-
-wrap_plots(p, ncol = 4) +
-  plot_layout(guides = "collect")
+exper_rela < exper
+exper_rela@outcome <- exper@outcome / rowSums(exper@outcome)
+plot_mediators(indirect, exper_rela)
 ```
 
 ```{r}
@@ -140,6 +128,43 @@ list(
   geom_boxplot(aes(value, reorder(name, value), fill = treatment)) +
   scale_x_log10() +
   facet_grid(~ source)
+```
+
+```{r}
+contrast <- null_contrast(model, exper, "T->Y", direct_effect)
+fdr <- fdr_summary(contrast, "direct_effect", 0.05)
+ggplot(fdr, aes(direct_effect, fdr_hat)) +
+  geom_label_repel(data = filter(fdr, keep), aes(label = outcome, fill = source), max.overlaps = 25, size = 3) +
+  geom_point(aes(col = source)) +
+  ylim(-0.1, 0.2) +
+  xlim(-0.3, 0.05)
+
+ggplot(fdr, aes(direct_effect, fdr_hat)) +
+  geom_label_repel(data = filter(fdr, keep), aes(label = outcome, fill = source), max.overlaps = 50, size = 3, force = 10) +
+  geom_point(aes(col = source)) +
+  ylim(-0.1, 0.2) +
+  xlim(0.0, 0.05)
+```
+
+
+```{r}
+contrast <- null_contrast(model, exper, "M->Y", indirect_overall)
+fdr <- fdr_summary(contrast, "indirect_overall")
+
+ggplot(fdr, aes(indirect_effect, fdr_hat)) +
+  geom_point(aes(col = source)) +
+  geom_label_repel(data = filter(fdr, keep), aes(label = outcome, fill = source), force = 20, size = 3)
+```
+
+```{r, fig.width = 12, fig.height = 5}
+contrast <- null_contrast(model, exper, "M->Y", indirect_pathwise)
+fdr <- fdr_summary(contrast, "indirect_pathwise", 0.05)
+
+ggplot(fdr, aes(indirect_effect, fdr_hat)) +
+  geom_point(aes(col = source)) +
+  geom_label_repel(data = filter(fdr, keep), aes(label = outcome, fill = source), max.overlaps = 50, size = 4) +
+  ylim(-0.1, 0.3) +
+  facet_wrap(~ mediator)
 ```
 
 ### Random Forest Model

@@ -41,14 +41,16 @@ filter_mean <- function(x, threshold = 4) {
 }
 
 simplify_tax_names <- function(x) {
-  colnames(x) <- str_extract(colnames(x), "g__[A-z]+") |>
-    str_replace("__", "_")
+  colnames(x) <- colnames(x) |>
+    str_extract("g__.*+") |>
+    str_replace("g__", "g") |>
+    str_remove_all("[[:punct:]]")
   x
 }
 
 simplify_metab_names <- function(x) {
   colnames(x) <- colnames(x) |>
-    str_remove_all("[[:punct:|NA| ]]") |>
+    str_remove_all("[[:punct:|NA| |\\.|\\/|\\*|,]]") |>
     str_replace_all("-", "_")
   x
 }
@@ -56,30 +58,30 @@ simplify_metab_names <- function(x) {
 
 ```{r}
 taxa <- clr(taxa) |>
-  filter_mean() |>
+  filter_mean(threshold = 4) |>
   simplify_tax_names()
 
 metabolites <- log(1 + metabolites) |>
-  filter_mean(threshold = 3) |>
+  filter_mean(threshold = 9) |>
   simplify_metab_names()
   
 combined <- metabolites |>
-  bind_cols(taxa) |>
-  bind_cols(metadata) |>
+  bind_cols(taxa, metadata) |>
   mutate(treatment = ifelse(Study.Group == "Control", "control", "treatment")) |>
   as_tibble()
 
 exper <- mediation_data(
   combined, 
-  colnames(metabolites)[1:20], 
+  colnames(metabolites),
   "treatment",
-  colnames(taxa)[1:20]
+  colnames(taxa)
 )
 ```
+
 ### Lasso Approach
 
 ```{r}
-model <- multimedia(exper, glmnet_model(lambda = c(0.01, 0.001))) |>
+model <- multimedia(exper, glmnet_model(lambda = c(0.1, 0.01), nfolds = 3)) |>
   estimate(exper)
 ```
 
@@ -93,44 +95,27 @@ direct <- direct_effect(model, exper) |>
 combined |>
   select(any_of(direct$outcome), treatment) |>
   pivot_longer(-treatment, names_to = "feature") |>
-  mutate(feature = factor(feature, levels = direct$outcome)) |>
+  mutate(feature = factor(feature, levels = rev(direct$outcome))) |>
   ggplot() +
   geom_boxplot(aes(value, feature, fill = treatment))
 ```
-
 
 ```{r}
 indirect_sorted <- indirect_pathwise(model, exper) |>
   group_by(outcome, mediator) |>
   summarise(indirect_effect = mean(indirect_effect)) |>
-  filter(abs(indirect_effect) > 0.26) |>
+  slice_max(abs(indirect_effect), n = 12) |>
   arrange(mediator, indirect_effect)
 ```
 
 ```{r, fig.width = 12, fig.height = 9}
-p <- list()
-for (i in seq_len(nrow(indirect_sorted))) { 
-  m <- indirect_sorted$mediator[i]
-  y <- indirect_sorted$outcome[i]
-  p[[i]] <- ggplot(combined) +
-    geom_point(
-      aes(.data[[m]], .data[[y]], col = treatment),
-      position = position_jitter(h = 0.5)
-    ) +
-    labs(title = glue("IE = {round(indirect_sorted$indirect_effect[i], 2)}"))
-}
-
-wrap_plots(p, ncol = 5) +
-  plot_layout(guides = "collect")
+plot_mediators(indirect_sorted, exper)
 ```
-
 
 ```{r}
 altered <- model |>
-  nullify("T->M") |>
+  nullify("T->Y") |>
   estimate(exper)
-
-altered
 
 profile <- setup_profile(model, exper@treatments, exper@treatments)
 samples <- list(
@@ -140,13 +125,32 @@ samples <- list(
 ) |>
   bind_rows(.id = "source") |>
   bind_cols(treatment = rep(exper@treatments$treatment, 3)) |>
-  pivot_longer(starts_with("g_"))
+  pivot_longer(starts_with("g"))
 
 ggplot(samples) +
   geom_boxplot(aes(value, reorder(name, value), fill = treatment)) +
   facet_wrap(~ source)
 ```
 
+```{r}
+inferences <- bind_rows(
+  direct = bootstrap(model, exper, direct_effect) |>
+    rename(effect = direct_effect),
+  indirect = bootstrap(model, exper, indirect_overall) |>
+    rename(effect = indirect_effect),
+  .id = "path" 
+)
+
+inferences |>
+  group_by(path, outcome) |>
+  summarise(
+    mean = mean(effect),
+    lower = quantile(effect, 0.025), 
+    upper = quantile(effect, 0.0975)
+  ) |>
+  group_by(path) |>
+  slice_max(abs(mean), n = 10)
+```
 ### Random Forest Approach
 
 ```{r}
@@ -160,6 +164,18 @@ indirect_sorted <- indirect_pathwise(model, exper) |>
   arrange(mediator, indirect_effect)
 ```
 
+```{r}
+model <- multimedia(exper, rf_model(num.trees = 100))
+stats <- bootstrap(model, exper)
+
+stats |> filter(outcome %in% c("C18_eg_Clser_0072", "C18_eg_Clser_0018", "C18_eg_Clser_0121")) |> ggplot() + geom_histogram(aes(direct_effect)) + facet_wrap(~ outcome)
+
+altered <- nullify(model, "T->Y")
+reference_null <- bootstrap(altered, exper)
+de <- direct_effect(estimate(model, exper), exper)
+de |>
+  arrange(-abs(direct_effect))
+```
 
 ### Zero-Inflated Gaussian Approach
 
@@ -180,31 +196,15 @@ model <- multimedia(
 
 ```{r}
 indirect <- indirect_pathwise(model)
-
 indirect_sorted <- indirect |>
   group_by(outcome, mediator) |>
   summarise(indirect_effect = mean(indirect_effect)) |>
-  group_by(outcome) |>
-  slice_max(abs(indirect_effect), n = 1) |>
-  ungroup() |>
-  slice_max(abs(indirect_effect), n = 10)
+  arrange(-abs(indirect_effect))
 ```
 
 ```{r, fig.width = 12, fig.height = 9}
-p <- list()
-for (i in seq_len(nrow(indirect_sorted))) { 
-  m <- indirect_sorted$mediator[i]
-  y <- indirect_sorted$outcome[i]
-  p[[i]] <- ggplot(combined) +
-    geom_point(
-      aes(.data[[m]], .data[[y]], col = treatment),
-      position = position_jitter(h = 0.5)
-    ) +
-    labs(title = glue("IE = {round(indirect_sorted$indirect_effect[i], 2)}"))
-}
-
-wrap_plots(p, ncol = 5) +
-  plot_layout(guides = "collect")
+plot_mediators(indirect_sorted, exper)
+plot_mediators(indirect_sorted[12:24], exper)
 ```
 
 ```{r}
