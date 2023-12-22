@@ -22,16 +22,23 @@ setMethod("sample", "multimedia", function(
 
   # sample outcome given everything else
   outcomes <- list()
+  nm <- names(profile@t_outcome)
   for (i in seq_along(profile@t_outcome)) {
-    outcomes[[i]] <- bind_cols(
+    outcomes[[nm[i]]] <- bind_cols(
       pretreatment,
       profile@t_outcome[[i]],
       mediators
     ) |>
       x@outcome@sampler(x@outcome@estimates, newdata = _, indices = i)
   }
+  outcomes <- bind_cols(outcomes)
 
-  list(mediators = mediators, outcomes = bind_cols(outcomes))
+  new("mediation_data",
+    outcomes = outcomes,
+    mediators = mediators,
+    treatments = profile@t_outcome[[1]],
+    pretreatments = pretreatment
+  )
 })
 
 predict_across <- function(object, newdata, index = 1) {
