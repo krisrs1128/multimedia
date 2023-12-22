@@ -32,10 +32,9 @@ direct_effect <- function(model, exper = NULL, t1 = 1, t2 = 2) {
 
   result <- list()
   t_ <- model@treatments
-
   for (i in seq_len(nrow(t_))) {
-    profile1 <- setup_profile(model, t_[i, ], model@treatments[t1, ])
-    profile2 <- setup_profile(model, t_[i, ], model@treatments[t2, ])
+    profile1 <- setup_profile(model, t_[i, ], t_[t1, ])
+    profile2 <- setup_profile(model, t_[i, ], t_[t2, ])
 
     y_hat <- contrast_predictions(
       model,
@@ -78,8 +77,8 @@ indirect_overall <- function(model, exper = NULL, t1 = 1, t2 = 2) {
   t_ <- model@treatments
   result <- list()
   for (i in seq_len(nrow(t_))) {
-    profile1 <- setup_profile(model, model@treatments[t1, ], t_[i, ])
-    profile2 <- setup_profile(model, model@treatments[t2, ], t_[i, ])
+    profile1 <- setup_profile(model, t_[t1, ], t_[i, ])
+    profile2 <- setup_profile(model, t_[t2, ], t_[i, ])
 
     y_hat <- contrast_predictions(
       model,
@@ -126,11 +125,11 @@ indirect_pathwise <- function(model, exper = NULL, t1 = 1, t2 = 2) {
   t_ <- model@treatments
   result <- list()
   for (i in seq_len(nrow(t_))) {
-    profile2 <- setup_profile(model, model@treatments[t2, ], t_[i, ])
+    profile2 <- setup_profile(model, t_[t2, ], t_[i, ])
 
     for (j in seq_along(m)) {
       profile1 <- profile2
-      profile1@t_mediator[[j]] <- model@treatments[t1, ]
+      profile1@t_mediator[[j]] <- t_[t1, ]
 
       y_hat <- contrast_predictions(
         model,
