@@ -1,0 +1,6 @@
+inst/doc
+.Rproj.user
+.Rbuildignore
+.Rhistory
+*.Rproj
+vignettes/.gitignore
