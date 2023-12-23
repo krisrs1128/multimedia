@@ -10,26 +10,71 @@ vignette: >
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE, 
+  fig.align = "center",
+  collapse = TRUE,
+  comment = "#>",
   warning = FALSE,
   message = FALSE, 
-  comment = "#>",
-  dev.args = list(bg = "transparent")
+  eval = TRUE,
+  cache = FALSE,
+  dev.args = list(bg = "transparent"),
+  out.width = 600
 )
 
-#knitr::knit_hooks$set(output = multimedia::ansi_aware_handler)
+knitr::knit_hooks$set(output = multimedia::ansi_aware_handler)
 options(crayon.enabled = TRUE)
+
+library(tidyverse)
+options(
+  ggplot2.discrete.colour = c("#9491D9", "#F24405", "#3F8C61",  "#8C2E62", "#F2B705", "#11A0D9"),
+  ggplot2.discrete.fill = c("#9491D9", "#F24405", "#3F8C61", "#8C2E62", "#F2B705", "#11A0D9"),
+  ggplot2.continuous.colour = function(...) scale_color_distiller(palette = "Spectral", ...),
+  ggplot2.continuous.fill = function(...) scale_fill_distiller(palette = "Spectral", ...)
+)
+
+th <- theme_classic() +
+  theme(
+    panel.background = element_rect(fill="transparent"),
+    strip.background = element_rect(fill="transparent"),
+    plot.background = element_rect(fill="transparent", color=NA),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    legend.background = element_rect(fill="transparent"),
+    legend.box.background = element_rect(fill="transparent"),
+    legend.position = "bottom"
+  )
+
+theme_set(th)
 ```
 
-```{r setup}
+```{r libraries}
 library(multimedia)
 library(tidyverse)
 library(ggraph)
-
-exper <- mediation_data(demo_joy(), "PHQ", "treatment", starts_with("ASV"))
 ```
 
-### Specification
+This vignette gives a quick introduction to the `multimedia` package using a
+simulated dataset that is supposed to look a little like the BeWell data. The
+basic question is -- we know that meditation can reduce depression and anxiety
+symptoms, is it possible that microbiome changes might be playing a role? In the
+language of mediation analysis, does the microbiome mediate changes in PHQ
+scores?
+
+```{r example_data}
+demo_joy()
+```
+
+For mediation analysis, we'll want to distinguish between the different variable
+types. This data structures takes care of that. Notice that we can specify
+groups using tidyselect-style notation.
+
+```{r setup}
+exper <- mediation_data(demo_joy(), "PHQ", "treatment", starts_with("ASV"))
+exper
+```
+
+This is the main estimation function. By default, we fit a separate linear
+regression model for each mediation and outcome variable.
 
 ```{r}
 model <- multimedia(exper) |>
@@ -38,113 +83,88 @@ model <- multimedia(exper) |>
 model
 ```
 
+The `edges` slot tracks all the variable relationships.
+
 ```{r}
 ggraph(model@edges) +
   geom_edge_link(arrow = arrow()) +
   geom_node_label(aes(label = name, fill = node_type))
 ```
 
-### Estimation
+We can look at the estimated mediation and outcome models. (Perhaps we should
+write simpler accessors?)
 
 ```{r}
-model <- estimate(model, exper)
-model@outcome@estimates
 model@mediation@estimates
+model@outcome@estimates
 ```
 
-Sample the full model at original treatment.
+Now that we've coupled the mediation and outcome models, we can propogate
+predictions and samples through them. That is, we can define certain
+configurations of the treatment (and pretreatments, if we have them) and then
+use the fitted models to simulate new mediation and outcome samples. By default,
+it will sample at the template data that was used to fit the model, just like
+the `predict` method for `lm`.
 
 ```{r}
 sample(model)
 predict(model)
 ```
 
-Sample at new mediator and outcome treatments. This assumes the same treatment
-applies to all mediators and outcomes.
+Things get more interesting when we sample at new treatment and pretreatment
+configurations. We need to be careful with our accounting, because we want the
+flexibility to provide different combinations of treatments to different sets of
+edges. For example, we may want to imagine that the edge for one particular
+mediator was set to treatment while all others were left at control. The example
+below has one sample with this kind of configuration and three others that keep
+all edges at control.
 
 ```{r}
-levels <- c("Treatment", "Control")
-t1 <- tibble(treatment = factor(rep(levels[1], 3), levels = levels))
-t2 <- tibble(treatment = factor(rep(levels[2], 3), levels = levels))
-profile <- setup_profile(model, t1, t2)
-sample(model, profile)
-```
-
-Here is a generalization that allows different treatments for individual
-mediators and outcomes.
-
-```{r}
-profile@t_mediator[["ASV1"]]$treatment <- "Control"
+t_mediator <- model@treatments[c(2, rep(1, 3)), ]
+t_outcome <- model@treatments[rep(1, 4), ]
+profile <- setup_profile(model, t_mediator, t_outcome)
 sample(model, profile = profile)
 predict(model, profile = profile)
 ```
 
-We can also contrast different samples.
+We can also contrast the predictions and samples under different profiles.
 
 ```{r}
-contrast_predictions(model, profile, profile)
-contrast_samples(model, profile, profile)
+profile_control <- setup_profile(model, model@treatments[rep(1, 4), ], t_outcome)
+contrast_predictions(model, profile, profile_control)
+contrast_samples(model, profile, profile_control)
 ```
 
+# Effect Estimates
 
-### Effects
-
-This covers the case of one treatment with two levels. Will need to test a few
-more general cases:
-
-* One treatment, many categorical levels.
-* Multiple treatments, many categorical levels.
-* One treatment, continuous.
-* Multiple treatments, continuous.
+It's a small step from contrasting different configurations to asking for the
+direct and indirect treatments effects. The direct effect is defined as the
+average of $\hat{Y}\left(\hat{M}\left(t'\right), 1\right) - \hat{Y}\left(\hat{M}\left(t'\right), 0\right)$ 
+across mediator treatment effects $t'$. The hats mean that we use the predicted
+values from the mediation and outcome values. I've distinguished between
+"overall" and "pathwise" indirect effects because we're working with
+high-dimensional mediators. In the overall effect, we toggle treatment/control
+status for incoming edges to all mediators. In pathwise indirect effects, we
+toggle only the treatment going into one mediator.
 
 ```{r}
-direct_effect(model)
-indirect_overall(model)
-indirect_pathwise(model)
+direct_effect(model, exper)
+indirect_overall(model, exper)
+indirect_pathwise(model, exper)
 ```
 
-```{r}
-model <- multimedia(exper,  glmnet_model(lambda = seq(0.1, 1, 0.01))) |>
-  estimate(exper)
-
-direct_effect(model)
-indirect_overall(model)
-indirect_pathwise(model)
-```
-
-```{r}
-model <- multimedia(exper,  brms_model()) |>
-  estimate(exper)
-
-direct_effect(model)
-indirect_overall(model)
-indirect_pathwise(model)
-```
-
-Here is an example using the logistic normal multinomial as the outcome model.
+So far, we've done everything using just linear models. We could actually have
+computed all these effects just by looking at parameter estimates. What's nice
+is that we can plug in many differnet kinds of mediation or outcome models. The
+package already includes interfaces to the logistic-normal multinomial, sparse
+regression with glmnet, random forests with ranger, and bayesian models with
+brms. It's also not too difficult to extend to new model types (we should add a
+vignette). Here's an example of everything we did above but for glmnet. The fact
+that all the estimates are 0 is a good thing -- there are no real effects in the
+simulated data.
 
 ```{r}
-exper <- mediation_data(demo_police(), starts_with("ASV"), "treatment", starts_with("Diet"))
-model <- multimedia(exper, lnm_model()) |>
-  estimate(exper)
-```
-
-```{r}
-profile <- setup_profile(model, t1, t2)
-y_star <- sample(model, profile, depth = 100)
-p_hat <- predict(model, profile)
-```
-
-The direct and indirect effects are on a relative abundance scale.
-
-```{r}
-direct_effect(model)
-indirect_overall(model)
-indirect_pathwise(model)
-```
-
-```{r}
-model <- multimedia(exper, rf_model()) |>
+model <- multimedia(exper,  glmnet_model(lambda = .1)) |>
   estimate(exper)
 
 direct_effect(model, exper)
@@ -152,3 +172,30 @@ indirect_overall(model, exper)
 indirect_pathwise(model, exper)
 ```
 
+# Inference
+
+Effect estimates are rarely enough on their own. We need some uncertainty
+assessments to set appropriate expectations. The most straightforward approach
+is to use the bootstrap.  Each element in `funs` will get its own data.frame
+with the bootstrap distribution for that estimator.
+
+```{r}
+funs <- list(direct_effect = direct_effect)
+bootstrap(model, exper, funs, B = 10)
+```
+
+We can also generate synthetic nulls to calibrate selection sets. The third
+argument says which set of edges we want to remove under the null. In this case
+we will generate synthetic null data where there is known to be no relationship
+between the mediators and outcome. The fourth argument says which effect
+estimates we should evaluate. We then fit the full model on both the original
+and the synthetic null data. We can define false discovery rate thresholds by
+ranking estimates across the two data sets. If we see many null effects mixed in
+among the strong effects in real data, we know to trust only the very strongest
+real effects (if any).
+
+```{r}
+contrast <- null_contrast(model, exper, "M->Y", indirect_pathwise)
+fdr <- fdr_summary(contrast, "indirect_pathwise", 0.05)
+fdr
+```
