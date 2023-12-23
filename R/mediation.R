@@ -21,6 +21,7 @@ setClass(
 )
 
 #' @importFrom purrr map
+#' @export
 bind_mediation <- function(exper) {
   map_dfc(slotNames(exper), ~ slot(exper, .))
 }
@@ -110,7 +111,7 @@ from_summarized_experiment <- function(exper, outcomes, treatments, mediators,
 }
 
 #' @importFrom dplyr bind_cols select
-from_data_frame <- function(df, outcomes, treatments, mediators, 
+from_data_frame <- function(df, outcomes, treatments, mediators,
                             pretreatments) {
   vars <- list(
     outcomes = quote(outcomes),
@@ -124,6 +125,10 @@ from_data_frame <- function(df, outcomes, treatments, mediators,
     result[[names(vars)[i]]] <- select(df, eval(vars[[i]])) |>
       mutate(across(where(is.character), as.factor)) |>
       as_tibble(.name_repair = "minimal")
+
+    if (ncol(result[[names(vars)[i]]]) == 0) {
+      result[[names(vars)[i]]] <- NULL
+    }
   }
 
   do.call(\(...) new("mediation_data", ...), result)
@@ -166,12 +171,13 @@ setMethod(nrow, "mediation_data", function(x) {
 })
 
 #' @export
-setMethod("[", "mediation_data",
-    function(x, i, j, ..., drop=TRUE) {
-      x@mediators <- x@mediators[i, ]
-      x@outcomes <- x@outcomes[i, ]
-      x@treatments <- x@treatments[i, ]
-      x@pretreatments <- x@pretreatments[i, ]
-      x
-    }
+setMethod(
+  "[", "mediation_data",
+  function(x, i, j, ..., drop = TRUE) {
+    x@mediators <- x@mediators[i, ]
+    x@outcomes <- x@outcomes[i, ]
+    x@treatments <- x@treatments[i, ]
+    x@pretreatments <- x@pretreatments[i, ]
+    x
+  }
 )
