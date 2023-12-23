@@ -9,6 +9,9 @@ contrast_predictions <- function(model, profile1, profile2, ...) {
 contrast_samples <- function(model, profile1, profile2, ...) {
   y1 <- sample(model, profile = profile1, ...)
   y2 <- sample(model, profile = profile2, ...)
+
+  y1 <- list(mediators = y1@mediators, outcomes = y1@outcomes)
+  y2 <- list(mediators = y2@mediators, outcomes = y2@outcomes)
   path_difference(y1, y2)
 }
 

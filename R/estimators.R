@@ -135,7 +135,7 @@ glmnet_model_params <- function(...) {
   modifyList(defaults, list(...))
 }
 
-#' @importFrom glmnetUtils cv.glmnet
+#' @importFrom glmnetUtils glmnet
 #' @export
 glmnet_model <- function(...) {
   params <- glmnet_model_params(...)
@@ -152,7 +152,7 @@ glmnet_model <- function(...) {
 }
 
 #' @export
-glmnet_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
+glmnet_sampler <- function(fits, newdata = NULL, indices = NULL, lambda_ix = 1, ...) {
   if (is.null(indices)) {
     indices <- seq_along(fits)
   }
@@ -161,7 +161,7 @@ glmnet_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
   y_hats <- list()
   for (i in indices) {
     sigma <- deviance(fits[[i]]) / fits[[i]]$nobs
-    y_ <- predict(fits[[i]], newdata = newdata, ...)[, "lambda.1se"]
+    y_ <- predict(fits[[i]], newdata = newdata, ...)[, lambda_ix]
     y_hats[[nm[i]]] <- y_ + rnorm(length(y_), 0, sigma)
   }
 
