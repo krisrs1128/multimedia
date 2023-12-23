@@ -58,7 +58,7 @@ bootstrap <- function(model, exper, fs = NULL, B = 100) {
     pb <- progress_bar$new(total = B, format = "[:bar] :current/:total ETA: :eta")
     for (b in seq_len(B)) {
       exper_b <- exper[sample(nrow(exper), nrow(exper), replace = TRUE), ]
-      model_b <- estimate(model, exper_b)
+      model_b <- suppressMessages(estimate(model, exper_b))
       stats[[nf]][[b]] <- fs[[f]](model_b, exper_b)
       pb$tick()
     }
@@ -94,6 +94,7 @@ null_contrast <- function(model, exper, nullification = "T->Y",
   )
 }
 
+#' @export
 fdr_summary <- function(contrast, effect = "indirect_overall", q_value = 0.15) {
   if (effect == "indirect_overall") {
     fdr <- contrast |>
