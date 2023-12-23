@@ -23,6 +23,7 @@ library(tidyverse)
 library(vroom)
 library(multimedia)
 theme_set(theme_bw())
+set.seed(20231222)
 ```
 
 ### Load and Preprocess Data
@@ -69,7 +70,7 @@ taxa <- clr(taxa) |>
   simplify_tax_names()
 
 metabolites <- log(1 + metabolites) |>
-  filter_mean(threshold = 9) |>
+  filter_mean(threshold = 7) |>
   simplify_metab_names()
   
 combined <- metabolites |>
@@ -90,7 +91,7 @@ exper <- mediation_data(
 First let's fit sparse regression models for each outcome.
 
 ```{r}
-model <- multimedia(exper, glmnet_model(lambda = c(0.1, 0.01))) |>
+model <- multimedia(exper, glmnet_model(lambda = 0.1)) |>
   estimate(exper)
 ```
 
@@ -98,7 +99,7 @@ We can have different direct effects depending on the setting of the mediators.
 Here we'll average over all mediator settings and plot the features with the
 largest direct effects.
 
-```{r}
+```{r, eval = FALSE}
 direct <- direct_effect(model, exper) |>
   group_by(outcome) |>
   summarise(direct_effect = mean(direct_effect)) |>
@@ -119,11 +120,13 @@ effects for individual mediator-outcome pairs. Here we'll average over the
 direct treatment settings
 
 ```{r}
-indirect_sorted <- indirect_pathwise(model, exper) |>
-  group_by(outcome, mediator) |>
+indirect <- indirect_pathwise(model, exper)
+indirect_sorted <- indirect |>
+  group_by(outcome, mediator ) |>
   summarise(indirect_effect = mean(indirect_effect)) |>
+  ungroup() |>
   slice_max(abs(indirect_effect), n = 12) |>
-  arrange(mediator, indirect_effect)
+  arrange(indirect_effect)
 ```
 
 We have a small helper for visualizing the indirect effects.
@@ -164,18 +167,19 @@ interpret the full bootstrap distributions, though. Effects that have large
 nonzero components have more evidence of being real.
 
 ```{r}
-fs <- c(direct = direct_effect, indirect = indirect_effect)
-inferences <- bootstrap(model, exper, fs)
+fs <- list(direct = direct_effect, indirect = indirect_overall)
+inference <- bootstrap(model, exper, fs)
+ggplot(inference$indirect) +
+  stat_slabinterval(
+    aes(indirect_effect, reorder(outcome, indirect_effect, median)),
+    .width = c(.66, .95)
+  ) 
 
-inferences |>
-  group_by(path, outcome) |>
-  summarise(
-    mean = mean(effect),
-    lower = quantile(effect, 0.025), 
-    upper = quantile(effect, 0.0975)
-  ) |>
-  group_by(path) |>
-  slice_max(abs(mean), n = 10)
+ggplot(inference$direct) +
+  stat_pointinterval(
+    aes(direct_effect, reorder(outcome, direct_effect, median)),
+    .width = c(.66, .95)
+  )
 ```
 
 ### Zero-Inflated Gaussian Approach
@@ -188,19 +192,20 @@ then applying a BRMS model.
 ```{r}
 exper2 <- exper
 exper2@outcomes <- exp(exper2@outcomes) - 1
+exper2@mediators <- exper2@mediators[, 1:15]
+exper2@outcomes <- exper2@outcomes[, 1:40]
 model <- multimedia(
   exper2,
-  brms_model(family = hurdle_lognormal(), warmup = 500, iter = 1500)
+  brms_model(family = hurdle_lognormal(), warmup = 500, iter = 1500, refresh = 0)
   )|>
   estimate(exper2)
 ```
 
 Let's again get pathwise indirect effects. This is relatively slow, since
-prediction in BRMS models is a little slow, and we need to do predictions across
-all outcomes and when substituting all mediators.
+prediction in BRMS models takes time, and we need to do predictions across all
+outcomes and when substituting all mediators.
 
 ```{r}
-source("load.R")
 indirect <- indirect_pathwise(model)
 indirect_sorted <- indirect |>
   group_by(outcome, mediator) |>
@@ -209,14 +214,24 @@ indirect_sorted <- indirect |>
 ```
 
 ```{r, fig.width = 12, fig.height = 9}
-plot_mediators(indirect_sorted, exper)
-plot_mediators(indirect_sorted[12:24], exper)
+plot_mediators(indirect_sorted, exper2)
 ```
 
-We can also just look at direct effects.
+Let's see how the simulated data look in the same scatterplots.
+
+```{r, fig.width = 12, fig.height = 9}
+profile <- setup_profile(model, exper@treatments, exper@treatments)
+samples <- sample(model, profile = profile, pretreatment = exper@pretreatments)
+colnames(samples@outcomes) <- colnames(exper2@outcomes)
+p <- plot_mediators(indirect_sorted, samples)
+p$patches[[1]] <- map(p$patches[[1]], ~ . + ylim(0, 1e5))
+p
+```
+
+We can also look at direct effects.
 
 ```{r}
-direct <- direct_effect(model)
+direct <- direct_effect(model, exper)
 direct_sorted <- direct |>
   group_by(outcome) |>
   summarise(direct_effect = mean(direct_effect)) |>
@@ -226,7 +241,7 @@ direct_sorted <- direct |>
 combined |>
   select(any_of(direct_sorted$outcome), treatment) |>
   pivot_longer(-treatment, names_to = "feature") |>
-  mutate(feature = factor(feature, levels = direct_sorted$outcome)) |>
+  mutate(feature = factor(feature, levels = rev(direct_sorted$outcome))) |>
   ggplot() +
   geom_boxplot(aes(value, feature, fill = treatment))
 ```

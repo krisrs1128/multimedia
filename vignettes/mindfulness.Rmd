@@ -14,10 +14,11 @@ knitr::opts_chunk$set(
 )
 ```
 
-Lots of libraries.
+Some libraries.
 
 ```{r setup}
 library(compositions)
+library(ggdist)
 library(ggrepel)
 library(tidyverse)
 library(multimedia)
@@ -25,7 +26,8 @@ data(mindfulness)
 ```
 
 This package works needs a `mediation_data` object to organize the pretreatment,
-treatment, mediator, and outcome variables.
+treatment, mediator, and outcome variables. Notice that we're including
+subject-level effects, since this was a longitudinal study.
 
 ```{r}
 combined <- bind_cols(
@@ -41,7 +43,7 @@ combined <- bind_cols(
 exper <- mediation_data(
   combined,
   taxa_names(mindfulness),
-  "treatment", 
+  "treatment",
   starts_with("mediator"),
   "subject"
 )
@@ -53,6 +55,10 @@ logistic-normal outcome model.
 ```{r}
 model <- multimedia(exper, lnm_model()) |>
   estimate(exper)
+```
+```{r}
+new_assign <- exper@treatments[sample(nrow(exper@treatments)), ]
+profile <- setup_profile(model, new_assign, new_assign)
 ```
 
 Let's look at direct effects.
@@ -77,8 +83,8 @@ We can interpret these indirect effects on the relative abundance scale.
 
 ```{r, fig.width = 12, fig.height = 6}
 p <- list()
-exper_rela < exper
-exper_rela@outcome <- exper@outcome / rowSums(exper@outcome)
+exper_rela <- exper
+exper_rela@outcomes <- exper@outcomes / rowSums(exper@outcomes)
 plot_mediators(indirect, exper_rela)
 ```
 
@@ -110,8 +116,8 @@ m2 <- sample(altered, profile = profile, pretreatment = exper@pretreatments)
 
 list(
   real = bind_cols(exper@treatments, exper@mediators, exper@pretreatments),
-  original = bind_cols(new_assign, m1$mediators, exper@pretreatments),
-  altered = bind_cols(new_assign, m2$mediators, exper@pretreatments)
+  original = bind_cols(new_assign, m1@mediators, exper@pretreatments),
+  altered = bind_cols(new_assign, m2@mediators, exper@pretreatments)
 ) |>
   bind_rows(.id = "source") |>
   pivot_longer(starts_with("mediator"), names_to = "mediator") |>
@@ -129,26 +135,30 @@ altered_direct <- model |>
 
 y1 <- sample(model, profile = profile, pretreatment = exper@pretreatments)
 y2 <- sample(altered_direct, profile = profile, pretreatment = exper@pretreatments)
-names(y1$outcomes) <- names(exper@outcomes)
-names(y2$outcomes) <- names(exper@outcomes)
 
 list(
   original = bind_cols(exper@treatments, exper@outcomes / rowSums(exper@outcomes)),
-  fitted = bind_cols(exper@treatments, y1$outcomes / rowSums(y1$outcomes)),
-  altered = bind_cols(exper@treatments, y2$outcomes / rowSums(y2$outcomes))
+  fitted = bind_cols(profile@t_outcome[[1]], y1@outcomes / rowSums(y1@outcomes)),
+  altered = bind_cols(profile@t_outcome[[1]], y2@outcomes / rowSums(y2@outcomes))
 ) |>
   bind_rows(.id = "source") |>
   pivot_longer(-source:-treatment) |>
   ggplot() +
-  geom_boxplot(aes(value, reorder(name, value), fill = treatment)) +
+  geom_boxplot(
+    aes(
+      value, reorder(name, value), 
+      fill = treatment, col = treatment
+    ),
+    alpha = 0.6
+    ) +
   scale_x_log10() +
   facet_grid(~ source)
 ```
 
 ### Synthetic Null Testing
 
-A standard approach to inference is to apply a bootstrap (this is done in the
-other notebook). A less conventional approach is to calibrate false discovery
+A standard approach to inference is to apply a bootstrap (this is done at the
+end of this note). A less conventional approach is to calibrate false discovery
 rate thresholds using synthetic null data. To test whether a particular effect
 exists, the idea:
 
@@ -202,32 +212,71 @@ just apply a centered log ratio to the outcome profiles and then use random
 forests for the outcome?
 
 ```{r}
-exper@outcomes <- clr(exper@outcomes)
-model <- multimedia(exper, rf_model()) |>
-  estimate(exper)
-
+exper_clr <- exper
+exper_clr@outcomes <- clr(exper@outcomes / rowSums(exper@outcomes))
+model <- multimedia(exper_clr, rf_model(num.trees = 50)) |>
+  estimate(exper_clr)
 ```
 
 Here are direct effects.
 
-```{r}
-direct <- direct_effect(model, exper)
-direct |>
+```{r, fig.height = 5, fig.width = 9}
+direct <- direct_effect(model, exper_clr)
+direct_sorted <- direct |>
   group_by(outcome, contrast) |>
   summarise(direct_effect = mean(direct_effect)) |>
-  arrange(-abs(direct_effect))
+  arrange(-direct_effect)
 
-ggplot(combined) +
-  geom_boxplot(aes(treatment, Akkermansia))
+bind_mediation(exper_clr) |>
+  select(treatment, taxa_names(mindfulness)) |>
+  pivot_longer(-treatment) |>
+  left_join(direct_sorted, by = c("name" = "outcome")) |>
+  ggplot() +
+  stat_pointinterval(
+    aes(
+      reorder(name, value, median), value,
+      shape = treatment, col = treatment,
+      point_size = abs(direct_effect)
+    ),
+    alpha = 0.6
+  ) +
+  scale_size(range = c(0.1, 4)) +
+  scale_linewidth(range = c(0.1, 5)) +
+  guides(color = guide_legend(override.aes = list(alpha = 1, size = 10))) +
+  labs(x = "Taxon", y = expression("CLR("~r[i]~")"), color = "Status", shape = "Status", point_size = "Abs. Effect") +
+  facet_grid(~ direct_effect > 0., scales = "free", space = "free") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
 ```
 
 These are the indirect effects.
 
-```{r}
-indirect_sorted <- indirect_pathwise(model, exper) |>
-  group_by(outcome, mediator, contrst) |>
+```{r fig.width = 11, fig.height = 5}
+indirect_sorted <- indirect_pathwise(model, exper_clr) |>
+  group_by(outcome, mediator, contrast) |>
   summarise(indirect_effect = mean(indirect_effect)) |>
   arrange(-abs(indirect_effect))
 
-plot_mediators(indirect_sorted)
+plot_mediators(indirect_sorted, exper_clr)
 ```
+
+We can bootstrap the model and look at the bootstrap confidence intervals.
+
+```{r}
+fs <- list(direct = direct_effect, indirect = indirect_overall)
+inference <- bootstrap(model, exper_clr, fs)
+```
+
+```{r}
+ggplot(inference$indirect) +
+  stat_slabinterval(
+    aes(indirect_effect, reorder(outcome, indirect_effect, median)),
+    .width = c(.66, .95)
+  ) 
+
+ggplot(inference$direct) +
+  stat_pointinterval(
+    aes(direct_effect, reorder(outcome, direct_effect, median)),
+    .width = c(.66, .95)
+  )
+```
+
