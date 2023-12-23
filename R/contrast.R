@@ -134,12 +134,15 @@ indirect_pathwise <- function(model, exper = NULL, t1 = 1, t2 = 2) {
     for (j in seq_along(m)) {
       profile1 <- profile2
       profile1@t_mediator[[j]] <- t_[t1, ]
+      #if (m[j] == "gVeillonella") {
+      #  browser()
+      #}
       y_hat_1 <- predict(model, profile1, pretreatment = pretreatment)
-      y_hat <- colMeans(path_difference(y_hat_1, y_hat_2)[["outcomes"]])
+      y_diff <- colMeans(path_difference(y_hat_1, y_hat_2)[["outcomes"]])
 
       result[[k]] <- tibble(
-        outcome = names(y_hat),
-        indirect_effect = y_hat,
+        outcome = names(y_diff),
+        indirect_effect = y_diff,
         mediator = m[j],
         contrast = parse_name(t_, t1, t2),
         direct_setting = t_[[1]][i]
