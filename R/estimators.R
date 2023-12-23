@@ -25,9 +25,11 @@ parallelize <- function(f) {
     models <- list()
 
     ys <- lhs.vars(formula)
+    pb <- progress_bar$new(total = length(ys), format = "[:bar] :current/:total ETA: :eta")
     for (j in seq_along(ys)) {
       fmla <- sub_formula(formula, ys[j])
       models[[ys[j]]] <- f(fmla, ...)
+      pb$tick()
     }
     models
   }
@@ -129,7 +131,7 @@ lm_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
 }
 
 glmnet_model_params <- function(...) {
-  defaults <- list(nfolds = 3)
+  defaults <- list(intercept = FALSE, lambda = 0.01)
   modifyList(defaults, list(...))
 }
 
@@ -139,7 +141,7 @@ glmnet_model <- function(...) {
   params <- glmnet_model_params(...)
   new(
     "model",
-    estimator = parallelize(\(fmla, data) inject(cv.glmnet(fmla, data, !!!params))),
+    estimator = parallelize(\(fmla, data) inject(glmnet(fmla, data, !!!params))),
     estimates = NULL,
     sampler = glmnet_sampler,
     predictor = \(object, ...) {
@@ -158,8 +160,7 @@ glmnet_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
   nm <- names(fits)
   y_hats <- list()
   for (i in indices) {
-    lambda <- which(fits[[i]]$lambda == fits[[i]]$lambda.1se)
-    sigma <- deviance(fits[[i]]$glmnet.fit)[lambda] / fits[[i]]$glmnet.fit$nobs
+    sigma <- deviance(fits[[i]]) / fits[[i]]$nobs
     y_ <- predict(fits[[i]], newdata = newdata, ...)[, "lambda.1se"]
     y_hats[[nm[i]]] <- y_ + rnorm(length(y_), 0, sigma)
   }
@@ -168,7 +169,7 @@ glmnet_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
 }
 
 brms_model_params <- function(...) {
-  defaults <- list(chains = 1)
+  defaults <- list(chains = 1, refresh = 0, silent = 0)
   modifyList(defaults, list(...))
 }
 
@@ -234,13 +235,15 @@ lnm_model <- function() {
   )
 }
 
-#' @export
+#' @importFrom miniLNM sample
+#' @importFrom formula.tools lhs.vars
 lnm_sampler <- function(fit, newdata = NULL, indices = NULL, ...) {
-  y_star <- sample(fit, newdata = newdata, ...)
+  nm <- lhs.vars(fit@formula)
   if (is.null(indices)) {
-    return(y_star)
+    indices <- seq_along(nm)
   }
-  y_star[, indices]
+  
+  sample(fit, newdata = newdata, ...)[, nm[indices], drop = FALSE]
 }
 
 #' Random forest model
