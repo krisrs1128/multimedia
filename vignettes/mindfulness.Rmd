@@ -1,69 +1,118 @@
 ---
-title: "Mindfulness"
-output: rmarkdown::html_vignette
+title: "The Mindfulness Study"
+output: rmdformats::readthedown
+css: custom.css
 vignette: >
   %\VignetteIndexEntry{Mindfulness}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r setup, include = FALSE}
 knitr::opts_chunk$set(
+  fig.align = "center",
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  warning = FALSE,
+  message = FALSE, 
+  eval = TRUE,
+  cache = TRUE,
+  dev.args = list(bg = "transparent"),
+  out.width = 600
 )
+
+knitr::knit_hooks$set(output = multimedia::ansi_aware_handler)
+options(crayon.enabled = TRUE)
+
+library(tidyverse)
+options(
+  ggplot2.discrete.colour = c("#9491D9", "#F24405", "#3F8C61",  "#8C2E62", "#F2B705", "#11A0D9"),
+  ggplot2.discrete.fill = c("#9491D9", "#F24405", "#3F8C61", "#8C2E62", "#F2B705", "#11A0D9"),
+  ggplot2.continuous.colour = function(...) scale_color_distiller(palette = "Spectral", ...),
+  ggplot2.continuous.fill = function(...) scale_fill_distiller(palette = "Spectral", ...)
+)
+
+th <- theme_classic() +
+  theme(
+    panel.background = element_rect(fill="transparent"),
+    strip.background = element_rect(fill="transparent"),
+    plot.background = element_rect(fill="transparent", color=NA),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    legend.background = element_rect(fill="transparent"),
+    legend.box.background = element_rect(fill="transparent"),
+    legend.position = "bottom"
+  )
+
+theme_set(th)
 ```
 
-Some libraries.
+In most microbiome mediation analysis studies, ismicrobiome composition is
+thought to mediate some outcome of interest. Sometimes, though, we might want to
+treat the microbiome as an outcome. Our motivating example here looks at the
+relationship between mindfulness and the microbiome. In this setting, we might
+imagine that mindfulness training influences behaviors (diet, sleep, exercise)
+that could then change the microbiome. Clinical surveys that gauge those
+behaviors now play the role of mediator. Alternatively, mindfulness could
+trigger neurophysiological changes that influence the microbiome in more subtle
+ways. The point of mediation analysis is to provide evidence for one or the
+other of these possibilities.
 
-```{r setup}
+```{r libraries}
 library(compositions)
 library(ggdist)
 library(ggrepel)
+library(patchwork)
+library(phyloseq)
 library(tidyverse)
 library(multimedia)
 data(mindfulness)
 ```
 
-This package works needs a `mediation_data` object to organize the pretreatment,
-treatment, mediator, and outcome variables. Notice that we're including
-subject-level effects, since this was a longitudinal study.
+This package needs a `mediation_data` object to organize the pretreatment,
+treatment, mediator, and outcome variables. `taxa_names(mindfulness)` specifies
+that we want all the taxa names to be outcome variables. We've already appended
+all the mediator variable names with the prefix "mediator," so we can specify
+them using the `starts_with` selector. We'll treat the `subject` column as
+pretreatment variables. The study tracked participants across a few timepoints,
+and we want to control for different baseline behavioral and microbiome
+profiles.
 
-```{r}
-combined <- bind_cols(
-  otu_table(mindfulness),
-  data.frame(sample_data(mindfulness))
-) |>
-  mutate(
-    treatment = ifelse(treatment == 0, "Control", "Treatment"),
-    treatment = factor(treatment, levels = c("Control", "Treatment")),
-    subject = factor(subject)
-  )
-
+```{r data}
 exper <- mediation_data(
-  combined,
+  mindfulness,
   taxa_names(mindfulness),
   "treatment",
   starts_with("mediator"),
   "subject"
 )
+
+exper
 ```
 
-This estimates a mediation model with linear treatment -> mediator effects and a
-logistic-normal outcome model.
+This block applies a logistic-normal multinomial model to the microbiome
+outcome. This is an example where the response variables are all modeled
+jointly. We'll use a ridge regression model for each of the mediators. This is a
+better choice than ordinary linear models because we have to estimate many
+subject-level parameters, and our sample size is not that large.
 
-```{r}
-model <- multimedia(exper, lnm_model()) |>
+```{r lnm}
+model <- multimedia(
+  exper, 
+  lnm_model(), 
+  glmnet_model(lambda = 0.5, alpha = 0)
+  ) |>
   estimate(exper)
 ```
-```{r}
-new_assign <- exper@treatments[sample(nrow(exper@treatments)), ]
-profile <- setup_profile(model, new_assign, new_assign)
-```
 
-Let's look at direct effects.
+# Evaluating Effects
 
-```{r}
+With this model, we can estimate direct and indirect effects. We're averaging
+over different settings of the mediator treatment variables. Since the LNM model
+outputs relative abundance profiles, all the estimated effects should be
+interpreted on a probability scale.
+
+```{r lnm_direct}
 direct <- direct_effect(model, exper)
 direct |>
   group_by(outcome) |>
@@ -71,49 +120,70 @@ direct |>
   arrange(-abs(direct_effect))
 ```
 
-Let's do the analogous exercise for the indirect effects.
+These are the indirect effects when we set mediators to the treatment setting
+one at a time.
 
-```{r}
+```{r lnm_indirect}
 indirect <- indirect_pathwise(model, exper) |>
-  arrange(-abs(indirect_effect))  |>
-  select(outcome, mediator, indirect_effect)
+  group_by(mediator, outcome) |>
+  summarise(indirect_effect = mean(indirect_effect)) |>
+  arrange(-abs(indirect_effect))
+indirect
 ```
 
-We can interpret these indirect effects on the relative abundance scale.
+`plot_mediators` visualizes the relationship between mediator and outcome
+variables. The title for each subplot is the estimated indirect effect (note
+that it's `Control` - `Treatment` in the current definition). For example, in
+the panel relating sleep disturbances and Blautia, there is a rough positive
+association between these variables. The control group has a higher number of
+sleep disturbances, which is translated into a positive indirect effect for this
+pair. The model accounts for more than these pairwise relationships, though --
+it controls for subject-level baselines and includes direct effects of treatment
+-- so these figures should be interpreted within the larger model context.
 
-```{r, fig.width = 12, fig.height = 6}
-p <- list()
+```{r mediator_plot, fig.width = 12, fig.height = 6}
 exper_rela <- exper
 exper_rela@outcomes <- exper@outcomes / rowSums(exper@outcomes)
 plot_mediators(indirect, exper_rela)
 ```
 
-### Model Alterations
+# Model Alterations
 
-A lot of hypothesis testing is built on the idea that a simple submodel might
-explain the data just as well as a full, more complicated one. Mediation
-analysis is no exception, and we have a few utilities to zero out effects of
-sets of edges from the usual mediation model. For example, the model below
-removes any effect from the treatment to the mediators.
+Hypothesis testing is built on the idea that a simple submodel might explain the
+data just as well as a full, more complicated one. In mediation analysis, we can
+zero out sets of edges to define submodels. For example, we can re-estimate a
+model that does not allow any relationship between the treatment and the
+mediators.
 
-```{r}
+```{r alteration_m}
 altered <- model |>
   nullify("T->M") |>
   estimate(exper)
 ```
 
-We can verify this by sampling a new cohort from the original and the altered
-models. Notice that I re-assigned all the treatments. This removes confounding
-between the treatment and subject level effects -- this effect doesn't exist on
-average across the population because the study was randomized, but we might
-still see associations in our finite sample.
+These modified models can be used to simulate synthetic null data that help
+contextualize the effects seen in real data. For example, we can compare
+imaginary cohort drawn from the original and the altered models. Notice that I
+re-assigned all the treatments. This removes potential confounding between the
+treatment and subject level effects -- this effect doesn't exist on average
+across the population because the study was randomized, but we want to remove
+any associations present in our finite sample.
 
-```{r fig.width = 10, fig.height = 4}
+```{r mediation_sample}
 new_assign <- exper@treatments[sample(nrow(exper@treatments)), ]
 profile <- setup_profile(model, new_assign, new_assign)
 m1 <- sample(model, profile = profile, pretreatment = exper@pretreatments)
 m2 <- sample(altered, profile = profile, pretreatment = exper@pretreatments)
+```
 
+The sampled objects above have the same class as `exper`. We can extract the
+real and simulated mediator data to see the treatment effects along those edges.
+As expected, the altered model has no systematic difference between treatment
+groups. This lends some evidence to the conclusion that mindfulness does
+influence the mediators, which was implicit in our discussion of indirect
+effects above.
+
+```{r synthetic_mediation_plot, fig.width = 10, fig.height = 4}
 list(
   real = bind_cols(exper@treatments, exper@mediators, exper@pretreatments),
   original = bind_cols(new_assign, m1@mediators, exper@pretreatments),
@@ -126,9 +196,16 @@ list(
   facet_grid(~ source)
 ```
 
-Here is the analogous alteration that removes all direct effects.
+Here is the analogous alteration that removes all direct effects. The $x$-axis
+is on a log scale, and the LNM's estimated treatment effects for rare taxa are
+not practically significant. It's interesting that even though the original data
+don't show much difference between treatment groups, the model suggests that
+there are real effects, even for the abundant taxa. It's possible that, in the
+raw boxplots, heterogeneity across subjects and mediators masks true effects,
+and the LNM is able to detect these effects by appropriately accounting for
+sources of heterogeneity.
 
-```{r, fig.width = 8, fig.height = 12}
+```{r outcome_alteration, fig.width = 8, fig.height = 12}
 altered_direct <- model |>
   nullify("T->Y") |>
   estimate(exper)
@@ -145,59 +222,64 @@ list(
   pivot_longer(-source:-treatment) |>
   ggplot() +
   geom_boxplot(
-    aes(
-      value, reorder(name, value), 
-      fill = treatment, col = treatment
-    ),
-    alpha = 0.6
-    ) +
+    aes(value, reorder(name, value), fill = treatment)
+  ) +
   scale_x_log10() +
   facet_grid(~ source)
 ```
 
-### Synthetic Null Testing
+# Synthetic Null Testing
 
 A standard approach to inference is to apply a bootstrap (this is done at the
-end of this note). A less conventional approach is to calibrate false discovery
-rate thresholds using synthetic null data. To test whether a particular effect
-exists, the idea:
+end of the vignette). An alternative, which is less common, but well-suited to
+high-dimensions is to calibrate variable selection sets using synthetic null
+data. For example, this is the intuition behind the knockoff, Clipper, and
+mirror statistic algorithms. The general recipe is:
 
-1. Fit a null model where we know a certain effect does not exist.
-1. Simulate synthetic null data from this model.
-1. Use the full model to estimate effects on this synthetic null data. The
-reference distribution of these estimated effects can be used to calibrate false
-discovery thresholds -- we just choose a detection threshold keeps the fraction
-of these negative controls at an acceptably low number.
+1. Simulate synthetic null data from a model/sampling mechanism where we know
+for certain that an effect does not exist.
+1. Use the full model to estimate effects on this synthetic null data.
+1. Define a selection rule so that the fraction of selected synthetic null
+effects is kept below an false discovery rate threshold.
 
-Here is that idea applied to evaluate direct effects.
+The synthetic null effects essentially serve as negative controls to calibrate
+inference.
 
-```{r}
+In `multimedia`, `null_contrast` estimates effects on real and synthetic null
+data, while `fdr_summary` ranks and selects features. Each point in the figure
+below is the directed effect for a single feature in either real or synthetic
+data. We rank features according to their absolute effect size, and as soon as
+negative control features enter, we begin increasing the estimated false
+discovery rate for the rule that selects features up to that point.
+
+```{r direct_contrast, fig.width = 8, fig.height = 4}
 contrast <- null_contrast(model, exper, "T->Y", direct_effect)
 fdr <- fdr_summary(contrast, "direct_effect", 0.05)
 ggplot(fdr, aes(direct_effect, fdr_hat)) +
-  geom_label_repel(data = filter(fdr, keep), aes(label = outcome, fill = source), max.overlaps = 50, size = 3, force = 10) +
-  geom_point(aes(col = source)) +
-  ylim(-0.1, 0.2) +
-  xlim(0.0, 0.05)
+  geom_label_repel(data = filter(fdr, keep), aes(label = outcome, fill = source), max.overlaps = 50, size = 3) +
+  labs(x = "Direct Effect", y = "Estimated False Discovery Rate") +
+  geom_point(aes(col = source))
 ```
 
-Here is the same idea for overall indirect effects.
+The indirect effect analog is shown below. It seems we have more evidence for
+direct than indirect effects. This is consistent with literature on the
+difficulty of estimating indirect effects in mediation analysis.
 
-```{r}
+```{r indirect_contrast, fig.width = 8, fig.height = 4}
 contrast <- null_contrast(model, exper, "M->Y", indirect_overall)
 fdr <- fdr_summary(contrast, "indirect_overall")
-
 ggplot(fdr, aes(indirect_effect, fdr_hat)) +
   geom_point(aes(col = source)) +
-  geom_label_repel(data = filter(fdr, keep), aes(label = outcome, fill = source), force = 20, size = 3)
+  labs(x = "Indirect Effect", y = "Estimated False Discovery Rate") +
+  geom_label_repel(data = filter(fdr, keep), aes(label = outcome, fill = source), max.overlaps = 50, size = 3)
 ```
 
-We can do the same thing for pathwise indirects.
+Here is the analog for indirect pathwise effects. Since these effects
+distinguish between individual mediators, we can facet by these variables.
 
-```{r, fig.width = 12, fig.height = 5}
+```{r indirect_pathwise_contrast, fig.width = 8, fig.height = 4}
 contrast <- null_contrast(model, exper, "M->Y", indirect_pathwise)
 fdr <- fdr_summary(contrast, "indirect_pathwise", 0.05)
-
 ggplot(fdr, aes(indirect_effect, fdr_hat)) +
   geom_point(aes(col = source)) +
   geom_label_repel(data = filter(fdr, keep), aes(label = outcome, fill = source), max.overlaps = 50, size = 4) +
@@ -205,78 +287,94 @@ ggplot(fdr, aes(indirect_effect, fdr_hat)) +
   facet_wrap(~ mediator)
 ```
 
-### Random Forest Model
+# Random Forests
 
-The LNM makes relatively strong assumptions on the outcome model. What if we
-just apply a centered log ratio to the outcome profiles and then use random
-forests for the outcome?
+The LNM makes relatively strong assumptions on the outcome model: The effects
+must enter linearly through a multinomial likelihood. As a nonparametric
+alternative, we can fit separate random forest models to each microbe's
+abundance. Since the models will use mean squared error to define splits, it
+will help to transform the response. We'll use a centered log ratio, exported
+from the `compositions` package.
 
-```{r}
+```{r rf_estimate}
 exper_clr <- exper
 exper_clr@outcomes <- clr(exper@outcomes / rowSums(exper@outcomes))
-model <- multimedia(exper_clr, rf_model(num.trees = 50)) |>
+model <- multimedia(
+    exper_clr, 
+    rf_model(num.trees = 50),
+    glmnet_model(lambda = 0.5, alpha = 0)
+  ) |>
   estimate(exper_clr)
 ```
 
-Here are direct effects.
+We can compute direct and indirect effects from the estimated model.
 
-```{r, fig.height = 5, fig.width = 9}
+```{r rf_effects}
 direct <- direct_effect(model, exper_clr)
 direct_sorted <- direct |>
   group_by(outcome, contrast) |>
   summarise(direct_effect = mean(direct_effect)) |>
   arrange(-direct_effect)
 
-bind_mediation(exper_clr) |>
-  select(treatment, taxa_names(mindfulness)) |>
-  pivot_longer(-treatment) |>
-  left_join(direct_sorted, by = c("name" = "outcome")) |>
-  ggplot() +
-  stat_pointinterval(
-    aes(
-      reorder(name, value, median), value,
-      shape = treatment, col = treatment,
-      point_size = abs(direct_effect)
-    ),
-    alpha = 0.6
-  ) +
-  scale_size(range = c(0.1, 4)) +
-  scale_linewidth(range = c(0.1, 5)) +
-  guides(color = guide_legend(override.aes = list(alpha = 1, size = 10))) +
-  labs(x = "Taxon", y = expression("CLR("~r[i]~")"), color = "Status", shape = "Status", point_size = "Abs. Effect") +
-  facet_grid(~ direct_effect > 0., scales = "free", space = "free") +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
-```
-
-These are the indirect effects.
-
-```{r fig.width = 11, fig.height = 5}
 indirect_sorted <- indirect_pathwise(model, exper_clr) |>
   group_by(outcome, mediator, contrast) |>
   summarise(indirect_effect = mean(indirect_effect)) |>
   arrange(-abs(indirect_effect))
 
+direct_sorted
+indirect_sorted
+```
+
+We can visualize some of the features with the largest direct and indirect
+effects. Nonlinearity seems to have helped uncover a few mediator to microbe
+relationships, for example, the relationships between sleep
+disturbance/Ruminococcus2 and cereal/Faecalibacterium.
+
+```{r rf_mediation_plots, fig.width = 11, fig.height = 5}
 plot_mediators(indirect_sorted, exper_clr)
 ```
 
-We can bootstrap the model and look at the bootstrap confidence intervals.
+# Bootstrap
 
-```{r}
-fs <- list(direct = direct_effect, indirect = indirect_overall)
-inference <- bootstrap(model, exper_clr, fs)
+The bootstrap can help evaluate uncertainty for more complex statistics, and
+it's a good option for our random forest analysis. In each iteration, we
+randomly subsample timepoints from the original experiment and compute a list of
+estimates, specified by the list `funs` below. The output concatenates output
+across all bootstrap iterations.
+
+```{r rf_bootstrap}
+funs <- list(direct = direct_effect, indirect = indirect_overall)
+inference <- bootstrap(model, exper_clr, funs, B = 1e3)
 ```
 
-```{r}
-ggplot(inference$indirect) +
+We can now visualize the bootstrap confidence intervals associated with the
+estimated effects. The largest interval corresponds to a 90% bootstrap
+confidence interval. The inner interval covers the median +/- one-third of the
+bootstrap distribution's mass. Some associations certainly seem worth following
+up on, though more data will be needed for validation.
+
+Notice that the direct effects seem generally stronger than indirect effects.
+Even with a flexible random forest model, it seems that changes in diet and
+sleep alone are not enough to explain the changes in microbiome composition seen
+in this study. This suggests that mechanisms related to the gut-brain axis may
+be at play, lying behind the observed direct effects.
+
+```{r rf_bootstrap_figures, fig.width = 8.5, fig.height = 7}
+p1 <- ggplot(inference$indirect) +
+  geom_vline(xintercept = 0) +
   stat_slabinterval(
     aes(indirect_effect, reorder(outcome, indirect_effect, median)),
     .width = c(.66, .95)
-  ) 
+  ) + 
+  labs(title = "Indirect Effects", y = "Taxon", x = "Effect (CLR Scale)")
 
-ggplot(inference$direct) +
-  stat_pointinterval(
+p2 <- ggplot(inference$direct) +
+  geom_vline(xintercept = 0) +
+  stat_slabinterval(
     aes(direct_effect, reorder(outcome, direct_effect, median)),
     .width = c(.66, .95)
-  )
-```
+  ) +
+  labs(title = "Direct Effects", y= "Taxon", x = "Effect (CLR Scale)")
 
+p1 | p2
+```
