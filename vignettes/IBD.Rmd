@@ -1,23 +1,67 @@
 ---
-title: "IBD"
-output: rmarkdown::html_vignette
+title: "Microbiome - Metabolome Mediation Analysis"
+output: rmdformats::readthedown
+css: custom.css
 vignette: >
   %\VignetteIndexEntry{IBD}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r invisible, include = FALSE}
 knitr::opts_chunk$set(
+  fig.align = "center",
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  warning = FALSE,
+  message = FALSE, 
+  eval = TRUE,
+  cache = TRUE,
+  dev.args = list(bg = "transparent"),
+  out.width = 600
 )
+
+knitr::knit_hooks$set(output = multimedia::ansi_aware_handler)
+options(crayon.enabled = TRUE)
+
+library(tidyverse)
+options(
+  ggplot2.discrete.colour = c("#9491D9", "#F24405", "#3F8C61",  "#8C2E62", "#F2B705", "#11A0D9"),
+  ggplot2.discrete.fill = c("#9491D9", "#F24405", "#3F8C61", "#8C2E62", "#F2B705", "#11A0D9"),
+  ggplot2.continuous.colour = function(...) scale_color_distiller(palette = "Spectral", ...),
+  ggplot2.continuous.fill = function(...) scale_fill_distiller(palette = "Spectral", ...)
+)
+
+library(tidyverse)
+th <- theme_classic() +
+  theme(
+    panel.background = element_rect(fill="transparent"),
+    strip.background = element_rect(fill="transparent"),
+    plot.background = element_rect(fill="transparent", color=NA),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    legend.background = element_rect(fill="transparent"),
+    legend.box.background = element_rect(fill="transparent"),
+    legend.position = "bottom"
+  )
+
+theme_set(th)
 ```
+
+Joint microbiome-metabolome experiments can give a view into how microbes shape
+their environments. `multimedia` lets us analyze high-dimensional outcome and
+mediation variables simultaneously. This allows us to analyze treatment $\arrow$
+microbiome $\arrow$ metabolome and treatment $\arrow$ metabolome $\arrow$
+microbiome paths. The methodology only allows us to analyze one kind of path at
+a time; in any case, it's impossible to completely disambiguate the
+directionality of the association from a single timepoint without prior
+knowledge. That said, the relationships that are uncovered from either of these
+directions can already suggest novel microbe-metabolite relationships.
 
 ```{r setup}
 library(brms)
 library(compositions)
-library(glue)
+library(ggdist)
 library(patchwork)
 library(tidyverse)
 library(vroom)
@@ -26,20 +70,32 @@ theme_set(theme_bw())
 set.seed(20231222)
 ```
 
-### Load and Preprocess Data
+# Data Processing
 
-This loads data from the microbiome-metabolome-curated data repository.
+We'll load data from the Borenstein Lab's [microbiome-metabolome curated data](https://github.com/borenstein-lab/microbiome-metabolome-curated-data)
+repository. This is a great resource that consistently documents each study and
+ensures uniform data processing. Our specific study is from [Franzosa et al.'s](https://doi.org/10.1038/s41564-018-0306-4) study of intestinal bowel disease. We'll treat disease status as the
+treatment, the microbiome as mediators, and metabolites as the outcome, in the
+spirit of that study's discussion:
 
-```{r}
+> Together, these findings suggest that yet-to-be characterized molecules in the gut metabolome, linked to inflammation and ultimately IBD, may be largely microbially derived or modified.
+
+```{r read_data}
 Sys.setenv("VROOM_CONNECTION_SIZE" = 5e6)
 taxa <- read_tsv("https://raw.githubusercontent.com/borenstein-lab/microbiome-metabolome-curated-data/main/data/processed_data/FRANZOSA_IBD_2019/genera.tsv")[, -1]
 metabolites <- read_tsv("https://raw.githubusercontent.com/borenstein-lab/microbiome-metabolome-curated-data/main/data/processed_data/FRANZOSA_IBD_2019/mtb.tsv")[, -1]
 metadata <- read_tsv("https://github.com/borenstein-lab/microbiome-metabolome-curated-data/raw/main/data/processed_data/FRANZOSA_IBD_2019/metadata.tsv")
 ```
 
-Here are some preprocessing functions.
+We'll filter quite aggressively so that the examples in this vignette run
+quickly. We then compile everything into a `mediation_data` object that
+organizes the treatment, mediators, and outcomes. We apply a centered log
+transform to the microbiome relative abundance and a log transform to the
+metabolite expression levels. Note that I've hidden some of the preprocessing
+functions (e.g., `simplify_tax_names`); these do what you expect, and you can
+read them in the `.Rmd` source.
 
-```{r}
+```{r functions, include = FALSE}
 filter_mean <- function(x, threshold = 4) {
   x[, colMeans(x) > threshold]
 }
@@ -59,11 +115,6 @@ simplify_metab_names <- function(x) {
   x
 }
 ```
-
-We'll filter quite aggressively so that the examples in this vignette don't take
-too long. We then compile everything into a `mediation_data` object that
-organizes the treatment, mediators, and outcomes.
-
 ```{r}
 taxa <- clr(taxa) |>
   filter_mean(threshold = 4) |>
@@ -84,22 +135,28 @@ exper <- mediation_data(
   "treatment",
   colnames(taxa)
 )
+
+exper
 ```
 
-### Lasso Approach
+# Lasso Approach
 
-First let's fit sparse regression models for each outcome.
+We will fit sparse regression models for each outcome so that, for any
+metabolite, only a subset of microbes is expected to influence its abundance.
 
-```{r}
+```{r lasso}
 model <- multimedia(exper, glmnet_model(lambda = 0.1)) |>
   estimate(exper)
 ```
 
-We can have different direct effects depending on the setting of the mediators.
-Here we'll average over all mediator settings and plot the features with the
-largest direct effects.
+We can have different direct effects depending on the treatment assignments of
+the mediators. Here we'll average over all mediator settings and plot the
+features with the largest direct effects. Note that the boxplots can reflect
+indirect effects as well, and this is why the ordering below (based on direct
+effect estimate) doesn't exactly correspond to the distance between the
+boxplots.
 
-```{r, eval = FALSE}
+```{r, lasso_direct, fig.width = 6, fig.height = 5}
 direct <- direct_effect(model, exper) |>
   group_by(outcome) |>
   summarise(direct_effect = mean(direct_effect)) |>
@@ -116,10 +173,11 @@ combined |>
 
 Pathwise indirect effects are those that appear when modifying the treatment
 status for a single mediator. Unlike overall indirect effects, they give us
-effects for individual mediator-outcome pairs. Here we'll average over the
-direct treatment settings
+effects for individual mediator-outcome pairs. Now, instead of averaging over
+mediator treatment assignments, we average over direct edge treatment
+assignments.
 
-```{r}
+```{r lasso_indirect}
 indirect <- indirect_pathwise(model, exper)
 indirect_sorted <- indirect |>
   group_by(outcome, mediator ) |>
@@ -129,97 +187,124 @@ indirect_sorted <- indirect |>
   arrange(indirect_effect)
 ```
 
-We have a small helper for visualizing the indirect effects.
+We can look at the effects which have the strongest indirect effects. These make
+sense. For example, genus Copromorpha seems to have a negative relationship with
+C18_eg_Clser_0930holae. Maybe that metabolite is produced by a competitor? Or
+maybe the microbe eats the metabolite. In any case, IBD seems to decrease the
+abundance of Copromorpha, which consequently increases the abundance of the
+metabolite.
 
-```{r, fig.width = 12, fig.height = 9}
+```{r lasso_mediators_plot, fig.width = 12, fig.height = 9}
 plot_mediators(indirect_sorted, exper)
 ```
 
-We can create models where the effects have been deliberately removed. This can
-be useful for synthetic null testing, for example. Here are simulated samples
-from a "nullified" model without direct effects, a full model with direct
-effects, and the original samples.
+We can create models where the effects have been deliberately removed, which can
+be used for synthetic null testing. Here are simulated samples from a
+"nullified" model without direct effects, a full model with direct effects, and
+the original samples. To the extent that the altered and fitted models differ,
+the direct treatment edge is needed to improve model fit.
 
-```{r}
+```{r lasso_synthetic, fig.width = 12, fig.heigth = 7}
 altered <- model |>
   nullify("T->Y") |>
   estimate(exper)
 
+# sample at original treatment assignments
 profile <- setup_profile(model, exper@treatments, exper@treatments)
 samples <- list(
-  real = exper@mediators,
-  fitted = sample(model, profile = profile)$mediators,
-  altered = sample(altered, profile = profile)$mediators
+  real = exper@outcomes,
+  fitted = sample(model, profile = profile)@outcomes,
+  altered = sample(altered, profile = profile)@outcomes
 ) |>
   bind_rows(.id = "source") |>
   bind_cols(treatment = rep(exper@treatments$treatment, 3)) |>
-  pivot_longer(starts_with("g"))
+  pivot_longer(direct$outcome) |>
+  mutate(name = factor(name, levels = direct$outcome))
 
+# visualize
 ggplot(samples) +
-  geom_boxplot(aes(value, reorder(name, value), fill = treatment)) +
+  geom_boxplot(aes(value, name, fill = treatment)) +
   facet_wrap(~ source)
 ```
 
 How can we understand the uncertainty of the estimated models? One approach is
 to form the bootstrap distribution of the effects that we care about. It's a
-little problematic to form bootstrap CI's for sparse regression. We can still
-interpret the full bootstrap distributions, though. Effects that have large
-nonzero components have more evidence of being real.
+little problematic to form bootstrap confidence intervals for sparse regression.
+We can still interpret the full bootstrap distributions, though. Effects that
+have large nonzero components have more evidence of being real.
 
-```{r}
+```{r lasso_bootstrap, fig.width = 8.5, fig.height = 7}
 fs <- list(direct = direct_effect, indirect = indirect_overall)
-inference <- bootstrap(model, exper, fs)
-ggplot(inference$indirect) +
+inference <- bootstrap(model, exper, fs, B = 1e3)
+p1 <- ggplot(inference$indirect) +
+  geom_vline(xintercept = 0) +
   stat_slabinterval(
     aes(indirect_effect, reorder(outcome, indirect_effect, median)),
     .width = c(.66, .95)
   ) 
 
-ggplot(inference$direct) +
+p2 <- ggplot(inference$direct) +
+  geom_vline(xintercept = 0) +
   stat_pointinterval(
     aes(direct_effect, reorder(outcome, direct_effect, median)),
     .width = c(.66, .95)
   )
+
+p1 | p2
 ```
 
-### Zero-Inflated Gaussian Approach
+# Hurdle-Lognormal Approach
 
-Ideally, we could also model the zeros. One idea is to apply a hurdle lognormal
-model, since, for the nonnegative part, glmnet is implicitly assuming normal
-errors in the log space. We can do this by returning to the original scaling and
-then applying a BRMS model.
+There are many zeros in the metabolites data, and sparse regression is not the
+best approach for modeling these kinds of outcomes. Indeed, we seem to have been
+most sensitive to indirect effects for highly abundant metabolites (which are
+present in most samples), and this raises the question of whether we might have
+missed true indirect effects where that model's linearity assumptions were not
+appropriate.
 
-```{r}
+As an alternative, we can work with a hurdle model, which explicitly models
+zeros together with a nonnegative component. For this, we'll return the outcomes
+to their original (unlogged) scaling. We'll apply a BRMS hurdle model. So that
+this isn't too slow during the indirect effect estimation, I've further reduced
+the number of taxa and metabolites in this analysis.
+
+```{r hurdle_estimate}
 exper2 <- exper
-exper2@outcomes <- exp(exper2@outcomes) - 1
-exper2@mediators <- exper2@mediators[, 1:15]
-exper2@outcomes <- exper2@outcomes[, 1:40]
+exper2@outcomes <- exp(exper2@outcomes[, 1:50]) - 1
+exper2@mediators <- exper2@mediators[, 1:50]
+
 model <- multimedia(
   exper2,
-  brms_model(family = hurdle_lognormal(), warmup = 500, iter = 1500, refresh = 0)
+  brms_model(family = hurdle_lognormal())
   )|>
   estimate(exper2)
 ```
 
-Let's again get pathwise indirect effects. This is relatively slow, since
-prediction in BRMS models takes time, and we need to do predictions across all
-outcomes and when substituting all mediators.
+With the updated model, we can again compute pathwise indirect effects. This
+time, we are more sensitive to metabolites that completely vanish in the IBD
+(treatment) group. In all of the selected pairs, there is also a treatment
+effect on microbe abundance. If this hadn't been present, and if the metabolite
+simply vanished, then that would be a direct effect.
 
-```{r}
-indirect <- indirect_pathwise(model)
+```{r hurdle_indirect, fig.width = 12, fig.height = 9}
+indirect <- indirect_pathwise(model, exper2)
 indirect_sorted <- indirect |>
   group_by(outcome, mediator) |>
   summarise(indirect_effect = mean(indirect_effect)) |>
   arrange(-abs(indirect_effect))
-```
 
-```{r, fig.width = 12, fig.height = 9}
 plot_mediators(indirect_sorted, exper2)
 ```
 
-Let's see how the simulated data look in the same scatterplots.
+We can see how well the hurdle model captured the zero pattern by simulating
+data from the fitted model. There are a few outliers, which is why I've trimmed
+the $y$-axis. The model has not captured the specific shape of the treatment
+group scatterplots above, which tends to have regions with only zeros for some
+metabolites. In retrospect, this is natural. The hurdle model can only increase
+the zero probability as a linear function of species abundance. We would need a
+step function preidctor to support the kinds of transitions we see above.
 
-```{r, fig.width = 12, fig.height = 9}
+```{r hurdle_synthetic, fig.width = 12, fig.height = 9}
 profile <- setup_profile(model, exper@treatments, exper@treatments)
 samples <- sample(model, profile = profile, pretreatment = exper@pretreatments)
 colnames(samples@outcomes) <- colnames(exper2@outcomes)
@@ -228,20 +313,20 @@ p$patches[[1]] <- map(p$patches[[1]], ~ . + ylim(0, 1e5))
 p
 ```
 
-We can also look at direct effects.
+Finally, we can look at direct effects from this model, which can be compared to
+the analogous figure for the sparse regression.
 
-```{r}
-direct <- direct_effect(model, exper)
-direct_sorted <- direct |>
+```{r hurdle_direct, fig.width = 6, height = 5}
+direct <- direct_effect(model, exper) |>
   group_by(outcome) |>
   summarise(direct_effect = mean(direct_effect)) |>
   slice_max(abs(direct_effect), n = 10) |>
   arrange(-abs(direct_effect))
 
 combined |>
-  select(any_of(direct_sorted$outcome), treatment) |>
+  select(any_of(direct$outcome), treatment) |>
   pivot_longer(-treatment, names_to = "feature") |>
-  mutate(feature = factor(feature, levels = rev(direct_sorted$outcome))) |>
+  mutate(feature = factor(feature, levels = rev(direct$outcome))) |>
   ggplot() +
   geom_boxplot(aes(value, feature, fill = treatment))
 ```
