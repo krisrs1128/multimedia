@@ -89,6 +89,14 @@ mediation_data <- function(x, outcomes, treatments, mediators,
       mediators,
       pretreatments
     )
+  } else if ("phyloseq" %in% class(x)) {
+    result <- from_phyloseq(
+      x,
+      outcomes,
+      treatments,
+      mediators,
+      pretreatments
+    )
   }
 
   if ("data.frame" %in% class(x)) {
@@ -107,6 +115,18 @@ mediation_data <- function(x, outcomes, treatments, mediators,
 from_summarized_experiment <- function(exper, outcomes, treatments, mediators,
                                        pretreatments) {
   exper_df(exper) |>
+    from_data_frame(outcomes, treatments, mediators, pretreatments)
+}
+
+#' @importFrom phyloseq otu_table
+from_phyloseq <- function(exper, outcomes, treatments, mediators, pretreatments) {
+  if (attr(otu_table(exper), "taxa_are_rows")) {
+    counts <- t(otu_table(exper))
+  } else {
+    counts <- otu_table(exper)
+  }
+
+  bind_cols(counts, data.frame(sample_data(exper))) |>
     from_data_frame(outcomes, treatments, mediators, pretreatments)
 }
 
