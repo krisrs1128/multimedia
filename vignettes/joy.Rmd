@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   warning = FALSE,
-  message = FALSE, 
+  message = FALSE,
   eval = TRUE,
   cache = FALSE,
   dev.args = list(bg = "transparent"),
@@ -24,7 +24,7 @@ knitr::opts_chunk$set(
 knitr::knit_hooks$set(output = multimedia::ansi_aware_handler)
 options(crayon.enabled = TRUE)
 
-library(tidyverse)
+suppressPackageStartupMessages(library(tidyverse))
 options(
   ggplot2.discrete.colour = c("#9491D9", "#F24405", "#3F8C61",  "#8C2E62", "#F2B705", "#11A0D9"),
   ggplot2.discrete.fill = c("#9491D9", "#F24405", "#3F8C61", "#8C2E62", "#F2B705", "#11A0D9"),
@@ -53,20 +53,20 @@ library(tidyverse)
 library(ggraph)
 ```
 
-This vignette gives a quick introduction to the `multimedia` package using a
-simulated dataset that is supposed to look a little like the BeWell data. The
-basic question is -- we know that meditation can reduce depression and anxiety
-symptoms, is it possible that microbiome changes might be playing a role? In the
-language of mediation analysis, does the microbiome mediate changes in PHQ
-scores?
+`multimedia` is a package for **Multi**-omics **Media**tion analysis. This
+vignette gives a brief introduction using simulated that look vaguely like
+BeWell. The basic question is -- we know that meditation can reduce depression
+and anxiety symptoms, so is it possible that microbiome shifts might play a
+role? In the language of mediation analysis, does the microbiome mediate PHQ
+score?
 
 ```{r example_data}
 demo_joy()
 ```
 
-For mediation analysis, we'll want to distinguish between the different variable
-types. This data structures takes care of that. Notice that we can specify
-groups using tidyselect-style notation.
+For mediation analysis, we distinguish between the different variable types.
+This data structures defines treatment, mediator, and outcome group using
+tidyselect-style notation.
 
 ```{r setup}
 exper <- mediation_data(demo_joy(), "PHQ", "treatment", starts_with("ASV"))
@@ -76,7 +76,7 @@ exper
 This is the main estimation function. By default, we fit a separate linear
 regression model for each mediation and outcome variable.
 
-```{r}
+```{r estimate}
 model <- multimedia(exper) |>
   estimate(exper)
 
@@ -85,18 +85,17 @@ model
 
 The `edges` slot tracks all the variable relationships.
 
-```{r}
+```{r graph}
 ggraph(model@edges) +
   geom_edge_link(arrow = arrow()) +
   geom_node_label(aes(label = name, fill = node_type))
 ```
 
-We can look at the estimated mediation and outcome models. (Perhaps we should
-write simpler accessors?)
+We can look at the estimated mediation and outcome models.
 
-```{r}
-model@mediation@estimates
-model@outcome@estimates
+```{r models}
+model@mediation
+model@outcome
 ```
 
 Now that we've coupled the mediation and outcome models, we can propogate
@@ -106,7 +105,7 @@ use the fitted models to simulate new mediation and outcome samples. By default,
 it will sample at the template data that was used to fit the model, just like
 the `predict` method for `lm`.
 
-```{r}
+```{r operations}
 sample(model)
 predict(model)
 ```
@@ -119,7 +118,7 @@ mediator was set to treatment while all others were left at control. The example
 below has one sample with this kind of configuration and three others that keep
 all edges at control.
 
-```{r}
+```{r new_treat}
 t_mediator <- model@treatments[c(2, rep(1, 3)), ]
 t_outcome <- model@treatments[rep(1, 4), ]
 profile <- setup_profile(model, t_mediator, t_outcome)
@@ -129,7 +128,7 @@ predict(model, profile = profile)
 
 We can also contrast the predictions and samples under different profiles.
 
-```{r}
+```{r contrast}
 profile_control <- setup_profile(model, model@treatments[rep(1, 4), ], t_outcome)
 contrast_predictions(model, profile, profile_control)
 contrast_samples(model, profile, profile_control)
@@ -147,7 +146,7 @@ high-dimensional mediators. In the overall effect, we toggle treatment/control
 status for incoming edges to all mediators. In pathwise indirect effects, we
 toggle only the treatment going into one mediator.
 
-```{r}
+```{r effects}
 direct_effect(model, exper)
 indirect_overall(model, exper)
 indirect_pathwise(model, exper)
@@ -163,7 +162,7 @@ vignette). Here's an example of everything we did above but for glmnet. The fact
 that all the estimates are 0 is a good thing -- there are no real effects in the
 simulated data.
 
-```{r}
+```{r glmnet}
 model <- multimedia(exper,  glmnet_model(lambda = .1)) |>
   estimate(exper)
 
@@ -179,7 +178,7 @@ assessments to set appropriate expectations. The most straightforward approach
 is to use the bootstrap.  Each element in `funs` will get its own data.frame
 with the bootstrap distribution for that estimator.
 
-```{r}
+```{r bootstrap}
 funs <- list(direct_effect = direct_effect)
 bootstrap(model, exper, funs, B = 10)
 ```
@@ -194,7 +193,7 @@ ranking estimates across the two data sets. If we see many null effects mixed in
 among the strong effects in real data, we know to trust only the very strongest
 real effects (if any).
 
-```{r}
+```{r false_discovery}
 contrast <- null_contrast(model, exper, "M->Y", indirect_pathwise)
 fdr <- fdr_summary(contrast, "indirect_pathwise", 0.05)
 fdr
