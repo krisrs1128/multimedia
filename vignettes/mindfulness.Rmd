@@ -47,7 +47,7 @@ th <- theme_classic() +
 theme_set(th)
 ```
 
-In most microbiome mediation analysis studies, ismicrobiome composition is
+In most microbiome mediation analysis studies, microbiome composition is
 thought to mediate some outcome of interest. Sometimes, though, we might want to
 treat the microbiome as an outcome. Our motivating example here looks at the
 relationship between mindfulness and the microbiome. In this setting, we might
@@ -67,6 +67,7 @@ library(phyloseq)
 library(tidyverse)
 library(multimedia)
 data(mindfulness)
+set.seed(20231222)
 ```
 
 This package needs a `mediation_data` object to organize the pretreatment,

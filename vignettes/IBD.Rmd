@@ -50,13 +50,13 @@ theme_set(th)
 
 Joint microbiome-metabolome experiments can give a view into how microbes shape
 their environments. `multimedia` lets us analyze high-dimensional outcome and
-mediation variables simultaneously. This allows us to analyze treatment $\arrow$
-microbiome $\arrow$ metabolome and treatment $\arrow$ metabolome $\arrow$
-microbiome paths. The methodology only allows us to analyze one kind of path at
-a time; in any case, it's impossible to completely disambiguate the
-directionality of the association from a single timepoint without prior
-knowledge. That said, the relationships that are uncovered from either of these
-directions can already suggest novel microbe-metabolite relationships.
+mediation variables simultaneously. This allows us to analyze treatment $\to$
+microbiome $\to$ metabolome and treatment $\to$ metabolome $\to$ microbiome
+paths. The methodology only allows us to analyze one kind of path at a time; in
+any case, it's impossible to completely disambiguate the directionality of the
+association from a single timepoint without prior knowledge. That said, the
+relationships that are uncovered from either of these directions can already
+suggest novel microbe-metabolite relationships.
 
 ```{r setup}
 library(brms)
@@ -74,9 +74,11 @@ set.seed(20231222)
 
 We'll load data from the Borenstein Lab's [microbiome-metabolome curated data](https://github.com/borenstein-lab/microbiome-metabolome-curated-data)
 repository. This is a great resource that consistently documents each study and
-ensures uniform data processing. Our specific study is from [Franzosa et al.'s](https://doi.org/10.1038/s41564-018-0306-4) study of intestinal bowel disease. We'll treat disease status as the
-treatment, the microbiome as mediators, and metabolites as the outcome, in the
-spirit of that study's discussion:
+ensures uniform data processing. Our data is from [Franzosa et
+al.'s](https://doi.org/10.1038/s41564-018-0306-4) study of intestinal bowel
+disease. We'll treat disease status as the treatment, the microbiome as
+mediators, and metabolites as the outcome, in the spirit of that study's
+discussion:
 
 > Together, these findings suggest that yet-to-be characterized molecules in the gut metabolome, linked to inflammation and ultimately IBD, may be largely microbially derived or modified.
 
@@ -235,15 +237,28 @@ have large nonzero components have more evidence of being real.
 
 ```{r lasso_bootstrap, fig.width = 8.5, fig.height = 7}
 fs <- list(direct = direct_effect, indirect = indirect_overall)
-inference <- bootstrap(model, exper, fs, B = 1e3)
-p1 <- ggplot(inference$indirect) +
+inference <- bootstrap(model, exper, fs)
+
+filter_outcomes <- inference$indirect |>
+  group_by(outcome) |>
+  summarise(indirect_effect = median(indirect_effect)) |>
+  slice_max(abs(indirect_effect), n = 60) |>
+  pull(outcome)
+p1 <- filter(inference$indirect, outcome %in% filter_outcomes) |>
+  ggplot() +
   geom_vline(xintercept = 0) +
   stat_slabinterval(
     aes(indirect_effect, reorder(outcome, indirect_effect, median)),
     .width = c(.66, .95)
   ) 
 
-p2 <- ggplot(inference$direct) +
+filter_outcomes <- inference$direct |>
+  group_by(outcome) |>
+  summarise(direct_effect = median(direct_effect)) |>
+  slice_max(abs(direct_effect), n = 60) |>
+  pull(outcome)
+p2 <- filter(inference$direct, outcome %in% filter_outcomes) |>
+  ggplot() +
   geom_vline(xintercept = 0) +
   stat_pointinterval(
     aes(direct_effect, reorder(outcome, direct_effect, median)),
@@ -314,7 +329,8 @@ p
 ```
 
 Finally, we can look at direct effects from this model, which can be compared to
-the analogous figure for the sparse regression.
+the analogous figure for the sparse regression. Note that now, many outcomes
+with exact zeros under treatment have been detected.
 
 ```{r hurdle_direct, fig.width = 6, height = 5}
 direct <- direct_effect(model, exper) |>
