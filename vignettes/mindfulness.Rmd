@@ -243,10 +243,10 @@ taxa_order <- normalize(exper@outcomes) |>
   order()
 
 combined_samples <- list(
-  original = normalize(exper@outcomes),
-  fitted = normalize(y1@outcomes),
-  altered_direct = normalize(y2@outcomes),
-  altered_indirect = normalize(y3@outcomes)
+  "Original Data" = normalize(exper@outcomes),
+  "Full Model" = normalize(y1@outcomes),
+  "No Direct Effect" = normalize(y2@outcomes),
+  "No Indirect Effect" = normalize(y3@outcomes)
 ) |>
   bind_rows(.id = "source") |>
   mutate(treatment = rep(exper@treatments$treatment, 4)) |>
@@ -260,9 +260,7 @@ ggplot(combined_samples) +
     alpha = 0.7
   ) +
   facet_grid(~ source, scales = "free") +
-  theme(
-    panel.border = element_rect(fill = NA),
-  )
+  theme(panel.border = element_rect(fill = NA))
 ```
 
 
@@ -278,9 +276,7 @@ combined_samples |>
   ) +
   facet_grid(~ source, scales = "free") +
   scale_x_continuous(expand = c(0, 0)) +
-  theme(
-    panel.border = element_rect(fill = NA),
-  )
+  theme(panel.border = element_rect(fill = NA))
 ```
 
 # Synthetic Null Testing
