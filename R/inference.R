@@ -134,7 +134,7 @@ fdr_summary <- function(contrast, effect = "indirect_overall", q_value = 0.15) {
       mutate(keep = FALSE)
   } else {
     fdr <- fdr |>
-      mutate(keep = rank < cutoff)
+      mutate(keep = rank < cutoff & source = "real")
   }
   fdr
 }
