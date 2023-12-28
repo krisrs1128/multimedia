@@ -224,10 +224,10 @@ brms_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
 
 #' @importFrom miniLNM lnm
 #' @export
-lnm_model <- function() {
+lnm_model <- function(...) {
   new(
     "model",
-    estimator = lnm,
+    estimator = \(fmla, data) inject(lnm(fmla, data, ...)),
     estimates = NULL,
     sampler = lnm_sampler,
     predictor = predict,
