@@ -47,6 +47,13 @@ th <- theme_classic() +
 theme_set(th)
 ```
 
+```{r helpers, include = FALSE}
+normalize <- function(x) {
+  x <- as_tibble(x)
+  x / rowSums(x)
+}
+```
+
 In most microbiome mediation analysis studies, microbiome composition is
 thought to mediate some outcome of interest. Sometimes, though, we might want to
 treat the microbiome as an outcome. Our motivating example here looks at the
@@ -98,9 +105,13 @@ better choice than ordinary linear models because we have to estimate many
 subject-level parameters, and our sample size is not that large.
 
 ```{r lnm}
+# use Flavonifractor as the reference for the log-ratio transform
+exper@outcomes <- exper@outcomes |>
+  select(Flavonifractor, everything())
+
 model <- multimedia(
-  exper, 
-  lnm_model(), 
+  exper,
+  lnm_model(),
   glmnet_model(lambda = 0.5, alpha = 0)
   ) |>
   estimate(exper)
@@ -144,7 +155,7 @@ it controls for subject-level baselines and includes direct effects of treatment
 
 ```{r mediator_plot, fig.width = 12, fig.height = 6}
 exper_rela <- exper
-exper_rela@outcomes <- exper@outcomes / rowSums(exper@outcomes)
+exper_rela@outcomes <- normalize(exper@outcomes)
 plot_mediators(indirect, exper_rela)
 ```
 
@@ -206,27 +217,70 @@ raw boxplots, heterogeneity across subjects and mediators masks true effects,
 and the LNM is able to detect these effects by appropriately accounting for
 sources of heterogeneity.
 
-```{r outcome_alteration, fig.width = 8, fig.height = 12}
+```{r outcome_alteration}
 altered_direct <- model |>
   nullify("T->Y") |>
   estimate(exper)
 
+altered_indirect <- model |>
+  nullify("M->Y") |>
+  estimate(exper)
+
+profile <- setup_profile(model, exper@treatments, exper@treatments)
 y1 <- sample(model, profile = profile, pretreatment = exper@pretreatments)
 y2 <- sample(altered_direct, profile = profile, pretreatment = exper@pretreatments)
+y3 <- sample(altered_indirect, profile = profile, pretreatment = exper@pretreatments)
+```
 
-list(
-  original = bind_cols(exper@treatments, exper@outcomes / rowSums(exper@outcomes)),
-  fitted = bind_cols(profile@t_outcome[[1]], y1@outcomes / rowSums(y1@outcomes)),
-  altered = bind_cols(profile@t_outcome[[1]], y2@outcomes / rowSums(y2@outcomes))
+
+```{r alteration_plot, fig.width = 8, fig.height = 7}
+taxa_order <- normalize(exper@outcomes) |>
+  log() |>
+  apply(2, \(x) {
+    x[is.infinite(x)] <- NA
+    median(x, na.rm = TRUE)
+  })|>
+  order()
+
+combined_samples <- list(
+  original = normalize(exper@outcomes),
+  fitted = normalize(y1@outcomes),
+  altered_direct = normalize(y2@outcomes),
+  altered_indirect = normalize(y3@outcomes)
 ) |>
   bind_rows(.id = "source") |>
-  pivot_longer(-source:-treatment) |>
-  ggplot() +
+  mutate(treatment = rep(exper@treatments$treatment, 4)) |>
+  pivot_longer(colnames(exper@outcomes)) |>
+  mutate(name = factor(name, levels = colnames(exper@outcomes)[taxa_order]))
+
+ggplot(combined_samples) +
   geom_boxplot(
-    aes(value, reorder(name, value), fill = treatment)
+    aes(log(value), name, fill = treatment),
+    size = 0.4, outlier.size = 0.8, position = "identity",
+    alpha = 0.7
   ) +
-  scale_x_log10() +
-  facet_grid(~ source)
+  facet_grid(~ source, scales = "free") +
+  theme(
+    panel.border = element_rect(fill = NA),
+  )
+```
+
+
+```{r alteration_presence, fig.width = 6, fig.height = 7}
+combined_samples |>
+  group_by(name, source, treatment) |>
+  summarise(presence = mean(value > 0)) |>
+  ggplot() +
+  geom_col(
+    aes(presence, name, fill = treatment, col = treatment),
+    position = "identity", width = 1,
+    alpha = 0.7
+  ) +
+  facet_grid(~ source, scales = "free") +
+  scale_x_continuous(expand = c(0, 0)) +
+  theme(
+    panel.border = element_rect(fill = NA),
+  )
 ```
 
 # Synthetic Null Testing
@@ -253,26 +307,61 @@ data. We rank features according to their absolute effect size, and as soon as
 negative control features enter, we begin increasing the estimated false
 discovery rate for the rule that selects features up to that point.
 
-```{r direct_contrast, fig.width = 8, fig.height = 4}
+```{r direct_contrast}
 contrast <- null_contrast(model, exper, "T->Y", direct_effect)
-fdr <- fdr_summary(contrast, "direct_effect", 0.05)
-ggplot(fdr, aes(direct_effect, fdr_hat)) +
-  geom_label_repel(data = filter(fdr, keep), aes(label = outcome, fill = source), max.overlaps = 50, size = 3) +
-  labs(x = "Direct Effect", y = "Estimated False Discovery Rate") +
-  geom_point(aes(col = source))
+fdr_direct <- fdr_summary(contrast, "direct_effect") |>
+  rename(effect = direct_effect)
 ```
 
 The indirect effect analog is shown below. It seems we have more evidence for
 direct than indirect effects. This is consistent with literature on the
 difficulty of estimating indirect effects in mediation analysis.
 
-```{r indirect_contrast, fig.width = 8, fig.height = 4}
+```{r indirect_contrast}
 contrast <- null_contrast(model, exper, "M->Y", indirect_overall)
-fdr <- fdr_summary(contrast, "indirect_overall")
-ggplot(fdr, aes(indirect_effect, fdr_hat)) +
-  geom_point(aes(col = source)) +
-  labs(x = "Indirect Effect", y = "Estimated False Discovery Rate") +
-  geom_label_repel(data = filter(fdr, keep), aes(label = outcome, fill = source), max.overlaps = 50, size = 3)
+fdr_indirect <- fdr_summary(contrast, "indirect_overall") |>
+  rename(effect = indirect_effect)
+```
+
+```{r contrast_plot, fig.width = 7, fig.height = 3}
+fdr_data <- bind_rows(fdr_direct, fdr_indirect, .id = "effect_type") |>
+  mutate(effect_type = c("Direct", "Indirect")[as.integer(effect_type)])
+ggplot(fdr_data, aes(effect, fdr_hat)) +
+  geom_text_repel(data = filter(fdr_data, keep), aes(label = outcome, fill = source), size = 3, force = 10) +
+  labs(x = "Effect", y = expression(widehat(FDR)), col = "Data Source") +
+  geom_point(aes(col = source, size = keep)) +
+  scale_size_discrete("Selected", range = c(.5, 3), guide = FALSE) +
+  scale_y_continuous(limits = c(-0.1, 0.55)) +
+  facet_wrap(~ effect_type, scales = "free_x") +
+  theme(
+    axis.text.x = element_text(size = 12),
+    axis.text.y = element_text(size = 12),
+    strip.text = element_text(size = 14),
+    legend.text = element_text(size = 12)
+  )
+```
+
+```{r, fig.width = 7, fig.height = 4.3}
+exper_clr <- exper
+exper_clr@outcomes <- normalize(exper@outcomes)
+
+bind_mediation(exper_clr) |>
+  select(subject, starts_with("mediator"), treatment, Blautia, Faecalibacterium) |>
+  pivot_longer(starts_with("mediator"), names_to = "mediator") |>
+  mutate(mediator = str_remove(mediator, "mediator.")) |>
+  pivot_longer(Blautia:Faecalibacterium, names_to = "taxon", values_to = "abundance") |>
+  group_by(subject, mediator, treatment, taxon) |>
+  summarise(abundance = mean(abundance), value = mean(value)) |>
+  ggplot() +
+  geom_point(aes(value, abundance, col = treatment)) +
+  facet_grid(taxon ~ mediator, scales = "free") +
+  labs(y = "Relative Abundance", x = "Mediator Value", col = "") +
+  theme(
+    axis.title = element_text(size = 14),
+    strip.text = element_text(size = 12),
+    legend.text = element_text(size = 12),
+    panel.border = element_rect(fill = NA)
+  )
 ```
 
 Here is the analog for indirect pathwise effects. Since these effects
@@ -280,11 +369,12 @@ distinguish between individual mediators, we can facet by these variables.
 
 ```{r indirect_pathwise_contrast, fig.width = 8, fig.height = 4}
 contrast <- null_contrast(model, exper, "M->Y", indirect_pathwise)
-fdr <- fdr_summary(contrast, "indirect_pathwise", 0.05)
+fdr <- fdr_summary(contrast, "indirect_pathwise")
 ggplot(fdr, aes(indirect_effect, fdr_hat)) +
-  geom_point(aes(col = source)) +
-  geom_label_repel(data = filter(fdr, keep), aes(label = outcome, fill = source), max.overlaps = 50, size = 4) +
-  ylim(-0.1, 0.3) +
+  geom_text_repel(data = filter(fdr, keep), aes(label = outcome, fill = source), size = 4) +
+  labs(x = "Indirect Effect", y = "Estimated False Discovery Rate") +
+  geom_point(aes(col = source, size = keep)) +
+  scale_size_discrete(range = c(.2, 3)) +
   facet_wrap(~ mediator)
 ```
 
@@ -299,7 +389,7 @@ from the `compositions` package.
 
 ```{r rf_estimate}
 exper_clr <- exper
-exper_clr@outcomes <- clr(exper@outcomes / rowSums(exper@outcomes))
+exper_clr@outcomes <- normalize(exper@outcomes)
 model <- multimedia(
     exper_clr, 
     rf_model(num.trees = 50),
