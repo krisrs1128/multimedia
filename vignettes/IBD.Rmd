@@ -111,30 +111,46 @@ simplify_tax_names <- function(x) {
 }
 
 simplify_metab_names <- function(x) {
-  colnames(x) <- colnames(x) |>
-    str_remove_all("[[:punct:|NA| |\\.|\\/|\\*|,]]") |>
-    str_replace_all("-", "_")
+  new_names <- colnames(x) |>
+    str_remove_all("[[\\.|\\/|\\*|,|\\:|\\(|\\)]]") |>
+    str_replace_all("-", "_") |>
+    str_replace_all(" ", "_") |>
+    str_remove("Cluster_|Clser") |>
+    str_remove("HILIC|C8|C18") |>
+    str_remove("pos|neg") |>
+    str_remove("__")
+    
+  colnames(x) <- paste0("m", new_names)
   x
 }
+
+annotated_metabolites <- function(metabolites) {
+  str_remove(colnames(metabolites), "C18-neg_Cluster_[0-9]+: ") |> 
+    str_remove("C8-pos_Cluster_[0-9]+: ") |> 
+    str_remove("HILIC-neg_Cluster_[0-9]+: ") |> 
+    str_remove("HILIC-pos_Cluster_[0-9]+: ") |> 
+    unique() |>
+    setdiff("NA")
+}
 ```
+
 ```{r}
 taxa <- clr(taxa) |>
-  filter_mean(threshold = 4) |>
+  filter_mean() |>
   simplify_tax_names()
 
 metabolites <- log(1 + metabolites) |>
-  filter_mean(threshold = 7) |>
+  select(matches(annotated_metabolites(metabolites))) |>
   simplify_metab_names()
-  
+
 combined <- metabolites |>
   bind_cols(taxa, metadata) |>
-  mutate(treatment = ifelse(Study.Group == "Control", "control", "treatment")) |>
   as_tibble()
 
 exper <- mediation_data(
   combined, 
-  colnames(metabolites),
-  "treatment",
+  colnames(metabolites)[1:10],
+  "Study.Group",
   colnames(taxa)
 )
 
@@ -159,18 +175,55 @@ effect estimate) doesn't exactly correspond to the distance between the
 boxplots.
 
 ```{r, lasso_direct, fig.width = 6, fig.height = 5}
-direct <- direct_effect(model, exper) |>
-  group_by(outcome) |>
-  summarise(direct_effect = mean(direct_effect)) |>
-  slice_max(abs(direct_effect), n = 10) |>
-  arrange(direct_effect)
+direct_summary <- function(model, exper, t1 = 1, t2 = 3, N = 10) {
+  direct_effect(model, exper, t1, t2) |>
+    group_by(outcome) |>
+    summarise(direct_effect = mean(direct_effect)) |>
+    slice_max(abs(direct_effect), n = N) |>
+    arrange(direct_effect) |>
+    filter(direct_effect != 0)
+}
 
+indirect_summary <- function(model, exper, t1 = 1, t2 = 3, N = 10) {
+  indirect_pathwise(model, exper, t1, t2) |>
+    group_by(outcome, mediator) |>
+    summarise(indirect_effect = mean(indirect_effect)) |>
+    slice_max(abs(indirect_effect), n = N) |>
+    arrange(indirect_effect) |>
+    filter(indirect_effect != 0)
+}
+
+effect_summary <- function(effects, N = 10) {
+  effect_type <- tail(colnames(effects), 1)
+  if ("mediator" %in% colnames(effects)) {
+    effects <- group_by(effects, outcome, mediator)
+  } else {
+    effects <- group_by(effects, outcome)
+  }
+  
+  effects |>
+    summarise(across(matches("effect"), mean)) |>
+    slice_max(.data[[effect_type]], n = N) |>
+    arrange(.data[[effect_type]]) |>
+    filter(.data[[effect_type]] != 0)
+}
+
+direct <- list(
+  CD = direct_effect(model, exper, 1, 3),
+  UC = direct_effect(model, exper, 2, 3)
+) |>
+  map_dfr(effect_summary, .id = "treatment")
+  
 combined |>
-  select(any_of(direct$outcome), treatment) |>
-  pivot_longer(-treatment, names_to = "feature") |>
-  mutate(feature = factor(feature, levels = rev(direct$outcome))) |>
+  select(any_of(direct$outcome), Study.Group) |>
+  pivot_longer(-Study.Group, names_to = "feature") |>
   ggplot() +
-  geom_boxplot(aes(value, feature, fill = treatment))
+  geom_boxplot(aes(value, reorder(feature, value, median), fill = Study.Group)) +
+  labs(
+    x = "log(1 + intensity)", 
+    y = "Metabolite",
+    fill = "Group"
+  )
 ```
 
 Pathwise indirect effects are those that appear when modifying the treatment
@@ -180,13 +233,11 @@ mediator treatment assignments, we average over direct edge treatment
 assignments.
 
 ```{r lasso_indirect}
-indirect <- indirect_pathwise(model, exper)
-indirect_sorted <- indirect |>
-  group_by(outcome, mediator ) |>
-  summarise(indirect_effect = mean(indirect_effect)) |>
-  ungroup() |>
-  slice_max(abs(indirect_effect), n = 12) |>
-  arrange(indirect_effect)
+indirect_sorted <- list(
+  CD = indirect_pathwise(model, exper, 1, 3),
+  UC = indirect_pathwise(model, exper, 2, 3)
+) #|>
+  #map_dfr(effect_summary, .id = "treatment")
 ```
 
 We can look at the effects which have the strongest indirect effects. These make
@@ -197,7 +248,8 @@ abundance of Copromorpha, which consequently increases the abundance of the
 metabolite.
 
 ```{r lasso_mediators_plot, fig.width = 12, fig.height = 9}
-plot_mediators(indirect_sorted, exper)
+indirect_sorted
+plot_mediators(indirect_sorted, exper, treatment = "Study.Group")
 ```
 
 We can create models where the effects have been deliberately removed, which can
