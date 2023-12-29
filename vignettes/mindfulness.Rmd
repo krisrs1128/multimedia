@@ -259,8 +259,10 @@ ggplot(combined_samples) +
     size = 0.4, outlier.size = 0.8, position = "identity",
     alpha = 0.7
   ) +
+  labs(x = "log(Relative Abundance)", y = "Genus", fill = "", col = "") +
   facet_grid(~ source, scales = "free") +
   theme(panel.border = element_rect(fill = NA))
+ggsave("~/Downloads/lnm_samples.png", dpi = 400)
 ```
 
 
