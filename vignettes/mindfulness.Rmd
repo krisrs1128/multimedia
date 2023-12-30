@@ -111,7 +111,7 @@ exper@outcomes <- exper@outcomes |>
 
 model <- multimedia(
   exper,
-  lnm_model(),
+  lnm_model(seed = .Random.seed[1]),
   glmnet_model(lambda = 0.5, alpha = 0)
   ) |>
   estimate(exper)
