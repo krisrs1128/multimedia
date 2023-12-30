@@ -2,7 +2,8 @@
 #' @importFrom ggplot2 ggplot aes .data geom_point labs
 #' @importFrom glue glue
 #' @export
-plot_mediators <- function(indirect_effects, exper, n_digit = 3, n_panels = NULL, treatment = "treatment") {
+plot_mediators <- function(indirect_effects, exper, n_digit = 3, n_panels = NULL, 
+                           treatment = "treatment", ...) {
   if (is.null(n_panels)) {
     n_panels <- min(nrow(indirect_effects), 12)
   }
@@ -18,6 +19,6 @@ plot_mediators <- function(indirect_effects, exper, n_digit = 3, n_panels = NULL
       labs(title = glue("IE: {round(effect, n_digit)}"))
   }
   
-  wrap_plots(p) +
+  wrap_plots(p, ...) +
     plot_layout(guides = "collect")
 }
