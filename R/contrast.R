@@ -158,3 +158,20 @@ indirect_pathwise <- function(model, exper = NULL, t1 = 1, t2 = 2) {
   bind_rows(result) |>
     select(outcome, mediator, direct_setting, contrast, indirect_effect)
 }
+
+#' @importFrom dplyr group_by summarize arrange filter slice_max
+#' @export
+effect_summary <- function(effects, N = 10) {
+  effect_type <- tail(colnames(effects), 1)
+  if ("mediator" %in% colnames(effects)) {
+    effects <- group_by(effects, outcome, mediator)
+  } else {
+    effects <- group_by(effects, outcome)
+  }
+  
+  effects |>
+    summarise(across(matches("effect"), mean)) |>
+    slice_max(.data[[effect_type]], n = N) |>
+    arrange(.data[[effect_type]]) |>
+    filter(.data[[effect_type]] != 0)
+}
