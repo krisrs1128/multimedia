@@ -74,7 +74,7 @@ library(phyloseq)
 library(tidyverse)
 library(multimedia)
 data(mindfulness)
-set.seed(20231222)
+set.seed(20231228)
 ```
 
 This package needs a `mediation_data` object to organize the pretreatment,

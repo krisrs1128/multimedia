@@ -149,9 +149,9 @@ combined <- metabolites |>
 
 exper <- mediation_data(
   combined, 
-  colnames(metabolites),
+  colnames(metabolites)[1:50],
   "Study.Group",
-  colnames(taxa)
+  colnames(taxa)[1:50]
 )
 
 exper
@@ -241,9 +241,9 @@ samples <- list(
   altered = sample(altered, profile = profile)@outcomes
 ) |>
   bind_rows(.id = "source") |>
-  bind_cols(treatment = rep(exper@treatments$treatment, 3)) |>
+  bind_cols(treatment = rep(exper@treatments$Study.Group, 3)) |>
   pivot_longer(direct$outcome) |>
-  mutate(name = factor(name, levels = direct$outcome))
+  mutate(name = factor(name, levels = unique(direct$outcome)))
 
 # visualize
 ggplot(samples) +
@@ -262,10 +262,9 @@ fs <- list(direct = direct_effect, indirect = indirect_overall)
 inference <- bootstrap(model, exper, fs)
 
 filter_outcomes <- inference$indirect |>
-  group_by(outcome) |>
-  summarise(indirect_effect = median(indirect_effect)) |>
-  slice_max(abs(indirect_effect), n = 60) |>
+  effect_summary() |>
   pull(outcome)
+
 p1 <- filter(inference$indirect, outcome %in% filter_outcomes) |>
   ggplot() +
   geom_vline(xintercept = 0) +
@@ -324,13 +323,9 @@ effect on microbe abundance. If this hadn't been present, and if the metabolite
 simply vanished, then that would be a direct effect.
 
 ```{r hurdle_indirect, fig.width = 12, fig.height = 9}
-indirect <- indirect_pathwise(model, exper2)
-indirect_sorted <- indirect |>
-  group_by(outcome, mediator) |>
-  summarise(indirect_effect = mean(indirect_effect)) |>
-  arrange(-abs(indirect_effect))
-
-plot_mediators(indirect_sorted, exper2)
+indirect_sorted <- indirect_pathwise(model, exper2) |>
+  effect_summary()
+plot_mediators(indirect_sorted, exper2, treatment = "Study.Group")
 ```
 
 We can see how well the hurdle model captured the zero pattern by simulating
@@ -345,9 +340,7 @@ step function preidctor to support the kinds of transitions we see above.
 profile <- setup_profile(model, exper@treatments, exper@treatments)
 samples <- sample(model, profile = profile, pretreatment = exper@pretreatments)
 colnames(samples@outcomes) <- colnames(exper2@outcomes)
-p <- plot_mediators(indirect_sorted, samples)
-p$patches[[1]] <- map(p$patches[[1]], ~ . + ylim(0, 1e5))
-p
+plot_mediators(indirect_sorted, samples, treatment = "Study.Group")
 ```
 
 Finally, we can look at direct effects from this model, which can be compared to
@@ -356,15 +349,12 @@ with exact zeros under treatment have been detected.
 
 ```{r hurdle_direct, fig.width = 6, height = 5}
 direct <- direct_effect(model, exper) |>
-  group_by(outcome) |>
-  summarise(direct_effect = mean(direct_effect)) |>
-  slice_max(abs(direct_effect), n = 10) |>
-  arrange(-abs(direct_effect))
+  effect_summary()
 
 combined |>
-  select(any_of(direct$outcome), treatment) |>
-  pivot_longer(-treatment, names_to = "feature") |>
-  mutate(feature = factor(feature, levels = rev(direct$outcome))) |>
+  select(any_of(direct$outcome), Study.Group) |>
+  pivot_longer(-Study.Group, names_to = "feature") |>
+  mutate(feature = factor(feature, levels = unique(direct$outcome))) |>
   ggplot() +
-  geom_boxplot(aes(value, feature, fill = treatment))
+  geom_boxplot(aes(value, feature, fill = Study.Group))
 ```
