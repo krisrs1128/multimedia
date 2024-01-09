@@ -41,6 +41,21 @@ spline_fun <- function(D = 2, knots = NULL, ...) {
     scale(H %*% t(B) + rnorm(nrow(H), ...))
   }
 }
+
+plot_exper <- function(y_hat) {
+  ggplot(y_hat) +
+    geom_point(aes(mediator, value, col = factor(treatment))) +
+    facet_grid(. ~ outcome) +
+    theme(legend.position = "bottom")
+}
+
+plot_samples <- function(fit, profile) {
+  exper_sample <- sample(fit, profile = profile)
+  exper_sample@outcomes |>
+    bind_cols(exper_sample@mediators, t_outcome) |>
+    pivot_longer(starts_with("outcome"), names_to = "outcome") |>
+    plot_exper()
+}
 ```
 
 
@@ -48,8 +63,8 @@ This model has two outcomes and a single mediator. We use random spline
 functions for the direct effect.
 
 ```{r}
-N <- 250
-tau <- rep(1, 2)
+N <- 500
+tau <- 1:2
 
 treatment <- rep(c(0, 1), each = N / 2)
 mediator <- rnorm(N, 1.5 * treatment, 1)
@@ -57,15 +72,48 @@ f <- spline_fun(sd = 0.3)
 
 y <- f(mediator) + matrix(treatment, ncol = 1) %*% tau
 colnames(y) <- glue("outcome_{1:2}")
-xy_data <- bind_cols(y, mediator = mediator, treatment = treatment) |>
-  pivot_longer(starts_with("outcome"), names_to = "outcome")
+xy_data <- bind_cols(y, mediator = mediator, treatment = factor(treatment))
 
-ggplot(xy_data) +
-  geom_point(aes(mediator, value, col = factor(treatment))) +
-  facet_grid(outcome ~ .)
+pivot_longer(xy_data, starts_with("outcome"), names_to = "outcome") |>
+  plot_exper()
 ```
 
 ```{r}
+exper <- mediation_data(xy_data, starts_with("outcome"), "treatment", "mediator")
 
+fit <- multimedia(
+    exper,
+    outcome_estimator = rf_model()
+  ) |>
+  estimate(exper)
+```
+
+```{r}
+n_pred <- 250
+t_mediator <- tibble(treatment = factor(rep(unique(treatment), each = n_pred / 2)))
+t_outcome <- tibble(treatment = factor(rep(unique(treatment), each = n_pred / 2)))
+profile <- setup_profile(fit, t_mediator, t_outcome)
+plot_samples(fit, profile)
+```
+
+```{r}
+# the true effects are 1, 2 
+direct_effect(fit) |>
+  effect_summary()
+
+# the true effect is +/- 1.5
+indirect_overall(fit) |>
+  effect_summary()
+```
+We can analyze the nullified effects.
+
+```{r}
+altered_m <- nullify(fit, "T->M") |>
+  estimate(exper)
+altered_ty <- nullify(fit, "T->Y") |>
+  estimate(exper)
+
+plot_samples(altered_m, profile)
+plot_samples(altered_ty, profile)
 ```
 
