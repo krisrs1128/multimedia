@@ -102,6 +102,7 @@ estimate <- function(model, exper) {
 }
 
 #' Linear Model across Responses
+#' @export
 lm_model <- function() {
   new(
     "model",
@@ -242,7 +243,7 @@ lnm_sampler <- function(fit, newdata = NULL, indices = NULL, ...) {
   if (is.null(indices)) {
     indices <- seq_along(nm)
   }
-  
+
   sample(fit, newdata = newdata, ...)[, nm[indices], drop = FALSE]
 }
 
@@ -271,7 +272,7 @@ rf_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
   y_hats <- list()
   for (i in indices) {
     sigma <- sqrt(fits[[i]]$prediction.error)
-    y_ <- predict(fits[[i]], newdata = newdata, ...)$predictions
+    y_ <- predict(fits[[i]], data = newdata, ...)$predictions
     y_hats[[nm[i]]] <- y_ + rnorm(length(y_), 0, sigma)
   }
 
