@@ -149,9 +149,9 @@ combined <- metabolites |>
 
 exper <- mediation_data(
   combined, 
-  colnames(metabolites)[1:50],
+  colnames(metabolites),
   "Study.Group",
-  colnames(taxa)[1:50]
+  colnames(taxa)
 )
 
 exper
