@@ -1,0 +1,71 @@
+---
+title: "illustration"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{illustration}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(glue)
+library(multimedia)
+library(splines)
+library(tidyverse)
+theme_set(theme_classic())
+set.seed(20240108)
+```
+
+```{r, echo = FALSE}
+matnorm <- \(n, m, ...) matrix(rnorm(n * m, ...), n, m)
+
+#' @examples
+#' x <- seq(-2, 2, length.out = 100)
+#' f <- spline_fun(sd = 0.3)
+#' fx <- f(x)
+#' plot(x, fx[, 1])
+spline_fun <- function(D = 2, knots = NULL, ...) {
+  knots <- seq(-2, 2, length.out = 5)
+  h_dim <- ns(1:10, knots = knots, intercept = TRUE)
+  B <- matnorm(D, ncol(h_dim))
+  
+  function(x) {
+    H <- ns(x, knots = knots, intercept = TRUE)
+    scale(H %*% t(B) + rnorm(nrow(H), ...))
+  }
+}
+```
+
+
+This model has two outcomes and a single mediator. We use random spline
+functions for the direct effect.
+
+```{r}
+N <- 250
+tau <- rep(1, 2)
+
+treatment <- rep(c(0, 1), each = N / 2)
+mediator <- rnorm(N, 1.5 * treatment, 1)
+f <- spline_fun(sd = 0.3)
+
+y <- f(mediator) + matrix(treatment, ncol = 1) %*% tau
+colnames(y) <- glue("outcome_{1:2}")
+xy_data <- bind_cols(y, mediator = mediator, treatment = treatment) |>
+  pivot_longer(starts_with("outcome"), names_to = "outcome")
+
+ggplot(xy_data) +
+  geom_point(aes(mediator, value, col = factor(treatment))) +
+  facet_grid(outcome ~ .)
+```
+
+```{r}
+
+```
+
