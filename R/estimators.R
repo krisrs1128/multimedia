@@ -271,7 +271,7 @@ rf_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
   nm <- names(fits)
   y_hats <- list()
   for (i in indices) {
-    sigma <- sqrt(fits[[i]]$prediction.error)
+    sigma <- fits[[i]]$prediction.error
     y_ <- predict(fits[[i]], data = newdata, ...)$predictions
     y_hats[[nm[i]]] <- y_ + rnorm(length(y_), 0, sigma)
   }
