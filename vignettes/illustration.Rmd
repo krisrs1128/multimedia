@@ -64,7 +64,7 @@ matnorm <- \(n, m, ...) matrix(rnorm(n * m, ...), n, m)
 #' fx <- f(x)
 #' plot(x, fx[, 1])
 spline_fun <- function(D = 2, knots = NULL, ...) {
-  knots <- seq(-2, 2, length.out = 5)
+  knots <- seq(-4, 4, length.out = 5)
   h_dim <- ns(1:10, knots = knots, intercept = TRUE)
   B <- matnorm(D, ncol(h_dim))
   
@@ -74,19 +74,19 @@ spline_fun <- function(D = 2, knots = NULL, ...) {
   }
 }
 
-plot_exper <- function(y_hat) {
-  ggplot(y_hat) +
+plot_exper <- function(fit, profile) {
+  pivot_samples(fit, profile) |>
+    ggplot() +
     geom_point(aes(mediator, value, col = factor(treatment))) +
     facet_grid(. ~ outcome) +
     theme(legend.position = "bottom")
 }
 
-plot_samples <- function(fit, profile) {
+pivot_samples <- function(fit, profile) {
   exper_sample <- sample(fit, profile = profile)
   exper_sample@outcomes |>
     bind_cols(exper_sample@mediators, t_outcome) |>
-    pivot_longer(starts_with("outcome"), names_to = "outcome") |>
-    plot_exper()
+    pivot_longer(starts_with("outcome"), names_to = "outcome")
 }
 ```
 
@@ -95,41 +95,40 @@ This model has two outcomes and a single mediator. We use random spline
 functions for the direct effect.
 
 ```{r}
-N <- 500
-tau <- 1:2
+N <- 5e3
+tau <- rep(2, 2)
 
 treatment <- rep(c(0, 1), each = N / 2)
-mediator <- rnorm(N, 1.5 * treatment, 1)
-f <- spline_fun(sd = 0.3)
+mediator <- rnorm(N, 2 * (treatment - 0.5), 2)
+f <- spline_fun(sd = 0.2)
 
 y <- f(mediator) + matrix(treatment, ncol = 1) %*% tau
 colnames(y) <- glue("outcome_{1:2}")
 xy_data <- bind_cols(y, mediator = mediator, treatment = factor(treatment))
 
-pivot_longer(xy_data, starts_with("outcome"), names_to = "outcome") |>
-  plot_exper()
+xy_long <- list(
+  true = pivot_longer(xy_data, starts_with("outcome"), names_to = "outcome")
+)
 ```
 
 ```{r}
 exper <- mediation_data(xy_data, starts_with("outcome"), "treatment", "mediator")
-
 fit <- multimedia(
     exper,
-    outcome_estimator = rf_model()
+    outcome_estimator = rf_model(num.trees = 1e3)
   ) |>
   estimate(exper)
 ```
 
 ```{r}
-n_pred <- 250
-t_mediator <- tibble(treatment = factor(rep(unique(treatment), each = n_pred / 2)))
-t_outcome <- tibble(treatment = factor(rep(unique(treatment), each = n_pred / 2)))
+t_mediator <- tibble(treatment = factor(rep(unique(treatment), each = N / 2)))
+t_outcome <- tibble(treatment = factor(rep(unique(treatment), each = N / 2)))
 profile <- setup_profile(fit, t_mediator, t_outcome)
-plot_samples(fit, profile)
+xy_long[["fitted"]] <- pivot_samples(fit, profile)
 ```
 
 ```{r}
-# the true effects are 1, 2 
+# the true effects are 2, 2 
 direct_effect(fit) |>
   effect_summary()
 
@@ -145,8 +144,52 @@ altered_m <- nullify(fit, "T->M") |>
 altered_ty <- nullify(fit, "T->Y") |>
   estimate(exper)
 
-plot_samples(altered_m, profile)
-plot_samples(altered_ty, profile)
+fit_lm <- multimedia(
+    exper,
+    outcome_estimator = lm_model()
+  ) |>
+  estimate(exper)
+
+xy_long <- c(
+  xy_long,
+  list(
+    altered_m = pivot_samples(altered_m, profile),
+    altered_ty = pivot_samples(altered_ty, profile),
+    linear = pivot_samples(fit_lm, profile)
+  )
+) |>
+  bind_rows(.id = "fit_type") |>
+  mutate(
+    fit_type = case_when(
+      fit_type == "linear" ~ "Linear Model",
+      fit_type == "true" ~ "Original Data",
+      fit_type == "fitted" ~ "RF (Full)",
+      fit_type == "altered_ty" ~ "RF (T-\\->Y)",
+      fit_type == "altered_m" ~ "RF (T-\\->M)"
+    ),
+    fit_type = factor(fit_type, levels = c("Original Data", "RF (Full)", "RF (T-\\->M)", "RF (T-\\->Y)", "Linear Model")),
+    outcome = case_when(
+      outcome == "outcome_1" ~ "Y[1]",
+      outcome == "outcome_2" ~ "Y[2]"
+    )
+  )
+```
+
+
+```{r, fig.width = 8, fig.height = 3}
+xy_long |>
+  sample_frac(size = 0.1) |>
+  ggplot(aes(mediator, col = treatment)) +
+  geom_point(aes(y = value), size = 0.4, alpha = 0.9) +
+  geom_rug(alpha = 0.99, linewidth = 0.1) +
+  facet_grid(outcome ~ fit_type) +
+  labs(x = expression("Mediator M"), y = "Outcome", col = "Treatment") +
+  theme(
+    strip.text = element_text(size = 11),
+    axis.title = element_text(size = 14),
+    legend.title = element_text(size = 12)
+  )
+#ggsave("~/Desktop/writing/202304/figure/rf_illustration.png", height = 3, widt = 8)
 ```
 
 ```{r}
@@ -160,16 +203,3 @@ ggplot(bootstraps$indirect_overall) +
   geom_histogram(aes(indirect_effect)) +
   facet_wrap(~ outcome)
 ```
-
-Here is a linear model version of the above.
-
-```{r}
-fit <- multimedia(
-    exper,
-    outcome_estimator = lm_model()
-  ) |>
-  estimate(exper)
-
-plot_samples(fit, profile)
-```
-
