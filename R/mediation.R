@@ -58,10 +58,9 @@ graph_specification <- function(outcomes, treatments, mediators, pretreatments) 
   )
 }
 
-#' @importFrom tidygraph %E>% as_tbl_graph activate
+#' @importFrom tidygraph %E>% tbl_graph activate
 expand_edges <- function(input, output, input_name, output_name) {
-  expand.grid(input, output) |>
-    as_tbl_graph(node_key = "name") |>
+  tbl_graph(edges = expand.grid(input, output), node_key = "name") |>
     mutate(
       node_type = case_when(
         name %in% input ~ input_name,
