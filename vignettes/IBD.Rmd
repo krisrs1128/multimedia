@@ -62,6 +62,7 @@ suggest novel microbe-metabolite relationships.
 library(brms)
 library(compositions)
 library(ggdist)
+library(glue)
 library(patchwork)
 library(tidyverse)
 library(vroom)
@@ -236,7 +237,7 @@ ggplot(coords) +
   scale_size(range = c(.1, 1.5), breaks = c(0, 4, 8)) +
   labs(
     x = glue("MDS1 [{eig(mds$eig, 1)}%]"),
-    y = glue("MDS1 [{eig(mds$eig, 2)}%]"),
+    y = glue("MDS2 [{eig(mds$eig, 2)}%]"),
     size = "Metabolite Abundance",
     col = "Group"
   ) +
@@ -264,12 +265,13 @@ maybe the microbe eats the metabolite. In any case, IBD seems to decrease the
 abundance of Copromorpha, which consequently increases the abundance of the
 metabolite.
 
-```{r lasso_mediators_plot, fig.width = 12, fig.height = 6}
+```{r lasso_mediators_plot, fig.width = 9, fig.height = 4.5}
 p <- indirect_sorted %>%
-  split(.$treatment) |>
-  map(~ plot_mediators(., exper, treatment = "Study.Group", nrow = 2)) +
-  labs(col = "Group")
-
+        split(.$treatment) |>
+        map(~ arrange(., -indirect_effect) |>
+              plot_mediators(exper, treatment = "Study.Group", nrow = 2)
+        )
+    
 p[["CD"]]
 ```
 
@@ -322,7 +324,8 @@ p1 <- filter(inference$indirect, outcome %in% filter_outcomes) |>
   stat_slabinterval(
     aes(indirect_effect, reorder(outcome, indirect_effect, median)),
     .width = c(.66, .95)
-  ) 
+  )  +
+  labs(x = "Indirect Effect", y = "Metabolite")
 
 filter_outcomes <- inference$direct |>
   group_by(outcome) |>
@@ -335,9 +338,12 @@ p2 <- filter(inference$direct, outcome %in% filter_outcomes) |>
   stat_pointinterval(
     aes(direct_effect, reorder(outcome, direct_effect, median)),
     .width = c(.66, .95)
-  )
+  ) +
+  labs(x = "Direct Effect", y = "Metabolite")
 
 p1 | p2
+knitr::opts_chunk$set(eval = FALSE)
+save.image("~/Downloads/ibd.RData")
 ```
 
 # Hurdle-Lognormal Approach

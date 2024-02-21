@@ -344,10 +344,10 @@ exper_clr <- exper
 exper_clr@outcomes <- normalize(exper@outcomes)
 
 bind_mediation(exper_clr) |>
-  select(subject, starts_with("mediator"), treatment, Blautia, Faecalibacterium) |>
+  select(subject, starts_with("mediator"), treatment, Roseburia, Blautia, Faecalibacterium) |>
   pivot_longer(starts_with("mediator"), names_to = "mediator") |>
   mutate(mediator = str_remove(mediator, "mediator.")) |>
-  pivot_longer(Blautia:Faecalibacterium, names_to = "taxon", values_to = "abundance") |>
+  pivot_longer(Roseburia:Faecalibacterium, names_to = "taxon", values_to = "abundance") |>
   group_by(subject, mediator, treatment, taxon) |>
   summarise(abundance = mean(abundance), value = mean(value)) |>
   ggplot() +
@@ -357,9 +357,11 @@ bind_mediation(exper_clr) |>
   theme(
     axis.title = element_text(size = 14),
     strip.text = element_text(size = 12),
+    strip.text.y = element_text(size = 12, angle = 0),
     legend.text = element_text(size = 12),
     panel.border = element_rect(fill = NA)
   )
+ggsave("~/Downloads/lnm_associations.png", width = 7, height = 4.3)
 ```
 
 Here is the analog for indirect pathwise effects. Since these effects
@@ -374,6 +376,7 @@ ggplot(fdr, aes(indirect_effect, fdr_hat)) +
   geom_point(aes(col = source, size = keep)) +
   scale_size_discrete(range = c(.2, 3)) +
   facet_wrap(~ mediator)
+knitr::opts_chunk$set(eval = FALSE)
 ```
 
 # Random Forests
