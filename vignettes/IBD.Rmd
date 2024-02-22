@@ -140,7 +140,7 @@ taxa <- clr(taxa) |>
   simplify_tax_names()
 
 metabolites <- log(1 + metabolites) |>
-  filter_mean(threshold = 4) |>
+  filter_mean(threshold = 6) |>
   select(matches(annotated_metabolites(metabolites))) |>
   simplify_metab_names()
 
@@ -180,10 +180,14 @@ direct <- list(
   CD = direct_effect(model, exper, 1, 3),
   UC = direct_effect(model, exper, 2, 3)
 ) |>
-  map_dfr(effect_summary, .id = "treatment")
+  map_dfr(effect_summary, N = Inf, .id = "treatment")
   
+vis_direct <- direct |>
+  slice_max(abs(direct_effect), n = 20) |>
+  pull(outcome)
+
 combined |>
-  select(any_of(direct$outcome), Study.Group) |>
+  select(any_of(vis_direct), Study.Group) |>
   pivot_longer(-Study.Group, names_to = "feature") |>
   ggplot() +
   geom_boxplot(aes(value, reorder(feature, value, median), fill = Study.Group)) +
@@ -198,22 +202,23 @@ The block below calculates the analogous overall indirect effects. We're
 particularly interested in the difference between metabolites that have strong
 indirect vs. direct effects, because these are expected to have different
 relationships with the microbiome. To simplify this comparison, we combine the
-top direct and indirect effects in the object `overall_effects`.
+top direct and indirect effects in the object `top_effects`.
 
 ```{r}
-indirect_overall <- list(
+indirect_effect <- list(
   CD = indirect_overall(model, exper, 1, 3),
   UC = indirect_overall(model, exper, 2, 3)
 )
 
 top_direct <- rename(direct, effect = direct_effect)
-top_indirect <- rename(bind_rows(indirect_overall), effect = indirect_effect)
+top_indirect <- rename(bind_rows(indirect_effect), effect = indirect_effect)
 top_effects <- list(direct = top_direct, indirect = top_indirect) |>
-  bind_rows( .id = "type") |>
-  group_by(outcome, type) |>
-  summarise(effect = mean(abs(effect))) |>
-  group_by(type) |>
-  slice_max(abs(effect), n = 3)
+  bind_rows( .id = "type")
+
+top_effects <- bind_rows(
+  filter(top_effects, outcome %in% vis_outcomes[1:3], type == "indirect"),
+  filter(top_effects, outcome %in% vis_outcomes[4:6], type == "direct"),
+)
 ```
 
 The plot below is an MDS of microbiome compositions where point sizes represent
@@ -226,19 +231,22 @@ through the mediators, which in this case are microbiome compositions.
 eig <- \(x, k) 100 * round(x[k] / sum(x), 4)
 
 mds <- cmdscale(dist(exper@mediators), eig = TRUE, k = 2)
+vis_outcomes <- c("m0181_hydrocinnamic_acid", "m1303_lithocholate", "m0036_creatinine", "m0253_sphingosine", "m1478_C182_CE", "m0295_arginine")
 coords <- data.frame(mds$points) |>
   bind_cols(exper@treatments) |>
-  bind_cols(exper@outcomes[, unique(top_effects$outcome)]) |>
+  bind_cols(exper@outcomes[, vis_outcomes]) |>
   pivot_longer(top_effects$outcome, names_to = "outcome", values_to = "abundance") |>
-  left_join(top_effects)
+  left_join(top_effects) |>
+  group_by(outcome) |>
+  mutate(abundance_quantile = as.integer(as.factor(cut(abundance, 10))) / 10)
 
 ggplot(coords) +
-  geom_point(aes(X1, X2, col = Study.Group, size = abundance)) +
-  scale_size(range = c(.1, 1.5), breaks = c(0, 4, 8)) +
+  geom_point(aes(X1, X2, col = Study.Group, size = abundance_quantile)) +
+  scale_size_area(max_size = 1.5, breaks = c(0.25, 0.5, 0.75)) +
   labs(
     x = glue("MDS1 [{eig(mds$eig, 1)}%]"),
     y = glue("MDS2 [{eig(mds$eig, 2)}%]"),
-    size = "Metabolite Abundance",
+    size = "Metabolite Abundance Quantile",
     col = "Group"
   ) +
   facet_wrap(~ type + reorder(outcome, -abundance))
@@ -299,7 +307,7 @@ samples <- list(
   mutate(name = factor(name, levels = unique(direct$outcome)))
 
 # visualize
-ggplot(samples) +
+ggplot(filter(samples, samples$name %in% unique(samples$name)[1:20])) +
   geom_boxplot(aes(value, name, fill = treatment)) +
   facet_wrap(~ source)
 ```
@@ -310,12 +318,15 @@ little problematic to form bootstrap confidence intervals for sparse regression.
 We can still interpret the full bootstrap distributions, though. Effects that
 have large nonzero components have more evidence of being real.
 
-```{r lasso_bootstrap, fig.width = 8.5, fig.height = 7}
+```{r lasso_bootstrap, fig.width = 9, fig.height = 3.5}
 fs <- list(direct = direct_effect, indirect = indirect_overall)
-inference <- bootstrap(model, exper, fs)
+inference <- bootstrap(model, exper, fs, B = 1000)
 
 filter_outcomes <- inference$indirect |>
-  effect_summary() |>
+  effect_summary(N = Inf) |>
+  group_by(outcome) |>
+  summarise(indirect_effect = median(indirect_effect)) |>
+  slice_max(abs(indirect_effect), n = 20) |>
   pull(outcome)
 
 p1 <- filter(inference$indirect, outcome %in% filter_outcomes) |>
@@ -330,19 +341,18 @@ p1 <- filter(inference$indirect, outcome %in% filter_outcomes) |>
 filter_outcomes <- inference$direct |>
   group_by(outcome) |>
   summarise(direct_effect = median(direct_effect)) |>
-  slice_max(abs(direct_effect), n = 60) |>
+  slice_max(abs(direct_effect), n = 20) |>
   pull(outcome)
 p2 <- filter(inference$direct, outcome %in% filter_outcomes) |>
   ggplot() +
   geom_vline(xintercept = 0) +
-  stat_pointinterval(
+  stat_slabinterval(
     aes(direct_effect, reorder(outcome, direct_effect, median)),
     .width = c(.66, .95)
   ) +
   labs(x = "Direct Effect", y = "Metabolite")
 
 p1 | p2
-knitr::opts_chunk$set(eval = FALSE)
 save.image("~/Downloads/ibd.RData")
 ```
 
