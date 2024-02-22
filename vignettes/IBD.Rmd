@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   warning = FALSE,
-  message = FALSE, 
+  message = FALSE,
   eval = TRUE,
   cache = TRUE,
   dev.args = list(bg = "transparent"),
@@ -26,7 +26,7 @@ options(crayon.enabled = TRUE)
 
 library(tidyverse)
 options(
-  ggplot2.discrete.colour = c("#9491D9", "#F24405", "#3F8C61",  "#8C2E62", "#F2B705", "#11A0D9"),
+  ggplot2.discrete.colour = c("#9491D9", "#F24405", "#3F8C61", "#8C2E62", "#F2B705", "#11A0D9"),
   ggplot2.discrete.fill = c("#9491D9", "#F24405", "#3F8C61", "#8C2E62", "#F2B705", "#11A0D9"),
   ggplot2.continuous.colour = function(...) scale_color_distiller(palette = "Spectral", ...),
   ggplot2.continuous.fill = function(...) scale_fill_distiller(palette = "Spectral", ...)
@@ -35,13 +35,13 @@ options(
 library(tidyverse)
 th <- theme_classic() +
   theme(
-    panel.background = element_rect(fill="transparent"),
-    strip.background = element_rect(fill="transparent"),
-    plot.background = element_rect(fill="transparent", color=NA),
+    panel.background = element_rect(fill = "transparent"),
+    strip.background = element_rect(fill = "transparent"),
+    plot.background = element_rect(fill = "transparent", color = NA),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
-    legend.background = element_rect(fill="transparent"),
-    legend.box.background = element_rect(fill="transparent"),
+    legend.background = element_rect(fill = "transparent"),
+    legend.box.background = element_rect(fill = "transparent"),
     legend.position = "bottom"
   )
 
@@ -119,16 +119,16 @@ simplify_metab_names <- function(x) {
     str_remove("HILIC|C8|C18") |>
     str_remove("pos|neg") |>
     str_remove("__")
-    
+
   colnames(x) <- paste0("m", new_names)
   x
 }
 
 annotated_metabolites <- function(metabolites) {
-  str_remove(colnames(metabolites), "C18-neg_Cluster_[0-9]+: ") |> 
-    str_remove("C8-pos_Cluster_[0-9]+: ") |> 
-    str_remove("HILIC-neg_Cluster_[0-9]+: ") |> 
-    str_remove("HILIC-pos_Cluster_[0-9]+: ") |> 
+  str_remove(colnames(metabolites), "C18-neg_Cluster_[0-9]+: ") |>
+    str_remove("C8-pos_Cluster_[0-9]+: ") |>
+    str_remove("HILIC-neg_Cluster_[0-9]+: ") |>
+    str_remove("HILIC-pos_Cluster_[0-9]+: ") |>
     unique() |>
     setdiff("NA")
 }
@@ -149,7 +149,7 @@ combined <- metabolites |>
   as_tibble()
 
 exper <- mediation_data(
-  combined, 
+  combined,
   colnames(metabolites),
   "Study.Group",
   colnames(taxa)
@@ -181,7 +181,7 @@ direct <- list(
   UC = direct_effect(model, exper, 2, 3)
 ) |>
   map_dfr(effect_summary, N = Inf, .id = "treatment")
-  
+
 vis_direct <- direct |>
   slice_max(abs(direct_effect), n = 20) |>
   pull(outcome)
@@ -192,7 +192,7 @@ combined |>
   ggplot() +
   geom_boxplot(aes(value, reorder(feature, value, median), fill = Study.Group)) +
   labs(
-    x = "log(1 + intensity)", 
+    x = "log(1 + intensity)",
     y = "Metabolite",
     fill = "Group"
   )
@@ -213,7 +213,7 @@ indirect_effect <- list(
 top_direct <- rename(direct, effect = direct_effect)
 top_indirect <- rename(bind_rows(indirect_effect), effect = indirect_effect)
 top_effects <- list(direct = top_direct, indirect = top_indirect) |>
-  bind_rows( .id = "type")
+  bind_rows(.id = "type")
 
 top_effects <- bind_rows(
   filter(top_effects, outcome %in% vis_outcomes[1:3], type == "indirect"),
@@ -275,11 +275,10 @@ metabolite.
 
 ```{r lasso_mediators_plot, fig.width = 9, fig.height = 4.5}
 p <- indirect_sorted %>%
-        split(.$treatment) |>
-        map(~ arrange(., -indirect_effect) |>
-              plot_mediators(exper, treatment = "Study.Group", nrow = 2)
-        )
-    
+  split(.$treatment) |>
+  map(~ arrange(., -indirect_effect) |>
+    plot_mediators(exper, treatment = "Study.Group", nrow = 2))
+
 p[["CD"]]
 ```
 
@@ -309,7 +308,7 @@ samples <- list(
 # visualize
 ggplot(filter(samples, samples$name %in% unique(samples$name)[1:20])) +
   geom_boxplot(aes(value, name, fill = treatment)) +
-  facet_wrap(~ source)
+  facet_wrap(~source)
 ```
 
 How can we understand the uncertainty of the estimated models? One approach is
@@ -335,7 +334,7 @@ p1 <- filter(inference$indirect, outcome %in% filter_outcomes) |>
   stat_slabinterval(
     aes(indirect_effect, reorder(outcome, indirect_effect, median)),
     .width = c(.66, .95)
-  )  +
+  ) +
   labs(x = "Indirect Effect", y = "Metabolite")
 
 filter_outcomes <- inference$direct |>
@@ -379,7 +378,7 @@ exper2@mediators <- exper2@mediators[, 1:50]
 model <- multimedia(
   exper2,
   brms_model(family = hurdle_lognormal())
-  )|>
+) |>
   estimate(exper2)
 ```
 

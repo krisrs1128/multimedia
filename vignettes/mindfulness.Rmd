@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   warning = FALSE,
-  message = FALSE, 
+  message = FALSE,
   eval = TRUE,
   cache = TRUE,
   dev.args = list(bg = "transparent"),
@@ -26,7 +26,7 @@ options(crayon.enabled = TRUE)
 
 library(tidyverse)
 options(
-  ggplot2.discrete.colour = c("#9491D9", "#F24405", "#3F8C61",  "#8C2E62", "#F2B705", "#11A0D9"),
+  ggplot2.discrete.colour = c("#9491D9", "#F24405", "#3F8C61", "#8C2E62", "#F2B705", "#11A0D9"),
   ggplot2.discrete.fill = c("#9491D9", "#F24405", "#3F8C61", "#8C2E62", "#F2B705", "#11A0D9"),
   ggplot2.continuous.colour = function(...) scale_color_distiller(palette = "Spectral", ...),
   ggplot2.continuous.fill = function(...) scale_fill_distiller(palette = "Spectral", ...)
@@ -34,13 +34,13 @@ options(
 
 th <- theme_classic() +
   theme(
-    panel.background = element_rect(fill="transparent"),
-    strip.background = element_rect(fill="transparent"),
-    plot.background = element_rect(fill="transparent", color=NA),
+    panel.background = element_rect(fill = "transparent"),
+    strip.background = element_rect(fill = "transparent"),
+    plot.background = element_rect(fill = "transparent", color = NA),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
-    legend.background = element_rect(fill="transparent"),
-    legend.box.background = element_rect(fill="transparent"),
+    legend.background = element_rect(fill = "transparent"),
+    legend.box.background = element_rect(fill = "transparent"),
     legend.position = "bottom"
   )
 
@@ -113,7 +113,7 @@ model <- multimedia(
   exper,
   lnm_model(seed = .Random.seed[1]),
   glmnet_model(lambda = 0.5, alpha = 0)
-  ) |>
+) |>
   estimate(exper)
 ```
 
@@ -205,7 +205,7 @@ list(
   pivot_longer(starts_with("mediator"), names_to = "mediator") |>
   ggplot() +
   geom_boxplot(aes(value, reorder(mediator, value, median), fill = treatment)) +
-  facet_grid(~ source)
+  facet_grid(~source)
 ```
 
 Here is the analogous alteration that removes all direct effects. The $x$-axis
@@ -239,7 +239,7 @@ taxa_order <- normalize(exper@outcomes) |>
   apply(2, \(x) {
     x[is.infinite(x)] <- NA
     median(x, na.rm = TRUE)
-  })|>
+  }) |>
   order()
 
 combined_samples <- list(
@@ -260,7 +260,7 @@ ggplot(combined_samples) +
     alpha = 0.7
   ) +
   labs(x = "log(Relative Abundance)", y = "Genus", fill = "", col = "") +
-  facet_grid(~ source, scales = "free") +
+  facet_grid(~source, scales = "free") +
   theme(panel.border = element_rect(fill = NA))
 ggsave("~/Downloads/lnm_samples.png", dpi = 400)
 ```
@@ -276,7 +276,7 @@ combined_samples |>
     position = "identity", width = 1,
     alpha = 0.7
   ) +
-  facet_grid(~ source, scales = "free") +
+  facet_grid(~source, scales = "free") +
   scale_x_continuous(expand = c(0, 0)) +
   theme(panel.border = element_rect(fill = NA))
 ```
@@ -330,7 +330,7 @@ ggplot(fdr_data, aes(effect, fdr_hat)) +
   geom_point(aes(col = source, size = keep)) +
   scale_size_discrete("Selected", range = c(.5, 3), guide = FALSE) +
   scale_y_continuous(limits = c(-0.1, 0.55)) +
-  facet_wrap(~ effect_type, scales = "free_x") +
+  facet_wrap(~effect_type, scales = "free_x") +
   theme(
     axis.text.x = element_text(size = 12),
     axis.text.y = element_text(size = 12),
@@ -375,7 +375,7 @@ ggplot(fdr, aes(indirect_effect, fdr_hat)) +
   labs(x = "Indirect Effect", y = "Estimated False Discovery Rate") +
   geom_point(aes(col = source, size = keep)) +
   scale_size_discrete(range = c(.2, 3)) +
-  facet_wrap(~ mediator)
+  facet_wrap(~mediator)
 knitr::opts_chunk$set(eval = FALSE)
 ```
 
@@ -392,10 +392,10 @@ from the `compositions` package.
 exper_clr <- exper
 exper_clr@outcomes <- normalize(exper@outcomes)
 model <- multimedia(
-    exper_clr, 
-    rf_model(num.trees = 50),
-    glmnet_model(lambda = 0.5, alpha = 0)
-  ) |>
+  exper_clr,
+  rf_model(num.trees = 50),
+  glmnet_model(lambda = 0.5, alpha = 0)
+) |>
   estimate(exper_clr)
 ```
 
@@ -457,7 +457,7 @@ p1 <- ggplot(inference$indirect) +
   stat_slabinterval(
     aes(indirect_effect, reorder(outcome, indirect_effect, median)),
     .width = c(.66, .95)
-  ) + 
+  ) +
   labs(title = "Indirect Effects", y = "Taxon", x = "Effect (CLR Scale)")
 
 p2 <- ggplot(inference$direct) +
@@ -466,7 +466,7 @@ p2 <- ggplot(inference$direct) +
     aes(direct_effect, reorder(outcome, direct_effect, median)),
     .width = c(.66, .95)
   ) +
-  labs(title = "Direct Effects", y= "Taxon", x = "Effect (CLR Scale)")
+  labs(title = "Direct Effects", y = "Taxon", x = "Effect (CLR Scale)")
 
 p1 | p2
 ```
