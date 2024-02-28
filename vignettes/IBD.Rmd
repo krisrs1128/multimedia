@@ -215,6 +215,7 @@ top_indirect <- rename(bind_rows(indirect_effect), effect = indirect_effect)
 top_effects <- list(direct = top_direct, indirect = top_indirect) |>
   bind_rows(.id = "type")
 
+vis_outcomes <- c("m0181_hydrocinnamic_acid", "m1303_lithocholate", "m0036_creatinine", "m0253_sphingosine", "m1478_C182_CE", "m0295_arginine")
 top_effects <- bind_rows(
   filter(top_effects, outcome %in% vis_outcomes[1:3], type == "indirect"),
   filter(top_effects, outcome %in% vis_outcomes[4:6], type == "direct"),
@@ -231,7 +232,6 @@ through the mediators, which in this case are microbiome compositions.
 eig <- \(x, k) 100 * round(x[k] / sum(x), 4)
 
 mds <- cmdscale(dist(exper@mediators), eig = TRUE, k = 2)
-vis_outcomes <- c("m0181_hydrocinnamic_acid", "m1303_lithocholate", "m0036_creatinine", "m0253_sphingosine", "m1478_C182_CE", "m0295_arginine")
 coords <- data.frame(mds$points) |>
   bind_cols(exper@treatments) |>
   bind_cols(exper@outcomes[, vis_outcomes]) |>
