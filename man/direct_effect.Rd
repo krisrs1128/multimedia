@@ -6,6 +6,37 @@
 \usage{
 direct_effect(model, exper = NULL, t1 = 1, t2 = 2)
 }
+\arguments{
+\item{model}{An object of class multimedia containing the estimated mediation
+and outcome models whose mediation and outcome predictions we want to
+compare.}
+
+\item{exper}{An object of class multimedia_data containing the mediation and
+outcome data from which the direct effects are to be estimated.}
+
+\item{t1}{The reference level of the treatment to be used when computing the
+direct effect.}
+
+\item{t2}{The alternative level of the treatment to be used when computing
+the direct effect.}
+}
+\value{
+A data.frame summarizing the direct effects associated with different
+settings of j in the equation above.
+}
 \description{
-Direct Effects from Estimated Model
+Estimate direct effects associated with a multimedia model. These estimates
+are formed using Equation (10) of our preprint:
+}
+\details{
+\deqn{
+\frac{1}{2} \sum_{j = 0}^{1} \sum_{i = 1}^{N} \hat{Y}_{i}(t2, \hat{M}(t2)) - \hat{Y}_{i}(t1, \hat{M}(t1)) 
+}
+
+Rather than providing this average, this function returns the estimated
+difference for each $j$. To average across all j, this result can be passed
+to the ' \code{effect_summary} function.
+}
+\seealso{
+effect_summary
 }

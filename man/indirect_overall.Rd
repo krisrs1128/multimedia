@@ -7,7 +7,15 @@
 indirect_overall(model, exper = NULL, t1 = 1, t2 = 2)
 }
 \description{
-Overall Indirect Effect
+Direct Effects from Estimated Model
+}
+\details{
+Estimate direct effects associated with a multimedia model. These estimates
+are formed using Equation (10) of our preprint:
+
+\deqn{
+\frac{1}{2} \sum_{j = 0}^{1} \sum_{i = 1}^{N} \hat{Y}_{i}(t2, \hat{M}(t2)) - \hat{Y}_{i}(t1, \hat{M}(t1)) 
+}
 }
 \examples{
 t1 <- tibble(treatment = as.factor("Treatment"))
