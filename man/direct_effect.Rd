@@ -30,7 +30,7 @@ are formed using Equation (10) of our preprint:
 }
 \details{
 \deqn{
-\frac{1}{2} \sum_{j = 0}^{1} \sum_{i = 1}^{N} \hat{Y}_{i}(t2, \hat{M}(t2)) - \hat{Y}_{i}(t1, \hat{M}(t1)) 
+\frac{1}{2} \sum_{j = 0}^{1} \sum_{i = 1}^{N} \hat{Y}_{i}(t2, \hat{M}(t2)) - \hat{Y}_{i}(t1, \hat{M}(t1))
 }
 
 Rather than providing this average, this function returns the estimated
