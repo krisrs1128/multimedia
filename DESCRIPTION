@@ -14,5 +14,20 @@ Suggests:
     rmarkdown
 VignetteBuilder: knitr
 Depends: 
-    R (>= 2.10)
+    R (>= 3.50),
+    brms,
+    cli,
+    dplyr,
+    fansi,
+    ggplot2,
+    glmnetUtils,
+    glue,
+    patchwork,
+    progress,
+    purrr,
+    ranger,
+    rlang,
+    tibble,
+    tidygraph,
+    tidyr
 LazyData: true
