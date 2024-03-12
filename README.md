@@ -1,9 +1,12 @@
 
 # multimedia <img src="man/figures/logo.png" align="right" width="200" alt=""/>
 
-`multimedia` is an R package for **multi**-omics **media**tion analysis of
+`multimedia` is an R package for **multi**-domain **media**tion analysis of
 microbiome data. It makes it easy to curate data, specify mediation and outcome
-model formulas, and carry out inference for direct and indirect effects. You can read more about the package in our preprint:
+model formulas, and carry out inference for direct and indirect effects. By
+specifying causal relationships between different data domains, it can support
+principled data integration. You can read more about the package in our
+preprint:
 
 [H. Jiang, X. Miao, M. W. Thairu, M. Beebe, D. W. Grupe, R. J. Davidson, J. Handelsman, and K. Sankaran (2024).  multimedia: Multidomain Mediation Analysis of Microbiome Data.]()
 
