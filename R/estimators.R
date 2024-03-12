@@ -1,3 +1,23 @@
+#' Representation of an Outcome or Mediation Model
+#'
+#' To work with many model types simultaneously, multimedia uses a model class
+#' with the necessary mediation model functionality that wraps any specific
+#' implementation. The slots below define the generally required functionality
+#' for any specific implementation.
+#'
+#' @slot estimator A function that takes a formula, input data frame X, and an
+#'   response data.frame $Y$ and returns a model. For example, for the random
+#'   forest model, this is created by wrapping `parallelize()` on the ranger
+#'   function random forest estimation function.
+#' @slot estimates A list containing the estimated model.
+#' @slot sampler A function that supports sampling new responses from the
+#'   estimated model.
+#' @slot model_type A string specifying the type of model associated with the
+#'   class. For example, "rf_model()" denotes a random forest model.
+#' @slot predictor A function that returns fitted predictions given new inputs.
+#'   For example, this can be the original predict() method for a multivariate
+#'   response model, or it can be a loop over predicts for each feature in the
+#'   mediation or outcome model.
 #' @export
 setClass(
   "model",
@@ -14,6 +34,18 @@ sub_formula <- function(formula, yj) {
   update.formula(formula, as.formula(glue("{yj} ~ .")))
 }
 
+#' Parallelize Estimation across Responses
+#'
+#' For many mediation and outcome models, we simply want to apply a univariate
+#' model across all response variable. Parallelize enables this conversion. For
+#' example, applying parallelize to ranger returns a function that estimates
+#' separate random forest models for each response on the left hand side of a
+#' formula.
+#' @param f A function for estimating a single response model given a formula
+#'  and input dataset. This is the model that we would like to parallelize
+#'  across responses.
+#' @return f_multi A function that takes a formula and dataset and applies f to
+#'  each response on the left hand side of the original formula.
 #' @importFrom formula.tools lhs.vars
 #' @examples
 #' mat <- data.frame(matrix(rnorm(100), 25, 4))
@@ -35,6 +67,16 @@ parallelize <- function(f) {
   }
 }
 
+#' Define Edges associated with the Mediation Analysis DAG
+#'
+#' Given a collection of nodes, define the edges between all possible inputs and
+#' outputs.
+#'
+#' @param edges A tidygraph graph storing edges between all variables in the
+#'  mediation analysis. For example, if a treatment node leads into a mediation
+#'  node, this will be included in the graph (as will all pretreatment to mediator,
+#'  mediator to outcome, etc.)
+#'
 #' @importFrom tidygraph %N>%
 edges_df <- function(edges) {
   nodes <- edges %N>%
@@ -54,6 +96,7 @@ edges_df <- function(edges) {
     )
 }
 
+#' Construct a Formula from a Graph
 edges_to_formula <- function(edges) {
   collapse <- \(e, v) {
     pull(e, eval(v)) |>
@@ -67,6 +110,20 @@ edges_to_formula <- function(edges) {
     as.formula()
 }
 
+#' Generate a Mediation Formula
+#'
+#' Given the relationship between all variables in the mediation analysis DAG,
+#' return a formula of the form
+#'
+#' m1 + m2 + ... ~ treatment_1 + ... + pretreatment_T
+#'
+#' where all nodes leading into the mediators are inputs and all the mediators
+#' are the responses.
+#' @param edges A tidygraph graph storing edges between all variables in the
+#'  mediation analysis. For example, if a treatment node leads into a mediation
+#'  node, this will be included in the graph (as will all pretreatment to
+#'  mediator, mediator to outcome, etc.)
+#' @return A formula object with mediators on the LHS.
 mediation_formula <- function(edges) {
   edges %E>%
     filter(state == "active") |>
@@ -75,6 +132,20 @@ mediation_formula <- function(edges) {
     edges_to_formula()
 }
 
+#' Generate an Outcome Formula
+#'
+#' Given the relationship between all variables in the mediation analysis DAG,
+#' return a formula of the form
+#'
+#' m1 + m2 + ... ~ treatment_1 + ... + pretreatment_T
+#'
+#' where all nodes leading into the mediators are inputs and all the mediators
+#' are the responses.
+#' @param edges A tidygraph graph storing edges between all variables in the
+#'  mediation analysis. For example, if a treatment node leads into a mediation
+#'  node, this will be included in the graph (as will all pretreatment to
+#'  mediator, mediator to outcome, etc.)
+#' @return A formula object with outcomes on the LHS.
 outcome_formula <- function(edges) {
   edges %E>%
     filter(state == "active") |>
@@ -83,6 +154,22 @@ outcome_formula <- function(edges) {
     edges_to_formula()
 }
 
+#' Estimate a Mediation Model
+#'
+#' `estimate` provides a unified interface to estimate all the models that can
+#'  be encapsulated within a `multimedia` class. It simply calls the
+#  `@estimator` slots in the mediation and outcome model components of the
+#'  multimedia object. The resulting estimates can be used for downstream direct
+#'  effect estimation.
+#'
+#' @param model An object of class multimedia containing the estimated mediation
+#'  and outcome models whose mediation and outcome predictions we want to
+#'  compare.
+#' @param exper An object of class multimedia_data containing the mediation and
+#'   outcome data from which the direct effects are to be estimated.
+#' @return A version of the input modified in place so that the @estimates slot
+#'  has been filled.
+#'
 #' @export
 estimate <- function(model, exper) {
   # estimate mediation model
@@ -114,6 +201,7 @@ lm_model <- function() {
   )
 }
 
+#' Sample a Linear Model
 #' @importFrom dplyr bind_cols
 lm_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
   if (is.null(indices)) {

@@ -56,11 +56,11 @@ path_difference <- function(y1, y2) {
 #'
 #' Estimate direct effects associated with a multimedia model. These estimates
 #' are formed using Equation (10) of our preprint:
-#' 
+#'
 #' \deqn{
-#' \frac{1}{2} \sum_{j = 0}^{1} \sum_{i = 1}^{N} \hat{Y}_{i}(t2, \hat{M}(t2)) - \hat{Y}_{i}(t1, \hat{M}(t1)) 
+#' \frac{1}{2} \sum_{j = 0}^{1} \sum_{i = 1}^{N} \hat{Y}_{i}(t2, \hat{M}(t2)) - \hat{Y}_{i}(t1, \hat{M}(t1))
 #' }
-#' 
+#'
 #' Rather than providing this average, this function returns the estimated
 #' difference for each $j$. To average across all j, this result can be passed
 #' to the ' `effect_summary` function.
@@ -74,7 +74,7 @@ path_difference <- function(y1, y2) {
 #' @param t2 The alternative level of the treatment to be used when computing
 #'  the direct effect.
 #' @return A data.frame summarizing the direct effects associated with different
-#'  settings of j in the equation above. 
+#'  settings of j in the equation above.
 #' @seealso effect_summary
 #' @importFrom dplyr everything mutate select bind_rows
 #' @importFrom tidyr pivot_longer
@@ -117,16 +117,16 @@ parse_name <- function(t_, t1, t2) {
 }
 
 #' Overall Indirect Effect
-#' 
+#'
 #' Direct Effects from Estimated Model
 #'
 #' Estimate direct effects associated with a multimedia model. These estimates
 #' are formed using Equation (10) of our preprint:
-#' 
+#'
 #' \deqn{
-#' \frac{1}{2} \sum_{j = 0}^{1} \sum_{i = 1}^{N} \hat{Y}_{i}(t2, \hat{M}(t2)) - \hat{Y}_{i}(t1, \hat{M}(t1)) 
+#' \frac{1}{2} \sum_{j = 0}^{1} \sum_{i = 1}^{N} \hat{Y}_{i}(t2, \hat{M}(t2)) - \hat{Y}_{i}(t1, \hat{M}(t1))
 #' }
-#' 
+#'
 #' @examples
 #' t1 <- tibble(treatment = as.factor("Treatment"))
 #' t2 <- tibble(treatment = as.factor("Control"))
@@ -223,8 +223,8 @@ indirect_pathwise <- function(model, exper = NULL, t1 = 1, t2 = 2) {
 }
 
 #' Average Effects across j
-#' 
-#' This averages direct or indirect effects across settings j, leading to 
+#'
+#' This averages direct or indirect effects across settings j, leading to
 #' the effect estimates given in equation (10) of the preprint.
 #' @param effects The output from direct_effect or indirect_effect. A data.frame
 #'   containing effect estimates for each variable and indirect/direct setting
