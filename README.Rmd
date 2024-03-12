@@ -1,0 +1,27 @@
+
+### multimedia
+
+`multimedia` is an R package for **multi**-omics **media**tion analysis of
+microbiome data. It makes it easy to curate data, specify mediation and outcome
+model formulas, and carry out inference for direct and indirect effects. 
+
+You can read more about the package in our preprint:
+
+[H. Jiang, X. Miao, M. W. Thairu, M. Beebe, D. W. Grupe, R. J. Davidson, J. Handelsman, and K. Sankaran (2024).  multimedia: Multidomain Mediation Analysis of Microbiome Data.]()
+
+<img src="man/figures/overview_figure.png">
+
+## Installation
+
+You can install the development version from
+[GitHub](https://github.com/krisrs1128/multimedia) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("krisrs1128/multimedia")
+```
+
+## Help
+
+We welcome questions and comments about the package either through
+[github](https://github.com/krisrs1128/multimedia/issues) or [email](mailto:ksankaran@wisc.edu).
