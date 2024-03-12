@@ -1,4 +1,3 @@
-
 retrieve_names <- function(object, nm) {
   object@edges |>
     filter(node_type == nm) |>

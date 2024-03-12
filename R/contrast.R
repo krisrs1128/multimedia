@@ -1,3 +1,18 @@
+#' Estimate the Difference between Profiles
+#'
+#' Given a fitted multimedia model, contrast the mediation and outcome
+#' predictions associated wtih two treatment profiles.
+#'
+#' @param model An object of class multimedia containing the estimated mediation
+#'  and outcome models whose mediation and outcome predictions we want to
+#'  compare.
+#' @param profile1 An object of class `treatment_profile` containing the first
+#'  treatment profile to consider in the difference.
+#' @param profile2 An object of class `treatment_profile` containing the second
+#'  treatment profile to consider in the difference.
+#' @return A list with two elements, `mediators` and `outcomes`, containing the
+#'  differences in the predicted M(T') - M(T) and Y(T', M(T')) - Y(T, M(T))
+#'  between the two profiles T and T'.
 #' @export
 contrast_predictions <- function(model, profile1, profile2, ...) {
   y_hat_1 <- predict(model, profile1, ...)
@@ -5,6 +20,21 @@ contrast_predictions <- function(model, profile1, profile2, ...) {
   path_difference(y_hat_1, y_hat_2)
 }
 
+#' Difference between Samples at Contrasting Profiles
+#'
+#' Given a fitted multimedia model, contrast sampled mediation and outcome data
+#' associated wtih two treatment profiles.
+#'
+#' @param model An object of class multimedia containing the estimated mediation
+#'  and outcome models whose mediation and outcome predictions we want to
+#'  compare.
+#' @param profile1 An object of class `treatment_profile` containing the first
+#'  treatment profile to consider in the difference.
+#' @param profile2 An object of class `treatment_profile` containing the second
+#'  treatment profile to consider in the difference.
+#' @return A list with two elements, `mediators` and `outcomes`, containing the
+#'  differences in the sampled M(T') - M(T) and Y(T', M(T')) - Y(T, M(T))
+#'  between the two profiles T and T'.
 #' @export
 contrast_samples <- function(model, profile1, profile2, ...) {
   y1 <- sample(model, profile = profile1, ...)
@@ -23,6 +53,29 @@ path_difference <- function(y1, y2) {
 }
 
 #' Direct Effects from Estimated Model
+#'
+#' Estimate direct effects associated with a multimedia model. These estimates
+#' are formed using Equation (10) of our preprint:
+#' 
+#' \deqn{
+#' \frac{1}{2} \sum_{j = 0}^{1} \sum_{i = 1}^{N} \hat{Y}_{i}(t2, \hat{M}(t2)) - \hat{Y}_{i}(t1, \hat{M}(t1)) 
+#' }
+#' 
+#' Rather than providing this average, this function returns the estimated
+#' difference for each $j$. To average across all j, this result can be passed
+#' to the ' `effect_summary` function.
+#' @param model An object of class multimedia containing the estimated mediation
+#'  and outcome models whose mediation and outcome predictions we want to
+#'  compare.
+#' @param exper An object of class multimedia_data containing the mediation and
+#'   outcome data from which the direct effects are to be estimated.
+#' @param t1 The reference level of the treatment to be used when computing the
+#'  direct effect.
+#' @param t2 The alternative level of the treatment to be used when computing
+#'  the direct effect.
+#' @return A data.frame summarizing the direct effects associated with different
+#'  settings of j in the equation above. 
+#' @seealso effect_summary
 #' @importFrom dplyr everything mutate select bind_rows
 #' @importFrom tidyr pivot_longer
 #' @importFrom glue glue
@@ -45,7 +98,7 @@ direct_effect <- function(model, exper = NULL, t1 = 1, t2 = 2) {
       profile2,
       pretreatment = pretreatment
     )[["outcomes"]] |>
-    colMeans()
+      colMeans()
 
     result[[i]] <- tibble(
       outcome = names(y_hat),
@@ -64,6 +117,16 @@ parse_name <- function(t_, t1, t2) {
 }
 
 #' Overall Indirect Effect
+#' 
+#' Direct Effects from Estimated Model
+#'
+#' Estimate direct effects associated with a multimedia model. These estimates
+#' are formed using Equation (10) of our preprint:
+#' 
+#' \deqn{
+#' \frac{1}{2} \sum_{j = 0}^{1} \sum_{i = 1}^{N} \hat{Y}_{i}(t2, \hat{M}(t2)) - \hat{Y}_{i}(t1, \hat{M}(t1)) 
+#' }
+#' 
 #' @examples
 #' t1 <- tibble(treatment = as.factor("Treatment"))
 #' t2 <- tibble(treatment = as.factor("Control"))
@@ -137,9 +200,9 @@ indirect_pathwise <- function(model, exper = NULL, t1 = 1, t2 = 2) {
     for (j in seq_along(m)) {
       profile1 <- profile2
       profile1@t_mediator[[j]] <- t_[t1, ]
-      #if (m[j] == "gVeillonella") {
+      # if (m[j] == "gVeillonella") {
       #  browser()
-      #}
+      # }
       y_hat_1 <- predict(model, profile1, pretreatment = pretreatment)
       y_diff <- colMeans(path_difference(y_hat_1, y_hat_2)[["outcomes"]])
 
@@ -159,6 +222,10 @@ indirect_pathwise <- function(model, exper = NULL, t1 = 1, t2 = 2) {
     select(outcome, mediator, direct_setting, contrast, indirect_effect)
 }
 
+#' Average Effects across j
+#' 
+#' This averages direct or indirect effects across settings j, leading to 
+#' the effect estimates given in equation (10) of the preprint.
 #' @importFrom dplyr group_by summarize arrange filter slice_max
 #' @export
 effect_summary <- function(effects, N = 10) {
@@ -168,7 +235,7 @@ effect_summary <- function(effects, N = 10) {
   } else {
     effects <- group_by(effects, outcome)
   }
-  
+
   effects |>
     summarise(across(matches("effect"), mean)) |>
     slice_max(.data[[effect_type]], n = N) |>

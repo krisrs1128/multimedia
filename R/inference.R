@@ -57,7 +57,7 @@ bootstrap <- function(model, exper, fs = NULL, B = 100) {
     stats[[nf]] <- list()
     pb <- progress_bar$new(total = B, format = "[:bar] :current/:total ETA: :eta")
     for (b in seq_len(B)) {
-       # resample and ensure contrast t1/t2 consistency
+      # resample and ensure contrast t1/t2 consistency
       exper_b <- exper[sample(nrow(exper), nrow(exper), replace = TRUE), ]
       exper_b <- exper_b[order(exper_b@treatments[[1]]), ]
 
@@ -100,7 +100,7 @@ null_contrast <- function(model, exper, nullification = "T->Y",
 
 #' @export
 fdr_summary <- function(contrast, effect = "indirect_overall", q_value = 0.15) {
-  if (effect  == "indirect_overall") {
+  if (effect == "indirect_overall") {
     fdr <- contrast |>
       group_by(source, outcome) |>
       summarise(indirect_effect = mean(indirect_effect), .group = "drop_last") |>
