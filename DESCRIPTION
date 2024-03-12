@@ -4,9 +4,8 @@ Version: 0.0.0.9000
 Authors@R: 
     person("Kris", "Sankaran", , "ksankaran@wisc.edu", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-9415-1971"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+Description: multimedia is an R package for multi-omcis analysis of microbiome data. It make advanced mediation analysis techniques accessible to a wide audience, ensuring that all statistical components are easily interpretable and adaptable to specific problem contexts. The package provides a uniform interface to direct and indirect effect estimation, synthetic null hypothesis testing, and bootstrap confidence interval construction.
+License: CC0
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.1
