@@ -226,7 +226,13 @@ indirect_pathwise <- function(model, exper = NULL, t1 = 1, t2 = 2) {
 #' 
 #' This averages direct or indirect effects across settings j, leading to 
 #' the effect estimates given in equation (10) of the preprint.
+#' @param effects The output from direct_effect or indirect_effect. A data.frame
+#'   containing effect estimates for each variable and indirect/direct setting
+#'   along rows.
+#' @return A version of the input with all indirect/direct settings averaged
+#'   over.
 #' @importFrom dplyr group_by summarize arrange filter slice_max
+#' @seealso direct_effect indirect_effect
 #' @export
 effect_summary <- function(effects, N = 10) {
   effect_type <- tail(colnames(effects), 1)

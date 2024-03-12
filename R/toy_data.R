@@ -22,18 +22,3 @@ demo_joy <- function(n_samples = 100, n_mediators = 5, n_pretreatment = 3) {
     colData = DataFrame(treatment = treatment, PHQ = outcome)
   )
 }
-
-#' @export
-demo_police <- function(n_samples = 100, n_outcomes = 20, n_mediators = 5) {
-  treatment <- sample(c("Treatment", "Control"), n_samples, replace = TRUE)
-  mediators <- random_numeric(n_samples, n_mediators) |>
-    rename_with(~ glue("Diet{.}"))
-  col_data <- random_numeric(n_samples, n_outcomes, \(n) rpois(n, 100)) |>
-    rename_with(~ glue("ASV{.}")) |>
-    bind_cols(treatment = treatment) |>
-    DataFrame()
-  SummarizedExperiment(
-    assays = SimpleList(counts = t(as.matrix(mediators))),
-    colData = col_data
-  )
-}
