@@ -189,6 +189,15 @@ estimate <- function(model, exper) {
 }
 
 #' Linear Model across Responses
+#'
+#' Apply a linear model in parallel across each response $y$ in an outcome or
+#' mediation model. This is often useful for mediator models with few
+#' pretreatment variables, since each input is low-dimensional, even when there
+#' are many responses.
+#'
+#' @return model An object of class `model` with estimator, predictor, and
+#'  sampler functions associated wtih a linear model.
+#' @seealso model
 #' @export
 lm_model <- function() {
   new(
@@ -219,11 +228,23 @@ lm_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
   bind_cols(y_hats)
 }
 
+#' Default parameters for glmnet_model
 glmnet_model_params <- function(...) {
   defaults <- list(intercept = FALSE, lambda = 0.01)
   modifyList(defaults, list(...))
 }
 
+#' Regularized Glmnet Model across Responses
+#'
+#' Apply a regularized (generalized) linear model in parallel across each
+#' response $y$ in an outcome or mediation model. This can be helpful when we
+#' have many mediators or pretreatment variables, making the input
+#' high-dimensional.
+#'
+#' @param ... Keyword parameters passed to glmnet.
+#' @return model An object of class `model` with estimator, predictor, and
+#'  sampler functions associated wtih a lienar model.
+#' @seealso model lm_model rf_model
 #' @importFrom glmnetUtils glmnet
 #' @export
 glmnet_model <- function(...) {
@@ -240,7 +261,10 @@ glmnet_model <- function(...) {
   )
 }
 
-#' @export
+#' Sample from a Glmnet Model
+#'
+#' This assumes a continuous response, so that the out-of-sample MSE can be used
+#' to estimate the outcome variability $\sigma$.
 glmnet_sampler <- function(fits, newdata = NULL, indices = NULL, lambda_ix = 1, ...) {
   if (is.null(indices)) {
     indices <- seq_along(fits)
@@ -257,11 +281,29 @@ glmnet_sampler <- function(fits, newdata = NULL, indices = NULL, lambda_ix = 1, 
   bind_cols(y_hats)
 }
 
+#' Default parameters for brms model
 brms_model_params <- function(...) {
   defaults <- list(chains = 1, refresh = 0, silent = 0)
   modifyList(defaults, list(...))
 }
 
+#' Refit BRMS Models without Recompilation
+#'
+#' The most time-consuming part of using BRMS in parallel across many responses
+#' is waiting for compilation to complete. It is more efficient instead to
+#' compile the model once and estimate many models using different datasets.
+#' That is the approach adopted in this function, which speeds up over a naive
+#' loop.
+#'
+#' @param formula A multiresponse/multi-input formula of the form
+#'  \deqn{
+#'  y1 + y2 + ... ~ x1 + x2 + ..
+#'  }
+#'  with which to estimate a BRMS model
+#' @param data A data.frame containing all the variables in the formula and used
+#'  as the basis for estimation.
+#' @return models A list of estimated BRMS models. The j^th element contains
+#'  y[j] ~ x1 + x2 + ...
 brm_cache <- function(formula, data, ...) {
   models <- list()
 
@@ -274,8 +316,16 @@ brm_cache <- function(formula, data, ...) {
   models
 }
 
+#' Bayesian Regression Model across Responses
+#'
+#' Apply a Bayesian regression model in parallel across each response $y$ in
+#' an outcome or mediation model. This can be helpful when we want to share information across related
+#' @param ... Keyword parameters passed to brm..
+#' @return model An object of class `model` with estimator, predictor, and
+#'  sampler functions associated wtih a Bayesian regression model.
 #' @importFrom brms brm
 #' @importFrom rlang inject !!!
+#' @seealso glmnet_model lnm_model rf_model lm_model
 #' @export
 brms_model <- function(...) {
   params <- brms_model_params(...)
@@ -289,8 +339,14 @@ brms_model <- function(...) {
   )
 }
 
+#' Sample from a Bayesian Regression Model
+#'
+#' This samples from the posterior predictive for each component in
+#' a multiresponse Bayesian Regression model.
+#' @param newdata A data.frame containing new inputs from which to sample
+#'   responses. If NULL, defaults to the data used to estimate fit.
+#' @param indices The coordinates of the response from which we want to sample.
 #' @importFrom brms posterior_predict
-#' @export
 brms_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
   if (is.null(indices)) {
     indices <- seq_along(fits)
@@ -311,6 +367,17 @@ brms_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
   bind_cols(y_hats)
 }
 
+#' Logistic Normal Multinomial Model
+#'
+#' Apply a logistic normal multinomial model to jointly model a vector of count
+#' responses $y$ in an outcome or mediation model. This is a common choice for
+#' data where the parameter of interest is the composition across responses
+#' (e.g., microbiome).
+#'
+#' @param ... Keyword parameters passed to lnm.
+#' @return model An object of class `model` with estimator, predictor, and
+#'  sampler functions associated wtih a lienar model.
+#' @seealso model lm_model rf_model glmnet_model brms_model
 #' @importFrom miniLNM lnm
 #' @export
 lnm_model <- function(...) {
@@ -324,6 +391,17 @@ lnm_model <- function(...) {
   )
 }
 
+#' Sample from the Logistic Normal Multinomial
+#'
+#' This samples from the posterior predictive of a fitted logistic-normal
+#' multinomial model.
+#'
+#' @param fit The fitted LNM model from which to draw posterior predictive
+#'   samples.
+#' @param newdata A data.frame containing new inputs from which to sample
+#'   responses. If NULL, defaults to the data used to estimate fit.
+#' @param indices The coordinates of the response from which to draw samples.
+#' @return y_star A data.frame of samples y associated wtih the new inputs.
 #' @importFrom miniLNM sample
 #' @importFrom formula.tools lhs.vars
 lnm_sampler <- function(fit, newdata = NULL, indices = NULL, ...) {
@@ -335,7 +413,18 @@ lnm_sampler <- function(fit, newdata = NULL, indices = NULL, ...) {
   sample(fit, newdata = newdata, ...)[, nm[indices], drop = FALSE]
 }
 
-#' Random forest model
+#' Random Forest Model
+#'
+#' Apply a random forest model in parallel across a vector of responses $y$ in
+#' either an outcome or mediation model. This is a natural choice when the
+#' relationship between inputs and outputs is thought to be nonlinear.
+#' Internally, each of the models across the response are estimated using
+#' ranger.
+#'
+#' @param ... Keyword parameters passed to ranger.
+#' @return model An object of class `model` with estimator, predictor, and
+#'  sampler functions associated wtih a lienar model.
+#' @seealso model lm_model rf_model glmnet_model brms_model
 #' @importFrom ranger ranger
 #' @export
 rf_model <- function(...) {
@@ -349,8 +438,18 @@ rf_model <- function(...) {
   )
 }
 
+#' Sample from a Random Forest Model
+#'
+#' This assumes a continuous response, so that the out-of-sample MSE can be used
+#' to estimate the outcome variability $\sigma$.
+#'
+#' @param fit The fitted LNM model from which to draw posterior predictive
+#'   samples.
+#' @param newdata A data.frame containing new inputs from which to sample
+#'   responses. If NULL, defaults to the data used to estimate fit.
+#' @param indices The coordinates of the response from which to draw samples.
+#' @return y_star A data.frame of samples y associated wtih the new inputs.
 #' @importFrom dplyr bind_cols
-#' @export
 rf_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
   if (is.null(indices)) {
     indices <- seq_along(fits)

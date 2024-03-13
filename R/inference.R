@@ -1,3 +1,12 @@
+#' Parse an Edgelist for Mediation or Outcome Edges
+#'
+#' @param edges The full edgelist associated with the current mediation analysis
+#'   (mediation + outcome) models.
+#' @param nulls A string specifying the indices of edges to ignore. "T->Y",
+#'   "T->M", and "M->Y" will match all edges between treatment to outcome,
+#'   treatment to mediator, etc. Otherwise, the vector of indices specifying
+#'   which edges to ignore.
+#' @return The ID of edges that match the `nulls` parameter.
 #' @importFrom dplyr row_number n
 #' @importFrom tidygraph %E>%
 matching_indices <- function(edges, nulls = NULL) {
@@ -27,6 +36,22 @@ matching_indices <- function(edges, nulls = NULL) {
 }
 
 #' Nullify Active Edges
+#'
+#' For inference, we often want to work with synthetic negative controls. One
+#' way to define them is to specify submodels of the full mediation analysis
+#' model. This function defines submodels by removing estimated edges according
+#' to a prespecified vector of IDs. For example, setting nulls = "T -> Y" will
+#' remove any direct effect when sampling or obtaining predictions for the full
+#' mediation analysis model \hat{Y}.
+#'
+#' @param multimedia A fitted object of class multimedia with estimates along
+#'   all paths in the mediation analysis DAG.
+#' @param nulls A string specifying the indices of edges to ignore. "T->Y",
+#'   "T->M", and "M->Y" will match all edges between treatment to outcome,
+#'   treatment to mediator, etc. Otherwise, the vector of indices specifying
+#'   which edges to ignore.
+#' @return multimedia A version of the input multimedia model with all edges
+#'   matching `nulls` removed. Enables sampling of synthetic null controls.
 #' @export
 nullify <- function(multimedia, nulls = NULL) {
   nulls <- matching_indices(multimedia@edges, nulls)
@@ -40,9 +65,26 @@ nullify <- function(multimedia, nulls = NULL) {
   multimedia
 }
 
+#' Bootstrap Distribution for Estimators
+#'
+#' Given a mediation model specification, estimators fs, and original dataset
+#' exper, this will re-estimate the mediation model on resampled versions of
+#' exper and apply each estimator in fs to construct bootstrap distributions
+#' associated wtih those estimators.
+#'
+#' @param model An object of class multimedia with specified mediation and
+#'   outcome models that we want to re-estimate across B bootstrap samples.
+#' @param fs The estimators whose bootstrap samples we are interested in. These
+#'   are assumed to be a vector of functions (for example, direct_effect or
+#'   indirect_effect), and they will each be applied to each bootstrap resample.
+#' @param exper An object of class multimedia_data containing the mediation and
+#'   outcome data from which the direct effects are to be estimated.
+#' @param B The number of bootstrap samples. Defaults to 1000.
+#' @return stats A list of length B containing the results of the fs applied on
+#'   each of the B bootstrap resamples.
 #' @importFrom progress progress_bar
 #' @export
-bootstrap <- function(model, exper, fs = NULL, B = 100) {
+bootstrap <- function(model, exper, fs = NULL, B = 1000) {
   if (is.null(fs)) {
     fs <- list(direct_effect = direct_effect)
   }
@@ -71,6 +113,28 @@ bootstrap <- function(model, exper, fs = NULL, B = 100) {
   stats
 }
 
+#' Compare Effects from Experimental vs. Null Mediation Data
+#'
+#' One way to calibrate our conclusions from complex workflows is to see how
+#' they would look on data where we know that there is no effect. This function
+#' compares estimators f between real and synthetic null data, where the null
+#' removes a set of edges according to the nullfication argument.
+#'
+#' @param model An object of class multimedia with specified mediation and
+#'   outcome models that we want to re-estimate across B bootstrap samples.
+#' @param exper An object of class multimedia_data containing the mediation and
+#'   outcome data from which the direct effects are to be estimated.
+#' @param nullification A string specifying the types of edges whose effects we
+#'   want to remove in the null samples. Valid options are "T->Y" (the default),
+#'   "T->M", "M->Y", which remove direct effects, treatment to mediator effects,
+#'   and mediator to treatment effects, respectively.
+#' @param f The estimator that we want to compare between real and null data.
+#'   This is assumed to be a function taking counterfactual samples, for example
+#'   `direct_effects` or `indirect_effects`.
+#' @return A data.frame containing estimates on the real and synthetic data for
+#'   every coordinate in the estimator f. The column `source` specifies whether
+#'   the estimate was calculated using real or synthetic null data.
+#' @seealso null_contrast fdr_summary
 #' @export
 null_contrast <- function(model, exper, nullification = "T->Y",
                           f = direct_effect) {
@@ -98,6 +162,21 @@ null_contrast <- function(model, exper, nullification = "T->Y",
   )
 }
 
+#' Calibration using Synthetic Nulls
+#'
+#' This function computes a threshold for indirect or direct effect estimates
+#' that controls the false discovery rate according to estimates made using real
+#' and synthetic null data, against the null hypotheses that effects are zero.
+#' It computes the proportion of synthetic null estimates that are among the top
+#' K largest effects (in magnitude) as an estimate of the FDR.
+#'
+#' @param effect Either "indirect_overall" (the default), "indirect_pathwise",
+#'   or "direct_effect" specifying the type of effect that we want to select.
+#' @param q_value The target for false discovery rate control. The last time the
+#'   estimated FDR is above this threshold is smallest magnitude of effect size
+#'   that we will consider.
+#' @return fdr A data.frame specifying, for each candidate effect, whether it
+#'   should be selected.
 #' @export
 fdr_summary <- function(contrast, effect = "indirect_overall", q_value = 0.15) {
   if (effect == "indirect_overall") {
