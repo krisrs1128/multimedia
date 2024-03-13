@@ -6,6 +6,24 @@
 \usage{
 nullify(multimedia, nulls = NULL)
 }
+\arguments{
+\item{multimedia}{A fitted object of class multimedia with estimates along
+all paths in the mediation analysis DAG.}
+
+\item{nulls}{A string specifying the indices of edges to ignore. "T->Y",
+"T->M", and "M->Y" will match all edges between treatment to outcome,
+treatment to mediator, etc. Otherwise, the vector of indices specifying
+which edges to ignore.}
+}
+\value{
+multimedia A version of the input multimedia model with all edges
+matching \code{nulls} removed. Enables sampling of synthetic null controls.
+}
 \description{
-Nullify Active Edges
+For inference, we often want to work with synthetic negative controls. One
+way to define them is to specify submodels of the full mediation analysis
+model. This function defines submodels by removing estimated edges according
+to a prespecified vector of IDs. For example, setting nulls = "T -> Y" will
+remove any direct effect when sampling or obtaining predictions for the full
+mediation analysis model \hat{Y}.
 }

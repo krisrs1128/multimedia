@@ -6,6 +6,16 @@
 \usage{
 lm_model()
 }
+\value{
+model An object of class \code{model} with estimator, predictor, and
+sampler functions associated wtih a linear model.
+}
 \description{
-Linear Model across Responses
+Apply a linear model in parallel across each response $y$ in an outcome or
+mediation model. This is often useful for mediator models with few
+pretreatment variables, since each input is low-dimensional, even when there
+are many responses.
+}
+\seealso{
+model
 }

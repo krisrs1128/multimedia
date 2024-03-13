@@ -2,10 +2,24 @@
 % Please edit documentation in R/estimators.R
 \name{rf_model}
 \alias{rf_model}
-\title{Random forest model}
+\title{Random Forest Model}
 \usage{
 rf_model(...)
 }
+\arguments{
+\item{...}{Keyword parameters passed to ranger.}
+}
+\value{
+model An object of class \code{model} with estimator, predictor, and
+sampler functions associated wtih a lienar model.
+}
 \description{
-Random forest model
+Apply a random forest model in parallel across a vector of responses $y$ in
+either an outcome or mediation model. This is a natural choice when the
+relationship between inputs and outputs is thought to be nonlinear.
+Internally, each of the models across the response are estimated using
+ranger.
+}
+\seealso{
+model lm_model rf_model glmnet_model brms_model
 }
