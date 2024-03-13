@@ -1,14 +1,46 @@
-#' @export
+setClassUnion('modelOrNull', members=c("model", "NULL"))
+setClassUnion('data.frameOrNull', members=c("data.frame", "NULL"))
+
+#' An S4 Class Representing Mediation Analysis Models
+#' 
+#' This is the primary class exported by the multimedia package. It includes
+#' both the outcome and mediation models. It also stores complementary data
+#' helpful for estimating effects and carrying out inference. Most estimation
+#' and inference functions expect an input model of this form.
+#' 
+#' @slot edges A tidygraph graph specifying all edges in the mediation analysis
+#'   DAG. For example, it should include all edges between treatments and
+#'   outcomes if we hypothesize the presence of a direct effect.
+#' @slot outcome A `model` class storing the outcome model.
+#' @slot mediation A `model` class storing the mediation model.
+#' @slot treatments A `treatment_profile` class describing treatment assignments
+#'   across all samples.
+#' @export 
 setClass(
   "multimedia",
   representation(
     edges = "ANY",
-    outcome = "ANY",
-    mediation = "ANY",
+    outcome = "modelOrNull",
+    mediation = "modelOrNull",
     treatments = "ANY"
   )
 )
 
+#' An S4 Class Representing a Mediation Analysis Dataset
+#' 
+#' All the data needed for carrying out mediation analysis, encapsulated in one
+#' object. Each node in the mediation analysis DAG is represented by a
+#' data.frame in its own slot. Pretreatments are optional and will be left NULL
+#' if not specified.
+#' 
+#' @slot mediators A data.frame containing observed values of the mediators
+#'   across all samples.
+#' @slot outcomes A data.frame containing observed values of the outcomes across
+#'   all samples.
+#' @slot treatments A data.frame containing observed values of the treatments
+#'   across all samples.
+#' @slot pretreatments A data.frame containing observed values of the
+#'   pretreatments across all samples.
 #' @export
 setClass(
   "mediation_data",
@@ -16,18 +48,43 @@ setClass(
     mediators = "data.frame",
     outcomes = "data.frame",
     treatments = "data.frame",
-    pretreatments = "ANY"
+    pretreatments = "data.frameOrNull"
   )
 )
 
-#' @importFrom purrr map
+#' Convert `mediation_data` to a single data.frame
+#' 
+#' It can be helpful to combine all the data in a `mediation_data` S4 object
+#' into a single data.frame. This concatenates all data sources horizontally,
+#' into an N samples x (all outcomes, mediators, treatments, ...) matrix.
+#' 
+#' @param exper An object of class `mediation_data` containing the variables
+#'   that we want horizontally concatenated.
+#' @return A data.frame containing all variables from the original
+#'   `mediation_data` object.
+#' @importFrom purrr map_dfc
 #' @export
 bind_mediation <- function(exper) {
   map_dfc(slotNames(exper), ~ slot(exper, .))
 }
 
+#' Define all Edges in a Mediation Analysis
+#' 
+#' This processes the variable names from a mediation analysis and builds a
+#' graph representing causal relationships in the mediation analysis DAG. It is
+#' helpful for automatically building formulas for the mediation and outcome
+#' models, and it is used to create the `edges` slot in multimedia objects.
+#' 
+#' @param outcomes A vector containing names of all outcome variables.
+#' @param treatments A vector containing names of all treatment variables.
+#' @param mediators A vector containing names of all mediators.
+#' @param pretreatments A vector containing names of all pretreatment variables.
+#' @return edges A tidygraph graph containing all nodes and edges in the
+#'   mediation analysis. Each node is annotated with a `node_type`, describing
+#'   which of the parts of the mediation analysis graph the node belongs to.
 #' @importFrom purrr reduce
 #' @importFrom tidygraph graph_join %N>%
+#' @seealso multimedia
 graph_specification <- function(outcomes, treatments, mediators, pretreatments) {
   edges <- list(
     expand_edges(c("1"), mediators, "intercept", "mediator"),
@@ -58,6 +115,21 @@ graph_specification <- function(outcomes, treatments, mediators, pretreatments) 
   )
 }
 
+#' Helper for `graph_specification`
+#'
+#' To define the overall mediation analysis graph, it helps to have a helper
+#' that learns all combinations of variables between two node types. This is
+#' done simply by using expand.grid and converting into a bipartite tidygraph.
+#' 
+#' @param input A vector of names for all variables within the input group.
+#' @param output A vector of names for all variables within the output group.
+#' @param input_name A node_type to associate with all inputs. For example,
+#'   "treatment" or "mediator" for edges along the T->Y or X->M paths.
+#' @param output_name A node_type to associate with all outputs. For example,
+#'   "mediator" or "outcome" for edges along the T->M or M->Y paths.
+#' @return G A tidygraph graph with bipartite structure. One set of nodes
+#'   corresponds to the inputs, one to the outputs, and every pair of inputs and
+#'   outputs are linked.
 #' @importFrom tidygraph %E>% tbl_graph activate
 expand_edges <- function(input, output, input_name, output_name) {
   tbl_graph(edges = expand.grid(input, output), node_key = "name") |>
@@ -71,11 +143,31 @@ expand_edges <- function(input, output, input_name, output_name) {
     activate(nodes)
 }
 
+#' Convert a Summarized Experiment to a data.frame
+#' 
+#' @param exper An object of class SummarizedExperiment.
 #' @importFrom SummarizedExperiment assay colData
 exper_df <- function(exper) {
   bind_cols(t(assay(exper)), as_tibble(colData(exper), .name_repair = "minimal"))
 }
 
+#' `mediation_data` constructor
+#' 
+#' Convert a SummarizedExperiment, phyloseq object, or data.frame into a
+#' `mediation_data` object. This conversion helps to organize the variables that
+#' lie on different parts of the mediation analysis graph, so that they are not
+#' all kept in a homogeneous experiment or data.frame.
+#' 
+#' @param x A SummarizedExperiment, phyloseq object, or data.frame whose columns
+#'   contain all the variables needed for the mediation analysis.
+#' @param outcomes A vector containing names of all outcome variables.
+#' @param treatments A vector containing names of all treatment variables.
+#' @param mediators A vector containing names of all mediators.
+#' @param pretreatments A vector containing names of all pretreatment variables.
+#'   Defaults to NULL, in which case the pretreatments slot will remain empty.
+#' @return result An object of class `mediation_data`, with separate slots for
+#'   each of the node types in a mediation analysis diagram.
+#' @seealso mediation_data-class
 #' @export
 mediation_data <- function(x, outcomes, treatments, mediators,
                            pretreatments = NULL) {
@@ -111,12 +203,32 @@ mediation_data <- function(x, outcomes, treatments, mediators,
   result
 }
 
+#' Helper to Convert SummarizedExperiment to a data.frame
+#' @param x A SummarizedExperiment whose colData or assays contains all the
+#'   variables needed for the mediation analysis.
+#' @param outcomes A vector containing names of all outcome variables.
+#' @param treatments A vector containing names of all treatment variables.
+#' @param mediators A vector containing names of all mediators.
+#' @param pretreatments A vector containing names of all pretreatment variables.
+#'   Defaults to NULL, in which case the pretreatments slot will remain empty.
+#' @return result An object of class `mediation_data`, with separate slots for
+#'   each of the node types in a mediation analysis diagram.
 from_summarized_experiment <- function(exper, outcomes, treatments, mediators,
                                        pretreatments) {
   exper_df(exper) |>
     from_data_frame(outcomes, treatments, mediators, pretreatments)
 }
 
+#' Helper to Convert a phyloseq object to a data.frame
+#' @param x A phyloseq object whose otu_table contains all the variables needed
+#'   for the mediation analysis.
+#' @param outcomes A vector containing names of all outcome variables.
+#' @param treatments A vector containing names of all treatment variables.
+#' @param mediators A vector containing names of all mediators.
+#' @param pretreatments A vector containing names of all pretreatment variables.
+#'   Defaults to NULL, in which case the pretreatments slot will remain empty.
+#' @return result An object of class `mediation_data`, with separate slots for
+#'   each of the node types in a mediation analysis diagram.
 #' @importFrom phyloseq otu_table
 from_phyloseq <- function(exper, outcomes, treatments, mediators, pretreatments) {
   if (attr(otu_table(exper), "taxa_are_rows")) {
@@ -129,6 +241,17 @@ from_phyloseq <- function(exper, outcomes, treatments, mediators, pretreatments)
     from_data_frame(outcomes, treatments, mediators, pretreatments)
 }
 
+#' `mediation_data` from a data.frame
+#' 
+#' @param x A data.frame whose columns contain all the variables needed for the
+#'   mediation analysis.
+#' @param outcomes A vector containing names of all outcome variables.
+#' @param treatments A vector containing names of all treatment variables.
+#' @param mediators A vector containing names of all mediators.
+#' @param pretreatments A vector containing names of all pretreatment variables.
+#'   Defaults to NULL, in which case the pretreatments slot will remain empty.
+#' @return result An object of class `mediation_data`, with separate slots for
+#'   each of the node types in a mediation analysis diagram.
 #' @importFrom dplyr bind_cols select
 from_data_frame <- function(df, outcomes, treatments, mediators,
                             pretreatments) {
@@ -153,6 +276,22 @@ from_data_frame <- function(df, outcomes, treatments, mediators,
   do.call(\(...) new("mediation_data", ...), result)
 }
 
+#' Multimedia Constructor
+#' 
+#' `multimedia` objects encapsulate the model and data that underlie a mediation
+#' analysis, together with metadata (like graph structure) that contextualize
+#' the estimation. This function can be used to construct a new multimedia
+#' instances from a `mediation_data` dataset and pair of estimators.
+#' 
+#' @param mediation_data An object of class `mediation_data`, with separate
+#'   slots for each of the node types in a mediation analysis diagram.
+#' @param outcome_estimator An object of class `model` that will be used to
+#'   estimate the outcome model.
+#' @param mediation_estimator An object of class `model` that will be used to
+#'   estimate the mediation model.
+#' @return An object of class `multimedia` encapsulating the full mediation
+#'   model and data.
+#' @seealso multimedia-class
 #' @export
 multimedia <- function(mediation_data,
                        outcome_estimator = lm_model(),
@@ -172,6 +311,7 @@ multimedia <- function(mediation_data,
   )
 }
 
+#' Pretty printing x -> comma separated string
 print_sub <- function(x) {
   if (length(x) > 2) {
     res <- paste0(c(head(x, 1), "...", tail(x, 1)), collapse = ",")
@@ -181,14 +321,17 @@ print_sub <- function(x) {
   res
 }
 
+#' How many samples in the mediation dataset?
 #' @export
 setGeneric("nrow", function(x) nrow(x))
 
+#' How many samples in the mediation dataset?
 #' @export
 setMethod(nrow, "mediation_data", function(x) {
   nrow(x@outcomes)
 })
 
+#' Subset a mediation dataset
 #' @export
 setMethod(
   "[", "mediation_data",
