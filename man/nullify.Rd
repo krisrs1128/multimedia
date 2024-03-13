@@ -25,5 +25,5 @@ way to define them is to specify submodels of the full mediation analysis
 model. This function defines submodels by removing estimated edges according
 to a prespecified vector of IDs. For example, setting nulls = "T -> Y" will
 remove any direct effect when sampling or obtaining predictions for the full
-mediation analysis model \hat{Y}.
+mediation analysis model \eqn{hat{Y}}.
 }

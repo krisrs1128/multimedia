@@ -264,7 +264,7 @@ glmnet_model <- function(...) {
 #' Sample from a Glmnet Model
 #'
 #' This assumes a continuous response, so that the out-of-sample MSE can be used
-#' to estimate the outcome variability $\sigma$.
+#' to estimate the outcome variability sigma.
 glmnet_sampler <- function(fits, newdata = NULL, indices = NULL, lambda_ix = 1, ...) {
   if (is.null(indices)) {
     indices <- seq_along(fits)
@@ -441,7 +441,7 @@ rf_model <- function(...) {
 #' Sample from a Random Forest Model
 #'
 #' This assumes a continuous response, so that the out-of-sample MSE can be used
-#' to estimate the outcome variability $\sigma$.
+#' to estimate the outcome variability \eqn{\sigma}.
 #'
 #' @param fit The fitted LNM model from which to draw posterior predictive
 #'   samples.

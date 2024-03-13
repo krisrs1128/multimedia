@@ -8,5 +8,5 @@ glmnet_sampler(fits, newdata = NULL, indices = NULL, lambda_ix = 1, ...)
 }
 \description{
 This assumes a continuous response, so that the out-of-sample MSE can be used
-to estimate the outcome variability $\sigma$.
+to estimate the outcome variability sigma.
 }

@@ -69,17 +69,26 @@
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu">multimedia</span><span class="op">(</span></span>
-<span>  <span class="fu">demo_joy</span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  outcomes <span class="op">=</span> <span class="st">"PHQ"</span>,</span>
-<span>  treatments <span class="op">=</span> <span class="st">"treatment"</span>,</span>
-<span>  mediators <span class="op">=</span> <span class="fu">starts_with</span><span class="op">(</span><span class="st">"ASV"</span><span class="op">)</span></span>
-<span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">estimate</span><span class="op">(</span><span class="fu">demo_joy</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">t1</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span>treatment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="st">"Treatment"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">t2</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span>treatment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="st">"Control"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">t_outcome</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">t1</span>, <span class="va">t2</span><span class="op">)</span></span>
-<span><span class="fu">indirect_pathwise</span><span class="op">(</span><span class="va">model</span>, <span class="va">t1</span>, <span class="va">t2</span>, <span class="va">t_outcome</span><span class="op">)</span></span>
-<span><span class="fu">indirect_pathwise</span><span class="op">(</span><span class="va">model</span>, <span class="st">"Treatment"</span>, <span class="st">"Control"</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu">multimedia</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu">demo_joy</span><span class="op">(</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  outcomes <span class="op">=</span> <span class="st">"PHQ"</span>,</span></span>
+<span class="r-in"><span>  treatments <span class="op">=</span> <span class="st">"treatment"</span>,</span></span>
+<span class="r-in"><span>  mediators <span class="op">=</span> <span class="fu">starts_with</span><span class="op">(</span><span class="st">"ASV"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="estimate.html">estimate</a></span><span class="op">(</span><span class="fu">demo_joy</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The `x` argument of `as_tibble.matrix()` must have unique column names if</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> `.name_repair` is omitted as of tibble 2.0.0.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Using compatibility `.name_repair`.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> The deprecated feature was likely used in the <span style="color: #0000BB;">multimedia</span> package.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   Please report the issue to the authors.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in str_remove(., "V"):</span> could not find function "str_remove"</span>
+<span class="r-in"><span><span class="va">t1</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span>treatment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="st">"Treatment"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">t2</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span>treatment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="st">"Control"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">t_outcome</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">t1</span>, <span class="va">t2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">indirect_pathwise</span><span class="op">(</span><span class="va">model</span>, <span class="va">t1</span>, <span class="va">t2</span>, <span class="va">t_outcome</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in exper@pretreatments:</span> no applicable method for `@` applied to an object of class "tbl_df"</span>
+<span class="r-in"><span><span class="fu">indirect_pathwise</span><span class="op">(</span><span class="va">model</span>, <span class="st">"Treatment"</span>, <span class="st">"Control"</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in exper@pretreatments:</span> no applicable method for `@` applied to an object of class "character"</span>
+</code></pre></div>
     </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

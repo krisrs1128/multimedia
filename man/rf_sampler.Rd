@@ -20,5 +20,5 @@ y_star A data.frame of samples y associated wtih the new inputs.
 }
 \description{
 This assumes a continuous response, so that the out-of-sample MSE can be used
-to estimate the outcome variability $\sigma$.
+to estimate the outcome variability \eqn{\sigma}.
 }

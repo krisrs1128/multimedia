@@ -42,7 +42,7 @@ matching_indices <- function(edges, nulls = NULL) {
 #' model. This function defines submodels by removing estimated edges according
 #' to a prespecified vector of IDs. For example, setting nulls = "T -> Y" will
 #' remove any direct effect when sampling or obtaining predictions for the full
-#' mediation analysis model \hat{Y}.
+#' mediation analysis model \eqn{hat{Y}}.
 #'
 #' @param multimedia A fitted object of class multimedia with estimates along
 #'   all paths in the mediation analysis DAG.
