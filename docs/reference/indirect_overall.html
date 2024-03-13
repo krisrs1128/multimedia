@@ -71,17 +71,20 @@
     <p>Estimate direct effects associated with a multimedia model. These estimates
 are formed using Equation (10) of our preprint:</p>
 <p>$$
-\frac{1}{2} \sum_{j = 0}^{1} \sum_{i = 1}^{N} \hat{Y}_{i}(t2, \hat{M}(t2)) - \hat{Y}_{i}(t1, \hat{M}(t1)) 
+\frac{1}{2} \sum_{j = 0}^{1} \sum_{i = 1}^{N} \hat{Y}_{i}(t2, \hat{M}(t2)) - \hat{Y}_{i}(t1, \hat{M}(t1))
 $$</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="va">t1</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span>treatment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="st">"Treatment"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">t2</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span>treatment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="st">"Control"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">t_outcome</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">t1</span>, <span class="va">t2</span><span class="op">)</span></span>
-<span><span class="fu">indirect_overall</span><span class="op">(</span><span class="va">model</span>, <span class="va">t1</span>, <span class="va">t2</span>, <span class="va">t_outcome</span><span class="op">)</span></span>
-<span><span class="fu">indirect_overall</span><span class="op">(</span><span class="va">model</span>, <span class="st">"Treatment"</span>, <span class="st">"Control"</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">t1</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span>treatment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="st">"Treatment"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">t2</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span>treatment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="st">"Control"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">t_outcome</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">t1</span>, <span class="va">t2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">indirect_overall</span><span class="op">(</span><span class="va">model</span>, <span class="va">t1</span>, <span class="va">t2</span>, <span class="va">t_outcome</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in exper@pretreatments:</span> no applicable method for `@` applied to an object of class "tbl_df"</span>
+<span class="r-in"><span><span class="fu">indirect_overall</span><span class="op">(</span><span class="va">model</span>, <span class="st">"Treatment"</span>, <span class="st">"Control"</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in exper@pretreatments:</span> no applicable method for `@` applied to an object of class "character"</span>
+</code></pre></div>
     </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
