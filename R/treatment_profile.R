@@ -1,3 +1,11 @@
+#' Fail Fast for Poorly Specified Profiles
+#' 
+#' Specifying counterfactuals in general mediation analysis is tricky. We
+#' need to have a hypothetical treatment that applies to the mediator and
+#' outcome separately, even though in reality only one treatment can ever be
+#' assigned to a single treatment. This helper checks that the specification of
+#' mediator and outcome treatments is reasonable.
+#' @param object An object of class `treatment_profile` that we want to check.
 #' @importFrom dplyr n_distinct
 check_profile <- function(object) {
   if (is(object@t_mediator, "list")) {
@@ -13,7 +21,29 @@ check_profile <- function(object) {
   }
 }
 
+#' Define a `treatment_profile` object
+#' 
+#' For general mediation analysis, we need to provide counterfactuals for both
+#' the outcome and mediator components of each sample. That is, we need to
+#' understand Y(t, M(t')) where t and t' may not be the same.
+#' `treatment_profile` classes place some more stringent requirements on the
+#' structure of treatment profiles, so that later effect estimation can make
+#' simplifying assumptions. This function creates a treatment profile from a
+#' collection of possible mediator and outcome treatments.
+#' 
+#' @param x An object of class `mediation_data` with a slot `@treatments`
+#'   containing information on the treatments that have been applied.
+#' @param t_mediator A data.frame whose columns store treatment names and whose
+#'   values are the treatment assignments to each sample (row). Defaults to
+#'   NULL, in which case this type of data.frame is constructed from the
+#'   treatment assignments in the `mediation_data`'s `@treatment` slot. Each
+#'   column must be either a numeric or factor variable.
+#' @param t_outcome A data.frame analogous to `t_mediator`, but applying to the
+#'   outcome node.
+#' @return An object of class `treatment_profile` giving treatment assignments
+#'   for both mediation and outcome terms.
 #' @importFrom purrr map_lgl
+#' @seealso check_profile
 #' @export
 setup_profile <- function(x, t_mediator = NULL, t_outcome = NULL) {
   if (is.null(t_mediator)) {
@@ -43,6 +73,13 @@ setup_profile <- function(x, t_mediator = NULL, t_outcome = NULL) {
   new("treatment_profile", t_mediator = t_mediator, t_outcome = t_outcome)
 }
 
+#' Define a Treatment Profile
+#' 
+#' This class ensures appropriate structure of the treatment assignments for
+#' mediator and outcome variables. It enforces certain structural requirements
+#' (e.g., that the number of samples is the same under the mediator and outcome
+#' counterfactuals) using the `check_profile` function.
+#' @seealso setup_profile check_profile
 #' @export
 setClass(
   "treatment_profile",

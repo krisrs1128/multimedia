@@ -1,3 +1,4 @@
+#' data.frame with samples from p
 #' @importFrom tibble as_tibble
 random_numeric <- function(nrow, ncol, p = rnorm) {
   matrix(p(nrow * ncol), nrow = nrow, ncol = ncol) |>
@@ -5,6 +6,19 @@ random_numeric <- function(nrow, ncol, p = rnorm) {
     rename_with(~ str_remove(., "V"))
 }
 
+#' A Demo Dataset
+#' 
+#' This is a simple dataset with random data, used simply to illustrate the
+#' design of multimedia. There is no real association between any treatments,
+#' mediators, or outcomes. It always returns a single outcome (PHQ)
+#' SummarizedExperiment, and it randomly assigns samples to Treatment and
+#' Control (see the colData). It stores all the hypothetical mediator data in
+#' the assay slot.
+#' 
+#' @param n_samples How many random samples to generate?
+#' @param n_mediators How many random mediators to generate?
+#' @param n_pretreatment How many random pretreatment variables?
+#' @return SE The summarized experiment containing random data.
 #' @importFrom glue glue
 #' @importFrom dplyr bind_cols rename_with
 #' @importFrom tibble tibble

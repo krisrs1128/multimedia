@@ -1,3 +1,22 @@
+#' Visualize Indirect Effects
+#' 
+#' This is a helper function to visualize the raw data responsible for the
+#' largest indirect effects. It returns a faceted plot of outcome vs. mediator
+#' pairs for those with high pathwise indirect effects.
+#' 
+#' @param indirect_effects A data.frame containing estimated indirect effects
+#'   for each variable, under different counterfactual settings for the "direct
+#'   treatment." This is the output of `indirect_pathwise`.
+#' @param exper An object of class `mediation_data` containing all mediation
+#'   analysis data.
+#' @param n_digit The number of digits of the indirect effects to print next to
+#'   each panel. Defaults to 3.
+#' @param n_panels The number of mediator-outcome pairs to show. Defaults to 12,
+#'   or the number of pathways, if there are fewer than 12.
+#' @param treatment What is the name of the treatment variable that we want to
+#'   overlay on points? This is necessary when there are several potential
+#'   treatment variables. Defaults to "treatment."
+#' @param ... Further keyword arguments passed to `patchwork::wrap_plots`.
 #' @importFrom patchwork wrap_plots plot_layout
 #' @importFrom ggplot2 ggplot aes .data geom_point labs
 #' @importFrom glue glue
