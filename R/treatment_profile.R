@@ -1,5 +1,5 @@
 #' Fail Fast for Poorly Specified Profiles
-#' 
+#'
 #' Specifying counterfactuals in general mediation analysis is tricky. We
 #' need to have a hypothetical treatment that applies to the mediator and
 #' outcome separately, even though in reality only one treatment can ever be
@@ -22,7 +22,7 @@ check_profile <- function(object) {
 }
 
 #' Define a `treatment_profile` object
-#' 
+#'
 #' For general mediation analysis, we need to provide counterfactuals for both
 #' the outcome and mediator components of each sample. That is, we need to
 #' understand Y(t, M(t')) where t and t' may not be the same.
@@ -30,7 +30,7 @@ check_profile <- function(object) {
 #' structure of treatment profiles, so that later effect estimation can make
 #' simplifying assumptions. This function creates a treatment profile from a
 #' collection of possible mediator and outcome treatments.
-#' 
+#'
 #' @param x An object of class `mediation_data` with a slot `@treatments`
 #'   containing information on the treatments that have been applied.
 #' @param t_mediator A data.frame whose columns store treatment names and whose
@@ -74,7 +74,7 @@ setup_profile <- function(x, t_mediator = NULL, t_outcome = NULL) {
 }
 
 #' Define a Treatment Profile
-#' 
+#'
 #' This class ensures appropriate structure of the treatment assignments for
 #' mediator and outcome variables. It enforces certain structural requirements
 #' (e.g., that the number of samples is the same under the mediator and outcome

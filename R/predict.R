@@ -1,11 +1,11 @@
 #' Sample New Mediator/Outcome Data
-#' 
+#'
 #' This generalizes the built-in sample method to the multimedia class. Given an
 #' estimated multimedia object, this function supports sampling along the
 #' estimated DAG. It first samples `M* | T, X` and then `Y* | M*, T, X`. Each
 #' sampling step will call the sample method within the mediation and outcome
 #' models that make up the multimedia object on which this is called.
-#' 
+#'
 #' @export
 setMethod("sample", "multimedia", function(
     x, size, pretreatment = NULL,
@@ -50,7 +50,7 @@ setMethod("sample", "multimedia", function(
 })
 
 #' Predictions from a Single Outcome
-#' 
+#'
 #' @param object An object of class `model` containing an estimated model.
 #' @param newdata A data.frame containing new inputs from which to sample
 #'   responses. If NULL, defaults to the data used to estimate fit.
@@ -65,7 +65,7 @@ predict_across <- function(object, newdata, name) {
 }
 
 #' Predictions from a Multimedia Class
-#' 
+#'
 #' This generalizes the built-in predict method to the multimedia class.  Given
 #' an estimated multimedia object, this function supports prediction along the
 #' estimated DAG. It first predicts `hat[M] | T, X` and then `hat[Y] | hat[M],

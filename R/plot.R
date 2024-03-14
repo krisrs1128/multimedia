@@ -1,9 +1,9 @@
 #' Visualize Indirect Effects
-#' 
+#'
 #' This is a helper function to visualize the raw data responsible for the
 #' largest indirect effects. It returns a faceted plot of outcome vs. mediator
 #' pairs for those with high pathwise indirect effects.
-#' 
+#'
 #' @param indirect_effects A data.frame containing estimated indirect effects
 #'   for each variable, under different counterfactual settings for the "direct
 #'   treatment." This is the output of `indirect_pathwise`.
