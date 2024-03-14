@@ -4,30 +4,33 @@ Version: 0.0.0.9000
 Authors@R: 
     person("Kris", "Sankaran", , "ksankaran@wisc.edu", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-9415-1971"))
-Description: multimedia is an R package for multi-omcis analysis of microbiome data. It make advanced mediation analysis techniques accessible to a wide audience, ensuring that all statistical components are easily interpretable and adaptable to specific problem contexts. The package provides a uniform interface to direct and indirect effect estimation, synthetic null hypothesis testing, and bootstrap confidence interval construction.
+Description: multimedia is an R package for multidomain mediation analysis of microbiome data. It make advanced mediation analysis techniques easy to use, ensuring that all statistical components are transparent and adaptable to specific problem contexts. The package provides a uniform interface to direct and indirect effect estimation, synthetic null hypothesis testing, and bootstrap confidence interval construction.
 License: CC0
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.1
-Suggests: 
-    knitr,
-    rmarkdown
 VignetteBuilder: knitr
 Depends: 
     R (>= 3.50),
-    brms,
     cli,
     dplyr,
     fansi,
+    formula.tools,
+    insight,
     ggplot2,
-    glmnetUtils,
     glue,
-    patchwork,
     progress,
     purrr,
-    ranger,
     rlang,
     tibble,
     tidygraph,
     tidyr
+Suggests:
+    brms,
+    glmnet,
+    glmnetUtils,
+    patchwork,
+    ranger,
+    knitr,
+    rmarkdown
 LazyData: true
