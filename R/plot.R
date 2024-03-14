@@ -23,6 +23,7 @@
 #' @export
 plot_mediators <- function(indirect_effects, exper, n_digit = 3, n_panels = NULL,
                            treatment = "treatment", ...) {
+  check_if_installed("patchwork", "to visualize indirect effects as a multipanel plot.")
   if (is.null(n_panels)) {
     n_panels <- min(nrow(indirect_effects), 12)
   }

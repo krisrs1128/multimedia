@@ -1,9 +1,9 @@
 ---
-title: "Template for Joy Data Analysis"
+title: "Quick Start with Random Data"
 output: rmdformats::readthedown
 css: custom.css
 vignette: >
-  %\VignetteIndexEntry{joy}
+  %\VignetteIndexEntry{Quick Start with Random Data}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -26,7 +26,7 @@ options(crayon.enabled = TRUE)
 
 suppressPackageStartupMessages(library(tidyverse))
 options(
-  ggplot2.discrete.colour = c("#9491D9", "#F24405", "#3F8C61",  "#8C2E62", "#F2B705", "#11A0D9"),
+  ggplot2.discrete.colour = c("#9491D9", "#F24405", "#3F8C61", "#8C2E62", "#F2B705", "#11A0D9"),
   ggplot2.discrete.fill = c("#9491D9", "#F24405", "#3F8C61", "#8C2E62", "#F2B705", "#11A0D9"),
   ggplot2.continuous.colour = function(...) scale_color_distiller(palette = "Spectral", ...),
   ggplot2.continuous.fill = function(...) scale_fill_distiller(palette = "Spectral", ...)
@@ -34,13 +34,13 @@ options(
 
 th <- theme_classic() +
   theme(
-    panel.background = element_rect(fill="transparent"),
-    strip.background = element_rect(fill="transparent"),
-    plot.background = element_rect(fill="transparent", color=NA),
+    panel.background = element_rect(fill = "transparent"),
+    strip.background = element_rect(fill = "transparent"),
+    plot.background = element_rect(fill = "transparent", color = NA),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
-    legend.background = element_rect(fill="transparent"),
-    legend.box.background = element_rect(fill="transparent"),
+    legend.background = element_rect(fill = "transparent"),
+    legend.box.background = element_rect(fill = "transparent"),
     legend.position = "bottom"
   )
 
@@ -53,12 +53,11 @@ library(tidyverse)
 library(ggraph)
 ```
 
-`multimedia` is a package for **Multi**-omics **Media**tion analysis. This
-vignette gives a brief introduction using simulated that look vaguely like
-BeWell. The basic question is -- we know that meditation can reduce depression
-and anxiety symptoms, so is it possible that microbiome shifts might play a
-role? In the language of mediation analysis, does the microbiome mediate PHQ
-score?
+This vignette gives a brief introduction using simulated that resemble a
+mediation analysis of the gut-brain axis. The basic question is -- we know that
+meditation can reduce depression and anxiety symptoms, so is it possible that
+microbiome shifts might play a role? In the language of mediation analysis, does
+the microbiome mediate Public Health Questionnaire-9 (PHQ) score?
 
 ```{r example_data}
 demo_joy()
@@ -83,19 +82,13 @@ model <- multimedia(exper) |>
 model
 ```
 
-The `edges` slot tracks all the variable relationships.
+The `edges` slot tracks all the variable relationships. For example, we can
+visualize the causal graph using the `ggraph` code below.
 
 ```{r graph}
 ggraph(model@edges) +
   geom_edge_link(arrow = arrow()) +
   geom_node_label(aes(label = name, fill = node_type))
-```
-
-We can look at the estimated mediation and outcome models.
-
-```{r models}
-model@mediation
-model@outcome
 ```
 
 Now that we've coupled the mediation and outcome models, we can propogate
@@ -163,7 +156,7 @@ that all the estimates are 0 is a good thing -- there are no real effects in the
 simulated data.
 
 ```{r glmnet}
-model <- multimedia(exper,  glmnet_model(lambda = .1)) |>
+model <- multimedia(exper, glmnet_model(lambda = .1)) |>
   estimate(exper)
 
 direct_effect(model, exper)
@@ -180,7 +173,7 @@ with the bootstrap distribution for that estimator.
 
 ```{r bootstrap}
 funs <- list(direct_effect = direct_effect)
-bootstrap(model, exper, funs, B = 10)
+bootstrap(model, exper, funs, B = 100)
 ```
 
 We can also generate synthetic nulls to calibrate selection sets. The third

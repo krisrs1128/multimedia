@@ -246,8 +246,14 @@ glmnet_model_params <- function(...) {
 #'  sampler functions associated wtih a lienar model.
 #' @seealso model lm_model rf_model
 #' @importFrom glmnetUtils glmnet
+#' @importFrom insight check_if_installed
 #' @export
 glmnet_model <- function(...) {
+  check_if_installed(
+    c("glmnet", "glmnetUtils"),
+    "to use a glmnet regression model for multimedia estimation."
+  )
+
   params <- glmnet_model_params(...)
   new(
     "model",
@@ -328,6 +334,7 @@ brm_cache <- function(formula, data, ...) {
 #' @seealso glmnet_model lnm_model rf_model lm_model
 #' @export
 brms_model <- function(...) {
+  check_if_installed("brms", "to use a BRMS model for multimedia estimation.")
   params <- brms_model_params(...)
   new(
     "model",
@@ -381,6 +388,11 @@ brms_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
 #' @importFrom miniLNM lnm
 #' @export
 lnm_model <- function(...) {
+  check_if_installed(
+    "miniLNM",
+    "to use a LNM model for multimedia estimation. Please run devtools::install_github('krisrs1128/miniLNM')",
+    prompt = FALSE
+  )
   new(
     "model",
     estimator = \(fmla, data) inject(lnm(fmla, data, ...)),
@@ -428,6 +440,7 @@ lnm_sampler <- function(fit, newdata = NULL, indices = NULL, ...) {
 #' @importFrom ranger ranger
 #' @export
 rf_model <- function(...) {
+  check_if_installed("ranger", "to use a random forest model for multimedia estimation.")
   new(
     "model",
     estimator = parallelize(\(fmla, data) ranger(fmla, data, ...)),

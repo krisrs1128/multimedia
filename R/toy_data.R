@@ -6,7 +6,7 @@ random_numeric <- function(nrow, ncol, p = rnorm) {
     rename_with(~ gsub("V", "", .))
 }
 
-#' A Demo Dataset
+#' A Demo Dataset (Random)
 #'
 #' This is a simple dataset with random data, used simply to illustrate the
 #' design of multimedia. There is no real association between any treatments,
@@ -35,4 +35,50 @@ demo_joy <- function(n_samples = 100, n_mediators = 5, n_pretreatment = 3) {
     assays = SimpleList(counts = t(as.matrix(mediators))),
     colData = DataFrame(treatment = treatment, PHQ = outcome)
   )
+}
+
+matnorm <- \(n, m, ...) matrix(rnorm(n * m, ...), n, m)
+
+#' Generate Random Spline
+#' @examples
+#' x <- seq(-2, 2, length.out = 100)
+#' f <- spline_fun(sd = 0.3)
+#' fx <- f(x)
+#' plot(x, fx[, 1])
+spline_fun <- function(D = 2, knots = NULL, h_ix = 1:10, ...) {
+  if (is.null(knots)) {
+    knots <- seq(-4, 4, length.out = 5)
+  }
+
+  h_dim <- splines::ns(h_ix, knots = knots, intercept = TRUE)
+  B <- matnorm(D, ncol(h_dim))
+  function(x) {
+    H <- splines::ns(x, knots = knots, intercept = TRUE)
+    scale(H %*% t(B) + rnorm(nrow(H), ...))
+  }
+}
+
+#' A Demo Dataset (Spline)
+#'
+#' This is a simple dataset with nonlinear relationships between the outcome and
+#' mediators. It is used simply to illustrate the design of multimedia. The
+#' mediator->outcome effect is generated from a random spline function.
+#'
+#' @param n_samples The number of samples to generate in the toy example
+#' @param tau The true direct efefcts associated with the two outcomes. Defaults
+#'   to 2, 2.
+#' @return xy A tibble whose columns include the treatment, mediation, and
+#'   outcome variables.
+#' @export
+demo_spline <- function(n_samples = 5e3, tau = c(2, 2)) {
+  if (n_samples < 15) {
+    cli_abort("Spline generation requires at least 15 samples.")
+  }
+
+  treatment <- rep(c(0, 1), each = n_samples / 2)
+  mediator <- rnorm(n_samples, 3 * (treatment - 0.5), 2)
+  f <- spline_fun(sd = 0.2)
+  y <- f(mediator) + matrix(treatment, ncol = 1) %*% tau
+  colnames(y) <- glue("outcome_{1:2}")
+  bind_cols(y, mediator = mediator, treatment = factor(treatment))
 }

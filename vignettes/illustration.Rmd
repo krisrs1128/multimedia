@@ -1,8 +1,8 @@
 ---
-title: "Nonlinear Illustration"
+title: "Illustration with Nonlinear Effects"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Nonlinear Illustration}
+  %\VignetteIndexEntry{Illustration with Nonlinear Effects}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -25,7 +25,7 @@ options(crayon.enabled = TRUE)
 
 suppressPackageStartupMessages(library(tidyverse))
 options(
-  ggplot2.discrete.colour = c("#9491D9", "#F24405", "#3F8C61",  "#8C2E62", "#F2B705", "#11A0D9"),
+  ggplot2.discrete.colour = c("#9491D9", "#F24405", "#3F8C61", "#8C2E62", "#F2B705", "#11A0D9"),
   ggplot2.discrete.fill = c("#9491D9", "#F24405", "#3F8C61", "#8C2E62", "#F2B705", "#11A0D9"),
   ggplot2.continuous.colour = function(...) scale_color_distiller(palette = "Spectral", ...),
   ggplot2.continuous.fill = function(...) scale_fill_distiller(palette = "Spectral", ...)
@@ -33,46 +33,31 @@ options(
 
 th <- theme_classic() +
   theme(
-    panel.background = element_rect(fill="transparent"),
-    strip.background = element_rect(fill="transparent"),
-    plot.background = element_rect(fill="transparent", color=NA),
+    panel.background = element_rect(fill = "transparent"),
+    strip.background = element_rect(fill = "transparent"),
+    plot.background = element_rect(fill = "transparent", color = NA),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
-    legend.background = element_rect(fill="transparent"),
-    legend.box.background = element_rect(fill="transparent"),
+    legend.background = element_rect(fill = "transparent"),
+    legend.box.background = element_rect(fill = "transparent"),
     legend.position = "bottom"
   )
 
 theme_set(th)
 ```
 
+This vignette gives a simplified example similar to the "Quick Start with Random
+Data," except in this simulated dataset, there are true direct and indirect
+effects. The data are low dimensional, which also makes it easy to visualize our
+model's behavior and the effect of various alterations. Before discussing data
+and models, let's load libraries and define helper functions that will be used
+for reorganizing the data later in this vignette. 
+
 ```{r setup}
 library(glue)
 library(multimedia)
-library(splines)
 library(tidyverse)
-theme_set(theme_classic())
 set.seed(20240111)
-```
-
-```{r, echo = FALSE}
-matnorm <- \(n, m, ...) matrix(rnorm(n * m, ...), n, m)
-
-#' @examples
-#' x <- seq(-2, 2, length.out = 100)
-#' f <- spline_fun(sd = 0.3)
-#' fx <- f(x)
-#' plot(x, fx[, 1])
-spline_fun <- function(D = 2, knots = NULL, ...) {
-  knots <- seq(-4, 4, length.out = 5)
-  h_dim <- ns(1:10, knots = knots, intercept = TRUE)
-  B <- matnorm(D, ncol(h_dim))
-  
-  function(x) {
-    H <- ns(x, knots = knots, intercept = TRUE)
-    scale(H %*% t(B) + rnorm(nrow(H), ...))
-  }
-}
 
 #' Helper to plot the real data
 plot_exper <- function(fit, profile) {
@@ -92,23 +77,16 @@ pivot_samples <- function(fit, profile) {
 }
 ```
 
-This mediation analysis has two outcomes and a single mediator. First, let's
-generate a toy dataset relating the treatment, mediator, and outcomes. We use
+We will consdier a mediation analysis with two outcomes and a single mediator.
+The toy dataset below is included in the package -- you can vary the number of
+samples and true direct effect size by passing in arguments.
+
+the treatment, mediator, and outcomes. We use
 random spline functions for the direct effect.
 
 ```{r}
-N <- 5e3
-tau <- rep(2, 2)
-treatment <- rep(c(0, 1), each = N / 2)
-mediator <- rnorm(N, 3 * (treatment - 0.5), 2)
-f <- spline_fun(sd = 0.2)
-
-y <- f(mediator) + matrix(treatment, ncol = 1) %*% tau
-colnames(y) <- glue("outcome_{1:2}")
-xy_data <- bind_cols(y, mediator = mediator, treatment = factor(treatment))
-xy_long <- list(
-  true = pivot_longer(xy_data, starts_with("outcome"), names_to = "outcome")
-)
+xy_data <- demo_spline()
+xy_long <- list(true = pivot_longer(xy_data, starts_with("outcome"), names_to = "outcome"))
 ```
 
 The block below estimates a random forest model on these randomly generated data
@@ -118,20 +96,18 @@ vary `ranger` parameters using the arguments to `rf_model()`.
 ```{r}
 exper <- mediation_data(xy_data, starts_with("outcome"), "treatment", "mediator")
 fit <- multimedia(
-    exper,
-    outcome_estimator = rf_model(num.trees = 1e3)
-  ) |>
+  exper,
+  outcome_estimator = rf_model(num.trees = 1e3)
+) |>
   estimate(exper)
 ```
 
 Let's look at the estimated effects.
 
 ```{r}
-# the true effects are 2, 2 
 direct_effect(fit) |>
   effect_summary()
 
-# the true effect is +/- 1.5
 indirect_overall(fit) |>
   effect_summary()
 ```
@@ -147,7 +123,9 @@ profile <- setup_profile(fit, t_mediator, t_outcome)
 xy_long[["fitted"]] <- pivot_samples(fit, profile)
 ```
 
-We can analyze the nullified effects.
+Let's estimate three altered models. The first two nullify the effects in the
+mediation and outcome models, respectively. The third assumes a linear, rather
+than random forest, outcome model.
 
 ```{r}
 altered_m <- nullify(fit, "T->M") |>
@@ -156,11 +134,16 @@ altered_ty <- nullify(fit, "T->Y") |>
   estimate(exper)
 
 fit_lm <- multimedia(
-    exper,
-    outcome_estimator = lm_model()
-  ) |>
+  exper,
+  outcome_estimator = lm_model()
+) |>
   estimate(exper)
+```
 
+We can sample from these models and organize the results into one long
+data.frame. The function `pivot_samples` is defined at the top of the script.
+
+```{r}
 xy_long <- c(
   xy_long,
   list(
@@ -213,9 +196,9 @@ bootstraps <- bootstrap(fit, exper, fs = fs)
 
 ggplot(bootstraps$direct_effect) +
   geom_histogram(aes(direct_effect)) +
-  facet_wrap(~ outcome)
+  facet_wrap(~outcome)
 
 ggplot(bootstraps$indirect_overall) +
   geom_histogram(aes(indirect_effect)) +
-  facet_wrap(~ outcome)
+  facet_wrap(~outcome)
 ```
