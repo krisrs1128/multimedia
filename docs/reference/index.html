@@ -35,7 +35,7 @@
       <a href="../articles/IBD.html">Microbiome - Metabolome Mediation Analysis</a>
     </li>
     <li>
-      <a href="../articles/illustration.html">illustration</a>
+      <a href="../articles/illustration.html">Nonlinear Illustration</a>
     </li>
     <li>
       <a href="../articles/joy.html">Template for Joy Data Analysis</a>
@@ -66,6 +66,10 @@
         <td><p>Helper function for printing ANSI in Rmarkdown output
 https://blog.djnavarro.net/posts/2021-04-18_pretty-little-clis/</p></td>
       </tr><tr><td>
+          <p><code><a href="bind_mediation.html">bind_mediation()</a></code> </p>
+        </td>
+        <td><p>Convert <code>mediation_data</code> to a single data.frame</p></td>
+      </tr><tr><td>
           <p><code><a href="bootstrap.html">bootstrap()</a></code> </p>
         </td>
         <td><p>Bootstrap Distribution for Estimators</p></td>
@@ -86,6 +90,10 @@ https://blog.djnavarro.net/posts/2021-04-18_pretty-little-clis/</p></td>
         </td>
         <td><p>Sample from a Bayesian Regression Model</p></td>
       </tr><tr><td>
+          <p><code><a href="check_profile.html">check_profile()</a></code> </p>
+        </td>
+        <td><p>Fail Fast for Poorly Specified Profiles</p></td>
+      </tr><tr><td>
           <p><code><a href="contrast_predictions.html">contrast_predictions()</a></code> </p>
         </td>
         <td><p>Estimate the Difference between Profiles</p></td>
@@ -93,6 +101,10 @@ https://blog.djnavarro.net/posts/2021-04-18_pretty-little-clis/</p></td>
           <p><code><a href="contrast_samples.html">contrast_samples()</a></code> </p>
         </td>
         <td><p>Difference between Samples at Contrasting Profiles</p></td>
+      </tr><tr><td>
+          <p><code><a href="demo_joy.html">demo_joy()</a></code> </p>
+        </td>
+        <td><p>A Demo Dataset</p></td>
       </tr><tr><td>
           <p><code><a href="direct_effect.html">direct_effect()</a></code> </p>
         </td>
@@ -114,9 +126,29 @@ https://blog.djnavarro.net/posts/2021-04-18_pretty-little-clis/</p></td>
         </td>
         <td><p>Estimate a Mediation Model</p></td>
       </tr><tr><td>
+          <p><code><a href="expand_edges.html">expand_edges()</a></code> </p>
+        </td>
+        <td><p>Helper for <code>graph_specification</code></p></td>
+      </tr><tr><td>
+          <p><code><a href="exper_df.html">exper_df()</a></code> </p>
+        </td>
+        <td><p>Convert a Summarized Experiment to a data.frame</p></td>
+      </tr><tr><td>
           <p><code><a href="fdr_summary.html">fdr_summary()</a></code> </p>
         </td>
         <td><p>Calibration using Synthetic Nulls</p></td>
+      </tr><tr><td>
+          <p><code><a href="from_data_frame.html">from_data_frame()</a></code> </p>
+        </td>
+        <td><p><code>mediation_data</code> from a data.frame</p></td>
+      </tr><tr><td>
+          <p><code><a href="from_phyloseq.html">from_phyloseq()</a></code> </p>
+        </td>
+        <td><p>Helper to Convert a phyloseq object to a data.frame</p></td>
+      </tr><tr><td>
+          <p><code><a href="from_summarized_experiment.html">from_summarized_experiment()</a></code> </p>
+        </td>
+        <td><p>Helper to Convert SummarizedExperiment to a data.frame</p></td>
       </tr><tr><td>
           <p><code><a href="glmnet_model.html">glmnet_model()</a></code> </p>
         </td>
@@ -129,6 +161,10 @@ https://blog.djnavarro.net/posts/2021-04-18_pretty-little-clis/</p></td>
           <p><code><a href="glmnet_sampler.html">glmnet_sampler()</a></code> </p>
         </td>
         <td><p>Sample from a Glmnet Model</p></td>
+      </tr><tr><td>
+          <p><code><a href="graph_specification.html">graph_specification()</a></code> </p>
+        </td>
+        <td><p>Define all Edges in a Mediation Analysis</p></td>
       </tr><tr><td>
           <p><code><a href="indirect_overall.html">indirect_overall()</a></code> </p>
         </td>
@@ -158,6 +194,14 @@ https://blog.djnavarro.net/posts/2021-04-18_pretty-little-clis/</p></td>
         </td>
         <td><p>Parse an Edgelist for Mediation or Outcome Edges</p></td>
       </tr><tr><td>
+          <p><code><a href="mediation_data-class.html">mediation_data-class</a></code> </p>
+        </td>
+        <td><p>An S4 Class Representing a Mediation Analysis Dataset</p></td>
+      </tr><tr><td>
+          <p><code><a href="mediation_data.html">mediation_data()</a></code> </p>
+        </td>
+        <td><p><code>mediation_data</code> constructor</p></td>
+      </tr><tr><td>
           <p><code><a href="mediation_formula.html">mediation_formula()</a></code> </p>
         </td>
         <td><p>Generate a Mediation Formula</p></td>
@@ -165,6 +209,22 @@ https://blog.djnavarro.net/posts/2021-04-18_pretty-little-clis/</p></td>
           <p><code><a href="model-class.html">model-class</a></code> </p>
         </td>
         <td><p>Representation of an Outcome or Mediation Model</p></td>
+      </tr><tr><td>
+          <p><code><a href="multimedia-class.html">multimedia-class</a></code> </p>
+        </td>
+        <td><p>An S4 Class Representing Mediation Analysis Models</p></td>
+      </tr><tr><td>
+          <p><code><a href="multimedia.html">multimedia()</a></code> </p>
+        </td>
+        <td><p>Multimedia Constructor</p></td>
+      </tr><tr><td>
+          <p><code><a href="nrow-mediation_data-method.html">nrow(<i>&lt;mediation_data&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>How many samples in the mediation dataset?</p></td>
+      </tr><tr><td>
+          <p><code><a href="nrow.html">nrow()</a></code> </p>
+        </td>
+        <td><p>How many samples in the mediation dataset?</p></td>
       </tr><tr><td>
           <p><code><a href="null_contrast.html">null_contrast()</a></code> </p>
         </td>
@@ -182,6 +242,26 @@ https://blog.djnavarro.net/posts/2021-04-18_pretty-little-clis/</p></td>
         </td>
         <td><p>Parallelize Estimation across Responses</p></td>
       </tr><tr><td>
+          <p><code><a href="plot_mediators.html">plot_mediators()</a></code> </p>
+        </td>
+        <td><p>Visualize Indirect Effects</p></td>
+      </tr><tr><td>
+          <p><code><a href="predict-multimedia-method.html">predict(<i>&lt;multimedia&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Predictions from a Multimedia Class</p></td>
+      </tr><tr><td>
+          <p><code><a href="predict_across.html">predict_across()</a></code> </p>
+        </td>
+        <td><p>Predictions from a Single Outcome</p></td>
+      </tr><tr><td>
+          <p><code><a href="print_sub.html">print_sub()</a></code> </p>
+        </td>
+        <td><p>Pretty printing x -&gt; comma separated string</p></td>
+      </tr><tr><td>
+          <p><code><a href="random_numeric.html">random_numeric()</a></code> </p>
+        </td>
+        <td><p>data.frame with samples from p</p></td>
+      </tr><tr><td>
           <p><code><a href="rf_model.html">rf_model()</a></code> </p>
         </td>
         <td><p>Random Forest Model</p></td>
@@ -189,6 +269,22 @@ https://blog.djnavarro.net/posts/2021-04-18_pretty-little-clis/</p></td>
           <p><code><a href="rf_sampler.html">rf_sampler()</a></code> </p>
         </td>
         <td><p>Sample from a Random Forest Model</p></td>
+      </tr><tr><td>
+          <p><code><a href="sample-multimedia-method.html">sample(<i>&lt;multimedia&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Sample New Mediator/Outcome Data</p></td>
+      </tr><tr><td>
+          <p><code><a href="setup_profile.html">setup_profile()</a></code> </p>
+        </td>
+        <td><p>Define a <code>treatment_profile</code> object</p></td>
+      </tr><tr><td>
+          <p><code><a href="sub-mediation_data-ANY-ANY-ANY-method.html">`[`(<i>&lt;mediation_data&gt;</i>,<i>&lt;ANY&gt;</i>,<i>&lt;ANY&gt;</i>,<i>&lt;ANY&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Subset a mediation dataset</p></td>
+      </tr><tr><td>
+          <p><code><a href="treatment_profile-class.html">treatment_profile-class</a></code> </p>
+        </td>
+        <td><p>Define a Treatment Profile</p></td>
       </tr></tbody></table></div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

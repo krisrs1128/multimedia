@@ -2,8 +2,8 @@
 #' @importFrom tibble as_tibble
 random_numeric <- function(nrow, ncol, p = rnorm) {
   matrix(p(nrow * ncol), nrow = nrow, ncol = ncol) |>
-    as_tibble() |>
-    rename_with(~ str_remove(., "V"))
+    as.data.frame() |>
+    rename_with(~ gsub("V", "", .))
 }
 
 #' A Demo Dataset
