@@ -1,8 +1,8 @@
 ---
-title: "illustration"
+title: "Nonlinear Illustration"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{illustration}
+  %\VignetteIndexEntry{Nonlinear Illustration}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -74,6 +74,7 @@ spline_fun <- function(D = 2, knots = NULL, ...) {
   }
 }
 
+#' Helper to plot the real data
 plot_exper <- function(fit, profile) {
   pivot_samples(fit, profile) |>
     ggplot() +
@@ -82,6 +83,7 @@ plot_exper <- function(fit, profile) {
     theme(legend.position = "bottom")
 }
 
+#' Convert a SummarizedExperiment to long form
 pivot_samples <- function(fit, profile) {
   exper_sample <- sample(fit, profile = profile)
   exper_sample@outcomes |>
@@ -90,14 +92,13 @@ pivot_samples <- function(fit, profile) {
 }
 ```
 
-
-This model has two outcomes and a single mediator. We use random spline
-functions for the direct effect.
+This mediation analysis has two outcomes and a single mediator. First, let's
+generate a toy dataset relating the treatment, mediator, and outcomes. We use
+random spline functions for the direct effect.
 
 ```{r}
 N <- 5e3
 tau <- rep(2, 2)
-
 treatment <- rep(c(0, 1), each = N / 2)
 mediator <- rnorm(N, 3 * (treatment - 0.5), 2)
 f <- spline_fun(sd = 0.2)
@@ -105,11 +106,14 @@ f <- spline_fun(sd = 0.2)
 y <- f(mediator) + matrix(treatment, ncol = 1) %*% tau
 colnames(y) <- glue("outcome_{1:2}")
 xy_data <- bind_cols(y, mediator = mediator, treatment = factor(treatment))
-
 xy_long <- list(
   true = pivot_longer(xy_data, starts_with("outcome"), names_to = "outcome")
 )
 ```
+
+The block below estimates a random forest model on these randomly generated data
+(after first converting them into an object of class `mediation_data`). We can
+vary `ranger` parameters using the arguments to `rf_model()`.
 
 ```{r}
 exper <- mediation_data(xy_data, starts_with("outcome"), "treatment", "mediator")
@@ -120,12 +124,7 @@ fit <- multimedia(
   estimate(exper)
 ```
 
-```{r}
-t_mediator <- tibble(treatment = factor(rep(unique(treatment), each = N / 2)))
-t_outcome <- tibble(treatment = factor(rep(unique(treatment), each = N / 2)))
-profile <- setup_profile(fit, t_mediator, t_outcome)
-xy_long[["fitted"]] <- pivot_samples(fit, profile)
-```
+Let's look at the estimated effects.
 
 ```{r}
 # the true effects are 2, 2 
@@ -136,6 +135,18 @@ direct_effect(fit) |>
 indirect_overall(fit) |>
   effect_summary()
 ```
+
+If we want to look at samples at new treatment assignments, we have to first
+construct a new treatment profile. We can accomplish this using the
+`setup_profile` object.
+
+```{r}
+t_mediator <- tibble(treatment = factor(rep(unique(treatment), each = N / 2)))
+t_outcome <- tibble(treatment = factor(rep(unique(treatment), each = N / 2)))
+profile <- setup_profile(fit, t_mediator, t_outcome)
+xy_long[["fitted"]] <- pivot_samples(fit, profile)
+```
+
 We can analyze the nullified effects.
 
 ```{r}
@@ -175,6 +186,8 @@ xy_long <- c(
   )
 ```
 
+The figure below compares the original data and model with the various nullified
+versions, using the combined `xy_long` dataset constructed above.
 
 ```{r, fig.width = 8, fig.height = 3}
 xy_long |>
@@ -189,11 +202,14 @@ xy_long |>
     axis.title = element_text(size = 14),
     legend.title = element_text(size = 12)
   )
-#ggsave("~/Desktop/writing/202401/figures/rf_illustration.svg", height = 3, widt = 8)
 ```
 
+We can calculate bootstrap confidence intervals for the direct and overall
+indirect effects using the block below.
+
 ```{r}
-bootstraps <- bootstrap(fit, exper, fs = list(direct_effect = direct_effect, indirect_overall = indirect_overall))
+fs <- list(direct_effect = direct_effect, indirect_overall = indirect_overall)
+bootstraps <- bootstrap(fit, exper, fs = fs)
 
 ggplot(bootstraps$direct_effect) +
   geom_histogram(aes(direct_effect)) +
