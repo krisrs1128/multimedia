@@ -18,8 +18,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><meta property="og:title" content="Multi-Omics Mediation Analysis">
-<meta property="og:description" content="multimedia is an R package for multi-omcis analysis of microbiome data. It make advanced mediation analysis techniques accessible to a wide audience, ensuring that all statistical components are easily interpretable and adaptable to specific problem contexts. The package provides a uniform interface to direct and indirect effect estimation, synthetic null hypothesis testing, and bootstrap confidence interval construction.">
-<meta property="og:image" content="/logo.png">
+<meta property="og:description" content="multimedia is an R package for multidomain mediation analysis of microbiome data. It make advanced mediation analysis techniques easy to use, ensuring that all statistical components are transparent and adaptable to specific problem contexts. The package provides a uniform interface to direct and indirect effect estimation, synthetic null hypothesis testing, and bootstrap confidence interval construction.">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -60,13 +59,13 @@
       <a href="articles/IBD.html">Microbiome - Metabolome Mediation Analysis</a>
     </li>
     <li>
-      <a href="articles/illustration.html">illustration</a>
-    </li>
-    <li>
-      <a href="articles/joy.html">Template for Joy Data Analysis</a>
+      <a href="articles/illustration.html">Illustration with Nonlinear Effects</a>
     </li>
     <li>
       <a href="articles/mindfulness.html">The Mindfulness Study</a>
+    </li>
+    <li>
+      <a href="articles/random.html">Template for Joy Data Analysis</a>
     </li>
   </ul>
 </li>
@@ -84,34 +83,83 @@
       </header><div class="row">
   <div class="contents col-md-9">
 <div class="section level1">
-<div class="page-header"><h1 id="multimedia-">multimedia <img src="reference/figures/logo.png" align="right" width="200" alt=""><a class="anchor" aria-label="anchor" href="#multimedia-"></a>
+<div class="page-header"><h1 id="multimedia-">multimedia <img src="https://uwmadison.box.com/shared/static/ygim01is2uer51wzyqg8u5l1mrz0kjo9.png" align="right" width="200" alt=""><a class="anchor" aria-label="anchor" href="#multimedia-"></a>
 </h1></div>
-<p><code>multimedia</code> is an R package for <strong>multi</strong>-domain <strong>media</strong>tion analysis of microbiome data. It makes it easy to curate data, specify mediation and outcome model formulas, and carry out inference for direct and indirect effects. By specifying causal relationships between different data domains, it can support principled data integration. You can read more about the package in our preprint:</p>
+<p><code>multimedia</code> is an R package for <strong>multi</strong>domain <strong>media</strong>tion analysis of microbiome data. It makes it easy to curate data, specify mediation and outcome model formulas, and carry out inference for direct and indirect effects. By specifying causal relationships between different data domains, it can support principled data integration. You can read more about the package in our preprint:</p>
 <p><a href="">H. Jiang, X. Miao, M. W. Thairu, M. Beebe, D. W. Grupe, R. J. Davidson, J. Handelsman, and K. Sankaran (2024). multimedia: Multidomain Mediation Analysis of Microbiome Data.</a></p>
+<p>The preprint describes the scientific context and interpretation for two of the vignettes in this package. One gives a multi-omics analysis of IBD, and the other describes how to model compositional outcomes in a study of depression.</p>
 <center>
-<img src="reference/figures/overview_figure-extended.png" width="400/">
+<img src="https://uwmadison.box.com/shared/static/rg8dv79wwiu4h37ftuuz57vmqv55zuy4.png" width="400/">
 </center>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <p>You can install the development version from <a href="https://github.com/krisrs1128/multimedia" class="external-link">GitHub</a> with:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"krisrs1128/multimedia"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># install.packages("devtools")</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"krisrs1128/multimedia"</span>)</span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
+</h2>
+<p>Here is a simple example of estimating direct and indirect effects using the package. The data are randomly generated (no real effects), but we will proceed as if the ASV columns mediate the relationship between <code>treatment</code> and <code>PHQ</code>. This is supposed to mimic the possibility that the microbiome (ASV = Amplicon Sequence Variant) might mediate the relationship between a treatment and depression (PHQ = Patient Health Questionnaire). You can find more details in the <code>random.Rmd</code> vignette.</p>
+<p>The original data here are a <code>SummarizedExperiment</code>. The package can also take phyloseq objects and plain data.frames.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">library</span>(multimedia)</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">demo_joy</span>()</span></code></pre></div>
+<pre class="r-output"><code><span><span class="co">## class: SummarizedExperiment </span></span>
+<span><span class="co">## dim: 5 100 </span></span>
+<span><span class="co">## metadata(0):</span></span>
+<span><span class="co">## assays(1): counts</span></span>
+<span><span class="co">## rownames(5): ASV1 ASV2 ASV3 ASV4 ASV5</span></span>
+<span><span class="co">## rowData names(0):</span></span>
+<span><span class="co">## colnames: NULL</span></span>
+<span><span class="co">## colData names(2): treatment PHQ</span></span></code></pre>
+<p>Next, we specify which columns are the treatment, mediators, and outcomes.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>exper <span class="ot">&lt;-</span> <span class="fu">mediation_data</span>(<span class="fu">demo_joy</span>(), <span class="st">"PHQ"</span>, <span class="st">"treatment"</span>, <span class="fu">starts_with</span>(<span class="st">"ASV"</span>))</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>exper</span></code></pre></div>
+<pre class="r-output"><code><span><span class="co">## [Mediation Data] </span></span>
+<span><span class="co">## 100 samples with measurements for, </span></span>
+<span><span class="co">## 1 treatment: treatment </span></span>
+<span><span class="co">## 5 mediators: ASV1, ASV2, ... </span></span>
+<span><span class="co">## 1 outcome: PHQ</span></span></code></pre>
+<p>From here, we can estimate the model and calculate effects. By default, the package uses a linear model.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">multimedia</span>(exper) <span class="sc">|&gt;</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  <span class="fu">estimate</span>(exper)</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>model</span></code></pre></div>
+<pre class="r-output"><code><span><span class="co">## [Multimedia Analysis] </span></span>
+<span><span class="co">## Treatments: treatment </span></span>
+<span><span class="co">## Outcomes: PHQ </span></span>
+<span><span class="co">## Mediators: ASV1, ASV2, ... </span></span>
+<span><span class="co">##   </span></span>
+<span><span class="co">## [Models] </span></span>
+<span><span class="co">## mediation: A fitted lm_model(). </span></span>
+<span><span class="co">## outcome: A fitted lm_model().</span></span></code></pre>
+<p>We can calculate different types of effects using the estimated model. Since we’re using a linear model, the effects are identical for the two indirect settings. We could also visualize and carry out inference on these effects – see the vignettes for more examples.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">direct_effect</span>(model, exper)</span></code></pre></div>
+<pre class="r-output"><code><span><span class="co">## # A tibble: 2 × 4</span></span>
+<span><span class="co">##   outcome indirect_setting contrast            direct_effect</span></span>
+<span><span class="co">##                                        </span></span>
+<span><span class="co">## 1 PHQ     Control          Control - Treatment        0.0931</span></span>
+<span><span class="co">## 2 PHQ     Treatment        Control - Treatment        0.0931</span></span></code></pre>
+<div class="sourceCode" id="cb6"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">indirect_overall</span>(model, exper)</span></code></pre></div>
+<pre class="r-output"><code><span><span class="co">## # A tibble: 2 × 4</span></span>
+<span><span class="co">##   outcome direct_setting contrast            indirect_effect</span></span>
+<span><span class="co">##                                        </span></span>
+<span><span class="co">## 1 PHQ     Control        Control - Treatment          0.0226</span></span>
+<span><span class="co">## 2 PHQ     Treatment      Control - Treatment          0.0226</span></span></code></pre>
+<p>If we want to use a different type of model, we can just modify the original <code>multimedia</code> specification. Below we use a sparse regression model, which correctly recovers that the direct effects are 0.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">multimedia</span>(exper, <span class="fu">glmnet_model</span>(<span class="at">lambda =</span> .<span class="dv">1</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  <span class="fu">estimate</span>(exper) <span class="sc">|&gt;</span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="fu">direct_effect</span>()</span></code></pre></div>
+<pre class="r-output"><code><span><span class="co">## # A tibble: 2 × 4</span></span>
+<span><span class="co">##   outcome indirect_setting contrast            direct_effect</span></span>
+<span><span class="co">##                                        </span></span>
+<span><span class="co">## 1 PHQ     Control          Control - Treatment             0</span></span>
+<span><span class="co">## 2 PHQ     Treatment        Control - Treatment             0</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="help">Help<a class="anchor" aria-label="anchor" href="#help"></a>
 </h2>
 <p>We welcome questions and comments about the package either through <a href="https://github.com/krisrs1128/multimedia/issues" class="external-link">github</a> or <a href="mailto:ksankaran@wisc.edu">email</a>.</p>
-<!-- 
-```{r}
-library(hexSticker)
-library(showtext)
-img <- "~/Downloads/source.jpeg"
-font_add_google("Dosis", "dosis")
-sticker(img, package = "multimedia", h_color="#a92645", h_fill="#f7f7f7", p_size=35, p_y=1.4, s_x=1, s_y=.75, s_width=.47, p_color="#0c0c0c", dpi=500, p_family = "dosis")
-usethis::use_logo("multimedia.png")
-``` -->
 </div>
 </div>
   </div>

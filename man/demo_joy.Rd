@@ -2,7 +2,7 @@
 % Please edit documentation in R/toy_data.R
 \name{demo_joy}
 \alias{demo_joy}
-\title{A Demo Dataset}
+\title{A Demo Dataset (Random)}
 \usage{
 demo_joy(n_samples = 100, n_mediators = 5, n_pretreatment = 3)
 }
