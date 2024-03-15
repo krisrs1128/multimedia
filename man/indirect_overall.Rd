@@ -18,9 +18,18 @@ are formed using Equation (10) of our preprint:
 }
 }
 \examples{
-t1 <- tibble(treatment = as.factor("Treatment"))
-t2 <- tibble(treatment = as.factor("Control"))
-t_outcome <- list(t1, t2)
-indirect_overall(model, t1, t2, t_outcome)
-indirect_overall(model, "Treatment", "Control")
+# example with null data
+exper <- demo_joy() |>
+  mediation_data("PHQ", "treatment", starts_with("ASV"))
+fit <- multimedia(exper) |>
+  estimate(exper)
+  
+indirect_overall(fit)
+
+# example with another dataset
+exper <- demo_spline(tau = c(2, 1)) |>
+  mediation_data(starts_with("outcome"), "treatment", "mediator")
+fit <- multimedia(exper) |>
+  estimate(exper)
+indirect_overall(fit)
 }

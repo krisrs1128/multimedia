@@ -21,3 +21,8 @@ This is a simple dataset with nonlinear relationships between the outcome and
 mediators. It is used simply to illustrate the design of multimedia. The
 mediator->outcome effect is generated from a random spline function.
 }
+\examples{
+demo_spline()
+demo_spline(20)
+demo_spline(20, c(0, 10))
+}

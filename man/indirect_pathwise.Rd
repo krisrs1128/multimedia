@@ -10,15 +10,18 @@ indirect_pathwise(model, exper = NULL, t1 = 1, t2 = 2)
 Indirect Effects via Single Mediation Paths
 }
 \examples{
-model <- multimedia(
-  demo_joy(),
-  outcomes = "PHQ",
-  treatments = "treatment",
-  mediators = starts_with("ASV")
-) |> estimate(demo_joy())
-t1 <- tibble(treatment = as.factor("Treatment"))
-t2 <- tibble(treatment = as.factor("Control"))
-t_outcome <- list(t1, t2)
-indirect_pathwise(model, t1, t2, t_outcome)
-indirect_pathwise(model, "Treatment", "Control")
+# example with null data
+exper <- demo_joy() |>
+  mediation_data("PHQ", "treatment", starts_with("ASV"))
+fit <- multimedia(exper) |>
+  estimate(exper)
+  
+indirect_pathwise(fit)
+
+# example with another dataset
+exper <- demo_spline(tau = c(2, 1)) |>
+  mediation_data(starts_with("outcome"), "treatment", "mediator")
+fit <- multimedia(exper) |>
+  estimate(exper)
+indirect_pathwise(fit)
 }

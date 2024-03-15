@@ -24,3 +24,6 @@ SummarizedExperiment, and it randomly assigns samples to Treatment and
 Control (see the colData). It stores all the hypothetical mediator data in
 the assay slot.
 }
+\examples{
+demo_joy()
+}

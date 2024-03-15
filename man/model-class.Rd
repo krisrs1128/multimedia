@@ -32,3 +32,10 @@ response model, or it can be a loop over predicts for each feature in the
 mediation or outcome model.}
 }}
 
+\examples{
+m <- lm_model()
+m@estimator(mpg ~ hp + wt, data = mtcars)
+
+m <- rf_model()
+m@estimator(mpg ~ hp + wt, data = mtcars)
+}

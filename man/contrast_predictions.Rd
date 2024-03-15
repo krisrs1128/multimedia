@@ -26,3 +26,14 @@ between the two profiles T and T'.
 Given a fitted multimedia model, contrast the mediation and outcome
 predictions associated wtih two treatment profiles.
 }
+\examples{
+exper <- demo_joy() |>
+  mediation_data("PHQ", "treatment", starts_with("ASV"))
+model <- multimedia(exper) |>
+  estimate(exper) 
+t1 <- tibble(treatment = factor("Treatment"))
+t2 <- tibble(treatment = factor("Control"))
+profile1 <- setup_profile(model, t1, t1)
+profile2 <- setup_profile(model, t2, t2)
+contrast_predictions(model, profile1, profile2)
+}
