@@ -18,7 +18,12 @@
 #'   For example, this can be the original predict() method for a multivariate
 #'   response model, or it can be a loop over predicts for each feature in the
 #'   mediation or outcome model.
-#' @export
+#' @examples
+#' m <- lm_model()
+#' m@estimator(mpg ~ hp + wt, data = mtcars)
+#'
+#' m <- rf_model()
+#' m@estimator(mpg ~ hp + wt, data = mtcars)
 setClass(
   "model",
   representation(
@@ -52,6 +57,10 @@ sub_formula <- function(formula, yj) {
 #' colnames(mat) <- c("y1", "y2", "x1", "x2")
 #' plm <- parallelize(lm)
 #' plm(y1 + y2 ~ x1 + x2, mat)
+#'
+#' prf <- parallelize(ranger::ranger)
+#' prf(mpg + hp ~ wt + disp + cyl, data = mtcars)
+#' @export
 parallelize <- function(f) {
   function(formula, ...) {
     models <- list()
@@ -78,6 +87,7 @@ parallelize <- function(f) {
 #'  mediator to outcome, etc.)
 #'
 #' @importFrom tidygraph %N>%
+#' @noRd
 edges_df <- function(edges) {
   nodes <- edges %N>%
     as_tibble()
@@ -97,6 +107,7 @@ edges_df <- function(edges) {
 }
 
 #' Construct a Formula from a Graph
+#' @noRd
 edges_to_formula <- function(edges) {
   collapse <- \(e, v) {
     pull(e, eval(v)) |>
@@ -124,6 +135,7 @@ edges_to_formula <- function(edges) {
 #'  node, this will be included in the graph (as will all pretreatment to
 #'  mediator, mediator to outcome, etc.)
 #' @return A formula object with mediators on the LHS.
+#' @noRd
 mediation_formula <- function(edges) {
   edges %E>%
     filter(state == "active") |>
@@ -146,6 +158,7 @@ mediation_formula <- function(edges) {
 #'  node, this will be included in the graph (as will all pretreatment to
 #'  mediator, mediator to outcome, etc.)
 #' @return A formula object with outcomes on the LHS.
+#' @noRd
 outcome_formula <- function(edges) {
   edges %E>%
     filter(state == "active") |>
@@ -169,7 +182,23 @@ outcome_formula <- function(edges) {
 #'   outcome data from which the direct effects are to be estimated.
 #' @return A version of the input modified in place so that the @estimates slot
 #'  has been filled.
+#' @examples
+#' exper <- demo_joy() |>
+#'   mediation_data("PHQ", "treatment", starts_with("ASV"))
+#' multimedia(exper) |>
+#'   estimate(exper)
 #'
+#' # example with another dataset
+#' exper <- demo_spline(tau = c(2, 1)) |>
+#'   mediation_data(starts_with("outcome"), "treatment", "mediator")
+#' multimedia(exper) |>
+#'   estimate(exper)
+#'
+#' # example with another model
+#' exper <- demo_spline(tau = c(2, 1)) |>
+#'   mediation_data(starts_with("outcome"), "treatment", "mediator")
+#' multimedia(exper, rf_model()) |>
+#'   estimate(exper)
 #' @export
 estimate <- function(model, exper) {
   # estimate mediation model
@@ -198,6 +227,9 @@ estimate <- function(model, exper) {
 #' @return model An object of class `model` with estimator, predictor, and
 #'  sampler functions associated wtih a linear model.
 #' @seealso model
+#' @examples
+#' m <- lm_model()
+#' m@estimator(mpg ~ hp + wt, data = mtcars)
 #' @export
 lm_model <- function() {
   new(
@@ -211,7 +243,17 @@ lm_model <- function() {
 }
 
 #' Sample a Linear Model
+#'
+#' Draw samples
+#' @examples
+#' fit <- lm(mpg ~ hp + wt, data = mtcars)
+#' multimedia:::lm_sampler(list(f = fit))
+#'
+#' plm <- parallelize(lm)
+#' fit <- plm(mpg + disp ~ hp + wt, data = mtcars)
+#' multimedia:::lm_sampler(fit)
 #' @importFrom dplyr bind_cols
+#' @noRd
 lm_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
   if (is.null(indices)) {
     indices <- seq_along(fits)
@@ -229,6 +271,7 @@ lm_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
 }
 
 #' Default parameters for glmnet_model
+#' @noRd
 glmnet_model_params <- function(...) {
   defaults <- list(intercept = FALSE, lambda = 0.01)
   modifyList(defaults, list(...))
@@ -247,6 +290,20 @@ glmnet_model_params <- function(...) {
 #' @seealso model lm_model rf_model
 #' @importFrom glmnetUtils glmnet
 #' @importFrom insight check_if_installed
+#' @examples
+#' exper <- demo_joy() |>
+#'   mediation_data("PHQ", "treatment", starts_with("ASV"))
+#' multimedia(exper, glmnet_model(lambda = 1)) |>
+#'   estimate(exper)
+#'
+#' multimedia(exper, glmnet_model(lambda = 1), glmnet_model()) |>
+#'   estimate(exper)
+#'
+#' # example with another dataset
+#' exper <- demo_spline(tau = c(2, 1)) |>
+#'   mediation_data(starts_with("outcome"), "treatment", "mediator")
+#' multimedia(exper, glmnet_model(lambda = 0.1)) |>
+#'   estimate(exper)
 #' @export
 glmnet_model <- function(...) {
   check_if_installed(
@@ -271,6 +328,15 @@ glmnet_model <- function(...) {
 #'
 #' This assumes a continuous response, so that the out-of-sample MSE can be used
 #' to estimate the outcome variability sigma.
+#' @examples
+#' m <- glmnet_model()
+#' fit <- m@estimator(mpg ~ hp + wt, data = mtcars)
+#' multimedia:::glmnet_sampler(fit, mtcars)
+#'
+#' plm <- parallelize(glmnetUtils::glmnet)
+#' fit <- plm(mpg + disp ~ hp + wt, data = mtcars)
+#' multimedia:::glmnet_sampler(fit, mtcars)
+#' @noRd
 glmnet_sampler <- function(fits, newdata = NULL, indices = NULL, lambda_ix = 1, ...) {
   if (is.null(indices)) {
     indices <- seq_along(fits)
@@ -288,6 +354,7 @@ glmnet_sampler <- function(fits, newdata = NULL, indices = NULL, lambda_ix = 1, 
 }
 
 #' Default parameters for brms model
+#' @noRd
 brms_model_params <- function(...) {
   defaults <- list(chains = 1, refresh = 0, silent = 0)
   modifyList(defaults, list(...))
@@ -310,11 +377,16 @@ brms_model_params <- function(...) {
 #'  as the basis for estimation.
 #' @return models A list of estimated BRMS models. The j^th element contains
 #'  y[j] ~ x1 + x2 + ...
+#' @noRd
 brm_cache <- function(formula, data, ...) {
   models <- list()
 
   ys <- lhs.vars(formula)
   models[[ys[1]]] <- brm(sub_formula(formula, ys[1]), data, ...)
+  if (length(ys) == 1) {
+    return(models)
+  }
+
   for (j in seq(2, length(ys))) {
     fmla <- sub_formula(formula, ys[j])
     models[[ys[j]]] <- update(models[[1]], fmla, newdata = data, recompile = FALSE, ...)
@@ -332,6 +404,18 @@ brm_cache <- function(formula, data, ...) {
 #' @importFrom brms brm
 #' @importFrom rlang inject !!!
 #' @seealso glmnet_model lnm_model rf_model lm_model
+#' @examples
+#' exper <- demo_joy() |>
+#'   mediation_data("PHQ", "treatment", starts_with("ASV"))
+#' multimedia(exper, brms_model()) |>
+#'   estimate(exper)
+#'
+#' # example with another dataset
+#' exper <- demo_spline(tau = c(2, 1)) |>
+#'   mediation_data(starts_with("outcome"), "treatment", "mediator")
+#' fit <- multimedia(exper, brms_model()) |>
+#'   estimate(exper)
+#' fit@outcome
 #' @export
 brms_model <- function(...) {
   check_if_installed("brms", "to use a BRMS model for multimedia estimation.")
@@ -354,6 +438,13 @@ brms_model <- function(...) {
 #'   responses. If NULL, defaults to the data used to estimate fit.
 #' @param indices The coordinates of the response from which we want to sample.
 #' @importFrom brms posterior_predict
+#' @examples
+#' exper <- demo_joy() |>
+#'   mediation_data("PHQ", "treatment", starts_with("ASV"))
+#' fit <- multimedia(exper, brms_model()) |>
+#'   estimate(exper)
+#' brms_sampler(fit@outcome@estimates)
+#' @noRd
 brms_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
   if (is.null(indices)) {
     indices <- seq_along(fits)
@@ -386,6 +477,11 @@ brms_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
 #'  sampler functions associated wtih a lienar model.
 #' @seealso model lm_model rf_model glmnet_model brms_model
 #' @importFrom miniLNM lnm
+#' @examples
+#' m <- lnm_model()
+#' mat <- data.frame(matrix(rpois(250, 10), 25, 10))
+#' colnames(mat) <- paste0("y", 1:6)
+#' fit <- m@estimator(y1 + y2 + y3 + y4 ~ y5 + y6, mat)
 #' @export
 lnm_model <- function(...) {
   check_if_installed(
@@ -416,6 +512,14 @@ lnm_model <- function(...) {
 #' @return y_star A data.frame of samples y associated wtih the new inputs.
 #' @importFrom miniLNM sample
 #' @importFrom formula.tools lhs.vars
+#' @examples
+#' m <- lnm_model()
+#' mat <- data.frame(matrix(rpois(250, 10), 25, 10))
+#' colnames(mat) <- paste0("y", 1:6)
+#' fit <- m@estimator(y1 + y2 + y3 + y4 ~ y5 + y6, mat)
+#' lnm_sampler(fit, depth = 10)
+#' lnm_sampler(fit, depth = 100)
+#' @noRd
 lnm_sampler <- function(fit, newdata = NULL, indices = NULL, ...) {
   nm <- lhs.vars(fit@formula)
   if (is.null(indices)) {
@@ -436,6 +540,17 @@ lnm_sampler <- function(fit, newdata = NULL, indices = NULL, ...) {
 #' @param ... Keyword parameters passed to ranger.
 #' @return model An object of class `model` with estimator, predictor, and
 #'  sampler functions associated wtih a lienar model.
+#' @examples
+#' exper <- demo_joy() |>
+#'   mediation_data("PHQ", "treatment", starts_with("ASV"))
+#' multimedia(exper, rf_model(num.trees = 10)) |>
+#'   estimate(exper)
+#'
+#' # example with another dataset
+#' exper <- demo_spline(tau = c(2, 1)) |>
+#'   mediation_data(starts_with("outcome"), "treatment", "mediator")
+#' multimedia(exper, rf_model(num.trees = 20, max.depth = 2)) |>
+#'   estimate(exper)
 #' @seealso model lm_model rf_model glmnet_model brms_model
 #' @importFrom ranger ranger
 #' @export
@@ -463,6 +578,15 @@ rf_model <- function(...) {
 #' @param indices The coordinates of the response from which to draw samples.
 #' @return y_star A data.frame of samples y associated wtih the new inputs.
 #' @importFrom dplyr bind_cols
+#' @examples
+#' m <- rf_model()
+#' fit <- m@estimator(mpg ~ hp + wt, data = mtcars)
+#' multimedia:::rf_sampler(fit, mtcars)
+#'
+#' prf <- parallelize(ranger::ranger)
+#' fit <- prf(mpg + disp ~ hp + wt, data = mtcars)
+#' multimedia:::rf_sampler(fit, mtcars)
+#' @noRd
 rf_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
   if (is.null(indices)) {
     indices <- seq_along(fits)

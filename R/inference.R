@@ -9,6 +9,7 @@
 #' @return The ID of edges that match the `nulls` parameter.
 #' @importFrom dplyr row_number n
 #' @importFrom tidygraph %E>%
+#' @noRd
 matching_indices <- function(edges, nulls = NULL) {
   if (is.null(nulls)) {
     ids <- quote(1:n())
@@ -52,6 +53,32 @@ matching_indices <- function(edges, nulls = NULL) {
 #'   which edges to ignore.
 #' @return multimedia A version of the input multimedia model with all edges
 #'   matching `nulls` removed. Enables sampling of synthetic null controls.
+#' @examples
+#' # example with null data
+#' exper <- demo_joy() |>
+#'   mediation_data("PHQ", "treatment", starts_with("ASV"))
+#' fit <- multimedia(exper) |>
+#'   estimate(exper)
+#'
+#' nullify(fit, "T->M") |>
+#'   estimate(exper) |>
+#'   indirect_overall()
+#' nullify(fit, "T->Y") |>
+#'   estimate(exper) |>
+#'   direct_effect()
+#'
+#' # example with another dataset
+#' exper <- demo_spline(tau = c(2, 1)) |>
+#'   mediation_data(starts_with("outcome"), "treatment", "mediator")
+#' fit <- multimedia(exper) |>
+#'   estimate(exper)
+#'
+#' nullify(fit, "T->M") |>
+#'   estimate(exper) |>
+#'   indirect_overall()
+#' nullify(fit, "T->Y") |>
+#'   estimate(exper) |>
+#'   direct_effect()
 #' @export
 nullify <- function(multimedia, nulls = NULL) {
   nulls <- matching_indices(multimedia@edges, nulls)
@@ -83,6 +110,21 @@ nullify <- function(multimedia, nulls = NULL) {
 #' @return stats A list of length B containing the results of the fs applied on
 #'   each of the B bootstrap resamples.
 #' @importFrom progress progress_bar
+#' @examples
+#' # example with null data
+#' exper <- demo_joy() |>
+#'   mediation_data("PHQ", "treatment", starts_with("ASV"))
+#' multimedia(exper) |>
+#'   bootstrap(exper, B = 100)
+#'
+#' # example with another dataset
+#' exper <- demo_spline(n_samples = 100, tau = c(2, 1)) |>
+#'   mediation_data(starts_with("outcome"), "treatment", "mediator")
+#' samples <- multimedia(exper, rf_model(num.trees = 1e3)) |>
+#'   bootstrap(exper, B = 100)
+#' ggplot(samples$direct_effect) +
+#'   geom_histogram(aes(direct_effect, fill = indirect_setting), bins = 15) +
+#'   facet_wrap(~outcome, scales = "free")
 #' @export
 bootstrap <- function(model, exper, fs = NULL, B = 1000) {
   if (is.null(fs)) {
@@ -135,6 +177,20 @@ bootstrap <- function(model, exper, fs = NULL, B = 1000) {
 #'   every coordinate in the estimator f. The column `source` specifies whether
 #'   the estimate was calculated using real or synthetic null data.
 #' @seealso null_contrast fdr_summary
+#' @examples
+#' # example with null data - notice synthetic data has larger effect.
+#' exper <- demo_joy() |>
+#'   mediation_data("PHQ", "treatment", starts_with("ASV"))
+#' multimedia(exper) |>
+#'   estimate(exper) |>
+#'   null_contrast(exper)
+#'
+#' # example with another dataset - synthetic effect is smaller.
+#' exper <- demo_spline(tau = c(2, 1)) |>
+#'   mediation_data(starts_with("outcome"), "treatment", "mediator")
+#' multimedia(exper) |>
+#'   estimate(exper) |>
+#'   null_contrast(exper)
 #' @export
 null_contrast <- function(model, exper, nullification = "T->Y",
                           f = direct_effect) {
@@ -177,6 +233,32 @@ null_contrast <- function(model, exper, nullification = "T->Y",
 #'   that we will consider.
 #' @return fdr A data.frame specifying, for each candidate effect, whether it
 #'   should be selected.
+#' @examples
+#' # example with null data - notice synthetic data has larger effect.
+#' exper <- demo_joy() |>
+#'   mediation_data("PHQ", "treatment", starts_with("ASV"))
+#' multimedia(exper) |>
+#'   estimate(exper) |>
+#'   null_contrast(exper) |>
+#'   fdr_summary("direct_effect")
+#'
+#' multimedia(exper) |>
+#'   estimate(exper) |>
+#'   null_contrast(exper, "M->Y", indirect_overall) |>
+#'   fdr_summary("indirect_overall")
+#'
+#' # example with another dataset - synthetic effect is smaller.
+#' exper <- demo_spline(tau = c(2, 1)) |>
+#'   mediation_data(starts_with("outcome"), "treatment", "mediator")
+#' multimedia(exper) |>
+#'   estimate(exper) |>
+#'   null_contrast(exper) |>
+#'   fdr_summary("direct_effect")
+#'
+#' multimedia(exper) |>
+#'   estimate(exper) |>
+#'   null_contrast(exper, "M->Y", indirect_overall) |>
+#'   fdr_summary("indirect_overall")
 #' @export
 fdr_summary <- function(contrast, effect = "indirect_overall", q_value = 0.15) {
   if (effect == "indirect_overall") {

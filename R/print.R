@@ -50,7 +50,10 @@ setMethod("show", "multimedia", function(object) {
   cat(glue("outcome: {fit_type(object@outcome)} {object@outcome@model_type}."), "\n")
 })
 
-#' Helper function for printing ANSI in Rmarkdown output
+#' Pretty Printing
+#'
+#' Helper function for printing ANSI in Rmarkdown output. Taken from the post at
+#'
 #' https://blog.djnavarro.net/posts/2021-04-18_pretty-little-clis/
 #' @importFrom fansi sgr_to_html
 #' @export

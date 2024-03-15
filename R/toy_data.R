@@ -1,5 +1,9 @@
 #' data.frame with samples from p
 #' @importFrom tibble as_tibble
+#' @examples
+#' random_numeric(10, 2)
+#' random_numeric(10, 2, runif)
+#' @noRd
 random_numeric <- function(nrow, ncol, p = rnorm) {
   matrix(p(nrow * ncol), nrow = nrow, ncol = ncol) |>
     as.data.frame() |>
@@ -24,6 +28,8 @@ random_numeric <- function(nrow, ncol, p = rnorm) {
 #' @importFrom tibble tibble
 #' @importFrom S4Vectors SimpleList DataFrame
 #' @importFrom SummarizedExperiment SummarizedExperiment
+#' @examples
+#' demo_joy()
 #' @export
 demo_joy <- function(n_samples = 100, n_mediators = 5, n_pretreatment = 3) {
   treatment <- sample(c("Treatment", "Control"), n_samples, replace = TRUE)
@@ -40,11 +46,18 @@ demo_joy <- function(n_samples = 100, n_mediators = 5, n_pretreatment = 3) {
 matnorm <- \(n, m, ...) matrix(rnorm(n * m, ...), n, m)
 
 #' Generate Random Spline
+#'
+#' This generates random spline functions. It is used in the toy nonlinear
+#' dataset created in `demo_spline()`. This is not necessary for the essential
+#' multimedia workflow, it is only exported for potential independent interest.
+#'
+#' @seealso demo_spline
 #' @examples
 #' x <- seq(-2, 2, length.out = 100)
 #' f <- spline_fun(sd = 0.3)
 #' fx <- f(x)
 #' plot(x, fx[, 1])
+#' @noRd
 spline_fun <- function(D = 2, knots = NULL, h_ix = 1:10, ...) {
   if (is.null(knots)) {
     knots <- seq(-4, 4, length.out = 5)
@@ -69,6 +82,10 @@ spline_fun <- function(D = 2, knots = NULL, h_ix = 1:10, ...) {
 #'   to 2, 2.
 #' @return xy A tibble whose columns include the treatment, mediation, and
 #'   outcome variables.
+#' @examples
+#' demo_spline()
+#' demo_spline(20)
+#' demo_spline(20, c(0, 10))
 #' @export
 demo_spline <- function(n_samples = 5e3, tau = c(2, 2)) {
   if (n_samples < 15) {
