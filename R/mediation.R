@@ -62,6 +62,16 @@ setClass(
 #'   that we want horizontally concatenated.
 #' @return A data.frame containing all variables from the original
 #'   `mediation_data` object.
+#' @examples
+#' exper <- demo_joy() |>
+#'   mediation_data("PHQ", "treatment", starts_with("ASV"))
+#' exper
+#' bind_mediation(exper)
+#'   
+#' exper <- demo_spline(tau = c(2, 1)) |>
+#'   mediation_data(starts_with("outcome"), "treatment", "mediator")
+#' exper
+#' bind_mediation(exper)
 #' @importFrom purrr map_dfc
 #' @export
 bind_mediation <- function(exper) {
@@ -161,7 +171,7 @@ exper_df <- function(exper) {
   bind_cols(t(assay(exper)), as_tibble(colData(exper), .name_repair = "minimal"))
 }
 
-#' `mediation_data` constructor
+#' `mediation_data` Constructor
 #'
 #' Convert a SummarizedExperiment, phyloseq object, or data.frame into a
 #' `mediation_data` object. This conversion helps to organize the variables that
@@ -301,7 +311,7 @@ from_data_frame <- function(df, outcomes, treatments, mediators,
   do.call(\(...) new("mediation_data", ...), result)
 }
 
-#' Multimedia Constructor
+#' `multimedia` Constructor
 #'
 #' `multimedia` objects encapsulate the model and data that underlie a mediation
 #' analysis, together with metadata (like graph structure) that contextualize
@@ -358,7 +368,18 @@ setMethod(nrow, "mediation_data", function(x) {
 })
 
 #' Subset a mediation dataset
+#' 
+#' We can subset samples by indexing into a mediation dataset. It will subsample
+#' all fields -- pretreatments, treatments, mediators, and outcomes. Note that
+#' there is no way to subset columns in this way, since they would be different
+#' across each source.
+#' 
 #' @export
+#' @examples
+#' exper <- demo_joy() |>
+#'   mediation_data("PHQ", "treatment", starts_with("ASV"))
+#' exper[1]
+#' exper[1:10]
 setMethod(
   "[", "mediation_data",
   function(x, i, j, ..., drop = TRUE) {

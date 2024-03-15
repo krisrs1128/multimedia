@@ -17,6 +17,25 @@
 #'   overlay on points? This is necessary when there are several potential
 #'   treatment variables. Defaults to "treatment."
 #' @param ... Further keyword arguments passed to `patchwork::wrap_plots`.
+#' @examples
+#' # dataset with no true effects
+#' exper <- demo_joy() |>
+#'   mediation_data("PHQ", "treatment", starts_with("ASV"))
+#' ie <- multimedia(exper) |>
+#'   estimate(exper) |>
+#'   indirect_pathwise() |>
+#'   effect_summary()
+#' plot_mediators(ie, exper)
+#' 
+#' # another dataset
+#' exper <- demo_spline(tau = c(2, 1)) |>
+#'   mediation_data(starts_with("outcome"), "treatment", "mediator")
+#' ie <- multimedia(exper, rf_model()) |>
+#'   estimate(exper) |>
+#'   indirect_pathwise() |>
+#'   effect_summary()
+#' plot_mediators(ie, exper)
+#'
 #' @importFrom patchwork wrap_plots plot_layout
 #' @importFrom ggplot2 ggplot aes .data geom_point labs
 #' @importFrom glue glue

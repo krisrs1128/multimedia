@@ -26,13 +26,15 @@ check_profile <- function(object) {
 #' For general mediation analysis, we need to provide counterfactuals for both
 #' the outcome and mediator components of each sample. That is, we need to
 #' understand Y(t, M(t')) where t and t' may not be the same.
-#' `treatment_profile` classes place some more stringent requirements on the
-#' structure of treatment profiles, so that later effect estimation can make
-#' simplifying assumptions. This function creates a treatment profile from a
-#' collection of possible mediator and outcome treatments.
+#' `treatment_profile` classes place some more structural requirements on
+#' treatment profiles, so that later effect estimation can make simplifying
+#' assumptions. This function creates a treatment profile from a collection of
+#' possible mediator and outcome treatments.
 #'
-#' @param x An object of class `mediation_data` with a slot `@treatments`
-#'   containing information on the treatments that have been applied.
+#' @param x An object of class `multimedia` specifying the complete mediation
+#'   analysis DAG. The treatment, mediator, and outcome names are necessary to
+#'   build a profile of counterfactual treatments across each of these
+#'   variables.
 #' @param t_mediator A data.frame whose columns store treatment names and whose
 #'   values are the treatment assignments to each sample (row). Defaults to
 #'   NULL, in which case this type of data.frame is constructed from the
@@ -44,6 +46,19 @@ check_profile <- function(object) {
 #'   for both mediation and outcome terms.
 #' @importFrom purrr map_lgl
 #' @seealso check_profile
+#' @examples
+#' exper <- demo_spline(tau = c(2, 1)) |>
+#'   mediation_data(starts_with("outcome"), "treatment", "mediator")
+#' fit <- multimedia(exper) |>
+#'   estimate(exper)
+#'
+#' t1 <- data.frame(treatment = factor(rep(c(0, 1), each = 5)))
+#' profile <- setup_profile(fit, t_mediator = t1, t_outcome = t1)
+#' profile
+#' 
+#' t2 <- data.frame(treatment = factor(rep(0, 10)))
+#' profile <- setup_profile(fit, t_mediator = t1, t_outcome = t2)
+#' profile
 #' @export
 setup_profile <- function(x, t_mediator = NULL, t_outcome = NULL) {
   if (is.null(t_mediator)) {
@@ -80,6 +95,20 @@ setup_profile <- function(x, t_mediator = NULL, t_outcome = NULL) {
 #' (e.g., that the number of samples is the same under the mediator and outcome
 #' counterfactuals) using the `check_profile` function.
 #' @seealso setup_profile check_profile
+#' @examples
+#' exper <- demo_spline(tau = c(2, 1)) |>
+#'   mediation_data(starts_with("outcome"), "treatment", "mediator")
+#' fit <- multimedia(exper) |>
+#'   estimate(exper)
+#'  
+#' # helpers for defining treatment profiles
+#' t1 <- data.frame(treatment = factor(rep(c(0, 1), each = 5)))
+#' profile <- setup_profile(fit, t_mediator = t1, t_outcome = t1)
+#' profile
+#' 
+#' t2 <- data.frame(treatment = factor(rep(0, 10)))
+#' profile <- setup_profile(fit, t_mediator = t1, t_outcome = t2)
+#' profile
 #' @export
 setClass(
   "treatment_profile",
