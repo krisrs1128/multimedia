@@ -7,5 +7,14 @@
 \S4method{[}{mediation_data,ANY,ANY,ANY}(x, i, j, ..., drop = TRUE)
 }
 \description{
-Subset a mediation dataset
+We can subset samples by indexing into a mediation dataset. It will subsample
+all fields -- pretreatments, treatments, mediators, and outcomes. Note that
+there is no way to subset columns in this way, since they would be different
+across each source.
+}
+\examples{
+exper <- demo_joy() |>
+  mediation_data("PHQ", "treatment", starts_with("ASV"))
+exper[1]
+exper[1:10]
 }

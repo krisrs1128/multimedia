@@ -2,7 +2,7 @@
 % Please edit documentation in R/mediation.R
 \name{mediation_data}
 \alias{mediation_data}
-\title{\code{mediation_data} constructor}
+\title{\code{mediation_data} Constructor}
 \usage{
 mediation_data(x, outcomes, treatments, mediators, pretreatments = NULL)
 }

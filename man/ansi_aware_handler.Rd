@@ -7,8 +7,16 @@
 ansi_aware_handler(x, options)
 }
 \description{
-Helper function for printing ANSI in Rmarkdown output. Taken from the post at
+Helper function for printing ANSI in Rmarkdown output. Use this at the start
+of your Rmarkdown files to include colors in the printed object names in the
+final compiled output.
 }
 \details{
+Taken from the post at
+
 https://blog.djnavarro.net/posts/2021-04-18_pretty-little-clis/
+}
+\examples{
+knitr::knit_hooks$set(output = ansi_aware_handler)
+options(crayon.enabled = TRUE)
 }

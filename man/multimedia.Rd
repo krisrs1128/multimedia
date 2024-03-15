@@ -2,7 +2,7 @@
 % Please edit documentation in R/mediation.R
 \name{multimedia}
 \alias{multimedia}
-\title{Multimedia Constructor}
+\title{\code{multimedia} Constructor}
 \usage{
 multimedia(
   mediation_data,

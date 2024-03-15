@@ -6,10 +6,48 @@
 \usage{
 \S4method{predict}{multimedia}(object, profile = NULL, mediators = NULL, pretreatment = NULL, ...)
 }
+\arguments{
+\item{object}{An object of class multimedia containing the estimated
+mediation and outcome models whose mediation and outcome predictions we
+want to obtain.}
+
+\item{profile}{An object of class \code{treatment_profile} containing the
+treatment profile to consider in the difference. Defaults to a profile with
+all the unique treatment configurations observed in the original data,
+shared across both the mediators and outcomes.}
+}
+\value{
+A list with two elements:
+$mediators: A tibble containing predicted values for the mediators. Each
+row corresponds to one row of the newdata, or one row of the default
+treatment profile, if no newdata is given.
+
+$outcomes: A tibble containing predicted values for the outcomes, given
+either (i) the predicted values of the mediators or (ii) the provided
+values of the mediators. Each row corresponds to one row of the newdata, or
+one row of the default treatment profile, if no newdata is given.
+}
 \description{
 This generalizes the built-in predict method to the multimedia class.  Given
 an estimated multimedia object, this function supports prediction along the
 estimated DAG. It first predicts \verb{hat[M] | T, X} and then \verb{hat[Y] | hat[M], T, X}. Each prediction step will call the prediction method within the
 mediation and outcome models that make up the multimedia object on which this
-is called.
+is called. By passing in new treatment, mediator, or pretreatment data, you
+can predict forward along the DAG using these as inputs.
+}
+\examples{
+exper <- demo_spline(tau = c(2, 1)) |>
+  mediation_data(starts_with("outcome"), "treatment", "mediator")
+fit <- multimedia(exper, rf_model()) |>
+  estimate(exper)
+predict(fit)
+
+# at new treatment configurations
+t1 <- data.frame(treatment = factor(rep(c(0, 1), each = 5)))
+profile <- setup_profile(fit, t_mediator = t1, t_outcome = t1)
+predict(fit, profile)
+
+# at new treatment and mediator configurations
+mediators <- data.frame(mediator = rnorm(10, 0, 1))
+predict(fit, profile, mediators)
 }

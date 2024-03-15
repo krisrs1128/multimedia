@@ -26,4 +26,6 @@ the assay slot.
 }
 \examples{
 demo_joy()
+
+demo_joy(n_samples = 2, n_mediators = 20)
 }

@@ -13,3 +13,22 @@ estimated DAG. It first samples \verb{M* | T, X} and then \verb{Y* | M*, T, X}. 
 sampling step will call the sample method within the mediation and outcome
 models that make up the multimedia object on which this is called.
 }
+\examples{
+exper <- demo_spline(tau = c(2, 1)) |>
+  mediation_data(starts_with("outcome"), "treatment", "mediator")
+fit <- multimedia(exper) |>
+  estimate(exper)
+samples <- sample(fit)
+samples@mediators
+samples@outcomes
+
+# sampling with just different "n" has no effect. 
+samples <- sample(fit, 100)
+
+# Instead sample at a new treatment configuration
+t1 <- data.frame(treatment = factor(rep(c(0, 1), each = 50)))
+profile <- setup_profile(fit, t_mediator = t1, t_outcome = t1)
+samples <- sample(fit, profile = profile)
+samples@mediators
+samples@outcomes
+}

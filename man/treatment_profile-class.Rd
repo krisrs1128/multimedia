@@ -10,6 +10,21 @@ mediator and outcome variables. It enforces certain structural requirements
 (e.g., that the number of samples is the same under the mediator and outcome
 counterfactuals) using the \code{check_profile} function.
 }
+\examples{
+exper <- demo_spline(tau = c(2, 1)) |>
+  mediation_data(starts_with("outcome"), "treatment", "mediator")
+fit <- multimedia(exper) |>
+  estimate(exper)
+ 
+# helpers for defining treatment profiles
+t1 <- data.frame(treatment = factor(rep(c(0, 1), each = 5)))
+profile <- setup_profile(fit, t_mediator = t1, t_outcome = t1)
+profile
+
+t2 <- data.frame(treatment = factor(rep(0, 10)))
+profile <- setup_profile(fit, t_mediator = t1, t_outcome = t2)
+profile
+}
 \seealso{
 setup_profile check_profile
 }
