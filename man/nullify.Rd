@@ -33,7 +33,7 @@ exper <- demo_joy() |>
   mediation_data("PHQ", "treatment", starts_with("ASV"))
 fit <- multimedia(exper) |>
   estimate(exper)
-  
+
 nullify(fit, "T->M") |>
   estimate(exper) |>
   indirect_overall()
@@ -46,7 +46,7 @@ exper <- demo_spline(tau = c(2, 1)) |>
   mediation_data(starts_with("outcome"), "treatment", "mediator")
 fit <- multimedia(exper) |>
   estimate(exper)
-  
+
 nullify(fit, "T->M") |>
   estimate(exper) |>
   indirect_overall()

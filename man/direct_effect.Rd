@@ -43,7 +43,7 @@ exper <- demo_joy() |>
   mediation_data("PHQ", "treatment", starts_with("ASV"))
 fit <- multimedia(exper) |>
   estimate(exper)
-  
+
 direct_effect(fit)
 direct_effect(fit, t1 = 2, t2 = 1)
 direct_effect(fit, t1 = 2, t2 = 2)

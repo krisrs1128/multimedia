@@ -15,7 +15,7 @@ exper <- demo_joy() |>
   mediation_data("PHQ", "treatment", starts_with("ASV"))
 fit <- multimedia(exper) |>
   estimate(exper)
-  
+
 indirect_pathwise(fit)
 
 # example with another dataset
