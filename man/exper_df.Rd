@@ -10,5 +10,12 @@ exper_df(exper)
 \item{exper}{An object of class SummarizedExperiment.}
 }
 \description{
-Convert a Summarized Experiment to a data.frame
+This is a small helepr function to concatenate the colData and assays within
+SummarizedExperiment objects into a single data.frame. This is not necessary
+for the essential multimedia workflow, it is only exported for potential
+independent interest.
+}
+\examples{
+demo_joy() |>
+  multimedia:::exper_df()
 }

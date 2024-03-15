@@ -19,6 +19,21 @@ response $y$ in an outcome or mediation model. This can be helpful when we
 have many mediators or pretreatment variables, making the input
 high-dimensional.
 }
+\examples{
+exper <- demo_joy() |>
+  mediation_data("PHQ", "treatment", starts_with("ASV"))
+multimedia(exper, glmnet_model(lambda = 1)) |>
+  estimate(exper) 
+
+multimedia(exper, glmnet_model(lambda = 1), glmnet_model()) |>
+  estimate(exper) 
+ 
+# example with another dataset
+exper <- demo_spline(tau = c(2, 1)) |>
+  mediation_data(starts_with("outcome"), "treatment", "mediator")
+multimedia(exper, glmnet_model(lambda = 0.1)) |>
+  estimate(exper)
+}
 \seealso{
 model lm_model rf_model
 }

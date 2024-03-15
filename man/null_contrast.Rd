@@ -33,6 +33,21 @@ they would look on data where we know that there is no effect. This function
 compares estimators f between real and synthetic null data, where the null
 removes a set of edges according to the nullfication argument.
 }
+\examples{
+# example with null data - notice synthetic data has larger effect.
+exper <- demo_joy() |>
+  mediation_data("PHQ", "treatment", starts_with("ASV"))
+multimedia(exper) |>
+  estimate(exper) |>
+  null_contrast(exper)
+
+# example with another dataset - synthetic effect is smaller.
+exper <- demo_spline(tau = c(2, 1)) |>
+  mediation_data(starts_with("outcome"), "treatment", "mediator")
+multimedia(exper) |>
+  estimate(exper) |>
+  null_contrast(exper)
+}
 \seealso{
 null_contrast fdr_summary
 }

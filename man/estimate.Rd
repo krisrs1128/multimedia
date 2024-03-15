@@ -24,3 +24,21 @@ be encapsulated within a \code{multimedia} class. It simply calls the
 multimedia object. The resulting estimates can be used for downstream direct
 effect estimation.
 }
+\examples{
+exper <- demo_joy() |>
+  mediation_data("PHQ", "treatment", starts_with("ASV"))
+multimedia(exper) |>
+  estimate(exper) 
+ 
+# example with another dataset
+exper <- demo_spline(tau = c(2, 1)) |>
+  mediation_data(starts_with("outcome"), "treatment", "mediator")
+multimedia(exper) |>
+  estimate(exper)
+ 
+# example with another model
+exper <- demo_spline(tau = c(2, 1)) |>
+  mediation_data(starts_with("outcome"), "treatment", "mediator")
+multimedia(exper, rf_model()) |>
+  estimate(exper)
+}

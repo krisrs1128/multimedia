@@ -27,4 +27,7 @@ mat <- data.frame(matrix(rnorm(100), 25, 4))
 colnames(mat) <- c("y1", "y2", "x1", "x2")
 plm <- parallelize(lm)
 plm(y1 + y2 ~ x1 + x2, mat)
+
+prf <- parallelize(ranger::ranger)
+prf(mpg + hp ~ wt + disp + cyl, data = mtcars)
 }

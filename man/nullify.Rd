@@ -27,3 +27,30 @@ to a prespecified vector of IDs. For example, setting nulls = "T -> Y" will
 remove any direct effect when sampling or obtaining predictions for the full
 mediation analysis model \eqn{hat{Y}}.
 }
+\examples{
+# example with null data
+exper <- demo_joy() |>
+  mediation_data("PHQ", "treatment", starts_with("ASV"))
+fit <- multimedia(exper) |>
+  estimate(exper)
+  
+nullify(fit, "T->M") |>
+  estimate(exper) |>
+  indirect_overall()
+nullify(fit, "T->Y") |>
+  estimate(exper) |>
+  direct_effect()
+
+# example with another dataset
+exper <- demo_spline(tau = c(2, 1)) |>
+  mediation_data(starts_with("outcome"), "treatment", "mediator")
+fit <- multimedia(exper) |>
+  estimate(exper)
+  
+nullify(fit, "T->M") |>
+  estimate(exper) |>
+  indirect_overall()
+nullify(fit, "T->Y") |>
+  estimate(exper) |>
+  direct_effect()
+}

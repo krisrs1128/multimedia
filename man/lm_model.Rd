@@ -16,6 +16,10 @@ mediation model. This is often useful for mediator models with few
 pretreatment variables, since each input is low-dimensional, even when there
 are many responses.
 }
+\examples{
+m <- lm_model()
+m@estimator(mpg ~ hp + wt, data = mtcars)
+}
 \seealso{
 model
 }

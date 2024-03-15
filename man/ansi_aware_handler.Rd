@@ -2,12 +2,13 @@
 % Please edit documentation in R/print.R
 \name{ansi_aware_handler}
 \alias{ansi_aware_handler}
-\title{Helper function for printing ANSI in Rmarkdown output
-https://blog.djnavarro.net/posts/2021-04-18_pretty-little-clis/}
+\title{Pretty Printing}
 \usage{
 ansi_aware_handler(x, options)
 }
 \description{
-Helper function for printing ANSI in Rmarkdown output
+Helper function for printing ANSI in Rmarkdown output. Taken from the post at
+}
+\details{
 https://blog.djnavarro.net/posts/2021-04-18_pretty-little-clis/
 }

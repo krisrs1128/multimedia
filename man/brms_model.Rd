@@ -17,6 +17,19 @@ sampler functions associated wtih a Bayesian regression model.
 Apply a Bayesian regression model in parallel across each response $y$ in
 an outcome or mediation model. This can be helpful when we want to share information across related
 }
+\examples{
+exper <- demo_joy() |>
+  mediation_data("PHQ", "treatment", starts_with("ASV"))
+multimedia(exper, brms_model()) |>
+  estimate(exper)
+
+# example with another dataset
+exper <- demo_spline(tau = c(2, 1)) |>
+  mediation_data(starts_with("outcome"), "treatment", "mediator")
+fit <- multimedia(exper, brms_model()) |>
+  estimate(exper)
+fit@outcome
+}
 \seealso{
 glmnet_model lnm_model rf_model lm_model
 }
