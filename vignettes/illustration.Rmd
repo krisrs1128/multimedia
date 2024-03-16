@@ -117,8 +117,8 @@ construct a new treatment profile. We can accomplish this using the
 `setup_profile` object.
 
 ```{r}
-t_mediator <- tibble(treatment = factor(rep(unique(treatment), each = N / 2)))
-t_outcome <- tibble(treatment = factor(rep(unique(treatment), each = N / 2)))
+t_mediator <- tibble(treatment = factor(rep(0:1, each = nrow(exper) / 2)))
+t_outcome <- tibble(treatment = factor(rep(0:1, each = nrow(exper) / 2)))
 profile <- setup_profile(fit, t_mediator, t_outcome)
 xy_long[["fitted"]] <- pivot_samples(fit, profile)
 ```

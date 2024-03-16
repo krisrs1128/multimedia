@@ -18,7 +18,7 @@ specifying causal relationships between different data domains, it can support
 principled data integration. You can read more about the package in our
 preprint:
 
-[H. Jiang, X. Miao, M. W. Thairu, M. Beebe, D. W. Grupe, R. J. Davidson, J. Handelsman, and K. Sankaran (2024). multimedia: Multidomain Mediation Analysis of Microbiome Data.]()
+[H. Jiang, X. Miao, M. W. Thairu, M. Beebe, D. W. Grupe, R. J. Davidson, J. Handelsman, and K. Sankaran (2024). multimedia: Multimodal Mediation Analysis of Microbiome Data.]()
 
 The preprint describes the scientific context and interpretation for two of the
 vignettes in this package. One gives a multi-omics analysis of IBD, and the

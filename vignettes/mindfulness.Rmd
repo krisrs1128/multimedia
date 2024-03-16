@@ -361,7 +361,6 @@ bind_mediation(exper_clr) |>
     legend.text = element_text(size = 12),
     panel.border = element_rect(fill = NA)
   )
-ggsave("~/Downloads/lnm_associations.png", width = 7, height = 4.3)
 ```
 
 Here is the analog for indirect pathwise effects. Since these effects
@@ -376,7 +375,6 @@ ggplot(fdr, aes(indirect_effect, fdr_hat)) +
   geom_point(aes(col = source, size = keep)) +
   scale_size_discrete(range = c(.2, 3)) +
   facet_wrap(~mediator)
-knitr::opts_chunk$set(eval = FALSE)
 ```
 
 # Random Forests
