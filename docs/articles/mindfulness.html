@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">multimedia</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0</span>
       </span>
     </div>
 
@@ -109,7 +109,6 @@ possibilities.</p>
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://www.stat.boogaart.de/compositions/" class="external-link">compositions</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://mjskay.github.io/ggdist/" class="external-link">ggdist</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggrepel.slowkow.com/" class="external-link">ggrepel</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com" class="external-link">patchwork</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://dx.plos.org/10.1371/journal.pone.0061217" class="external-link">phyloseq</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">multimedia</span><span class="op">)</span></span>
@@ -162,8 +161,8 @@ is not that large.</p>
 <span><span class="co">#&gt;   This procedure has not been thoroughly tested and may be unstable </span></span>
 <span><span class="co">#&gt;   or buggy. The interface is subject to change. </span></span>
 <span><span class="co">#&gt; ------------------------------------------------------------ </span></span>
-<span><span class="co">#&gt; Gradient evaluation took 0.007785 seconds </span></span>
-<span><span class="co">#&gt; 1000 transitions using 10 leapfrog steps per transition would take 77.85 seconds. </span></span>
+<span><span class="co">#&gt; Gradient evaluation took 0.007795 seconds </span></span>
+<span><span class="co">#&gt; 1000 transitions using 10 leapfrog steps per transition would take 77.95 seconds. </span></span>
 <span><span class="co">#&gt; Adjust your expectations accordingly! </span></span>
 <span><span class="co">#&gt; Begin eta adaptation. </span></span>
 <span><span class="co">#&gt; Iteration:   1 / 250 [  0%]  (Adaptation) </span></span>
@@ -187,7 +186,7 @@ is not that large.</p>
 <span><span class="co">#&gt;   1100       -83487.854             0.163            0.010   MEDIAN ELBO CONVERGED </span></span>
 <span><span class="co">#&gt; Drawing a sample of size 1000 from the approximate posterior...  </span></span>
 <span><span class="co">#&gt; COMPLETED. </span></span>
-<span><span class="co">#&gt; Finished in  16.0 seconds.</span></span></code></pre>
+<span><span class="co">#&gt; Finished in  16.8 seconds.</span></span></code></pre>
 <div class="section level2">
 <h2 id="evaluating-effects">Evaluating Effects<a class="anchor" aria-label="anchor" href="#evaluating-effects"></a>
 </h2>
@@ -272,8 +271,8 @@ relationship between the treatment and the mediators.</p>
 <span><span class="co">#&gt;   This procedure has not been thoroughly tested and may be unstable </span></span>
 <span><span class="co">#&gt;   or buggy. The interface is subject to change. </span></span>
 <span><span class="co">#&gt; ------------------------------------------------------------ </span></span>
-<span><span class="co">#&gt; Gradient evaluation took 0.007731 seconds </span></span>
-<span><span class="co">#&gt; 1000 transitions using 10 leapfrog steps per transition would take 77.31 seconds. </span></span>
+<span><span class="co">#&gt; Gradient evaluation took 0.008024 seconds </span></span>
+<span><span class="co">#&gt; 1000 transitions using 10 leapfrog steps per transition would take 80.24 seconds. </span></span>
 <span><span class="co">#&gt; Adjust your expectations accordingly! </span></span>
 <span><span class="co">#&gt; Begin eta adaptation. </span></span>
 <span><span class="co">#&gt; Iteration:   1 / 250 [  0%]  (Adaptation) </span></span>
@@ -297,7 +296,7 @@ relationship between the treatment and the mediators.</p>
 <span><span class="co">#&gt;   1100       -83487.854             0.163            0.010   MEDIAN ELBO CONVERGED </span></span>
 <span><span class="co">#&gt; Drawing a sample of size 1000 from the approximate posterior...  </span></span>
 <span><span class="co">#&gt; COMPLETED. </span></span>
-<span><span class="co">#&gt; Finished in  16.3 seconds.</span></span></code></pre>
+<span><span class="co">#&gt; Finished in  16.4 seconds.</span></span></code></pre>
 <p>These modified models can be used to simulate synthetic null data
 that help contextualize the effects seen in real data. For example, we
 can compare imaginary cohort drawn from the original and the altered
@@ -347,8 +346,8 @@ appropriately accounting for sources of heterogeneity.</p>
 <span><span class="co">#&gt;   This procedure has not been thoroughly tested and may be unstable </span></span>
 <span><span class="co">#&gt;   or buggy. The interface is subject to change. </span></span>
 <span><span class="co">#&gt; ------------------------------------------------------------ </span></span>
-<span><span class="co">#&gt; Gradient evaluation took 0.007554 seconds </span></span>
-<span><span class="co">#&gt; 1000 transitions using 10 leapfrog steps per transition would take 75.54 seconds. </span></span>
+<span><span class="co">#&gt; Gradient evaluation took 0.007893 seconds </span></span>
+<span><span class="co">#&gt; 1000 transitions using 10 leapfrog steps per transition would take 78.93 seconds. </span></span>
 <span><span class="co">#&gt; Adjust your expectations accordingly! </span></span>
 <span><span class="co">#&gt; Begin eta adaptation. </span></span>
 <span><span class="co">#&gt; Iteration:   1 / 250 [  0%]  (Adaptation) </span></span>
@@ -373,7 +372,7 @@ appropriately accounting for sources of heterogeneity.</p>
 <span><span class="co">#&gt;   1200       -83880.348             0.023            0.008   MEDIAN ELBO CONVERGED </span></span>
 <span><span class="co">#&gt; Drawing a sample of size 1000 from the approximate posterior...  </span></span>
 <span><span class="co">#&gt; COMPLETED. </span></span>
-<span><span class="co">#&gt; Finished in  16.9 seconds.</span></span></code></pre>
+<span><span class="co">#&gt; Finished in  17.2 seconds.</span></span></code></pre>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">altered_indirect</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op">|&gt;</span></span>
@@ -384,8 +383,8 @@ appropriately accounting for sources of heterogeneity.</p>
 <span><span class="co">#&gt;   This procedure has not been thoroughly tested and may be unstable </span></span>
 <span><span class="co">#&gt;   or buggy. The interface is subject to change. </span></span>
 <span><span class="co">#&gt; ------------------------------------------------------------ </span></span>
-<span><span class="co">#&gt; Gradient evaluation took 0.007162 seconds </span></span>
-<span><span class="co">#&gt; 1000 transitions using 10 leapfrog steps per transition would take 71.62 seconds. </span></span>
+<span><span class="co">#&gt; Gradient evaluation took 0.007576 seconds </span></span>
+<span><span class="co">#&gt; 1000 transitions using 10 leapfrog steps per transition would take 75.76 seconds. </span></span>
 <span><span class="co">#&gt; Adjust your expectations accordingly! </span></span>
 <span><span class="co">#&gt; Begin eta adaptation. </span></span>
 <span><span class="co">#&gt; Iteration:   1 / 250 [  0%]  (Adaptation) </span></span>
@@ -410,7 +409,7 @@ appropriately accounting for sources of heterogeneity.</p>
 <span><span class="co">#&gt;   1200       -83137.414             0.023            0.010   MEDIAN ELBO CONVERGED </span></span>
 <span><span class="co">#&gt; Drawing a sample of size 1000 from the approximate posterior...  </span></span>
 <span><span class="co">#&gt; COMPLETED. </span></span>
-<span><span class="co">#&gt; Finished in  16.4 seconds.</span></span></code></pre>
+<span><span class="co">#&gt; Finished in  16.6 seconds.</span></span></code></pre>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">profile</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/setup_profile.html">setup_profile</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">exper</span><span class="op">@</span><span class="va">treatments</span>, <span class="va">exper</span><span class="op">@</span><span class="va">treatments</span><span class="op">)</span></span>
@@ -448,8 +447,6 @@ appropriately accounting for sources of heterogeneity.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>panel.border <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_rect</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="mindfulness_files/figure-html/alteration_plot-1.png" width="600" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html" class="external-link">ggsave</a></span><span class="op">(</span><span class="st">"~/Downloads/lnm_samples.png"</span>, dpi <span class="op">=</span> <span class="fl">400</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">combined_samples</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">name</span>, <span class="va">source</span>, <span class="va">treatment</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>presence <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">value</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -490,15 +487,15 @@ directed effect for a single feature in either real or synthetic data.
 We rank features according to their absolute effect size, and as soon as
 negative control features enter, we begin increasing the estimated false
 discovery rate for the rule that selects features up to that point.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">contrast</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/null_contrast.html">null_contrast</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">exper</span>, <span class="st">"T-&gt;Y"</span>, <span class="va">direct_effect</span><span class="op">)</span></span></code></pre></div>
 <pre class="r-output"><code><span><span class="co">#&gt; ------------------------------------------------------------ </span></span>
 <span><span class="co">#&gt; EXPERIMENTAL ALGORITHM: </span></span>
 <span><span class="co">#&gt;   This procedure has not been thoroughly tested and may be unstable </span></span>
 <span><span class="co">#&gt;   or buggy. The interface is subject to change. </span></span>
 <span><span class="co">#&gt; ------------------------------------------------------------ </span></span>
-<span><span class="co">#&gt; Gradient evaluation took 0.007751 seconds </span></span>
-<span><span class="co">#&gt; 1000 transitions using 10 leapfrog steps per transition would take 77.51 seconds. </span></span>
+<span><span class="co">#&gt; Gradient evaluation took 0.00774 seconds </span></span>
+<span><span class="co">#&gt; 1000 transitions using 10 leapfrog steps per transition would take 77.4 seconds. </span></span>
 <span><span class="co">#&gt; Adjust your expectations accordingly! </span></span>
 <span><span class="co">#&gt; Begin eta adaptation. </span></span>
 <span><span class="co">#&gt; Iteration:   1 / 250 [  0%]  (Adaptation) </span></span>
@@ -523,14 +520,14 @@ discovery rate for the rule that selects features up to that point.</p>
 <span><span class="co">#&gt;   1200       -83880.348             0.023            0.008   MEDIAN ELBO CONVERGED </span></span>
 <span><span class="co">#&gt; Drawing a sample of size 1000 from the approximate posterior...  </span></span>
 <span><span class="co">#&gt; COMPLETED. </span></span>
-<span><span class="co">#&gt; Finished in  16.9 seconds.</span></span>
+<span><span class="co">#&gt; Finished in  17.0 seconds.</span></span>
 <span><span class="co">#&gt; ------------------------------------------------------------ </span></span>
 <span><span class="co">#&gt; EXPERIMENTAL ALGORITHM: </span></span>
 <span><span class="co">#&gt;   This procedure has not been thoroughly tested and may be unstable </span></span>
 <span><span class="co">#&gt;   or buggy. The interface is subject to change. </span></span>
 <span><span class="co">#&gt; ------------------------------------------------------------ </span></span>
-<span><span class="co">#&gt; Gradient evaluation took 0.007907 seconds </span></span>
-<span><span class="co">#&gt; 1000 transitions using 10 leapfrog steps per transition would take 79.07 seconds. </span></span>
+<span><span class="co">#&gt; Gradient evaluation took 0.007799 seconds </span></span>
+<span><span class="co">#&gt; 1000 transitions using 10 leapfrog steps per transition would take 77.99 seconds. </span></span>
 <span><span class="co">#&gt; Adjust your expectations accordingly! </span></span>
 <span><span class="co">#&gt; Begin eta adaptation. </span></span>
 <span><span class="co">#&gt; Iteration:   1 / 250 [  0%]  (Adaptation) </span></span>
@@ -556,23 +553,23 @@ discovery rate for the rule that selects features up to that point.</p>
 <span><span class="co">#&gt;   1300       -93377.218             0.010            0.004   MEDIAN ELBO CONVERGED </span></span>
 <span><span class="co">#&gt; Drawing a sample of size 1000 from the approximate posterior...  </span></span>
 <span><span class="co">#&gt; COMPLETED. </span></span>
-<span><span class="co">#&gt; Finished in  17.9 seconds.</span></span></code></pre>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<span><span class="co">#&gt; Finished in  18.0 seconds.</span></span></code></pre>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fdr_direct</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fdr_summary.html">fdr_summary</a></span><span class="op">(</span><span class="va">contrast</span>, <span class="st">"direct_effect"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>effect <span class="op">=</span> <span class="va">direct_effect</span><span class="op">)</span></span></code></pre></div>
 <p>The indirect effect analog is shown below. It seems we have more
 evidence for direct than indirect effects. This is consistent with
 literature on the difficulty of estimating indirect effects in mediation
 analysis.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">contrast</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/null_contrast.html">null_contrast</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">exper</span>, <span class="st">"M-&gt;Y"</span>, <span class="va">indirect_overall</span><span class="op">)</span></span></code></pre></div>
 <pre class="r-output"><code><span><span class="co">#&gt; ------------------------------------------------------------ </span></span>
 <span><span class="co">#&gt; EXPERIMENTAL ALGORITHM: </span></span>
 <span><span class="co">#&gt;   This procedure has not been thoroughly tested and may be unstable </span></span>
 <span><span class="co">#&gt;   or buggy. The interface is subject to change. </span></span>
 <span><span class="co">#&gt; ------------------------------------------------------------ </span></span>
-<span><span class="co">#&gt; Gradient evaluation took 0.007427 seconds </span></span>
-<span><span class="co">#&gt; 1000 transitions using 10 leapfrog steps per transition would take 74.27 seconds. </span></span>
+<span><span class="co">#&gt; Gradient evaluation took 0.007599 seconds </span></span>
+<span><span class="co">#&gt; 1000 transitions using 10 leapfrog steps per transition would take 75.99 seconds. </span></span>
 <span><span class="co">#&gt; Adjust your expectations accordingly! </span></span>
 <span><span class="co">#&gt; Begin eta adaptation. </span></span>
 <span><span class="co">#&gt; Iteration:   1 / 250 [  0%]  (Adaptation) </span></span>
@@ -603,8 +600,8 @@ analysis.</p>
 <span><span class="co">#&gt;   This procedure has not been thoroughly tested and may be unstable </span></span>
 <span><span class="co">#&gt;   or buggy. The interface is subject to change. </span></span>
 <span><span class="co">#&gt; ------------------------------------------------------------ </span></span>
-<span><span class="co">#&gt; Gradient evaluation took 0.007978 seconds </span></span>
-<span><span class="co">#&gt; 1000 transitions using 10 leapfrog steps per transition would take 79.78 seconds. </span></span>
+<span><span class="co">#&gt; Gradient evaluation took 0.007953 seconds </span></span>
+<span><span class="co">#&gt; 1000 transitions using 10 leapfrog steps per transition would take 79.53 seconds. </span></span>
 <span><span class="co">#&gt; Adjust your expectations accordingly! </span></span>
 <span><span class="co">#&gt; Begin eta adaptation. </span></span>
 <span><span class="co">#&gt; Iteration:   1 / 250 [  0%]  (Adaptation) </span></span>
@@ -630,10 +627,10 @@ analysis.</p>
 <span><span class="co">#&gt; Drawing a sample of size 1000 from the approximate posterior...  </span></span>
 <span><span class="co">#&gt; COMPLETED. </span></span>
 <span><span class="co">#&gt; Finished in  17.2 seconds.</span></span></code></pre>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fdr_indirect</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fdr_summary.html">fdr_summary</a></span><span class="op">(</span><span class="va">contrast</span>, <span class="st">"indirect_overall"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>effect <span class="op">=</span> <span class="va">indirect_effect</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fdr_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">fdr_direct</span>, <span class="va">fdr_indirect</span>, .id <span class="op">=</span> <span class="st">"effect_type"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>effect_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Direct"</span>, <span class="st">"Indirect"</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">effect_type</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">fdr_data</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">effect</span>, <span class="va">fdr_hat</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -650,7 +647,7 @@ analysis.</p>
 <span>    legend.text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">12</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
 <p><img src="mindfulness_files/figure-html/contrast_plot-1.png" width="600" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">exper_clr</span> <span class="op">&lt;-</span> <span class="va">exper</span></span>
 <span><span class="va">exper_clr</span><span class="op">@</span><span class="va">outcomes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/compositions/man/normalize.html" class="external-link">normalize</a></span><span class="op">(</span><span class="va">exper</span><span class="op">@</span><span class="va">outcomes</span><span class="op">)</span></span>
 <span></span>
@@ -676,15 +673,15 @@ analysis.</p>
 <p>Here is the analog for indirect pathwise effects. Since these effects
 distinguish between individual mediators, we can facet by these
 variables.</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">contrast</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/null_contrast.html">null_contrast</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">exper</span>, <span class="st">"M-&gt;Y"</span>, <span class="va">indirect_pathwise</span><span class="op">)</span></span></code></pre></div>
 <pre class="r-output"><code><span><span class="co">#&gt; ------------------------------------------------------------ </span></span>
 <span><span class="co">#&gt; EXPERIMENTAL ALGORITHM: </span></span>
 <span><span class="co">#&gt;   This procedure has not been thoroughly tested and may be unstable </span></span>
 <span><span class="co">#&gt;   or buggy. The interface is subject to change. </span></span>
 <span><span class="co">#&gt; ------------------------------------------------------------ </span></span>
-<span><span class="co">#&gt; Gradient evaluation took 0.007606 seconds </span></span>
-<span><span class="co">#&gt; 1000 transitions using 10 leapfrog steps per transition would take 76.06 seconds. </span></span>
+<span><span class="co">#&gt; Gradient evaluation took 0.007665 seconds </span></span>
+<span><span class="co">#&gt; 1000 transitions using 10 leapfrog steps per transition would take 76.65 seconds. </span></span>
 <span><span class="co">#&gt; Adjust your expectations accordingly! </span></span>
 <span><span class="co">#&gt; Begin eta adaptation. </span></span>
 <span><span class="co">#&gt; Iteration:   1 / 250 [  0%]  (Adaptation) </span></span>
@@ -715,8 +712,8 @@ variables.</p>
 <span><span class="co">#&gt;   This procedure has not been thoroughly tested and may be unstable </span></span>
 <span><span class="co">#&gt;   or buggy. The interface is subject to change. </span></span>
 <span><span class="co">#&gt; ------------------------------------------------------------ </span></span>
-<span><span class="co">#&gt; Gradient evaluation took 0.007813 seconds </span></span>
-<span><span class="co">#&gt; 1000 transitions using 10 leapfrog steps per transition would take 78.13 seconds. </span></span>
+<span><span class="co">#&gt; Gradient evaluation took 0.00793 seconds </span></span>
+<span><span class="co">#&gt; 1000 transitions using 10 leapfrog steps per transition would take 79.3 seconds. </span></span>
 <span><span class="co">#&gt; Adjust your expectations accordingly! </span></span>
 <span><span class="co">#&gt; Begin eta adaptation. </span></span>
 <span><span class="co">#&gt; Iteration:   1 / 250 [  0%]  (Adaptation) </span></span>
@@ -741,8 +738,8 @@ variables.</p>
 <span><span class="co">#&gt;   1200       -93725.424             0.031            0.009   MEDIAN ELBO CONVERGED </span></span>
 <span><span class="co">#&gt; Drawing a sample of size 1000 from the approximate posterior...  </span></span>
 <span><span class="co">#&gt; COMPLETED. </span></span>
-<span><span class="co">#&gt; Finished in  17.2 seconds.</span></span></code></pre>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<span><span class="co">#&gt; Finished in  17.3 seconds.</span></span></code></pre>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fdr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fdr_summary.html">fdr_summary</a></span><span class="op">(</span><span class="va">contrast</span>, <span class="st">"indirect_pathwise"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">fdr</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">indirect_effect</span>, <span class="va">fdr_hat</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggrepel.slowkow.com/reference/geom_text_repel.html" class="external-link">geom_text_repel</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">fdr</span>, <span class="va">keep</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="va">outcome</span>, fill <span class="op">=</span> <span class="va">source</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op">+</span></span>
@@ -762,7 +759,7 @@ each microbe’s abundance. Since the models will use mean squared error
 to define splits, it will help to transform the response. We’ll use a
 centered log ratio, exported from the <code>compositions</code>
 package.</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">exper_clr</span> <span class="op">&lt;-</span> <span class="va">exper</span></span>
 <span><span class="va">exper_clr</span><span class="op">@</span><span class="va">outcomes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/compositions/man/normalize.html" class="external-link">normalize</a></span><span class="op">(</span><span class="va">exper</span><span class="op">@</span><span class="va">outcomes</span><span class="op">)</span></span>
 <span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/multimedia.html">multimedia</a></span><span class="op">(</span></span>
@@ -773,7 +770,7 @@ package.</p>
 <span>  <span class="fu"><a href="../reference/estimate.html">estimate</a></span><span class="op">(</span><span class="va">exper_clr</span><span class="op">)</span></span></code></pre></div>
 <p>We can compute direct and indirect effects from the estimated
 model.</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">direct</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/direct_effect.html">direct_effect</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">exper_clr</span><span class="op">)</span></span>
 <span><span class="va">direct_sorted</span> <span class="op">&lt;-</span> <span class="va">direct</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">outcome</span>, <span class="va">contrast</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -788,41 +785,41 @@ model.</p>
 <span><span class="va">direct_sorted</span></span></code></pre></div>
 <pre class="r-output"><code><span><span class="co">#&gt; # A tibble: 55 × 3</span></span>
 <span><span class="co">#&gt; # Groups:   outcome [55]</span></span>
-<span><span class="co">#&gt;    outcome           contrast            direct_effect</span></span>
-<span><span class="co">#&gt;                                       </span></span>
-<span><span class="co">#&gt;  1 Ruminococcus      Control - Treatment      0.00479 </span></span>
-<span><span class="co">#&gt;  2 Faecalibacterium  Control - Treatment      0.00418 </span></span>
-<span><span class="co">#&gt;  3 Roseburia         Control - Treatment      0.00329 </span></span>
-<span><span class="co">#&gt;  4 Parabacteroides   Control - Treatment      0.00129 </span></span>
-<span><span class="co">#&gt;  5 Coprococcus       Control - Treatment      0.00125 </span></span>
-<span><span class="co">#&gt;  6 Streptococcus     Control - Treatment      0.000515</span></span>
-<span><span class="co">#&gt;  7 Dorea             Control - Treatment      0.000503</span></span>
-<span><span class="co">#&gt;  8 Clostridium_XVIII Control - Treatment      0.000488</span></span>
-<span><span class="co">#&gt;  9 Clostridium_XlVa  Control - Treatment      0.000148</span></span>
-<span><span class="co">#&gt; 10 Butyricicoccus    Control - Treatment      0.000131</span></span>
+<span><span class="co">#&gt;    outcome               contrast            direct_effect</span></span>
+<span><span class="co">#&gt;                                           </span></span>
+<span><span class="co">#&gt;  1 Parabacteroides       Control - Treatment         0.362</span></span>
+<span><span class="co">#&gt;  2 Dorea                 Control - Treatment         0.345</span></span>
+<span><span class="co">#&gt;  3 Coprococcus           Control - Treatment         0.317</span></span>
+<span><span class="co">#&gt;  4 Ruminococcus          Control - Treatment         0.314</span></span>
+<span><span class="co">#&gt;  5 Clostridium_XVIII     Control - Treatment         0.267</span></span>
+<span><span class="co">#&gt;  6 Bilophila             Control - Treatment         0.251</span></span>
+<span><span class="co">#&gt;  7 Gemmiger              Control - Treatment         0.247</span></span>
+<span><span class="co">#&gt;  8 Clostridium_XlVa      Control - Treatment         0.242</span></span>
+<span><span class="co">#&gt;  9 Roseburia             Control - Treatment         0.220</span></span>
+<span><span class="co">#&gt; 10 Phascolarctobacterium Control - Treatment         0.214</span></span>
 <span><span class="co">#&gt; # ℹ 45 more rows</span></span></code></pre>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">indirect_sorted</span></span></code></pre></div>
 <pre class="r-output"><code><span><span class="co">#&gt; # A tibble: 220 × 4</span></span>
 <span><span class="co">#&gt; # Groups:   outcome, mediator [220]</span></span>
-<span><span class="co">#&gt;    outcome          mediator                    contrast         indirect_effect</span></span>
+<span><span class="co">#&gt;    outcome               mediator             contrast           indirect_effect</span></span>
 <span><span class="co">#&gt;                                                            </span></span>
-<span><span class="co">#&gt;  1 Ruminococcus     mediator.Cold.cereal        Control - Treat…        -0.00988</span></span>
-<span><span class="co">#&gt;  2 Blautia          mediator.sleepDistRaw       Control - Treat…         0.00765</span></span>
-<span><span class="co">#&gt;  3 Clostridium_IV   mediator.Cold.cereal        Control - Treat…        -0.00552</span></span>
-<span><span class="co">#&gt;  4 Prevotella       mediator.Fruit..not.juices. Control - Treat…        -0.00451</span></span>
-<span><span class="co">#&gt;  5 Faecalibacterium mediator.Fruit..not.juices. Control - Treat…         0.00390</span></span>
-<span><span class="co">#&gt;  6 Blautia          mediator.Cold.cereal        Control - Treat…         0.00383</span></span>
-<span><span class="co">#&gt;  7 Faecalibacterium mediator.sleepDistRaw       Control - Treat…        -0.00370</span></span>
-<span><span class="co">#&gt;  8 Bacteroides      mediator.fatigueRaw         Control - Treat…        -0.00313</span></span>
-<span><span class="co">#&gt;  9 Prevotella       mediator.Cold.cereal        Control - Treat…         0.00313</span></span>
-<span><span class="co">#&gt; 10 Prevotella       mediator.sleepDistRaw       Control - Treat…        -0.00307</span></span>
+<span><span class="co">#&gt;  1 Clostridium_IV        mediator.Cold.cereal Control - Treatme…         -0.309 </span></span>
+<span><span class="co">#&gt;  2 Bifidobacterium       mediator.Cold.cereal Control - Treatme…          0.156 </span></span>
+<span><span class="co">#&gt;  3 Coprococcus           mediator.Cold.cereal Control - Treatme…          0.133 </span></span>
+<span><span class="co">#&gt;  4 Lactococcus           mediator.Cold.cereal Control - Treatme…         -0.122 </span></span>
+<span><span class="co">#&gt;  5 Oscillibacter         mediator.Cold.cereal Control - Treatme…         -0.119 </span></span>
+<span><span class="co">#&gt;  6 Collinsella           mediator.Cold.cereal Control - Treatme…          0.118 </span></span>
+<span><span class="co">#&gt;  7 Ruminococcus          mediator.Cold.cereal Control - Treatme…         -0.114 </span></span>
+<span><span class="co">#&gt;  8 Sporobacter           mediator.Cold.cereal Control - Treatme…         -0.114 </span></span>
+<span><span class="co">#&gt;  9 Phascolarctobacterium mediator.Cold.cereal Control - Treatme…         -0.0879</span></span>
+<span><span class="co">#&gt; 10 Actinomyces           mediator.Cold.cereal Control - Treatme…         -0.0811</span></span>
 <span><span class="co">#&gt; # ℹ 210 more rows</span></span></code></pre>
 <p>We can visualize some of the features with the largest direct and
 indirect effects. Nonlinearity seems to have helped uncover a few
 mediator to microbe relationships, for example, the relationships
 between sleep disturbance/Ruminococcus2 and cereal/Faecalibacterium.</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_mediators.html">plot_mediators</a></span><span class="op">(</span><span class="va">indirect_sorted</span>, <span class="va">exper_clr</span><span class="op">)</span></span></code></pre></div>
 <p><img src="mindfulness_files/figure-html/rf_mediation_plots-1.png" width="600" style="display: block; margin: auto;"></p>
 </div>
@@ -835,7 +832,7 @@ each iteration, we randomly subsample timepoints from the original
 experiment and compute a list of estimates, specified by the list
 <code>funs</code> below. The output concatenates output across all
 bootstrap iterations.</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">funs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>direct <span class="op">=</span> <span class="va">direct_effect</span>, indirect <span class="op">=</span> <span class="va">indirect_overall</span><span class="op">)</span></span>
 <span><span class="va">inference</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bootstrap.html">bootstrap</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">exper_clr</span>, <span class="va">funs</span>, B <span class="op">=</span> <span class="fl">1e3</span><span class="op">)</span></span></code></pre></div>
 <p>We can now visualize the bootstrap confidence intervals associated
@@ -850,7 +847,7 @@ in diet and sleep alone are not enough to explain the changes in
 microbiome composition seen in this study. This suggests that mechanisms
 related to the gut-brain axis may be at play, lying behind the observed
 direct effects.</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">inference</span><span class="op">$</span><span class="va">indirect</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="http://mjskay.github.io/ggdist/reference/stat_slabinterval.html" class="external-link">stat_slabinterval</a></span><span class="op">(</span></span>

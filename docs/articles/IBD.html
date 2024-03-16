@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">multimedia</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0</span>
       </span>
     </div>
 
@@ -414,9 +414,10 @@ transitions we see above.</p>
 <span><span class="fu"><a href="../reference/plot_mediators.html">plot_mediators</a></span><span class="op">(</span><span class="va">indirect_sorted</span>, <span class="va">samples</span>, treatment <span class="op">=</span> <span class="st">"Study.Group"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="IBD_files/figure-html/hurdle_synthetic-1.png" width="600" style="display: block; margin: auto;"></p>
 <p>Finally, we can look at direct effects from this model, which can be
-compared to the analogous figure for the sparse regression. Note that
-now, many outcomes with exact zeros under treatment have been
-detected.</p>
+compared to the analogous figure for the sparse regression. Now, many
+outcomes with exact zeros under treatment have been detected, which is
+consistent with the the hurdle model’s effectiveness in accurately
+reflecting features that influence zero-inflation.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">direct</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/direct_effect.html">direct_effect</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">exper</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/effect_summary.html">effect_summary</a></span><span class="op">(</span><span class="op">)</span></span>

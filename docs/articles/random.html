@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">multimedia</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0</span>
       </span>
     </div>
 
@@ -166,17 +166,17 @@ was used to fit the model, just like the <code>predict</code> method for
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></code></pre></div>
 <pre class="r-output"><code><span><span class="co">#&gt; $mediators</span></span>
 <span><span class="co">#&gt; # A tibble: 2 × 5</span></span>
-<span><span class="co">#&gt;     ASV1    ASV2  ASV3   ASV4   ASV5</span></span>
-<span><span class="co">#&gt;            </span></span>
-<span><span class="co">#&gt; 1 0.0633 -0.0174 0.147 -0.107 0.0852</span></span>
-<span><span class="co">#&gt; 2 0.0687  0.169  0.126 -0.125 0.0107</span></span>
+<span><span class="co">#&gt;     ASV1    ASV2    ASV3   ASV4   ASV5</span></span>
+<span><span class="co">#&gt;              </span></span>
+<span><span class="co">#&gt; 1 0.0517 -0.0195 -0.0775 -0.135 0.0410</span></span>
+<span><span class="co">#&gt; 2 0.119   0.279  -0.0220  0.256 0.288 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $outcomes</span></span>
 <span><span class="co">#&gt; # A tibble: 2 × 1</span></span>
 <span><span class="co">#&gt;       PHQ</span></span>
 <span><span class="co">#&gt;     </span></span>
-<span><span class="co">#&gt; 1 -0.0927</span></span>
-<span><span class="co">#&gt; 2 -0.106</span></span></code></pre>
+<span><span class="co">#&gt; 1  0.0139</span></span>
+<span><span class="co">#&gt; 2 -0.111</span></span></code></pre>
 <p>Things get more interesting when we sample at new treatment and
 pretreatment configurations. We need to be careful with our accounting,
 because we want the flexibility to provide different combinations of
@@ -199,54 +199,54 @@ control.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">model</span>, profile <span class="op">=</span> <span class="va">profile</span><span class="op">)</span></span></code></pre></div>
 <pre class="r-output"><code><span><span class="co">#&gt; $mediators</span></span>
 <span><span class="co">#&gt; # A tibble: 4 × 5</span></span>
-<span><span class="co">#&gt;     ASV1    ASV2  ASV3   ASV4   ASV5</span></span>
-<span><span class="co">#&gt;            </span></span>
-<span><span class="co">#&gt; 1 0.0687  0.169  0.126 -0.125 0.0107</span></span>
-<span><span class="co">#&gt; 2 0.0633 -0.0174 0.147 -0.107 0.0852</span></span>
-<span><span class="co">#&gt; 3 0.0633 -0.0174 0.147 -0.107 0.0852</span></span>
-<span><span class="co">#&gt; 4 0.0633 -0.0174 0.147 -0.107 0.0852</span></span>
+<span><span class="co">#&gt;     ASV1    ASV2    ASV3   ASV4   ASV5</span></span>
+<span><span class="co">#&gt;              </span></span>
+<span><span class="co">#&gt; 1 0.119   0.279  -0.0220  0.256 0.288 </span></span>
+<span><span class="co">#&gt; 2 0.0517 -0.0195 -0.0775 -0.135 0.0410</span></span>
+<span><span class="co">#&gt; 3 0.0517 -0.0195 -0.0775 -0.135 0.0410</span></span>
+<span><span class="co">#&gt; 4 0.0517 -0.0195 -0.0775 -0.135 0.0410</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $outcomes</span></span>
 <span><span class="co">#&gt; # A tibble: 4 × 1</span></span>
 <span><span class="co">#&gt;       PHQ</span></span>
 <span><span class="co">#&gt;     </span></span>
-<span><span class="co">#&gt; 1 -0.0855</span></span>
-<span><span class="co">#&gt; 2 -0.0927</span></span>
-<span><span class="co">#&gt; 3 -0.0927</span></span>
-<span><span class="co">#&gt; 4 -0.0927</span></span></code></pre>
+<span><span class="co">#&gt; 1 -0.0576</span></span>
+<span><span class="co">#&gt; 2  0.0139</span></span>
+<span><span class="co">#&gt; 3  0.0139</span></span>
+<span><span class="co">#&gt; 4  0.0139</span></span></code></pre>
 <p>We can also contrast the predictions and samples under different
 profiles.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">profile_control</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/setup_profile.html">setup_profile</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">model</span><span class="op">@</span><span class="va">treatments</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">4</span><span class="op">)</span>, <span class="op">]</span>, <span class="va">t_outcome</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/contrast_predictions.html">contrast_predictions</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">profile</span>, <span class="va">profile_control</span><span class="op">)</span></span></code></pre></div>
 <pre class="r-output"><code><span><span class="co">#&gt; $mediators</span></span>
-<span><span class="co">#&gt;          ASV1      ASV2        ASV3        ASV4        ASV5</span></span>
-<span><span class="co">#&gt; 1 0.005368941 0.1858563 -0.02092859 -0.01807409 -0.07448229</span></span>
-<span><span class="co">#&gt; 2 0.000000000 0.0000000  0.00000000  0.00000000  0.00000000</span></span>
-<span><span class="co">#&gt; 3 0.000000000 0.0000000  0.00000000  0.00000000  0.00000000</span></span>
-<span><span class="co">#&gt; 4 0.000000000 0.0000000  0.00000000  0.00000000  0.00000000</span></span>
+<span><span class="co">#&gt;         ASV1      ASV2       ASV3     ASV4      ASV5</span></span>
+<span><span class="co">#&gt; 1 0.06742239 0.2983511 0.05551398 0.390917 0.2469502</span></span>
+<span><span class="co">#&gt; 2 0.00000000 0.0000000 0.00000000 0.000000 0.0000000</span></span>
+<span><span class="co">#&gt; 3 0.00000000 0.0000000 0.00000000 0.000000 0.0000000</span></span>
+<span><span class="co">#&gt; 4 0.00000000 0.0000000 0.00000000 0.000000 0.0000000</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $outcomes</span></span>
 <span><span class="co">#&gt;           PHQ</span></span>
-<span><span class="co">#&gt; 1 0.007116197</span></span>
-<span><span class="co">#&gt; 2 0.000000000</span></span>
-<span><span class="co">#&gt; 3 0.000000000</span></span>
-<span><span class="co">#&gt; 4 0.000000000</span></span></code></pre>
+<span><span class="co">#&gt; 1 -0.07146735</span></span>
+<span><span class="co">#&gt; 2  0.00000000</span></span>
+<span><span class="co">#&gt; 3  0.00000000</span></span>
+<span><span class="co">#&gt; 4  0.00000000</span></span></code></pre>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/contrast_samples.html">contrast_samples</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">profile</span>, <span class="va">profile_control</span><span class="op">)</span></span></code></pre></div>
 <pre class="r-output"><code><span><span class="co">#&gt; $mediators</span></span>
-<span><span class="co">#&gt;         ASV1        ASV2       ASV3       ASV4       ASV5</span></span>
-<span><span class="co">#&gt; 1 -2.7561171  0.04931431 -1.3183499 -0.4387669 -1.9117206</span></span>
-<span><span class="co">#&gt; 2  0.4884316 -0.96868217  0.4702442 -2.4740526 -0.5568664</span></span>
-<span><span class="co">#&gt; 3 -0.3340056 -1.39298503  0.4320600  1.9022918  1.7160006</span></span>
-<span><span class="co">#&gt; 4 -2.3788383 -3.51770139  2.2354191 -1.5366617  0.6446920</span></span>
+<span><span class="co">#&gt;         ASV1       ASV2      ASV3        ASV4         ASV5</span></span>
+<span><span class="co">#&gt; 1  1.3618178  1.0913892 -1.435188  0.83864763  4.793056881</span></span>
+<span><span class="co">#&gt; 2  1.1442987 -0.6328040  2.502509 -0.70927729 -0.007750699</span></span>
+<span><span class="co">#&gt; 3 -0.8069250  2.4977064  2.595124  1.54235354  2.133551837</span></span>
+<span><span class="co">#&gt; 4  0.9404595 -0.8648906  1.275599 -0.08570905 -1.140960303</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $outcomes</span></span>
 <span><span class="co">#&gt;          PHQ</span></span>
-<span><span class="co">#&gt; 1 -1.3250145</span></span>
-<span><span class="co">#&gt; 2  0.2381951</span></span>
-<span><span class="co">#&gt; 3 -1.0210808</span></span>
-<span><span class="co">#&gt; 4  0.8207142</span></span></code></pre>
+<span><span class="co">#&gt; 1 -2.1174337</span></span>
+<span><span class="co">#&gt; 2 -0.8608244</span></span>
+<span><span class="co">#&gt; 3 -0.1443127</span></span>
+<span><span class="co">#&gt; 4  0.6149600</span></span></code></pre>
 <div class="section level2">
 <h2 id="effect-estimates">Effect Estimates<a class="anchor" aria-label="anchor" href="#effect-estimates"></a>
 </h2>
@@ -266,30 +266,30 @@ treatment going into one mediator.</p>
 <pre class="r-output"><code><span><span class="co">#&gt; # A tibble: 2 × 4</span></span>
 <span><span class="co">#&gt;   outcome indirect_setting contrast            direct_effect</span></span>
 <span><span class="co">#&gt;                                        </span></span>
-<span><span class="co">#&gt; 1 PHQ     Treatment        Treatment - Control        0.0209</span></span>
-<span><span class="co">#&gt; 2 PHQ     Control          Treatment - Control        0.0209</span></span></code></pre>
+<span><span class="co">#&gt; 1 PHQ     Control          Control - Treatment        0.0534</span></span>
+<span><span class="co">#&gt; 2 PHQ     Treatment        Control - Treatment        0.0534</span></span></code></pre>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/indirect_overall.html">indirect_overall</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">exper</span><span class="op">)</span></span></code></pre></div>
 <pre class="r-output"><code><span><span class="co">#&gt; # A tibble: 2 × 4</span></span>
 <span><span class="co">#&gt;   outcome direct_setting contrast            indirect_effect</span></span>
 <span><span class="co">#&gt;                                        </span></span>
-<span><span class="co">#&gt; 1 PHQ     Treatment      Treatment - Control        -0.00712</span></span>
-<span><span class="co">#&gt; 2 PHQ     Control        Treatment - Control        -0.00712</span></span></code></pre>
+<span><span class="co">#&gt; 1 PHQ     Control        Control - Treatment          0.0715</span></span>
+<span><span class="co">#&gt; 2 PHQ     Treatment      Control - Treatment          0.0715</span></span></code></pre>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/indirect_pathwise.html">indirect_pathwise</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">exper</span><span class="op">)</span></span></code></pre></div>
 <pre class="r-output"><code><span><span class="co">#&gt; # A tibble: 10 × 5</span></span>
 <span><span class="co">#&gt;    outcome mediator direct_setting contrast            indirect_effect</span></span>
 <span><span class="co">#&gt;                                             </span></span>
-<span><span class="co">#&gt;  1 PHQ     ASV1     Treatment      Treatment - Control       -0.000192</span></span>
-<span><span class="co">#&gt;  2 PHQ     ASV2     Treatment      Treatment - Control        0.00358 </span></span>
-<span><span class="co">#&gt;  3 PHQ     ASV3     Treatment      Treatment - Control       -0.00564 </span></span>
-<span><span class="co">#&gt;  4 PHQ     ASV4     Treatment      Treatment - Control        0.000128</span></span>
-<span><span class="co">#&gt;  5 PHQ     ASV5     Treatment      Treatment - Control       -0.00499 </span></span>
-<span><span class="co">#&gt;  6 PHQ     ASV1     Control        Treatment - Control       -0.000192</span></span>
-<span><span class="co">#&gt;  7 PHQ     ASV2     Control        Treatment - Control        0.00358 </span></span>
-<span><span class="co">#&gt;  8 PHQ     ASV3     Control        Treatment - Control       -0.00564 </span></span>
-<span><span class="co">#&gt;  9 PHQ     ASV4     Control        Treatment - Control        0.000128</span></span>
-<span><span class="co">#&gt; 10 PHQ     ASV5     Control        Treatment - Control       -0.00499</span></span></code></pre>
+<span><span class="co">#&gt;  1 PHQ     ASV1     Control        Control - Treatment        0.000634</span></span>
+<span><span class="co">#&gt;  2 PHQ     ASV2     Control        Control - Treatment        0.00621 </span></span>
+<span><span class="co">#&gt;  3 PHQ     ASV3     Control        Control - Treatment        0.000311</span></span>
+<span><span class="co">#&gt;  4 PHQ     ASV4     Control        Control - Treatment        0.0359  </span></span>
+<span><span class="co">#&gt;  5 PHQ     ASV5     Control        Control - Treatment        0.0285  </span></span>
+<span><span class="co">#&gt;  6 PHQ     ASV1     Treatment      Control - Treatment        0.000634</span></span>
+<span><span class="co">#&gt;  7 PHQ     ASV2     Treatment      Control - Treatment        0.00621 </span></span>
+<span><span class="co">#&gt;  8 PHQ     ASV3     Treatment      Control - Treatment        0.000311</span></span>
+<span><span class="co">#&gt;  9 PHQ     ASV4     Treatment      Control - Treatment        0.0359  </span></span>
+<span><span class="co">#&gt; 10 PHQ     ASV5     Treatment      Control - Treatment        0.0285</span></span></code></pre>
 <p>So far, we’ve done everything using just linear models. We could
 actually have computed all these effects just by looking at parameter
 estimates. What’s nice is that we can plug in many differnet kinds of
@@ -308,57 +308,56 @@ in the simulated data.</p>
 <pre class="r-output"><code><span><span class="co">#&gt; # A tibble: 2 × 4</span></span>
 <span><span class="co">#&gt;   outcome indirect_setting contrast            direct_effect</span></span>
 <span><span class="co">#&gt;                                        </span></span>
-<span><span class="co">#&gt; 1 PHQ     Treatment        Treatment - Control             0</span></span>
-<span><span class="co">#&gt; 2 PHQ     Control          Treatment - Control             0</span></span></code></pre>
+<span><span class="co">#&gt; 1 PHQ     Control          Control - Treatment       0.00467</span></span>
+<span><span class="co">#&gt; 2 PHQ     Treatment        Control - Treatment       0.00467</span></span></code></pre>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/indirect_overall.html">indirect_overall</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">exper</span><span class="op">)</span></span></code></pre></div>
 <pre class="r-output"><code><span><span class="co">#&gt; # A tibble: 2 × 4</span></span>
 <span><span class="co">#&gt;   outcome direct_setting contrast            indirect_effect</span></span>
 <span><span class="co">#&gt;                                        </span></span>
-<span><span class="co">#&gt; 1 PHQ     Treatment      Treatment - Control        -0.00393</span></span>
-<span><span class="co">#&gt; 2 PHQ     Control        Treatment - Control        -0.00393</span></span></code></pre>
+<span><span class="co">#&gt; 1 PHQ     Control        Control - Treatment         0.00949</span></span>
+<span><span class="co">#&gt; 2 PHQ     Treatment      Control - Treatment         0.00949</span></span></code></pre>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/indirect_pathwise.html">indirect_pathwise</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">exper</span><span class="op">)</span></span></code></pre></div>
 <pre class="r-output"><code><span><span class="co">#&gt; # A tibble: 10 × 5</span></span>
 <span><span class="co">#&gt;    outcome mediator direct_setting contrast            indirect_effect</span></span>
 <span><span class="co">#&gt;                                             </span></span>
-<span><span class="co">#&gt;  1 PHQ     ASV1     Treatment      Treatment - Control         0      </span></span>
-<span><span class="co">#&gt;  2 PHQ     ASV2     Treatment      Treatment - Control         0      </span></span>
-<span><span class="co">#&gt;  3 PHQ     ASV3     Treatment      Treatment - Control        -0.00393</span></span>
-<span><span class="co">#&gt;  4 PHQ     ASV4     Treatment      Treatment - Control         0      </span></span>
-<span><span class="co">#&gt;  5 PHQ     ASV5     Treatment      Treatment - Control         0      </span></span>
-<span><span class="co">#&gt;  6 PHQ     ASV1     Control        Treatment - Control         0      </span></span>
-<span><span class="co">#&gt;  7 PHQ     ASV2     Control        Treatment - Control         0      </span></span>
-<span><span class="co">#&gt;  8 PHQ     ASV3     Control        Treatment - Control        -0.00393</span></span>
-<span><span class="co">#&gt;  9 PHQ     ASV4     Control        Treatment - Control         0      </span></span>
-<span><span class="co">#&gt; 10 PHQ     ASV5     Control        Treatment - Control         0</span></span></code></pre>
+<span><span class="co">#&gt;  1 PHQ     ASV1     Control        Control - Treatment         0      </span></span>
+<span><span class="co">#&gt;  2 PHQ     ASV2     Control        Control - Treatment         0      </span></span>
+<span><span class="co">#&gt;  3 PHQ     ASV3     Control        Control - Treatment         0      </span></span>
+<span><span class="co">#&gt;  4 PHQ     ASV4     Control        Control - Treatment         0.00162</span></span>
+<span><span class="co">#&gt;  5 PHQ     ASV5     Control        Control - Treatment         0.00787</span></span>
+<span><span class="co">#&gt;  6 PHQ     ASV1     Treatment      Control - Treatment         0      </span></span>
+<span><span class="co">#&gt;  7 PHQ     ASV2     Treatment      Control - Treatment         0      </span></span>
+<span><span class="co">#&gt;  8 PHQ     ASV3     Treatment      Control - Treatment         0      </span></span>
+<span><span class="co">#&gt;  9 PHQ     ASV4     Treatment      Control - Treatment         0.00162</span></span>
+<span><span class="co">#&gt; 10 PHQ     ASV5     Treatment      Control - Treatment         0.00787</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="inference">Inference<a class="anchor" aria-label="anchor" href="#inference"></a>
 </h2>
 <p>Effect estimates are rarely enough on their own. We need some
 uncertainty assessments to set appropriate expectations. The most
-straightforward approach is to use the bootstrap. Each element in
-<code>funs</code> will get its own data.frame with the bootstrap
-distribution for that estimator.</p>
+straightforward approach is to use the bootstrap. Each function in the
+third argument, <code>fs</code>, will get its own data.frame with the
+bootstrap distribution for that estimator.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">funs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>direct_effect <span class="op">=</span> <span class="va">direct_effect</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/bootstrap.html">bootstrap</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">exper</span>, <span class="va">funs</span>, B <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/bootstrap.html">bootstrap</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">exper</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>direct_effect <span class="op">=</span> <span class="va">direct_effect</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre class="r-output"><code><span><span class="co">#&gt; $direct_effect</span></span>
-<span><span class="co">#&gt; # A tibble: 200 × 5</span></span>
+<span><span class="co">#&gt; # A tibble: 2,000 × 5</span></span>
 <span><span class="co">#&gt;    bootstrap outcome indirect_setting contrast            direct_effect</span></span>
 <span><span class="co">#&gt;                                              </span></span>
-<span><span class="co">#&gt;  1 1         PHQ     Control          Control - Treatment      -0.0796 </span></span>
-<span><span class="co">#&gt;  2 1         PHQ     Treatment        Control - Treatment      -0.0796 </span></span>
-<span><span class="co">#&gt;  3 2         PHQ     Control          Control - Treatment      -0.00809</span></span>
-<span><span class="co">#&gt;  4 2         PHQ     Treatment        Control - Treatment      -0.00809</span></span>
-<span><span class="co">#&gt;  5 3         PHQ     Control          Control - Treatment       0      </span></span>
-<span><span class="co">#&gt;  6 3         PHQ     Treatment        Control - Treatment       0      </span></span>
-<span><span class="co">#&gt;  7 4         PHQ     Control          Control - Treatment       0.00630</span></span>
-<span><span class="co">#&gt;  8 4         PHQ     Treatment        Control - Treatment       0.00630</span></span>
-<span><span class="co">#&gt;  9 5         PHQ     Control          Control - Treatment       0      </span></span>
-<span><span class="co">#&gt; 10 5         PHQ     Treatment        Control - Treatment       0      </span></span>
-<span><span class="co">#&gt; # ℹ 190 more rows</span></span></code></pre>
+<span><span class="co">#&gt;  1 1         PHQ     Control          Control - Treatment        0.0946</span></span>
+<span><span class="co">#&gt;  2 1         PHQ     Treatment        Control - Treatment        0.0946</span></span>
+<span><span class="co">#&gt;  3 2         PHQ     Control          Control - Treatment        0.133 </span></span>
+<span><span class="co">#&gt;  4 2         PHQ     Treatment        Control - Treatment        0.133 </span></span>
+<span><span class="co">#&gt;  5 3         PHQ     Control          Control - Treatment        0.362 </span></span>
+<span><span class="co">#&gt;  6 3         PHQ     Treatment        Control - Treatment        0.362 </span></span>
+<span><span class="co">#&gt;  7 4         PHQ     Control          Control - Treatment        0     </span></span>
+<span><span class="co">#&gt;  8 4         PHQ     Treatment        Control - Treatment        0     </span></span>
+<span><span class="co">#&gt;  9 5         PHQ     Control          Control - Treatment        0.125 </span></span>
+<span><span class="co">#&gt; 10 5         PHQ     Treatment        Control - Treatment        0.125 </span></span>
+<span><span class="co">#&gt; # ℹ 1,990 more rows</span></span></code></pre>
 <p>We can also generate synthetic nulls to calibrate selection sets. The
 third argument says which set of edges we want to remove under the null.
 In this case we will generate synthetic null data where there is known
@@ -376,13 +375,13 @@ effects (if any).</p>
 <pre class="r-output"><code><span><span class="co">#&gt; # A tibble: 10 × 8</span></span>
 <span><span class="co">#&gt;    source    outcome mediator indirect_effect .group     rank fdr_hat keep </span></span>
 <span><span class="co">#&gt;                                    </span></span>
-<span><span class="co">#&gt;  1 synthetic PHQ     ASV2            -0.0298  drop_last     1   1     FALSE</span></span>
-<span><span class="co">#&gt;  2 real      PHQ     ASV3            -0.00393 drop_last     2   0.5   FALSE</span></span>
-<span><span class="co">#&gt;  3 real      PHQ     ASV1             0       drop_last     3   0.333 FALSE</span></span>
-<span><span class="co">#&gt;  4 real      PHQ     ASV2             0       drop_last     4   0.25  FALSE</span></span>
-<span><span class="co">#&gt;  5 real      PHQ     ASV4             0       drop_last     5   0.2   FALSE</span></span>
-<span><span class="co">#&gt;  6 real      PHQ     ASV5             0       drop_last     6   0.167 FALSE</span></span>
-<span><span class="co">#&gt;  7 synthetic PHQ     ASV1             0       drop_last     7   0.286 FALSE</span></span>
+<span><span class="co">#&gt;  1 real      PHQ     ASV5             0.00787 drop_last     1   0     TRUE </span></span>
+<span><span class="co">#&gt;  2 real      PHQ     ASV4             0.00162 drop_last     2   0     TRUE </span></span>
+<span><span class="co">#&gt;  3 real      PHQ     ASV1             0       drop_last     3   0     TRUE </span></span>
+<span><span class="co">#&gt;  4 real      PHQ     ASV2             0       drop_last     4   0     TRUE </span></span>
+<span><span class="co">#&gt;  5 real      PHQ     ASV3             0       drop_last     5   0     FALSE</span></span>
+<span><span class="co">#&gt;  6 synthetic PHQ     ASV1             0       drop_last     6   0.167 FALSE</span></span>
+<span><span class="co">#&gt;  7 synthetic PHQ     ASV2             0       drop_last     7   0.286 FALSE</span></span>
 <span><span class="co">#&gt;  8 synthetic PHQ     ASV3             0       drop_last     8   0.375 FALSE</span></span>
 <span><span class="co">#&gt;  9 synthetic PHQ     ASV4             0       drop_last     9   0.444 FALSE</span></span>
 <span><span class="co">#&gt; 10 synthetic PHQ     ASV5             0       drop_last    10   0.5   FALSE</span></span></code></pre>
