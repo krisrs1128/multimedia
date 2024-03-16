@@ -15,7 +15,7 @@ setClassUnion("data.frameOrNull", members = c("data.frame", "NULL"))
 #' @slot mediation A `model` class storing the mediation model.
 #' @slot treatments A `treatment_profile` class describing treatment assignments
 #'   across all samples.
-#' @export
+#' @noRd
 setClass(
   "multimedia",
   representation(
@@ -41,7 +41,7 @@ setClass(
 #'   across all samples.
 #' @slot pretreatments A data.frame containing observed values of the
 #'   pretreatments across all samples.
-#' @export
+#' @noRd
 setClass(
   "mediation_data",
   representation(
@@ -67,7 +67,7 @@ setClass(
 #'   mediation_data("PHQ", "treatment", starts_with("ASV"))
 #' exper
 #' bind_mediation(exper)
-#'   
+#'
 #' exper <- demo_spline(tau = c(2, 1)) |>
 #'   mediation_data(starts_with("outcome"), "treatment", "mediator")
 #' exper
@@ -368,12 +368,12 @@ setMethod(nrow, "mediation_data", function(x) {
 })
 
 #' Subset a mediation dataset
-#' 
+#'
 #' We can subset samples by indexing into a mediation dataset. It will subsample
 #' all fields -- pretreatments, treatments, mediators, and outcomes. Note that
 #' there is no way to subset columns in this way, since they would be different
 #' across each source.
-#' 
+#'
 #' @export
 #' @examples
 #' exper <- demo_joy() |>

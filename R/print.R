@@ -55,7 +55,7 @@ setMethod("show", "multimedia", function(object) {
 #' Helper function for printing ANSI in Rmarkdown output. Use this at the start
 #' of your Rmarkdown files to include colors in the printed object names in the
 #' final compiled output.
-#' 
+#'
 #' Taken from the post at
 #'
 #' https://blog.djnavarro.net/posts/2021-04-18_pretty-little-clis/
@@ -73,6 +73,7 @@ ansi_aware_handler <- function(x, options) {
 }
 
 #' Print an object of class model
+#' @noRd
 setMethod("show", "model", function(object) {
   n_show <- 2
   cat(col_magenta(glue("{fit_type(object)} {object@model_type}.")), "\n")

@@ -26,7 +26,7 @@
 #'   indirect_pathwise() |>
 #'   effect_summary()
 #' plot_mediators(ie, exper)
-#' 
+#'
 #' # another dataset
 #' exper <- demo_spline(tau = c(2, 1)) |>
 #'   mediation_data(starts_with("outcome"), "treatment", "mediator")

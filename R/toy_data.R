@@ -30,7 +30,7 @@ random_numeric <- function(nrow, ncol, p = rnorm) {
 #' @importFrom SummarizedExperiment SummarizedExperiment
 #' @examples
 #' demo_joy()
-#' 
+#'
 #' demo_joy(n_samples = 2, n_mediators = 20)
 #' @export
 demo_joy <- function(n_samples = 100, n_mediators = 5, n_pretreatment = 3) {
