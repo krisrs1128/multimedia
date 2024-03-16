@@ -262,7 +262,7 @@ from_summarized_experiment <- function(exper, outcomes, treatments, mediators,
 #'   Defaults to NULL, in which case the pretreatments slot will remain empty.
 #' @return result An object of class `mediation_data`, with separate slots for
 #'   each of the node types in a mediation analysis diagram.
-#' @importFrom phyloseq otu_table
+#' @importFrom phyloseq otu_table sample_data
 #' @noRd
 from_phyloseq <- function(exper, outcomes, treatments, mediators, pretreatments) {
   if (attr(otu_table(exper), "taxa_are_rows")) {
@@ -327,6 +327,25 @@ from_data_frame <- function(df, outcomes, treatments, mediators,
 #' @return An object of class `multimedia` encapsulating the full mediation
 #'   model and data.
 #' @seealso multimedia-class
+#' @examples
+#' exper <- demo_joy() |>
+#'   mediation_data("PHQ", "treatment", starts_with("ASV"))
+#' multimedia(exper)
+#' 
+#' exper <- demo_spline(tau = c(2, 1)) |>
+#'   mediation_data(starts_with("outcome"), "treatment", "mediator")
+#' multimedia(exper)
+#' 
+#' # real data example with a pretreatment variable
+#' data(mindfulness)
+#' exper <- mediation_data(
+#'  mindfulness,
+#'  phyloseq::taxa_names(mindfulness),
+#'  "treatment",
+#'  starts_with("mediator"),
+#'  "subject"
+#' )
+#' multimedia(exper)
 #' @export
 multimedia <- function(mediation_data,
                        outcome_estimator = lm_model(),

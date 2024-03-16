@@ -43,14 +43,13 @@ th <- theme_classic() +
     legend.box.background = element_rect(fill = "transparent"),
     legend.position = "bottom"
   )
-
 theme_set(th)
 ```
 
 ```{r helpers, include = FALSE}
 normalize <- function(x) {
   x <- as_tibble(x)
-  x / rowSums(x)
+  clr(x / rowSums(x))
 }
 ```
 
@@ -69,7 +68,6 @@ other of these possibilities.
 library(compositions)
 library(ggdist)
 library(ggrepel)
-library(patchwork)
 library(phyloseq)
 library(tidyverse)
 library(multimedia)
@@ -262,7 +260,6 @@ ggplot(combined_samples) +
   labs(x = "log(Relative Abundance)", y = "Genus", fill = "", col = "") +
   facet_grid(~source, scales = "free") +
   theme(panel.border = element_rect(fill = NA))
-ggsave("~/Downloads/lnm_samples.png", dpi = 400)
 ```
 
 

@@ -410,8 +410,10 @@ plot_mediators(indirect_sorted, samples, treatment = "Study.Group")
 ```
 
 Finally, we can look at direct effects from this model, which can be compared to
-the analogous figure for the sparse regression. Note that now, many outcomes
-with exact zeros under treatment have been detected.
+the analogous figure for the sparse regression. Now, many outcomes with exact
+zeros under treatment have been detected, which is consistent with the the
+hurdle model's effectiveness in accurately reflecting features that influence
+zero-inflation.
 
 ```{r hurdle_direct, fig.width = 6, height = 5}
 direct <- direct_effect(model, exper) |>

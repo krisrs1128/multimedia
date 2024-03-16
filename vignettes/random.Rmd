@@ -43,7 +43,6 @@ th <- theme_classic() +
     legend.box.background = element_rect(fill = "transparent"),
     legend.position = "bottom"
   )
-
 theme_set(th)
 ```
 
@@ -168,12 +167,11 @@ indirect_pathwise(model, exper)
 
 Effect estimates are rarely enough on their own. We need some uncertainty
 assessments to set appropriate expectations. The most straightforward approach
-is to use the bootstrap.  Each element in `funs` will get its own data.frame
-with the bootstrap distribution for that estimator.
+is to use the bootstrap. Each function in the third argument, `fs`, will get its
+own data.frame with the bootstrap distribution for that estimator.
 
 ```{r bootstrap}
-funs <- list(direct_effect = direct_effect)
-bootstrap(model, exper, funs, B = 100)
+bootstrap(model, exper, c(direct_effect = direct_effect))
 ```
 
 We can also generate synthetic nulls to calibrate selection sets. The third

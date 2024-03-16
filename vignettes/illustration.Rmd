@@ -42,7 +42,6 @@ th <- theme_classic() +
     legend.box.background = element_rect(fill = "transparent"),
     legend.position = "bottom"
   )
-
 theme_set(th)
 ```
 
