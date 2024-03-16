@@ -1,6 +1,6 @@
 Package: multimedia
 Title: Multimodal Mediation Analysis
-Version: 0.0.0.9000
+Version: 0.1.0
 Authors@R: 
     person("Kris", "Sankaran", , "ksankaran@wisc.edu", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-9415-1971"))
