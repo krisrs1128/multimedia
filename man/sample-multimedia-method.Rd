@@ -22,7 +22,7 @@ samples <- sample(fit)
 samples@mediators
 samples@outcomes
 
-# sampling with just different "n" has no effect. 
+# sampling with just different "n" has no effect.
 samples <- sample(fit, 100)
 
 # Instead sample at a new treatment configuration

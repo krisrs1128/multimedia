@@ -1,4 +1,4 @@
-# multimedia <img src="https://uwmadison.box.com/shared/static/ygim01is2uer51wzyqg8u5l1mrz0kjo9.png" align="right" width="200" alt=""/>
+# multimedia <img src="man/figures/logo.png" align="right" width="200" alt=""/>
 
 `multimedia` is an R package for **multi**domain **media**tion analysis
 of microbiome data. It makes it easy to curate data, specify mediation
@@ -8,7 +8,7 @@ data domains, it can support principled data integration. You can read
 more about the package in our preprint:
 
 [H. Jiang, X. Miao, M. W. Thairu, M. Beebe, D. W. Grupe, R. J. Davidson,
-J. Handelsman, and K. Sankaran (2024). multimedia: Multidomain Mediation
+J. Handelsman, and K. Sankaran (2024). multimedia: Multimodal Mediation
 Analysis of Microbiome Data.]()
 
 The preprint describes the scientific context and interpretation for two
@@ -17,7 +17,7 @@ IBD, and the other describes how to model compositional outcomes in a
 study of depression.
 
 <center>
-<img src="https://uwmadison.box.com/shared/static/rg8dv79wwiu4h37ftuuz57vmqv55zuy4.png" width=400/>
+&lt;img src”man/figures/overview\_figure-extended.png” width=400/&gt;
 </center>
 
 ## Installation

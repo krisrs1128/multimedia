@@ -24,7 +24,7 @@ exper <- demo_joy() |>
   mediation_data("PHQ", "treatment", starts_with("ASV"))
 exper
 bind_mediation(exper)
-  
+
 exper <- demo_spline(tau = c(2, 1)) |>
   mediation_data(starts_with("outcome"), "treatment", "mediator")
 exper
