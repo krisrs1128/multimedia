@@ -1,11 +1,11 @@
 # multimedia <img src="man/figures/logo.png" align="right" width="200" alt=""/>
 
-`multimedia` is an R package for **multi**domain **media**tion analysis
-of microbiome data. It makes it easy to curate data, specify mediation
-and outcome model formulas, and carry out inference for direct and
-indirect effects. By specifying causal relationships between different
-data domains, it can support principled data integration. You can read
-more about the package in our preprint:
+`multimedia` is an R package for **multi**modal **media**tion analysis
+of microbiome data. It streamlines data curation, mediation and outcome
+model specification, and statistical inference for direct and indirect
+effects. By defining causal relationships across data modalities, it can
+support principled data integration. You can read more about the package
+in our preprint:
 
 [H. Jiang, X. Miao, M. W. Thairu, M. Beebe, D. W. Grupe, R. J. Davidson,
 J. Handelsman, and K. Sankaran (2024). multimedia: Multimodal Mediation
@@ -13,11 +13,11 @@ Analysis of Microbiome Data.]()
 
 The preprint describes the scientific context and interpretation for two
 of the vignettes in this package. One gives a multi-omics analysis of
-IBD, and the other describes how to model compositional outcomes in a
-study of depression.
+IBD, and the other describes how to simultaneously model 16S profiles
+and survey responses in a mindfulness intervention study.
 
 <center>
-&lt;img src”man/figures/overview\_figure-extended.png” width=400/&gt;
+<img src="man/figures/overview_figure-extended.png" width=400/>
 </center>
 
 ## Installation
@@ -32,16 +32,17 @@ You can install the development version from
 
 Here is a simple example of estimating direct and indirect effects using
 the package. The data are randomly generated (no real effects), but we
-will proceed as if the ASV columns mediate the relationship between
-`treatment` and `PHQ`. This is supposed to mimic the possibility that
-the microbiome (ASV = Amplicon Sequence Variant) might mediate the
-relationship between a treatment and depression (PHQ = Patient Health
-Questionnaire). You can find more details in the `random.Rmd` vignette.
+imagine that the ASV columns mediate the relationship between
+`treatment` and `PHQ`. This is mimics the possibility that the
+microbiome (ASV = Amplicon Sequence Variant) mediates the relationship
+between a treatment and depression (PHQ = Patient Health Questionnaire).
+You can find more details in the `random.Rmd` vignette.
 
 The original data here are a `SummarizedExperiment`. The package can
-also take phyloseq objects and plain data.frames.
+also take phyloseq objects and data.frames.
 
     library(multimedia)
+    library(ggplot2)
     demo_joy()
 
 <pre class="r-output"><code>## class: SummarizedExperiment 
@@ -55,7 +56,8 @@ also take phyloseq objects and plain data.frames.
 </code></pre>
 
 Next, we specify which columns are the treatment, mediators, and
-outcomes.
+outcomes. Notice that we can use `tidyselect` syntax to match multiple
+columns.
 
     exper <- mediation_data(demo_joy(), "PHQ", "treatment", starts_with("ASV"))
     exper
@@ -67,8 +69,10 @@ outcomes.
 ## 1 outcome: PHQ
 </code></pre>
 
-From here, we can estimate the model and calculate effects. By default,
-the package uses a linear model.
+Next, we fit all mediation analysis components and estimate effects. By
+default, the package uses linear models – see the vignettes for examples
+using sparse regression, random forests, and bayesian hierarchical
+models instead.
 
     model <- multimedia(exper) |>
       estimate(exper)
@@ -84,10 +88,13 @@ the package uses a linear model.
 ## outcome: A fitted lm_model().
 </code></pre>
 
-We can calculate different types of effects using the estimated model.
-Since we’re using a linear model, the effects are identical for the two
-indirect settings. We could also visualize and carry out inference on
-these effects – see the vignettes for more examples.
+In any mediation analysis, there are several types of effects that could
+be interesting, each corresponding to different ways of traveling from
+the treatment to the outcome in the mediation analysis causal graph. In
+the block below, `direct_effect` captures treatment effects that bypass
+the microbiome; `indirect_effect` are effects that are mediated by ASV
+relative abundances. Since this example uses a linear model, the effects
+are identical for the two indirect settings.
 
     direct_effect(model, exper)
 
@@ -106,6 +113,18 @@ these effects – see the vignettes for more examples.
 ## <span style='color: #555555;'>1</span> PHQ     Control        Control - Treatment          0.022<span style='text-decoration: underline;'>6</span>
 ## <span style='color: #555555;'>2</span> PHQ     Treatment      Control - Treatment          0.022<span style='text-decoration: underline;'>6</span>
 </code></pre>
+
+The package also includes helpers to visualize and perform inference on
+these effects. For example,
+
+    boot <- bootstrap(model, exper, c(direct = direct_effect))
+    ggplot(boot$direct) +
+      geom_histogram(aes(direct_effect), bins = 20) +
+      scale_y_continuous(expand = c(0, 0)) +
+      theme_classic() +
+      labs(x = "Direct Effect", y = "Frequency", title = "Bootstrap Distribution")
+
+<img src="man/figures/README-unnamed-chunk-6-1.png" width="500" style="display: block; margin: auto;" />
 
 If we want to use a different type of model, we can just modify the
 original `multimedia` specification. Below we use a sparse regression
