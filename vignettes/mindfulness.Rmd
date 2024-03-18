@@ -49,7 +49,7 @@ theme_set(th)
 ```{r helpers, include = FALSE}
 normalize <- function(x) {
   x <- as_tibble(x)
-  clr(x / rowSums(x))
+  x / rowSums(x)
 }
 ```
 
@@ -65,7 +65,6 @@ ways. The point of mediation analysis is to provide evidence for one or the
 other of these possibilities.
 
 ```{r libraries}
-library(compositions)
 library(ggdist)
 library(ggrepel)
 library(phyloseq)
@@ -262,7 +261,6 @@ ggplot(combined_samples) +
   theme(panel.border = element_rect(fill = NA))
 ```
 
-
 ```{r alteration_presence, fig.width = 6, fig.height = 7}
 combined_samples |>
   group_by(name, source, treatment) |>
@@ -337,10 +335,7 @@ ggplot(fdr_data, aes(effect, fdr_hat)) +
 ```
 
 ```{r, fig.width = 7, fig.height = 4.3}
-exper_clr <- exper
-exper_clr@outcomes <- normalize(exper@outcomes)
-
-bind_mediation(exper_clr) |>
+bind_mediation(exper_rela) |>
   select(subject, starts_with("mediator"), treatment, Roseburia, Blautia, Faecalibacterium) |>
   pivot_longer(starts_with("mediator"), names_to = "mediator") |>
   mutate(mediator = str_remove(mediator, "mediator.")) |>
@@ -379,31 +374,28 @@ ggplot(fdr, aes(indirect_effect, fdr_hat)) +
 The LNM makes relatively strong assumptions on the outcome model: The effects
 must enter linearly through a multinomial likelihood. As a nonparametric
 alternative, we can fit separate random forest models to each microbe's
-abundance. Since the models will use mean squared error to define splits, it
-will help to transform the response. We'll use a centered log ratio, exported
-from the `compositions` package.
+abundance. Since this model doesn't directly account for compositions, it will
+help to transform the response to relative abundances.
 
 ```{r rf_estimate}
-exper_clr <- exper
-exper_clr@outcomes <- normalize(exper@outcomes)
 model <- multimedia(
-  exper_clr,
+  exper_rela,
   rf_model(num.trees = 50),
   glmnet_model(lambda = 0.5, alpha = 0)
 ) |>
-  estimate(exper_clr)
+  estimate(exper_rela)
 ```
 
 We can compute direct and indirect effects from the estimated model.
 
 ```{r rf_effects}
-direct <- direct_effect(model, exper_clr)
+direct <- direct_effect(model, exper_rela)
 direct_sorted <- direct |>
   group_by(outcome, contrast) |>
   summarise(direct_effect = mean(direct_effect)) |>
   arrange(-direct_effect)
 
-indirect_sorted <- indirect_pathwise(model, exper_clr) |>
+indirect_sorted <- indirect_pathwise(model, exper_rela) |>
   group_by(outcome, mediator, contrast) |>
   summarise(indirect_effect = mean(indirect_effect)) |>
   arrange(-abs(indirect_effect))
@@ -418,7 +410,7 @@ relationships, for example, the relationships between sleep
 disturbance/Ruminococcus2 and cereal/Faecalibacterium.
 
 ```{r rf_mediation_plots, fig.width = 11, fig.height = 5}
-plot_mediators(indirect_sorted, exper_clr)
+plot_mediators(indirect_sorted, exper_rela)
 ```
 
 # Bootstrap
@@ -431,7 +423,7 @@ across all bootstrap iterations.
 
 ```{r rf_bootstrap}
 funs <- list(direct = direct_effect, indirect = indirect_overall)
-inference <- bootstrap(model, exper_clr, funs, B = 1e3)
+inference <- bootstrap(model, exper_rela, funs, B = 1e3)
 ```
 
 We can now visualize the bootstrap confidence intervals associated with the
@@ -453,7 +445,7 @@ p1 <- ggplot(inference$indirect) +
     aes(indirect_effect, reorder(outcome, indirect_effect, median)),
     .width = c(.66, .95)
   ) +
-  labs(title = "Indirect Effects", y = "Taxon", x = "Effect (CLR Scale)")
+  labs(title = "Indirect Effects", y = "Taxon", x = "Effect (Rel. Abund Scale)")
 
 p2 <- ggplot(inference$direct) +
   geom_vline(xintercept = 0) +
@@ -461,7 +453,7 @@ p2 <- ggplot(inference$direct) +
     aes(direct_effect, reorder(outcome, direct_effect, median)),
     .width = c(.66, .95)
   ) +
-  labs(title = "Direct Effects", y = "Taxon", x = "Effect (CLR Scale)")
+  labs(title = "Direct Effects", y = "Taxon", x = "Effect (Rel. Abund Scale)")
 
 p1 | p2
 ```

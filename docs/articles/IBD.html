@@ -269,11 +269,11 @@ edge treatment assignments.</p>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://purrr.tidyverse.org/reference/map_dfr.html" class="external-link">map_dfr</a></span><span class="op">(</span><span class="va">effect_summary</span>, N <span class="op">=</span> <span class="fl">12</span>, .id <span class="op">=</span> <span class="st">"treatment"</span><span class="op">)</span></span></code></pre></div>
 <p>We can look at the effects which have the strongest indirect effects.
-These make sense. For example, genus Copromorpha seems to have a
-negative relationship with C18_eg_Clser_0930holae. Maybe that metabolite
-is produced by a competitor? Or maybe the microbe eats the metabolite.
-In any case, IBD seems to decrease the abundance of Copromorpha, which
-consequently increases the abundance of the metabolite.</p>
+These make sense. For example, genus Biophila seems to have a negative
+relationship with Taurine. Maybe that metabolite is produced by a
+competitor? Or maybe the microbe eats the metabolite. In any case, IBD
+seems to decrease the abundance of Biophila, which consequently
+increases the abundance of the metabolite.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="va">indirect_sorted</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/split.html" class="external-link">split</a></span><span class="op">(</span><span class="va">.</span><span class="op">$</span><span class="va">treatment</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -352,8 +352,6 @@ components have more evidence of being real.</p>
 <span></span>
 <span><span class="va">p1</span> <span class="op">|</span> <span class="va">p2</span></span></code></pre></div>
 <p><img src="IBD_files/figure-html/lasso_bootstrap-1.png" width="600" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/save.html" class="external-link">save.image</a></span><span class="op">(</span><span class="st">"~/Downloads/ibd.RData"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="hurdle-lognormal-approach">Hurdle-Lognormal Approach<a class="anchor" aria-label="anchor" href="#hurdle-lognormal-approach"></a>
@@ -371,7 +369,7 @@ return the outcomes to their original (unlogged) scaling. We’ll apply a
 BRMS hurdle model. So that this isn’t too slow during the indirect
 effect estimation, I’ve further reduced the number of taxa and
 metabolites in this analysis.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">exper2</span> <span class="op">&lt;-</span> <span class="va">exper</span></span>
 <span><span class="va">exper2</span><span class="op">@</span><span class="va">outcomes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">exper2</span><span class="op">@</span><span class="va">outcomes</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">50</span><span class="op">]</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span></span>
 <span><span class="va">exper2</span><span class="op">@</span><span class="va">mediators</span> <span class="op">&lt;-</span> <span class="va">exper2</span><span class="op">@</span><span class="va">mediators</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">50</span><span class="op">]</span></span>
@@ -393,7 +391,7 @@ vanish in the IBD (treatment) group. In all of the selected pairs, there
 is also a treatment effect on microbe abundance. If this hadn’t been
 present, and if the metabolite simply vanished, then that would be a
 direct effect.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">indirect_sorted</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/indirect_pathwise.html">indirect_pathwise</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">exper2</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/effect_summary.html">effect_summary</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/plot_mediators.html">plot_mediators</a></span><span class="op">(</span><span class="va">indirect_sorted</span>, <span class="va">exper2</span>, treatment <span class="op">=</span> <span class="st">"Study.Group"</span><span class="op">)</span></span></code></pre></div>
@@ -407,7 +405,7 @@ metabolites. In retrospect, this is natural. The hurdle model can only
 increase the zero probability as a linear function of species abundance.
 We would need a step function preidctor to support the kinds of
 transitions we see above.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">profile</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/setup_profile.html">setup_profile</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">exper</span><span class="op">@</span><span class="va">treatments</span>, <span class="va">exper</span><span class="op">@</span><span class="va">treatments</span><span class="op">)</span></span>
 <span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">model</span>, profile <span class="op">=</span> <span class="va">profile</span>, pretreatment <span class="op">=</span> <span class="va">exper</span><span class="op">@</span><span class="va">pretreatments</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">samples</span><span class="op">@</span><span class="va">outcomes</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">exper2</span><span class="op">@</span><span class="va">outcomes</span><span class="op">)</span></span>
@@ -418,7 +416,7 @@ compared to the analogous figure for the sparse regression. Now, many
 outcomes with exact zeros under treatment have been detected, which is
 consistent with the the hurdle model’s effectiveness in accurately
 reflecting features that influence zero-inflation.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">direct</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/direct_effect.html">direct_effect</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">exper</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/effect_summary.html">effect_summary</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>

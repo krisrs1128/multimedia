@@ -267,11 +267,10 @@ indirect_sorted <- list(
 ```
 
 We can look at the effects which have the strongest indirect effects. These make
-sense. For example, genus Copromorpha seems to have a negative relationship with
-C18_eg_Clser_0930holae. Maybe that metabolite is produced by a competitor? Or
-maybe the microbe eats the metabolite. In any case, IBD seems to decrease the
-abundance of Copromorpha, which consequently increases the abundance of the
-metabolite.
+sense. For example, genus Biophila seems to have a negative relationship with
+Taurine. Maybe that metabolite is produced by a competitor? Or maybe the microbe
+eats the metabolite. In any case, IBD seems to decrease the abundance of
+Biophila, which consequently increases the abundance of the metabolite.
 
 ```{r lasso_mediators_plot, fig.width = 9, fig.height = 4.5}
 p <- indirect_sorted %>%
@@ -352,7 +351,6 @@ p2 <- filter(inference$direct, outcome %in% filter_outcomes) |>
   labs(x = "Direct Effect", y = "Metabolite")
 
 p1 | p2
-save.image("~/Downloads/ibd.RData")
 ```
 
 # Hurdle-Lognormal Approach
