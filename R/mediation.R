@@ -168,7 +168,7 @@ expand_edges <- function(input, output, input_name, output_name) {
 #' demo_joy() |>
 #'   multimedia:::exper_df()
 exper_df <- function(exper) {
-  bind_cols(t(assay(exper)), as_tibble(colData(exper), .name_repair = "minimal"))
+  bind_cols(t(assay(exper)), data.frame(colData(exper)), .name_repair = "minimal")
 }
 
 #' `mediation_data` Constructor
@@ -301,7 +301,7 @@ from_data_frame <- function(df, outcomes, treatments, mediators,
   for (i in seq_along(vars)) {
     result[[names(vars)[i]]] <- select(df, eval(vars[[i]])) |>
       mutate(across(where(is.character), as.factor)) |>
-      as_tibble(.name_repair = "minimal")
+      as.data.frame()
 
     if (ncol(result[[names(vars)[i]]]) == 0) {
       result[[names(vars)[i]]] <- NULL

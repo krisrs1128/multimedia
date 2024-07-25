@@ -90,10 +90,10 @@ parallelize <- function(f) {
 #' @noRd
 edges_df <- function(edges) {
   nodes <- edges %N>%
-    as_tibble()
+    as.data.frame()
 
   edges %E>%
-    as_tibble() |>
+    as.data.frame() |>
     left_join(nodes, by = c("from" = "id")) |>
     dplyr::rename(
       node_type_from = node_type,
@@ -314,11 +314,11 @@ glmnet_model <- function(...) {
   params <- glmnet_model_params(...)
   new(
     "model",
-    estimator = parallelize(\(fmla, data) inject(glmnet(fmla, data, !!!params))),
+    estimator = parallelize(\(fmla, data) inject(glmnetUtils::glmnet(fmla, data, !!!params))),
     estimates = NULL,
     sampler = glmnet_sampler,
     predictor = \(object, ...) {
-      predict(object, s = object$lambda.1se, ...)[, 1]
+      glmnetUtils::predict(object, s = object$lambda.1se, ...)[, 1]
     },
     model_type = "glmnet_model()"
   )
@@ -346,7 +346,7 @@ glmnet_sampler <- function(fits, newdata = NULL, indices = NULL, lambda_ix = 1, 
   y_hats <- list()
   for (i in indices) {
     sigma <- deviance(fits[[i]]) / fits[[i]]$nobs
-    y_ <- predict(fits[[i]], newdata = newdata, ...)[, lambda_ix]
+    y_ <- glmnetUtils::predict(fits[[i]], newdata = newdata, ...)[, lambda_ix]
     y_hats[[nm[i]]] <- y_ + rnorm(length(y_), 0, sigma)
   }
 
@@ -382,7 +382,7 @@ brm_cache <- function(formula, data, ...) {
   models <- list()
 
   ys <- lhs.vars(formula)
-  models[[ys[1]]] <- brm(sub_formula(formula, ys[1]), data, ...)
+  models[[ys[1]]] <- brms::brm(sub_formula(formula, ys[1]), data, ...)
   if (length(ys) == 1) {
     return(models)
   }
@@ -401,7 +401,6 @@ brm_cache <- function(formula, data, ...) {
 #' @param ... Keyword parameters passed to brm..
 #' @return model An object of class `model` with estimator, predictor, and
 #'  sampler functions associated wtih a Bayesian regression model.
-#' @importFrom brms brm
 #' @importFrom rlang inject !!!
 #' @seealso glmnet_model lnm_model rf_model lm_model
 #' @examples
@@ -425,7 +424,7 @@ brms_model <- function(...) {
     estimator = \(fmla, data) inject(brm_cache(fmla, data, !!!params)),
     estimates = NULL,
     sampler = brms_sampler,
-    predictor = \(object, ...) predict(object, robust = TRUE, ...)[, "Estimate"],
+    predictor = \(object, ...) brms::predict(object, robust = TRUE, ...)[, "Estimate"],
     model_type = "brms_model()"
   )
 }
@@ -453,7 +452,7 @@ brms_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
   nm <- names(fits)
   y_hats <- list()
   for (i in indices) {
-    y_hats[[nm[i]]] <- posterior_predict(
+    y_hats[[nm[i]]] <- brms::posterior_predict(
       fits[[i]],
       newdata,
       resp = nm[i],
@@ -476,7 +475,6 @@ brms_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
 #' @return model An object of class `model` with estimator, predictor, and
 #'  sampler functions associated wtih a lienar model.
 #' @seealso model lm_model rf_model glmnet_model brms_model
-#' @importFrom miniLNM lnm
 #' @examples
 #' m <- lnm_model()
 #' mat <- data.frame(matrix(rpois(250, 10), 25, 10))
@@ -491,7 +489,7 @@ lnm_model <- function(...) {
   )
   new(
     "model",
-    estimator = \(fmla, data) inject(lnm(fmla, data, ...)),
+    estimator = \(fmla, data) inject(miniLNM::lnm(fmla, data, ...)),
     estimates = NULL,
     sampler = lnm_sampler,
     predictor = predict,
@@ -510,7 +508,6 @@ lnm_model <- function(...) {
 #'   responses. If NULL, defaults to the data used to estimate fit.
 #' @param indices The coordinates of the response from which to draw samples.
 #' @return y_star A data.frame of samples y associated wtih the new inputs.
-#' @importFrom miniLNM sample
 #' @importFrom formula.tools lhs.vars
 #' @examples
 #' m <- lnm_model()
@@ -526,7 +523,7 @@ lnm_sampler <- function(fit, newdata = NULL, indices = NULL, ...) {
     indices <- seq_along(nm)
   }
 
-  sample(fit, newdata = newdata, ...)[, nm[indices], drop = FALSE]
+  miniLNM::sample(fit, newdata = newdata, ...)[, nm[indices], drop = FALSE]
 }
 
 #' Random Forest Model
@@ -552,17 +549,16 @@ lnm_sampler <- function(fit, newdata = NULL, indices = NULL, ...) {
 #' multimedia(exper, rf_model(num.trees = 20, max.depth = 2)) |>
 #'   estimate(exper)
 #' @seealso model lm_model rf_model glmnet_model brms_model
-#' @importFrom ranger ranger
 #' @export
 rf_model <- function(...) {
   check_if_installed("ranger", "to use a random forest model for multimedia estimation.")
   new(
     "model",
-    estimator = parallelize(\(fmla, data) ranger(fmla, data, ...)),
+    estimator = parallelize(\(fmla, data) ranger::ranger(fmla, data, ...)),
     estimates = NULL,
     sampler = rf_sampler,
     model_type = "rf_model()",
-    predictor = \(object, ...) predict(object, ...)$predictions
+    predictor = \(object, ...) ranger::predict(object, ...)$predictions
   )
 }
 
@@ -596,7 +592,7 @@ rf_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
   y_hats <- list()
   for (i in indices) {
     sigma <- fits[[i]]$prediction.error
-    y_ <- predict(fits[[i]], data = newdata, ...)$predictions
+    y_ <- ranger::predict(fits[[i]], data = newdata, ...)$predictions
     y_hats[[nm[i]]] <- y_ + rnorm(length(y_), 0, sigma)
   }
 

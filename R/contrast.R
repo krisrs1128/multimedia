@@ -19,8 +19,8 @@
 #'   mediation_data("PHQ", "treatment", starts_with("ASV"))
 #' model <- multimedia(exper) |>
 #'   estimate(exper)
-#' t1 <- tibble(treatment = factor("Treatment"))
-#' t2 <- tibble(treatment = factor("Control"))
+#' t1 <- data.frame(treatment = factor("Treatment"))
+#' t2 <- data.frame(treatment = factor("Control"))
 #' profile1 <- setup_profile(model, t1, t1)
 #' profile2 <- setup_profile(model, t2, t2)
 #' contrast_predictions(model, profile1, profile2)
@@ -51,8 +51,8 @@ contrast_predictions <- function(model, profile1, profile2, ...) {
 #'   mediation_data("PHQ", "treatment", starts_with("ASV"))
 #' model <- multimedia(exper) |>
 #'   estimate(exper)
-#' t1 <- tibble(treatment = factor("Treatment"))
-#' t2 <- tibble(treatment = factor("Control"))
+#' t1 <- data.frame(treatment = factor("Treatment"))
+#' t2 <- data.frame(treatment = factor("Control"))
 #' profile1 <- setup_profile(model, t1, t1)
 #' profile2 <- setup_profile(model, t2, t2)
 #' contrast_samples(model, profile1, profile2)
@@ -142,7 +142,7 @@ direct_effect <- function(model, exper = NULL, t1 = 1, t2 = 2) {
     )[["outcomes"]] |>
       colMeans()
 
-    result[[i]] <- tibble(
+    result[[i]] <- data.frame(
       outcome = names(y_hat),
       direct_effect = y_hat,
       contrast = parse_name(t_, t1, t2)
@@ -205,7 +205,7 @@ indirect_overall <- function(model, exper = NULL, t1 = 1, t2 = 2) {
     )[["outcomes"]] |>
       colMeans()
 
-    result[[i]] <- tibble(
+    result[[i]] <- data.frame(
       outcome = names(y_hat),
       indirect_effect = y_hat,
       contrast = parse_name(t_, t1, t2)
@@ -257,7 +257,7 @@ indirect_pathwise <- function(model, exper = NULL, t1 = 1, t2 = 2) {
       y_hat_1 <- predict(model, profile1, pretreatment = pretreatment)
       y_diff <- colMeans(path_difference(y_hat_1, y_hat_2)[["outcomes"]])
 
-      result[[k]] <- tibble(
+      result[[k]] <- data.frame(
         outcome = names(y_diff),
         indirect_effect = y_diff,
         mediator = m[j],

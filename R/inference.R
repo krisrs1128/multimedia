@@ -15,9 +15,9 @@ matching_indices <- function(edges, nulls = NULL) {
     ids <- quote(1:n())
   }
 
-  G <- as_tibble(edges)
+  G <- as.data.frame(edges)
   E <- edges %E>%
-    as_tibble() |>
+    as.data.frame() |>
     mutate(
       edge_id = row_number(),
       from_type = G$node_type[from],

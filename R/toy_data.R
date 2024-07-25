@@ -1,5 +1,4 @@
 #' data.frame with samples from p
-#' @importFrom tibble as_tibble
 #' @examples
 #' random_numeric(10, 2)
 #' random_numeric(10, 2, runif)
@@ -25,7 +24,6 @@ random_numeric <- function(nrow, ncol, p = rnorm) {
 #' @return SE The summarized experiment containing random data.
 #' @importFrom glue glue
 #' @importFrom dplyr bind_cols rename_with
-#' @importFrom tibble tibble
 #' @importFrom S4Vectors SimpleList DataFrame
 #' @importFrom SummarizedExperiment SummarizedExperiment
 #' @examples
@@ -82,7 +80,7 @@ spline_fun <- function(D = 2, knots = NULL, h_ix = 1:10, ...) {
 #' @param n_samples The number of samples to generate in the toy example
 #' @param tau The true direct efefcts associated with the two outcomes. Defaults
 #'   to 2, 2.
-#' @return xy A tibble whose columns include the treatment, mediation, and
+#' @return xy A data.frame whose columns include the treatment, mediation, and
 #'   outcome variables.
 #' @examples
 #' demo_spline()
