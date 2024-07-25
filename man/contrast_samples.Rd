@@ -31,8 +31,8 @@ exper <- demo_joy() |>
   mediation_data("PHQ", "treatment", starts_with("ASV"))
 model <- multimedia(exper) |>
   estimate(exper)
-t1 <- tibble(treatment = factor("Treatment"))
-t2 <- tibble(treatment = factor("Control"))
+t1 <- data.frame(treatment = factor("Treatment"))
+t2 <- data.frame(treatment = factor("Control"))
 profile1 <- setup_profile(model, t1, t1)
 profile2 <- setup_profile(model, t2, t2)
 contrast_samples(model, profile1, profile2)

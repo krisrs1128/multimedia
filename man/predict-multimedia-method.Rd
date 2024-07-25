@@ -18,11 +18,11 @@ shared across both the mediators and outcomes.}
 }
 \value{
 A list with two elements:
-$mediators: A tibble containing predicted values for the mediators. Each
+$mediators: A data.frame containing predicted values for the mediators. Each
 row corresponds to one row of the newdata, or one row of the default
 treatment profile, if no newdata is given.
 
-$outcomes: A tibble containing predicted values for the outcomes, given
+$outcomes: A data.frame containing predicted values for the outcomes, given
 either (i) the predicted values of the mediators or (ii) the provided
 values of the mediators. Each row corresponds to one row of the newdata, or
 one row of the default treatment profile, if no newdata is given.

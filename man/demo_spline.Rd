@@ -13,7 +13,7 @@ demo_spline(n_samples = 5000, tau = c(2, 2))
 to 2, 2.}
 }
 \value{
-xy A tibble whose columns include the treatment, mediation, and
+xy A data.frame whose columns include the treatment, mediation, and
 outcome variables.
 }
 \description{
