@@ -9,7 +9,7 @@ in our preprint:
 
 [H. Jiang, X. Miao, M. W. Thairu, M. Beebe, D. W. Grupe, R. J. Davidson,
 J. Handelsman, and K. Sankaran (2024). multimedia: Multimodal Mediation
-Analysis of Microbiome Data.]()
+Analysis of Microbiome Data.](https://www.biorxiv.org/content/10.1101/2024.03.27.587024v1)
 
 The preprint describes the scientific context and interpretation for two
 of the vignettes in this package. One gives a multi-omics analysis of
@@ -30,8 +30,8 @@ You can install the development version from
 
 ## Example
 
-Here is a simple example of estimating direct and indirect effects using
-the package. The data are randomly generated (no real effects), but we
+Here is a simple example of estimating direct and indirect effects. 
+The data are randomly generated (no real effects), but we
 imagine that the ASV columns mediate the relationship between
 `treatment` and `PHQ`. This is mimics the possibility that the
 microbiome (ASV = Amplicon Sequence Variant) mediates the relationship
