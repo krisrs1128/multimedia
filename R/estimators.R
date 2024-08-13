@@ -436,7 +436,7 @@ brms_model <- function(...) {
 #' @param newdata A data.frame containing new inputs from which to sample
 #'   responses. If NULL, defaults to the data used to estimate fit.
 #' @param indices The coordinates of the response from which we want to sample.
-#' @importFrom brms posterior_predict
+#' @importFrom insight check_if_installed
 #' @examples
 #' exper <- demo_joy() |>
 #'   mediation_data("PHQ", "treatment", starts_with("ASV"))
@@ -448,6 +448,7 @@ brms_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
   if (is.null(indices)) {
     indices <- seq_along(fits)
   }
+  check_if_installed("brms", "to use a BRMS model for multimedia estimation.")
 
   nm <- names(fits)
   y_hats <- list()
