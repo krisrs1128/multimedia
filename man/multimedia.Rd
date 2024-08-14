@@ -42,11 +42,11 @@ multimedia(exper)
 # real data example with a pretreatment variable
 data(mindfulness)
 exper <- mediation_data(
- mindfulness,
- phyloseq::taxa_names(mindfulness),
- "treatment",
- starts_with("mediator"),
- "subject"
+  mindfulness,
+  phyloseq::taxa_names(mindfulness),
+  "treatment",
+  starts_with("mediator"),
+  "subject"
 )
 multimedia(exper)
 }
