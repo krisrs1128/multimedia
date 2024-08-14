@@ -8,11 +8,13 @@ fit <- multimedia(exper, outcome_estimator = rf_model(num.trees = 1e3)) |>
 test_that("Can estimate direct effects on toy dataset.", {
   effects <- direct_effect(fit) |>
     effect_summary()
-  expect_type(effects, "data.frame")
+  expect_s3_class(effects, "tbl_df")
+  expect_equal(effects$outcome, outcomes(fit))
 })
 
 test_that("Can estimate indirect effects on toy dataset.", {
   effects <- indirect_overall(fit) |>
     effect_summary()
-  expect_type(effects, "data.frame")
+  expect_s3_class(effects, "tbl_df")
+  expect_equal(effects$outcome, outcomes(fit))
 })
