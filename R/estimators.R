@@ -319,7 +319,7 @@ glmnet_model <- function(...) {
     estimates = NULL,
     sampler = glmnet_sampler,
     predictor = \(object, ...) {
-      glmnetUtils::predict(object, s = object$lambda.1se, ...)[, 1]
+      predict(object, s = object$lambda.1se, ...)[, 1]
     },
     model_type = "glmnet_model()"
   )
