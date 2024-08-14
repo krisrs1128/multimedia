@@ -310,6 +310,7 @@ glmnet_model <- function(...) {
     c("glmnet", "glmnetUtils"),
     "to use a glmnet regression model for multimedia estimation."
   )
+  requireNamespace("glmnetUtils", quietly = TRUE)
 
   params <- glmnet_model_params(...)
   new(

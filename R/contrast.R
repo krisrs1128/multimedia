@@ -209,7 +209,8 @@ indirect_overall <- function(model, exper = NULL, t1 = 1, t2 = 2) {
     result[[i]] <- data.frame(
       outcome = names(y_hat),
       indirect_effect = y_hat,
-      contrast = rep(parse_name(t_, t1, t2), n_outcomes(model))
+      contrast = rep(parse_name(t_, t1, t2), n_outcomes(model)),
+      row.names = NULL
     )
   }
 
