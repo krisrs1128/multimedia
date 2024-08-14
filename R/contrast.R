@@ -145,7 +145,8 @@ direct_effect <- function(model, exper = NULL, t1 = 1, t2 = 2) {
     result[[i]] <- data.frame(
       outcome = names(y_hat),
       direct_effect = y_hat,
-      contrast = rep(parse_name(t_, t1, t2), n_outcomes(model))
+      contrast = rep(parse_name(t_, t1, t2), n_outcomes(model)),
+      row.names = NULL
     )
   }
 
@@ -282,7 +283,8 @@ indirect_pathwise <- function(model, exper = NULL, t1 = 1, t2 = 2) {
 #'   along rows.
 #' @return A version of the input with all indirect/direct settings averaged
 #'   over.
-#' @importFrom dplyr group_by summarize arrange filter slice_max
+#' @importFrom dplyr group_by summarize  across
+#' @importFrom tidyselect matches
 #' @seealso direct_effect indirect_effect
 #' @examples
 #' # example with null data
@@ -310,8 +312,5 @@ effect_summary <- function(effects, N = 10) {
   }
 
   effects |>
-    summarise(across(matches("effect"), mean)) |>
-    slice_max(.data[[effect_type]], n = N) |>
-    arrange(.data[[effect_type]]) |>
-    filter(.data[[effect_type]] != 0)
+    summarise(across(matches("effect"), mean))
 }

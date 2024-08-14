@@ -24,6 +24,7 @@ Depends:
     rlang,
     tibble,
     tidygraph,
+    tidyselect,
     tidyr
 Suggests:
     brms,
