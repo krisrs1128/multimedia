@@ -131,8 +131,8 @@ direct_effect <- function(model, exper = NULL, t1 = 1, t2 = 2) {
   result <- list()
   t_ <- model@treatments
   for (i in seq_len(nrow(t_))) {
-    profile1 <- setup_profile(model, t_[i, ], t_[t1, ])
-    profile2 <- setup_profile(model, t_[i, ], t_[t2, ])
+    profile1 <- setup_profile(model, t_[i, , drop = FALSE], t_[t1, , drop = FALSE])
+    profile2 <- setup_profile(model, t_[i, , drop = FALSE], t_[t2, , drop = FALSE])
 
     y_hat <- contrast_predictions(
       model,
@@ -145,7 +145,7 @@ direct_effect <- function(model, exper = NULL, t1 = 1, t2 = 2) {
     result[[i]] <- data.frame(
       outcome = names(y_hat),
       direct_effect = y_hat,
-      contrast = parse_name(t_, t1, t2)
+      contrast = rep(parse_name(t_, t1, t2), n_outcomes(model))
     )
   }
 
@@ -155,7 +155,7 @@ direct_effect <- function(model, exper = NULL, t1 = 1, t2 = 2) {
 }
 
 parse_name <- function(t_, t1, t2) {
-  glue("{apply(t_[t1,], 1, paste0, collapse=',')} - {apply(t_[t2,], 1, paste0, collapse=',')}")
+  glue("{apply(t_[t1,, drop=F], 1, paste0, collapse=',')} - {apply(t_[t2,, drop=F], 1, paste0, collapse=',')}")
 }
 
 #' Overall Indirect Effect
@@ -194,8 +194,8 @@ indirect_overall <- function(model, exper = NULL, t1 = 1, t2 = 2) {
   t_ <- model@treatments
   result <- list()
   for (i in seq_len(nrow(t_))) {
-    profile1 <- setup_profile(model, t_[t1, ], t_[i, ])
-    profile2 <- setup_profile(model, t_[t2, ], t_[i, ])
+    profile1 <- setup_profile(model, t_[t1, , drop = FALSE], t_[i, , drop = FALSE])
+    profile2 <- setup_profile(model, t_[t2, , drop = FALSE], t_[i, , drop = FALSE])
 
     y_hat <- contrast_predictions(
       model,
@@ -208,7 +208,7 @@ indirect_overall <- function(model, exper = NULL, t1 = 1, t2 = 2) {
     result[[i]] <- data.frame(
       outcome = names(y_hat),
       indirect_effect = y_hat,
-      contrast = parse_name(t_, t1, t2)
+      contrast = rep(parse_name(t_, t1, t2), n_outcomes(model))
     )
   }
 
