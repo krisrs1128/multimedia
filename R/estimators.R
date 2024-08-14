@@ -553,13 +553,15 @@ lnm_sampler <- function(fit, newdata = NULL, indices = NULL, ...) {
 #' @export
 rf_model <- function(...) {
   check_if_installed("ranger", "to use a random forest model for multimedia estimation.")
+  requireNamespace("ranger", quietly = TRUE)
+
   new(
     "model",
     estimator = parallelize(\(fmla, data) ranger::ranger(fmla, data, ...)),
     estimates = NULL,
     sampler = rf_sampler,
     model_type = "rf_model()",
-    predictor = \(object, ...) ranger::predict(object, ...)$predictions
+    predictor = \(object, ...) predict(object, ...)$predictions
   )
 }
 
