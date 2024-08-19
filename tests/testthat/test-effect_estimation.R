@@ -1,4 +1,6 @@
 
+library(multimedia)
+
 # Fit random forest on toy data
 xy_data <- demo_spline()
 exper <- mediation_data(xy_data, starts_with("outcome"), "treatment", "mediator")
