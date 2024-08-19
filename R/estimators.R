@@ -342,12 +342,13 @@ glmnet_sampler <- function(fits, newdata = NULL, indices = NULL, lambda_ix = 1, 
   if (is.null(indices)) {
     indices <- seq_along(fits)
   }
+  requireNamespace("glmnetUtils", quietly = TRUE)
 
   nm <- names(fits)
   y_hats <- list()
   for (i in indices) {
     sigma <- deviance(fits[[i]]) / fits[[i]]$nobs
-    y_ <- glmnetUtils::predict(fits[[i]], newdata = newdata, ...)[, lambda_ix]
+    y_ <- predict(fits[[i]], newdata = newdata, ...)[, lambda_ix]
     y_hats[[nm[i]]] <- y_ + rnorm(length(y_), 0, sigma)
   }
 
