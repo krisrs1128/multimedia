@@ -88,11 +88,22 @@ setMethod("sample", "multimedia", function(
 #' # predict at newdata
 #' newdata <- bind_mediation(exper)
 #' multimedia:::predict_across(fit@outcome, newdata[1:5, ], "outcome_2")
+#' @importFrom purrr map_dfc
 predict_across <- function(object, newdata, name) {
+  # many univariate models
   if (is(object@estimates, "list")) {
-    return(object@predictor(object@estimates[[name]], newdata))
+    if (length(name) == 1) {
+      return(object@predictor(object@estimates[[name]], newdata))
+    } else {
+      predictions <- suppressMessages({
+        map_dfc(name, ~ object@predictor(object@estimates[[.]], newdata))
+      })
+      colnames(predictions) <- name
+      return(predictions)
+    }
   }
 
+  # single multivariate model
   object@predictor(object@estimates, newdata)[, name]
 }
 
