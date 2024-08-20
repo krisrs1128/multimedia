@@ -182,6 +182,8 @@ outcome_formula <- function(edges) {
 #'   outcome data from which the direct effects are to be estimated.
 #' @return A version of the input modified in place so that the @estimates slot
 #'  has been filled.
+#' @importFrom dplyr arrange across
+#' @importFrom tidyselect everything
 #' @examples
 #' exper <- demo_joy() |>
 #'   mediation_data("PHQ", "treatment", starts_with("ASV"))
@@ -212,7 +214,8 @@ estimate <- function(model, exper) {
   f <- outcome_formula(model@edges)
   outcome_est <- model@outcome@estimator
   model@outcome@estimates <- outcome_est(f, data)
-  model@treatments <- unique(exper@treatments)
+  model@treatments <- unique(exper@treatments) |>
+    arrange(across(everything()))
 
   model
 }
