@@ -1,6 +1,7 @@
 
 #' @importFrom dplyr bind_rows
-sensitivity <- function(model, exper, n_rho = 25) {
+sensitivity_internal <- function(summarization, model, exper, n_rho = 10, 
+                                 n_bootstrap = 100, progress = TRUE) {
   model_types <- c(model@mediation@model_type, model@outcome@model_type)
   supported_models <- c("rf_model()", "lm_model()", "glmnet_model()")
   if (!all(model_types %in% supported_models)) {
@@ -9,16 +10,49 @@ sensitivity <- function(model, exper, n_rho = 25) {
 
   rho_seq <- seq(-1, 1, length.out = n_rho)
   sensitivity_curve <- list()
+  k <- 1
+  pb <- progress_bar$new(total = n_rho * n_bootstrap, format = "[:bar] :current/:total ETA: :eta")
   for (i in seq_len(n_rho)) {
-    samples <- sensitivity_sample(model, exper, rho_seq[i])
-    sensitivity_curve[[i]] <- list(
-      outcome = outcomes(model),
-      rho = rho_seq[i],
-      indirect_overall = colMeans(path_difference(samples$y1, samples$y2)[["outcome"]])
-    )
+    for (b in seq_len(n_bootstrap)) {
+      exper_ <- exper[sample(nrow(exper)), ]
+      samples <- sensitivity_sample(model, exper, rho_seq[i])
+      t_ <- model@treatments
+      for (j in seq_len(nrow(t_))) {
+        ix <- apply(exper_@treatments, 1, \(x) x == t_[j, ])
+        exper_@outcomes[ix, ] <- samples[[j]]$outcomes[ix, ]
+        exper_@mediators[ix, ] <- samples[[j]]$mediators[ix, ]
+      }
+
+      sensitivity_curve[[k]] <- estimate(model, exper_) |>
+        summarization() |>
+        mutate(rho = rho_seq[i], bootstrap = b)
+      k <- k + 1
+      if (progress) pb$tick()
+    }
   }
 
-  bind_rows(sensitivity_curve)
+  bind_rows(sensitivity_curve) |>
+    group_by(outcome, rho) |>
+    summarise(across(ends_with("effect"), c(`_` = mean, standard_error = sd))) |>
+    rename_with(~ gsub("__$", "", .))
+}
+
+sensitivity <- function(model, exper, n_rho = 10, n_bootstrap = 100, progress = TRUE) {
+  (\(x) indirect_overall(x) |> 
+    effect_summary()) |>
+    sensitivity_internal(model, exper, n_rho, n_bootstrap, progress)
+}
+
+sensitivity_pathwise <- function(model, exper, n_rho = 10, n_bootstrap = 100, progress = TRUE) {
+  (\(x) indirect_pathwise(x) |> 
+    effect_summary()) |>
+    sensitivity_internal(model, exper, n_rho, n_bootstrap, progress)
+}
+
+#' @importFrom dplyr arrange across everything
+sorted_treatments <- function(model) {
+  unique(model@treatments) |>
+    arrange(across(everything()))
 }
 
 #' @examples
