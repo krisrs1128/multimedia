@@ -1,7 +1,7 @@
 ---
 title: "The Mindfulness Study"
-output: rmdformats::readthedown
-css: custom.css
+output: 
+  BiocStyle::html_document
 vignette: >
   %\VignetteIndexEntry{Mindfulness}
   %\VignetteEngine{knitr::rmarkdown}

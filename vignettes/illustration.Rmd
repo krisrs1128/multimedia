@@ -1,6 +1,7 @@
 ---
 title: "Illustration with Nonlinear Effects"
-output: rmarkdown::html_vignette
+output: 
+  BiocStyle::html_document
 vignette: >
   %\VignetteIndexEntry{Illustration with Nonlinear Effects}
   %\VignetteEngine{knitr::rmarkdown}

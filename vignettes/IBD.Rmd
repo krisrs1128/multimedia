@@ -1,7 +1,7 @@
 ---
 title: "Microbiome - Metabolome Mediation Analysis"
-output: rmdformats::readthedown
-css: custom.css
+output: 
+  BiocStyle::html_document
 vignette: >
   %\VignetteIndexEntry{IBD}
   %\VignetteEngine{knitr::rmarkdown}
