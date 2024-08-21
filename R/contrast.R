@@ -249,22 +249,23 @@ indirect_pathwise <- function(model, exper = NULL, t1 = 1, t2 = 2) {
   result <- list()
   for (i in seq_len(nrow(t_))) {
     cli_text(glue("Indirect effects for direct setting {i}"))
-    profile2 <- setup_profile(model, t_[t2, ], t_[i, ])
+    profile2 <- setup_profile(model, t_[t2,, drop = FALSE], t_[i,, drop = FALSE])
     y_hat_2 <- predict(model, profile2, pretreatment = pretreatment)
 
     pb <- progress_bar$new(total = length(m), format = "[:bar] Mediator: :current/:total ETA: :eta")
     for (j in seq_along(m)) {
       profile1 <- profile2
-      profile1@t_mediator[[j]] <- t_[t1, ]
+      profile1@t_mediator[[j]] <- t_[t1,, drop=FALSE]
       y_hat_1 <- predict(model, profile1, pretreatment = pretreatment)
       y_diff <- colMeans(path_difference(y_hat_1, y_hat_2)[["outcomes"]])
 
       result[[k]] <- data.frame(
         outcome = names(y_diff),
         indirect_effect = y_diff,
-        mediator = m[j],
-        contrast = parse_name(t_, t1, t2),
-        direct_setting = t_[[1]][i]
+        mediator = rep(m[j], n_outcomes(model)),
+        contrast = rep(parse_name(t_, t1, t2), n_outcomes(model)),
+        direct_setting = t_[[1]][i],
+        row.names = NULL
       )
       pb$tick()
       k <- k + 1
