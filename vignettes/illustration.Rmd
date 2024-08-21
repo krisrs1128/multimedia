@@ -111,6 +111,29 @@ indirect_overall(fit) |>
   effect_summary()
 ```
 
+Mediation analysis depends on untestable assumptions on the absence of
+confounders that influence both the mediators and outcome. For this reason, we
+can run a sensitivity analysis: How strong would the confounder have to be
+before we would observe a flipped indirect effect estimate?
+
+```{r}
+sensitivity_curve <- sensitivity(fit, exper, n_rho = 4)
+ggplot(sensitivity_curve, aes(rho, col = outcome, fill = outcome)) +
+  geom_vline(xintercept = 0, size = 0.5) +
+  geom_hline(yintercept = 0, size = 0.5) +
+  geom_line(aes(y = indirect_effect)) +
+  geom_ribbon(aes(
+    y = indirect_effect, 
+    ymin = indirect_effect - 2 * indirect_effect_standard_error,
+    ymax = indirect_effect + 2 * indirect_effect_standard_error,
+  ), alpha = 0.4) +
+  scale_x_continuous(expand = c(0, 0)) +
+  labs(
+    x = expression("Strength "~rho~"of Hypothetical Confounder"),
+    y = "Overall Indirect Effect"
+  )
+```
+
 If we want to look at samples at new treatment assignments, we have to first
 construct a new treatment profile. We can accomplish this using the
 `setup_profile` object.
