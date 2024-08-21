@@ -20,3 +20,10 @@ test_that("Can estimate indirect effects on toy dataset.", {
   expect_s3_class(effects, "tbl_df")
   expect_equal(effects$outcome, outcomes(fit))
 })
+
+test_that("Can estimate indirect pathwise effects on toy dataset.", {
+  effects <- indirect_pathwise(fit) |>
+    effect_summary()
+  expect_s3_class(effects, "tbl_df")
+  expect_equal(effects$outcome, outcomes(fit))
+})
