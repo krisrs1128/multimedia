@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
   warning = FALSE,
   message = FALSE,
   eval = TRUE,
-  cache = TRUE,
+  cache = FALSE,
   dev.args = list(bg = "transparent"),
   out.width = 600
 )
@@ -256,14 +256,17 @@ Pathwise indirect effects are those that appear when modifying the treatment
 status for a single mediator. Unlike overall indirect effects, they give us
 effects for individual mediator-outcome pairs. Now, instead of averaging over
 mediator treatment assignments, we average over direct edge treatment
-assignments.
+assignments. The block below is time-consuming, so if you are following along,
+you can just read in the pre-computed result in the next block.
 
 ```{r lasso_indirect}
-indirect_sorted <- list(
-  CD = indirect_pathwise(model, exper, 1, 3),
-  UC = indirect_pathwise(model, exper, 2, 3)
-) |>
-  map_dfr(effect_summary, N = 12, .id = "treatment")
+# indirect_sorted <- list(
+#   CD = indirect_pathwise(model, exper, 1, 3),
+#   UC = indirect_pathwise(model, exper, 2, 3)
+# ) |>
+#   map_dfr(effect_summary, N = 12, .id = "treatment")
+
+indirect_sorted <- read_csv("https://drive.google.com/uc?export=download&id=1Ar7u2rU7DLMjvS-iV9OXwGcY4Rs1Q5wI")
 ```
 
 We can look at the effects which have the strongest indirect effects. These make
@@ -314,12 +317,16 @@ How can we understand the uncertainty of the estimated models? One approach is
 to form the bootstrap distribution of the effects that we care about. It's a
 little problematic to form bootstrap confidence intervals for sparse regression.
 We can still interpret the full bootstrap distributions, though. Effects that
-have large nonzero components have more evidence of being real.
+have large nonzero components have more evidence of being real. This block is
+again slow, so you can skip ahead and load a pre-computed version.
 
-```{r lasso_bootstrap, fig.width = 9, fig.height = 3.5}
+```{r lasso_bootstrap}
 fs <- list(direct = direct_effect, indirect = indirect_overall)
-inference <- bootstrap(model, exper, fs, B = 1000)
+#inference <- bootstrap(model, exper, fs, B = 1000)
+inference <- readRDS(url("https://drive.google.com/uc?export=download&id=16A9MCblgf327SiL0hataAHYfs38wB_K1"))
+```
 
+```{r lasso_bootstrap_vis, fig.width = 9, fig.height = 3.5}}
 filter_outcomes <- inference$indirect |>
   effect_summary(N = Inf) |>
   group_by(outcome) |>
@@ -368,16 +375,19 @@ to their original (unlogged) scaling. We'll apply a BRMS hurdle model. So that
 this isn't too slow during the indirect effect estimation, I've further reduced
 the number of taxa and metabolites in this analysis.
 
-```{r hurdle_estimate}
+```{r reduced_experiment}
 exper2 <- exper
 exper2@outcomes <- exp(exper2@outcomes[, 1:50]) - 1
 exper2@mediators <- exper2@mediators[, 1:50]
+```
 
-model <- multimedia(
-  exper2,
-  brms_model(family = hurdle_lognormal())
-) |>
-  estimate(exper2)
+```{r hurdle_estimate}
+# model <- multimedia(
+#   exper2,
+#   brms_model(family = hurdle_lognormal())
+# ) |>
+#   estimate(exper2)
+model <- readRDS(url("https://uwmadison.box.com/shared/static/803fpu7skhjpd8f5ye6pb3crkc67qhl1.rds"))
 ```
 
 With the updated model, we can again compute pathwise indirect effects. This
@@ -387,7 +397,8 @@ effect on microbe abundance. If this hadn't been present, and if the metabolite
 simply vanished, then that would be a direct effect.
 
 ```{r hurdle_indirect, fig.width = 12, fig.height = 9}
-indirect_sorted <- indirect_pathwise(model, exper2) |>
+#indirect_sorted <- indirect_pathwise(model, exper2) |>
+indirect_sorted <- read_csv("https://drive.google.com/uc?export=download&id=1aX6h98udBxqR3RBOjbUnoY1wLMfFUceB") |>
   effect_summary()
 plot_mediators(indirect_sorted, exper2, treatment = "Study.Group")
 ```
@@ -414,7 +425,8 @@ hurdle model's effectiveness in accurately reflecting features that influence
 zero-inflation.
 
 ```{r hurdle_direct, fig.width = 6, height = 5}
-direct <- direct_effect(model, exper) |>
+#direct <- direct_effect(model, exper) |>
+direct <- read_csv("https://drive.google.com/uc?export=download&id=10dYU4ahizRk7hjsi6JKJWdNKdAI1qyXS") |>
   effect_summary()
 
 combined |>

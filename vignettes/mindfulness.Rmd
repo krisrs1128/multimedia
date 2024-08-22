@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
   warning = FALSE,
   message = FALSE,
   eval = TRUE,
-  cache = TRUE,
+  cache = FALSE,
   dev.args = list(bg = "transparent"),
   out.width = 600
 )
@@ -179,7 +179,7 @@ across the population because the study was randomized, but we want to remove
 any associations present in our finite sample.
 
 ```{r mediation_sample}
-new_assign <- exper@treatments[sample(nrow(exper@treatments)), ]
+new_assign <- exper@treatments[sample(nrow(exper@treatments)),, drop=FALSE]
 profile <- setup_profile(model, new_assign, new_assign)
 m1 <- sample(model, profile = profile, pretreatment = exper@pretreatments)
 m2 <- sample(altered, profile = profile, pretreatment = exper@pretreatments)
@@ -320,7 +320,7 @@ fdr_indirect <- fdr_summary(contrast, "indirect_overall") |>
 fdr_data <- bind_rows(fdr_direct, fdr_indirect, .id = "effect_type") |>
   mutate(effect_type = c("Direct", "Indirect")[as.integer(effect_type)])
 ggplot(fdr_data, aes(effect, fdr_hat)) +
-  geom_text_repel(data = filter(fdr_data, keep), aes(label = outcome, fill = source), size = 3, force = 10) +
+  geom_text_repel(data = filter(fdr_data, keep), aes(label = outcome, col = source), size = 3, force = 10) +
   labs(x = "Effect", y = expression(widehat(FDR)), col = "Data Source") +
   geom_point(aes(col = source, size = keep)) +
   scale_size_discrete("Selected", range = c(.5, 3), guide = FALSE) +
@@ -423,7 +423,8 @@ across all bootstrap iterations.
 
 ```{r rf_bootstrap}
 funs <- list(direct = direct_effect, indirect = indirect_overall)
-inference <- bootstrap(model, exper_rela, funs, B = 1e3)
+#inference <- bootstrap(model, exper_rela, funs, B = 1e3)
+inference <- readRDS(url("https://drive.google.com/uc?export=download&id=196yFXbuyeZShpZr58WZpUI3EEArotMuk"))
 ```
 
 We can now visualize the bootstrap confidence intervals associated with the
