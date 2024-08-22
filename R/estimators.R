@@ -424,12 +424,13 @@ brm_cache <- function(formula, data, ...) {
 brms_model <- function(...) {
   check_if_installed("brms", "to use a BRMS model for multimedia estimation.")
   params <- brms_model_params(...)
+  requireNamespace("brms", quietly = TRUE)
   new(
     "model",
     estimator = \(fmla, data) inject(brm_cache(fmla, data, !!!params)),
     estimates = NULL,
     sampler = brms_sampler,
-    predictor = \(object, ...) brms::predict(object, robust = TRUE, ...)[, "Estimate"],
+    predictor = \(object, ...) predict(object, robust = TRUE, ...)[, "Estimate"],
     model_type = "brms_model()"
   )
 }

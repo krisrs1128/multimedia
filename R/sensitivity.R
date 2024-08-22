@@ -55,7 +55,7 @@ sorted_treatments <- function(model) {
     arrange(across(everything()))
 }
 
-#' @examples
+#' @example
 #' sensitivity_sample(model, exper)
 sensitivity_sample <- function(model, exper, rho) {
   Nm <- n_mediators(model)
