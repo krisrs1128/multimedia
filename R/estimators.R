@@ -596,12 +596,13 @@ rf_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
   if (is.null(indices)) {
     indices <- seq_along(fits)
   }
+  requireNamespace("ranger", quietly = TRUE)
 
   nm <- names(fits)
   y_hats <- list()
   for (i in indices) {
     sigma <- fits[[i]]$prediction.error
-    y_ <- ranger::predict(fits[[i]], data = newdata, ...)$predictions
+    y_ <- predict(fits[[i]], data = newdata, ...)$predictions
     y_hats[[nm[i]]] <- y_ + rnorm(length(y_), 0, sigma)
   }
 

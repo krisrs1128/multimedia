@@ -37,12 +37,16 @@ sensitivity_internal <- function(summarization, model, exper, n_rho = 10,
     rename_with(~ gsub("__$", "", .))
 }
 
+#' Sensitivity Analysis for Overall Indirect Effect
+#' @export
 sensitivity <- function(model, exper, n_rho = 10, n_bootstrap = 100, progress = TRUE) {
   (\(x) indirect_overall(x) |> 
     effect_summary()) |>
     sensitivity_internal(model, exper, n_rho, n_bootstrap, progress)
 }
 
+#' Sensitivity Analysis for Pathwise Indirect Effects
+#' @export
 sensitivity_pathwise <- function(model, exper, n_rho = 10, n_bootstrap = 100, progress = TRUE) {
   (\(x) indirect_pathwise(x) |> 
     effect_summary()) |>
@@ -55,7 +59,12 @@ sorted_treatments <- function(model) {
     arrange(across(everything()))
 }
 
-#' @example
+#' Sample from an SEM with Correlated Errors
+#' @examples
+#' xy_data <- demo_spline()
+#' exper <- mediation_data(xy_data, starts_with("outcome"), "treatment", "mediator")
+#' model <- multimedia(exper, outcome_estimator = rf_model(num.trees = 1e3)) |>
+#'  estimate(exper)
 #' sensitivity_sample(model, exper)
 sensitivity_sample <- function(model, exper, rho) {
   Nm <- n_mediators(model)
@@ -83,7 +92,7 @@ sensitivity_sample <- function(model, exper, rho) {
   samples
 }
 
-#' @example
+#' @examples
 #' xy_data <- demo_spline()
 #' exper <- mediation_data(xy_data, starts_with("outcome"), "treatment", "mediator")
 #' model <- multimedia(exper, outcome_estimator = rf_model(num.trees = 1e3)) |>
