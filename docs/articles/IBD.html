@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
 <link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
@@ -261,13 +261,17 @@ in this case are microbiome compositions.</p>
 treatment status for a single mediator. Unlike overall indirect effects,
 they give us effects for individual mediator-outcome pairs. Now, instead
 of averaging over mediator treatment assignments, we average over direct
-edge treatment assignments.</p>
+edge treatment assignments. The block below is time-consuming, so if you
+are following along, you can just read in the pre-computed result in the
+next block.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">indirect_sorted</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>  CD <span class="op">=</span> <span class="fu"><a href="../reference/indirect_pathwise.html">indirect_pathwise</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">exper</span>, <span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span>,</span>
-<span>  UC <span class="op">=</span> <span class="fu"><a href="../reference/indirect_pathwise.html">indirect_pathwise</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">exper</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span></span>
-<span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://purrr.tidyverse.org/reference/map_dfr.html" class="external-link">map_dfr</a></span><span class="op">(</span><span class="va">effect_summary</span>, N <span class="op">=</span> <span class="fl">12</span>, .id <span class="op">=</span> <span class="st">"treatment"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># indirect_sorted &lt;- list(</span></span>
+<span><span class="co">#   CD = indirect_pathwise(model, exper, 1, 3),</span></span>
+<span><span class="co">#   UC = indirect_pathwise(model, exper, 2, 3)</span></span>
+<span><span class="co"># ) |&gt;</span></span>
+<span><span class="co">#   map_dfr(effect_summary, N = 12, .id = "treatment")</span></span>
+<span></span>
+<span><span class="va">indirect_sorted</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span><span class="st">"https://drive.google.com/uc?export=download&amp;id=1Ar7u2rU7DLMjvS-iV9OXwGcY4Rs1Q5wI"</span><span class="op">)</span></span></code></pre></div>
 <p>We can look at the effects which have the strongest indirect effects.
 These make sense. For example, genus Biophila seems to have a negative
 relationship with Taurine. Maybe that metabolite is produced by a
@@ -315,12 +319,14 @@ approach is to form the bootstrap distribution of the effects that we
 care about. It’s a little problematic to form bootstrap confidence
 intervals for sparse regression. We can still interpret the full
 bootstrap distributions, though. Effects that have large nonzero
-components have more evidence of being real.</p>
+components have more evidence of being real. This block is again slow,
+so you can skip ahead and load a pre-computed version.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>direct <span class="op">=</span> <span class="va">direct_effect</span>, indirect <span class="op">=</span> <span class="va">indirect_overall</span><span class="op">)</span></span>
-<span><span class="va">inference</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bootstrap.html">bootstrap</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">exper</span>, <span class="va">fs</span>, B <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">filter_outcomes</span> <span class="op">&lt;-</span> <span class="va">inference</span><span class="op">$</span><span class="va">indirect</span> <span class="op">|&gt;</span></span>
+<span><span class="co">#inference &lt;- bootstrap(model, exper, fs, B = 1000)</span></span>
+<span><span class="va">inference</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">url</a></span><span class="op">(</span><span class="st">"https://drive.google.com/uc?export=download&amp;id=16A9MCblgf327SiL0hataAHYfs38wB_K1"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">filter_outcomes</span> <span class="op">&lt;-</span> <span class="va">inference</span><span class="op">$</span><span class="va">indirect</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/effect_summary.html">effect_summary</a></span><span class="op">(</span>N <span class="op">=</span> <span class="cn">Inf</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">outcome</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>indirect_effect <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">indirect_effect</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -351,7 +357,7 @@ components have more evidence of being real.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Direct Effect"</span>, y <span class="op">=</span> <span class="st">"Metabolite"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">p1</span> <span class="op">|</span> <span class="va">p2</span></span></code></pre></div>
-<p><img src="IBD_files/figure-html/lasso_bootstrap-1.png" width="600" style="display: block; margin: auto;"></p>
+<p><img src="IBD_files/figure-html/lasso_bootstrap_vis-1.png" width="600" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level2">
 <h2 id="hurdle-lognormal-approach">Hurdle-Lognormal Approach<a class="anchor" aria-label="anchor" href="#hurdle-lognormal-approach"></a>
@@ -369,30 +375,26 @@ return the outcomes to their original (unlogged) scaling. We’ll apply a
 BRMS hurdle model. So that this isn’t too slow during the indirect
 effect estimation, I’ve further reduced the number of taxa and
 metabolites in this analysis.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">exper2</span> <span class="op">&lt;-</span> <span class="va">exper</span></span>
 <span><span class="va">exper2</span><span class="op">@</span><span class="va">outcomes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">exper2</span><span class="op">@</span><span class="va">outcomes</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">50</span><span class="op">]</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span></span>
-<span><span class="va">exper2</span><span class="op">@</span><span class="va">mediators</span> <span class="op">&lt;-</span> <span class="va">exper2</span><span class="op">@</span><span class="va">mediators</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">50</span><span class="op">]</span></span>
-<span></span>
-<span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/multimedia.html">multimedia</a></span><span class="op">(</span></span>
-<span>  <span class="va">exper2</span>,</span>
-<span>  <span class="fu"><a href="../reference/brms_model.html">brms_model</a></span><span class="op">(</span>family <span class="op">=</span> <span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/brmsfamily.html" class="external-link">hurdle_lognormal</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="../reference/estimate.html">estimate</a></span><span class="op">(</span><span class="va">exper2</span><span class="op">)</span></span></code></pre></div>
-<pre class="r-output"><code><span><span class="co">#&gt; Running /Library/Frameworks/R.framework/Resources/bin/R CMD SHLIB foo.c</span></span>
-<span><span class="co">#&gt; sh: gcc-14.0.3: command not found</span></span>
-<span><span class="co">#&gt; using SDK: ‘MacOSX13.3.sdk’</span></span>
-<span><span class="co">#&gt; gcc-14.0.3 -I"/Library/Frameworks/R.framework/Resources/include" -DNDEBUG   -I/opt/R/arm64/include    -fPIC  -mtune=native -g -O2 -Wall -pedantic -Wconversion -c foo.c -o foo.o</span></span>
-<span><span class="co">#&gt; /bin/sh: gcc-14.0.3: command not found</span></span>
-<span><span class="co">#&gt; make: *** [foo.o] Error 127</span></span></code></pre>
+<span><span class="va">exper2</span><span class="op">@</span><span class="va">mediators</span> <span class="op">&lt;-</span> <span class="va">exper2</span><span class="op">@</span><span class="va">mediators</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">50</span><span class="op">]</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># model &lt;- multimedia(</span></span>
+<span><span class="co">#   exper2,</span></span>
+<span><span class="co">#   brms_model(family = hurdle_lognormal())</span></span>
+<span><span class="co"># ) |&gt;</span></span>
+<span><span class="co">#   estimate(exper2)</span></span>
+<span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">url</a></span><span class="op">(</span><span class="st">"https://uwmadison.box.com/shared/static/803fpu7skhjpd8f5ye6pb3crkc67qhl1.rds"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>With the updated model, we can again compute pathwise indirect
 effects. This time, we are more sensitive to metabolites that completely
 vanish in the IBD (treatment) group. In all of the selected pairs, there
 is also a treatment effect on microbe abundance. If this hadn’t been
 present, and if the metabolite simply vanished, then that would be a
 direct effect.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">indirect_sorted</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/indirect_pathwise.html">indirect_pathwise</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">exper2</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#indirect_sorted &lt;- indirect_pathwise(model, exper2) |&gt;</span></span>
+<span><span class="va">indirect_sorted</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span><span class="st">"https://drive.google.com/uc?export=download&amp;id=1aX6h98udBxqR3RBOjbUnoY1wLMfFUceB"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/effect_summary.html">effect_summary</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/plot_mediators.html">plot_mediators</a></span><span class="op">(</span><span class="va">indirect_sorted</span>, <span class="va">exper2</span>, treatment <span class="op">=</span> <span class="st">"Study.Group"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="IBD_files/figure-html/hurdle_indirect-1.png" width="600" style="display: block; margin: auto;"></p>
@@ -405,7 +407,7 @@ metabolites. In retrospect, this is natural. The hurdle model can only
 increase the zero probability as a linear function of species abundance.
 We would need a step function preidctor to support the kinds of
 transitions we see above.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">profile</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/setup_profile.html">setup_profile</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">exper</span><span class="op">@</span><span class="va">treatments</span>, <span class="va">exper</span><span class="op">@</span><span class="va">treatments</span><span class="op">)</span></span>
 <span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">model</span>, profile <span class="op">=</span> <span class="va">profile</span>, pretreatment <span class="op">=</span> <span class="va">exper</span><span class="op">@</span><span class="va">pretreatments</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">samples</span><span class="op">@</span><span class="va">outcomes</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">exper2</span><span class="op">@</span><span class="va">outcomes</span><span class="op">)</span></span>
@@ -416,8 +418,9 @@ compared to the analogous figure for the sparse regression. Now, many
 outcomes with exact zeros under treatment have been detected, which is
 consistent with the the hurdle model’s effectiveness in accurately
 reflecting features that influence zero-inflation.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">direct</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/direct_effect.html">direct_effect</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">exper</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#direct &lt;- direct_effect(model, exper) |&gt;</span></span>
+<span><span class="va">direct</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span><span class="st">"https://drive.google.com/uc?export=download&amp;id=10dYU4ahizRk7hjsi6JKJWdNKdAI1qyXS"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/effect_summary.html">effect_summary</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">combined</span> <span class="op">|&gt;</span></span>
@@ -447,7 +450,7 @@ reflecting features that influence zero-inflation.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
 </div>
 
       </footer>

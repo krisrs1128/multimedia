@@ -1,10 +1,10 @@
 pandoc: 3.1.12.2
-pkgdown: 2.0.7
+pkgdown: 2.0.9
 pkgdown_sha: ~
 articles:
   IBD: IBD.html
   illustration: illustration.html
-  joy: joy.html
   mindfulness: mindfulness.html
-last_built: 2024-03-13T04:23Z
+  random: random.html
+last_built: 2024-08-22T21:23Z
 
