@@ -120,8 +120,8 @@ before we would observe a flipped indirect effect estimate?
 ```{r}
 sensitivity_curve <- sensitivity(fit, exper, n_rho = 4)
 ggplot(sensitivity_curve, aes(rho, col = outcome, fill = outcome)) +
-  geom_vline(xintercept = 0, size = 0.5) +
-  geom_hline(yintercept = 0, size = 0.5) +
+  geom_vline(xintercept = 0, linewidth = 0.5) +
+  geom_hline(yintercept = 0, linewidth = 0.5) +
   geom_line(aes(y = indirect_effect)) +
   geom_ribbon(aes(
     y = indirect_effect, 
@@ -216,6 +216,7 @@ indirect effects using the block below.
 ```{r}
 fs <- list(direct_effect = direct_effect, indirect_overall = indirect_overall)
 bootstraps <- bootstrap(fit, exper, fs = fs)
+#bootstraps <- readRDS()
 
 ggplot(bootstraps$direct_effect) +
   geom_histogram(aes(direct_effect)) +

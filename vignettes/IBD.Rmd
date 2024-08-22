@@ -326,7 +326,7 @@ fs <- list(direct = direct_effect, indirect = indirect_overall)
 inference <- readRDS(url("https://drive.google.com/uc?export=download&id=16A9MCblgf327SiL0hataAHYfs38wB_K1"))
 ```
 
-```{r lasso_bootstrap_vis, fig.width = 9, fig.height = 3.5}}
+```{r lasso_bootstrap_vis, fig.width = 9, fig.height = 3.5}
 filter_outcomes <- inference$indirect |>
   effect_summary(N = Inf) |>
   group_by(outcome) |>
