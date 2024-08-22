@@ -215,8 +215,8 @@ indirect effects using the block below.
 
 ```{r}
 fs <- list(direct_effect = direct_effect, indirect_overall = indirect_overall)
-bootstraps <- bootstrap(fit, exper, fs = fs)
-#bootstraps <- readRDS()
+#bootstraps <- bootstrap(fit, exper, fs = fs)
+bootstraps <- readRDS(url("https://drive.google.com/uc?export=download&id=1vhWcY5UruCyLNJbTDTVFLBHV_6ITQdYT"))
 
 ggplot(bootstraps$direct_effect) +
   geom_histogram(aes(direct_effect)) +

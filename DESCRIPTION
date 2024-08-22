@@ -29,6 +29,7 @@ Depends:
 Suggests:
     BiocStyle,
     brms,
+    ggraph,
     glmnet,
     glmnetUtils,
     patchwork,
