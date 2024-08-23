@@ -303,7 +303,7 @@ discovery rate for the rule that selects features up to that point.
 ```{r direct_contrast}
 contrast <- null_contrast(model, exper, "T->Y", direct_effect)
 fdr_direct <- fdr_summary(contrast, "direct_effect") |>
-  rename(effect = direct_effect)
+  dplyr::rename(effect = direct_effect)
 ```
 
 The indirect effect analog is shown below. It seems we have more evidence for
@@ -313,7 +313,7 @@ difficulty of estimating indirect effects in mediation analysis.
 ```{r indirect_contrast}
 contrast <- null_contrast(model, exper, "M->Y", indirect_overall)
 fdr_indirect <- fdr_summary(contrast, "indirect_overall") |>
-  rename(effect = indirect_effect)
+  dplyr::rename(effect = indirect_effect)
 ```
 
 ```{r contrast_plot, fig.width = 7, fig.height = 3}

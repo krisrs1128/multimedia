@@ -23,6 +23,7 @@
 #' samples <- sample(fit, profile = profile)
 #' samples@mediators
 #' samples@outcomes
+#' @importFrom cli cli_warn
 #' @export
 setMethod("sample", "multimedia", function(
     x, size, pretreatment = NULL,

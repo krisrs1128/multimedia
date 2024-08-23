@@ -81,15 +81,13 @@ spline_fun <- function(D = 2, knots = NULL, h_ix = 1:10, ...) {
 #' mediator->outcome effect is generated from a random spline function.
 #'
 #' @param n_samples The number of samples to generate in the toy example
-#' @param tau The true direct efefcts associated with the two outcomes. Defaults
+#' @param tau The true direct effects associated with the two outcomes. Defaults
 #'   to 2, 2.
 #' @return xy A data.frame whose columns include the treatment, mediation, and
 #'   outcome variables.
 #' @importFrom stats rnorm
 #' @examples
 #' demo_spline()
-#' demo_spline(20)
-#' demo_spline(20, c(1, 10))
 #' @export
 demo_spline <- function(n_samples = 5e3, tau = c(2, 2)) {
   if (n_samples < 15) {

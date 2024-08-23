@@ -233,7 +233,7 @@ null_contrast <- function(model, exper, nullification = "T->Y",
 #'   that we will consider.
 #' @return fdr A data.frame specifying, for each candidate effect, whether it
 #'   should be selected.
-#' @importFrom dplyr filter summarise mutate pull
+#' @importFrom dplyr filter summarise mutate pull ungroup
 #' @examples
 #' # example with null data - notice synthetic data has larger effect.
 #' exper <- demo_joy() |>

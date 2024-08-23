@@ -209,8 +209,8 @@ indirect_effect <- list(
   UC = indirect_overall(model, exper, 2, 3)
 )
 
-top_direct <- rename(direct, effect = direct_effect)
-top_indirect <- rename(bind_rows(indirect_effect), effect = indirect_effect)
+top_direct <- dplyr::rename(direct, effect = direct_effect)
+top_indirect <- dplyr::rename(bind_rows(indirect_effect), effect = indirect_effect)
 top_effects <- list(direct = top_direct, indirect = top_indirect) |>
   bind_rows(.id = "type")
 

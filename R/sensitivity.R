@@ -66,8 +66,9 @@ sorted_treatments <- function(model) {
 #' exper <- mediation_data(xy_data, starts_with("outcome"), "treatment", "mediator")
 #' model <- multimedia(exper, outcome_estimator = rf_model(num.trees = 1e3)) |>
 #'  estimate(exper)
-#' sensitivity_sample(model, exper)
-sensitivity_sample <- function(model, exper, rho) {
+#' multimedia:::sensitivity_sample(model, exper)
+#' @noRd
+sensitivity_sample <- function(model, exper, rho = 0.0) {
   Nm <- n_mediators(model)
   Ny <- n_outcomes(model)
   Sigma <- covariance_matrix(model, rho)

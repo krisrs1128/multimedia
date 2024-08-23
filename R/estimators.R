@@ -505,7 +505,7 @@ lnm_model <- function(...) {
 
   new(
     "model",
-    estimator = \(fmla, data) inject(lnm(fmla, data, ...)),
+    estimator = \(fmla, data) inject(miniLNM::lnm(fmla, data, ...)),
     estimates = NULL,
     sampler = lnm_sampler,
     predictor = predict,
