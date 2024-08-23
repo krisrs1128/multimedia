@@ -32,7 +32,6 @@ options(
   ggplot2.continuous.fill = function(...) scale_fill_distiller(palette = "Spectral", ...)
 )
 
-library(tidyverse)
 th <- theme_classic() +
   theme(
     panel.background = element_rect(fill = "transparent"),
