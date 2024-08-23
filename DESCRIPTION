@@ -1,30 +1,37 @@
 Package: multimedia
 Title: Multimodal Mediation Analysis
 Version: 0.1.0
-Authors@R: 
+Authors@R:
     person("Kris", "Sankaran", , "ksankaran@wisc.edu", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-9415-1971"))
 Description: multimedia is an R package for multimodal mediation analysis of microbiome data. It make advanced mediation analysis techniques easy to use, ensuring that all statistical components are transparent and adaptable to specific problem contexts. The package provides a uniform interface to direct and indirect effect estimation, synthetic null hypothesis testing, and bootstrap confidence interval construction.
 License: CC0
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 VignetteBuilder: knitr
+biocViews: Software
 Depends: 
+    SummarizedExperiment,
     R (>= 3.50),
+    methods,
+    tidyselect
+Imports:
+    MASS,
+    S4Vectors,
     cli,
     dplyr,
     fansi,
     formula.tools,
-    insight,
     ggplot2,
     glue,
+    insight,
+    phyloseq,
     progress,
     purrr,
     rlang,
-    tibble,
+    stats,
     tidygraph,
-    tidyselect,
     tidyr
 Suggests:
     BiocStyle,
@@ -32,6 +39,7 @@ Suggests:
     ggraph,
     glmnet,
     glmnetUtils,
+    miniLNM,
     patchwork,
     ranger,
     knitr,
