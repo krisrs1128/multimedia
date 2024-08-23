@@ -84,7 +84,7 @@ samples and true direct effect size by passing in arguments.
 the treatment, mediator, and outcomes. We use
 random spline functions for the direct effect.
 
-```{r}
+```{r prepare_data}
 xy_data <- demo_spline()
 xy_long <- list(true = pivot_longer(xy_data, starts_with("outcome"), names_to = "outcome"))
 ```
@@ -93,7 +93,7 @@ The block below estimates a random forest model on these randomly generated data
 (after first converting them into an object of class `mediation_data`). We can
 vary `ranger` parameters using the arguments to `rf_model()`.
 
-```{r}
+```{r fit_model}
 exper <- mediation_data(xy_data, starts_with("outcome"), "treatment", "mediator")
 fit <- multimedia(
   exper,
@@ -104,7 +104,7 @@ fit <- multimedia(
 
 Let's look at the estimated effects.
 
-```{r}
+```{r effect_estimates}
 direct_effect(fit) |>
   effect_summary()
 
@@ -117,8 +117,9 @@ confounders that influence both the mediators and outcome. For this reason, we
 can run a sensitivity analysis: How strong would the confounder have to be
 before we would observe a flipped indirect effect estimate?
 
-```{r}
-sensitivity_curve <- sensitivity(fit, exper, n_rho = 4)
+```{r sensitivity_analysis}
+#sensitivity_curve <- sensitivity(fit, exper, n_rho = 4)
+sensitivity_curve <- read_csv("https://drive.google.com/uc?export=download&id=1fEhg-aMRyfhAjgcJmsrxz2cmWCOdnM6C")
 ggplot(sensitivity_curve, aes(rho, col = outcome, fill = outcome)) +
   geom_vline(xintercept = 0, linewidth = 0.5) +
   geom_hline(yintercept = 0, linewidth = 0.5) +
@@ -150,7 +151,7 @@ Let's estimate three altered models. The first two nullify the effects in the
 mediation and outcome models, respectively. The third assumes a linear, rather
 than random forest, outcome model.
 
-```{r}
+```{r alteration}
 altered_m <- nullify(fit, "T->M") |>
   estimate(exper)
 altered_ty <- nullify(fit, "T->Y") |>
@@ -166,7 +167,7 @@ fit_lm <- multimedia(
 We can sample from these models and organize the results into one long
 data.frame. The function `pivot_samples` is defined at the top of the script.
 
-```{r}
+```{r reshape_altered}
 xy_long <- c(
   xy_long,
   list(
@@ -195,7 +196,7 @@ xy_long <- c(
 The figure below compares the original data and model with the various nullified
 versions, using the combined `xy_long` dataset constructed above.
 
-```{r, fig.width = 8, fig.height = 3}
+```{r visualize_long, fig.width = 8, fig.height = 3}
 xy_long |>
   sample_frac(size = 0.1) |>
   ggplot(aes(mediator, col = treatment)) +
@@ -213,7 +214,7 @@ xy_long |>
 We can calculate bootstrap confidence intervals for the direct and overall
 indirect effects using the block below.
 
-```{r}
+```{r bootstraps}
 fs <- list(direct_effect = direct_effect, indirect_overall = indirect_overall)
 #bootstraps <- bootstrap(fit, exper, fs = fs)
 bootstraps <- readRDS(url("https://drive.google.com/uc?export=download&id=1vhWcY5UruCyLNJbTDTVFLBHV_6ITQdYT"))
@@ -226,3 +227,10 @@ ggplot(bootstraps$indirect_overall) +
   geom_histogram(aes(indirect_effect)) +
   facet_wrap(~outcome)
 ```
+
+
+R CMD check --no-build-vignettes
+tic(); rmarkdown::render("illustration.Rmd"); toc(); 9 seconds
+tic(); rmarkdown::render("mindfulness.Rmd"); toc(); 246.947 seconds
+tic(); rmarkdown::render("IBD.Rmd"); toc(); 78.152 seconds
+tic(); rmarkdown::render("random.Rmd"); toc(); 44.5 seconds
