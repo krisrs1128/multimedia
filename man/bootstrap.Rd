@@ -41,7 +41,7 @@ exper <- demo_spline(n_samples = 100, tau = c(2, 1)) |>
   mediation_data(starts_with("outcome"), "treatment", "mediator")
 samples <- multimedia(exper, rf_model(num.trees = 1e3)) |>
   bootstrap(exper, B = 100)
-ggplot(samples$direct_effect) +
-  geom_histogram(aes(direct_effect, fill = indirect_setting), bins = 15) +
-  facet_wrap(~outcome, scales = "free")
+ggplot2::ggplot(samples$direct_effect) +
+  ggplot2::geom_histogram(ggplot2::aes(direct_effect, fill = indirect_setting), bins = 15) +
+  ggplot2::facet_wrap(~outcome, scales = "free")
 }

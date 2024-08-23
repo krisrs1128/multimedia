@@ -24,5 +24,5 @@ mediator->outcome effect is generated from a random spline function.
 \examples{
 demo_spline()
 demo_spline(20)
-demo_spline(20, c(0, 10))
+demo_spline(20, c(1, 10))
 }

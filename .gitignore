@@ -4,3 +4,5 @@ inst/doc
 .Rhistory
 *.Rproj
 vignettes/.gitignore
+/doc/
+/Meta/
