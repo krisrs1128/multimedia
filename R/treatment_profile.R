@@ -7,6 +7,8 @@
 #' mediator and outcome treatments is reasonable.
 #' @param object An object of class `treatment_profile` that we want to check.
 #' @importFrom dplyr n_distinct
+#' @importFrom purrr map
+#' @importFrom cli cli_abort
 #' @noRd
 check_profile <- function(object) {
   if (is(object@t_mediator, "list")) {
@@ -45,7 +47,7 @@ check_profile <- function(object) {
 #'   outcome node.
 #' @return An object of class `treatment_profile` giving treatment assignments
 #'   for both mediation and outcome terms.
-#' @importFrom purrr map_lgl
+#' @importFrom purrr map_lgl set_names
 #' @seealso check_profile
 #' @examples
 #' exper <- demo_spline(tau = c(2, 1)) |>
@@ -111,7 +113,6 @@ setup_profile <- function(x, t_mediator = NULL, t_outcome = NULL) {
 #' profile <- setup_profile(fit, t_mediator = t1, t_outcome = t2)
 #' profile
 #' @export
-#' @noRd
 setClass(
   "treatment_profile",
   representation(

@@ -141,6 +141,7 @@ graph_specification <- function(outcomes, treatments, mediators, pretreatments) 
 #' @return G A tidygraph graph with bipartite structure. One set of nodes
 #'   corresponds to the inputs, one to the outputs, and every pair of inputs and
 #'   outputs are linked.
+#' @importFrom dplyr case_when mutate %>%
 #' @importFrom tidygraph %E>% tbl_graph activate
 #' @noRd
 expand_edges <- function(input, output, input_name, output_name) {

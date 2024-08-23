@@ -60,6 +60,7 @@ sorted_treatments <- function(model) {
 }
 
 #' Sample from an SEM with Correlated Errors
+#' @importFrom MASS mvrnorm
 #' @examples
 #' xy_data <- demo_spline()
 #' exper <- mediation_data(xy_data, starts_with("outcome"), "treatment", "mediator")
@@ -70,7 +71,7 @@ sensitivity_sample <- function(model, exper, rho) {
   Nm <- n_mediators(model)
   Ny <- n_outcomes(model)
   Sigma <- covariance_matrix(model, rho)
-  epsilon <- MASS::mvrnorm(nrow(exper), rep(0, Nm + Ny), Sigma)
+  epsilon <- mvrnorm(nrow(exper), rep(0, Nm + Ny), Sigma)
 
   t_ <- model@treatments
   samples <- list()
@@ -99,6 +100,7 @@ sensitivity_sample <- function(model, exper, rho) {
 #'  estimate(exper)
 #' standard_deviations(model@outcome)
 #' standard_deviations(model@mediation)
+#' @importFrom purrr map_dbl
 #' @importFrom cli cli_abort
 #' @importFrom glue glue
 standard_deviations <- function(model) {

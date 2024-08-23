@@ -36,7 +36,6 @@
 #'   effect_summary()
 #' plot_mediators(ie, exper)
 #'
-#' @importFrom patchwork wrap_plots plot_layout
 #' @importFrom ggplot2 ggplot aes .data geom_point labs
 #' @importFrom glue glue
 #' @export
@@ -58,6 +57,6 @@ plot_mediators <- function(indirect_effects, exper, n_digit = 3, n_panels = NULL
       labs(title = glue("IE: {round(effect, n_digit)}"))
   }
 
-  wrap_plots(p, ...) +
-    plot_layout(guides = "collect")
+  patchwork::wrap_plots(p, ...) +
+    patchwork::plot_layout(guides = "collect")
 }

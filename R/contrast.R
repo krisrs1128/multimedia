@@ -57,10 +57,9 @@ contrast_predictions <- function(model, profile1, profile2, ...) {
 #' profile2 <- setup_profile(model, t2, t2)
 #' contrast_samples(model, profile1, profile2)
 #'
-#' samples <- purrr::map(1:100, ~ contrast_samples(model, profile1, profile2)) |>
-#'   map_dfr(~ .[[1]])
-#' hist(samples$ASV1)
-#' hist(samples$ASV2)
+#' samples <- purrr::map(1:100, ~ contrast_samples(model, profile1, profile2))
+#' hist(sapply(samples, \(x) x[[1]]$ASV1) )
+#' hist(sapply(samples, \(x) x[[1]]$ASV2) )
 contrast_samples <- function(model, profile1, profile2, ...) {
   y1 <- sample(model, profile = profile1, ...)
   y2 <- sample(model, profile = profile2, ...)

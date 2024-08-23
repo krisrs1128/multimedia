@@ -7,7 +7,7 @@
 #'   treatment to mediator, etc. Otherwise, the vector of indices specifying
 #'   which edges to ignore.
 #' @return The ID of edges that match the `nulls` parameter.
-#' @importFrom dplyr row_number n
+#' @importFrom dplyr row_number n pull
 #' @importFrom tidygraph %E>%
 #' @noRd
 matching_indices <- function(edges, nulls = NULL) {
@@ -122,9 +122,9 @@ nullify <- function(multimedia, nulls = NULL) {
 #'   mediation_data(starts_with("outcome"), "treatment", "mediator")
 #' samples <- multimedia(exper, rf_model(num.trees = 1e3)) |>
 #'   bootstrap(exper, B = 100)
-#' ggplot(samples$direct_effect) +
-#'   geom_histogram(aes(direct_effect, fill = indirect_setting), bins = 15) +
-#'   facet_wrap(~outcome, scales = "free")
+#' ggplot2::ggplot(samples$direct_effect) +
+#'   ggplot2::geom_histogram(ggplot2::aes(direct_effect, fill = indirect_setting), bins = 15) +
+#'   ggplot2::facet_wrap(~outcome, scales = "free")
 #' @export
 bootstrap <- function(model, exper, fs = NULL, B = 1000) {
   if (is.null(fs)) {
@@ -233,6 +233,7 @@ null_contrast <- function(model, exper, nullification = "T->Y",
 #'   that we will consider.
 #' @return fdr A data.frame specifying, for each candidate effect, whether it
 #'   should be selected.
+#' @importFrom dplyr filter summarise mutate pull
 #' @examples
 #' # example with null data - notice synthetic data has larger effect.
 #' exper <- demo_joy() |>

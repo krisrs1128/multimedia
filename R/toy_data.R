@@ -1,4 +1,5 @@
 #' data.frame with samples from p
+#' @importFrom stats rnorm
 #' @examples
 #' random_numeric(10, 2)
 #' random_numeric(10, 2, runif)
@@ -43,6 +44,7 @@ demo_joy <- function(n_samples = 100, n_mediators = 5, n_pretreatment = 3) {
   )
 }
 
+#' @importFrom stats rnorm
 matnorm <- \(n, m, ...) matrix(rnorm(n * m, ...), n, m)
 
 #' Generate Random Spline
@@ -51,10 +53,11 @@ matnorm <- \(n, m, ...) matrix(rnorm(n * m, ...), n, m)
 #' dataset created in `demo_spline()`. This is not necessary for the essential
 #' multimedia workflow, it is only exported for potential independent interest.
 #'
+#' @importFrom stats rnorm
 #' @seealso demo_spline
 #' @examples
-#' x <- seq(-2, 2, length.out = 100)
-#' f <- spline_fun(sd = 0.3)
+#' x <- seq(-5, 5, length.out = 100)
+#' f <- multimedia:::spline_fun(sd = 0.3)
 #' fx <- f(x)
 #' plot(x, fx[, 1])
 #' @noRd
@@ -82,10 +85,11 @@ spline_fun <- function(D = 2, knots = NULL, h_ix = 1:10, ...) {
 #'   to 2, 2.
 #' @return xy A data.frame whose columns include the treatment, mediation, and
 #'   outcome variables.
+#' @importFrom stats rnorm
 #' @examples
 #' demo_spline()
 #' demo_spline(20)
-#' demo_spline(20, c(0, 10))
+#' demo_spline(20, c(1, 10))
 #' @export
 demo_spline <- function(n_samples = 5e3, tau = c(2, 2)) {
   if (n_samples < 15) {

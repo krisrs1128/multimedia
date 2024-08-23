@@ -35,6 +35,8 @@ setClass(
   )
 )
 
+#' Helper to Modify Formulas
+#' @importFrom stats update.formula as.formula
 sub_formula <- function(formula, yj) {
   update.formula(formula, as.formula(glue("{yj} ~ .")))
 }
@@ -87,6 +89,7 @@ parallelize <- function(f) {
 #'  mediator to outcome, etc.)
 #'
 #' @importFrom tidygraph %N>%
+#' @importFrom dplyr left_join rename
 #' @noRd
 edges_df <- function(edges) {
   nodes <- edges %N>%
@@ -107,6 +110,7 @@ edges_df <- function(edges) {
 }
 
 #' Construct a Formula from a Graph
+#' @importFrom dplyr pull
 #' @noRd
 edges_to_formula <- function(edges) {
   collapse <- \(e, v) {
@@ -230,6 +234,7 @@ estimate <- function(model, exper) {
 #' @return model An object of class `model` with estimator, predictor, and
 #'  sampler functions associated wtih a linear model.
 #' @seealso model
+#' @importFrom stats lm
 #' @examples
 #' m <- lm_model()
 #' m@estimator(mpg ~ hp + wt, data = mtcars)
@@ -256,6 +261,7 @@ lm_model <- function() {
 #' fit <- plm(mpg + disp ~ hp + wt, data = mtcars)
 #' multimedia:::lm_sampler(fit)
 #' @importFrom dplyr bind_cols
+#' @importFrom stats lm
 #' @noRd
 lm_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
   if (is.null(indices)) {
@@ -291,7 +297,6 @@ glmnet_model_params <- function(...) {
 #' @return model An object of class `model` with estimator, predictor, and
 #'  sampler functions associated wtih a lienar model.
 #' @seealso model lm_model rf_model
-#' @importFrom glmnetUtils glmnet
 #' @importFrom insight check_if_installed
 #' @examples
 #' exper <- demo_joy() |>
@@ -332,6 +337,8 @@ glmnet_model <- function(...) {
 #'
 #' This assumes a continuous response, so that the out-of-sample MSE can be used
 #' to estimate the outcome variability sigma.
+#' 
+#' @importFrom stats deviance
 #' @examples
 #' m <- glmnet_model()
 #' fit <- m@estimator(mpg ~ hp + wt, data = mtcars)
@@ -494,9 +501,11 @@ lnm_model <- function(...) {
     "to use a LNM model for multimedia estimation. Please run devtools::install_github('krisrs1128/miniLNM')",
     prompt = FALSE
   )
+  requireNamespace("miniLNM", quietly = TRUE)
+
   new(
     "model",
-    estimator = \(fmla, data) inject(miniLNM::lnm(fmla, data, ...)),
+    estimator = \(fmla, data) inject(lnm(fmla, data, ...)),
     estimates = NULL,
     sampler = lnm_sampler,
     predictor = predict,
@@ -529,8 +538,8 @@ lnm_sampler <- function(fit, newdata = NULL, indices = NULL, ...) {
   if (is.null(indices)) {
     indices <- seq_along(nm)
   }
-
-  miniLNM::sample(fit, newdata = newdata, ...)[, nm[indices], drop = FALSE]
+  requireNamespace("miniLNM", quietly = TRUE)
+  sample(fit, newdata = newdata, ...)[, nm[indices], drop = FALSE]
 }
 
 #' Random Forest Model
