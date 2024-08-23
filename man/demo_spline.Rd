@@ -9,7 +9,7 @@ demo_spline(n_samples = 5000, tau = c(2, 2))
 \arguments{
 \item{n_samples}{The number of samples to generate in the toy example}
 
-\item{tau}{The true direct efefcts associated with the two outcomes. Defaults
+\item{tau}{The true direct effects associated with the two outcomes. Defaults
 to 2, 2.}
 }
 \value{
@@ -23,6 +23,4 @@ mediator->outcome effect is generated from a random spline function.
 }
 \examples{
 demo_spline()
-demo_spline(20)
-demo_spline(20, c(1, 10))
 }
