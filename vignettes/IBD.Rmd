@@ -1,11 +1,12 @@
 ---
 title: "Microbiome - Metabolome Mediation Analysis"
+package: multimedia
 output: 
   BiocStyle::html_document
 vignette: >
   %\VignetteIndexEntry{IBD}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+  %\VignetteEncoding{UTF-8}  
 ---
 
 ```{r invisible, include = FALSE}
@@ -24,7 +25,7 @@ knitr::opts_chunk$set(
 knitr::knit_hooks$set(output = multimedia::ansi_aware_handler)
 options(crayon.enabled = TRUE)
 
-library(tidyverse)
+suppressPackageStartupMessages(library(tidyverse))
 options(
   ggplot2.discrete.colour = c("#9491D9", "#F24405", "#3F8C61", "#8C2E62", "#F2B705", "#11A0D9"),
   ggplot2.discrete.fill = c("#9491D9", "#F24405", "#3F8C61", "#8C2E62", "#F2B705", "#11A0D9"),

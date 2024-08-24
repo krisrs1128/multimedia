@@ -1,5 +1,6 @@
 ---
 title: "Illustration with Nonlinear Effects"
+package: multimedia
 output: 
   BiocStyle::html_document
 vignette: >

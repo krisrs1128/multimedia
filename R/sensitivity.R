@@ -122,7 +122,6 @@ covariance_matrix <- function(model, rho = 1) {
   Ny <- n_outcomes(model)
   Sigma <- 0.5 * diag(c(sigma_m ^ 2, sigma_y ^ 2))
 
-
   # Fill in covariances
   ix <- list(seq_len(Nm), seq(Nm + 1, Nm + Ny))
   Sigma[ix[[1]], ix[[2]]] <- rho * sigma_m %*% t(sigma_y)
