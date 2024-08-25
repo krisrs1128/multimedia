@@ -398,6 +398,15 @@ setMethod(nrow, "mediation_data", function(x) {
 #' there is no way to subset columns in this way, since they would be different
 #' across each source.
 #'
+#' @param x An object of class `mediation_data` whose samples we want to subset.
+#' @param i An integer or integer/logical vector specifying the samples to
+#'   subset to.
+#' @param j A placeholder to argree with R's `[` function. Never used.
+#' @param drop A placeholder to agree with R's `[` function. Never used.
+#' @param ... A placeholder to agree with R's `[` function. Never used.
+#' @return A version of the input mediation_data object whose @mediators,
+#'   @outcomes, @treatments, and @pretreatments rows have all been subsetted
+#'   according to `i`.
 #' @export
 #' @examples
 #' exper <- demo_joy() |>

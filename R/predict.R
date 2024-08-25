@@ -26,6 +26,8 @@
 #'   To pass in different pretreatment variables, provide a data.frame here
 #'   whose columns match the pretreatments as the originally trained mediation
 #'   and outcome models.
+#' @param ... Additional options to pass to the @sampler method in the estimated
+#'   mediation model.
 #' @examples
 #' exper <- demo_spline(tau = c(2, 1)) |>
 #'   mediation_data(starts_with("outcome"), "treatment", "mediator")
@@ -109,7 +111,7 @@ setMethod("sample", "multimedia", function(
 #'
 #' # predict at newdata
 #' newdata <- bind_mediation(exper)
-#' multimedia:::predict_across(fit@outcome, newdata[1:5, ], "outcome_2")
+#' multimedia:::predict_across(fit@outcome, newdata[seq_len(5), ], "outcome_2")
 #' @importFrom purrr map_dfc
 predict_across <- function(object, newdata, name) {
   # many univariate models
@@ -156,6 +158,7 @@ predict_across <- function(object, newdata, name) {
 #'   To pass in different pretreatment variables, provide a data.frame here
 #'   whose columns match the pretreatments as the originally trained mediation
 #'   and outcome models.
+#' @param ... A placeholder to agree with `predict` in base R. Not ever used.
 #' @return A list with two elements:
 #'   $mediators: A data.frame containing predicted values for the mediators. Each
 #'   row corresponds to one row of the newdata, or one row of the default

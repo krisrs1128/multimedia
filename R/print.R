@@ -2,7 +2,6 @@ fit_type <- function(model) {
   ifelse(is.null(model@estimates), "An unfitted", "A fitted")
 }
 
-#' @importFrom rlang .data
 node_subset <- function(edges, condition) {
   edges |>
     filter(.data$node_type %in% c(condition)) |>
