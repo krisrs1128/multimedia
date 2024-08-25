@@ -28,7 +28,7 @@ exper <- demo_spline(tau = c(2, 1)) |>
   mediation_data(starts_with("outcome"), "treatment", "mediator")
 fit <- multimedia(exper, brms_model()) |>
   estimate(exper)
-fit@outcome
+fit
 }
 \seealso{
 glmnet_model lnm_model rf_model lm_model
