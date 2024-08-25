@@ -25,7 +25,7 @@ knitr::opts_chunk$set(
 knitr::knit_hooks$set(output = multimedia::ansi_aware_handler)
 options(crayon.enabled = TRUE)
 
-suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(ggplot2))
 options(
   ggplot2.discrete.colour = c("#9491D9", "#F24405", "#3F8C61", "#8C2E62", "#F2B705", "#11A0D9"),
   ggplot2.discrete.fill = c("#9491D9", "#F24405", "#3F8C61", "#8C2E62", "#F2B705", "#11A0D9"),
@@ -66,10 +66,12 @@ ways. The point of mediation analysis is to provide evidence for one or the
 other of these possibilities.
 
 ```{r libraries}
+library(dplyr)
 library(ggdist)
+library(ggplot2)
 library(ggrepel)
 library(phyloseq)
-library(tidyverse)
+library(tidyr)
 library(multimedia)
 data(mindfulness)
 set.seed(20231228)
@@ -458,4 +460,8 @@ p2 <- ggplot(inference$direct) +
   labs(title = "Direct Effects", y = "Taxon", x = "Effect (Rel. Abund Scale)")
 
 p1 | p2
+```
+
+```{r}
+sessionInfo()
 ```

@@ -25,7 +25,7 @@ knitr::opts_chunk$set(
 knitr::knit_hooks$set(output = multimedia::ansi_aware_handler)
 options(crayon.enabled = TRUE)
 
-suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(ggplot2))
 options(
   ggplot2.discrete.colour = c("#9491D9", "#F24405", "#3F8C61", "#8C2E62", "#F2B705", "#11A0D9"),
   ggplot2.discrete.fill = c("#9491D9", "#F24405", "#3F8C61", "#8C2E62", "#F2B705", "#11A0D9"),
@@ -49,7 +49,7 @@ theme_set(th)
 
 ```{r libraries}
 library(multimedia)
-library(tidyverse)
+library(ggplot2)
 library(ggraph)
 ```
 
@@ -189,4 +189,8 @@ real effects (if any).
 contrast <- null_contrast(model, exper, "M->Y", indirect_pathwise)
 fdr <- fdr_summary(contrast, "indirect_pathwise", 0.05)
 fdr
+```
+
+```{r}
+sessionInfo()
 ```

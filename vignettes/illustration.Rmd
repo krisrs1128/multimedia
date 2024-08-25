@@ -25,7 +25,7 @@ knitr::opts_chunk$set(
 knitr::knit_hooks$set(output = multimedia::ansi_aware_handler)
 options(crayon.enabled = TRUE)
 
-suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(ggplot2))
 options(
   ggplot2.discrete.colour = c("#9491D9", "#F24405", "#3F8C61", "#8C2E62", "#F2B705", "#11A0D9"),
   ggplot2.discrete.fill = c("#9491D9", "#F24405", "#3F8C61", "#8C2E62", "#F2B705", "#11A0D9"),
@@ -57,7 +57,9 @@ for reorganizing the data later in this vignette.
 ```{r setup}
 library(glue)
 library(multimedia)
-library(tidyverse)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
 set.seed(20240111)
 
 #' Helper to plot the real data
@@ -229,9 +231,6 @@ ggplot(bootstraps$indirect_overall) +
   facet_wrap(~outcome)
 ```
 
-
-R CMD check --no-build-vignettes
-tic(); rmarkdown::render("illustration.Rmd"); toc(); 9 seconds
-tic(); rmarkdown::render("mindfulness.Rmd"); toc(); 246.947 seconds
-tic(); rmarkdown::render("IBD.Rmd"); toc(); 78.152 seconds
-tic(); rmarkdown::render("random.Rmd"); toc(); 44.5 seconds
+```{r}
+sessionInfo()
+```

@@ -25,7 +25,7 @@ knitr::opts_chunk$set(
 knitr::knit_hooks$set(output = multimedia::ansi_aware_handler)
 options(crayon.enabled = TRUE)
 
-suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(ggplot2))
 options(
   ggplot2.discrete.colour = c("#9491D9", "#F24405", "#3F8C61", "#8C2E62", "#F2B705", "#11A0D9"),
   ggplot2.discrete.fill = c("#9491D9", "#F24405", "#3F8C61", "#8C2E62", "#F2B705", "#11A0D9"),
@@ -61,10 +61,12 @@ suggest novel microbe-metabolite relationships.
 ```{r setup}
 library(brms)
 library(compositions)
+library(dplyr)
 library(ggdist)
+library(ggplot2)
 library(glue)
 library(patchwork)
-library(tidyverse)
+library(tidyr)
 library(vroom)
 library(multimedia)
 set.seed(20231222)
@@ -435,4 +437,8 @@ combined |>
   mutate(feature = factor(feature, levels = unique(direct$outcome))) |>
   ggplot() +
   geom_boxplot(aes(value, feature, fill = Study.Group))
+```
+
+```{r}
+sessionInfo()
 ```
