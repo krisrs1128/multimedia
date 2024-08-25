@@ -36,6 +36,8 @@ setClass(
 )
 
 #' Helper to Modify Formulas
+#' @param formula The original formula whose response we want to modify.
+#' @param yj The desired response term for the formula.
 #' @importFrom stats update.formula as.formula
 sub_formula <- function(formula, yj) {
   update.formula(formula, as.formula(glue("{yj} ~ .")))
@@ -90,6 +92,7 @@ parallelize <- function(f) {
 #'
 #' @importFrom tidygraph %N>%
 #' @importFrom dplyr left_join rename
+#' @importFrom rlang .data
 #' @noRd
 edges_df <- function(edges) {
   nodes <- edges %N>%
@@ -99,13 +102,13 @@ edges_df <- function(edges) {
     as.data.frame() |>
     left_join(nodes, by = c("from" = "id")) |>
     dplyr::rename(
-      node_type_from = node_type,
-      name_from = name
+      node_type_from = .data$node_type,
+      name_from = .data$name
     ) |>
     left_join(nodes, by = c("to" = "id")) |>
     dplyr::rename(
-      node_type_to = node_type,
-      name_to = name
+      node_type_to = .data$node_type,
+      name_to = .data$name
     )
 }
 
@@ -139,12 +142,13 @@ edges_to_formula <- function(edges) {
 #'  node, this will be included in the graph (as will all pretreatment to
 #'  mediator, mediator to outcome, etc.)
 #' @return A formula object with mediators on the LHS.
+#' @importFrom rlang .data
 #' @noRd
 mediation_formula <- function(edges) {
   edges %E>%
-    filter(state == "active") |>
+    filter(.data$state == "active") |>
     edges_df() |>
-    filter(node_type_to == "mediator") |>
+    filter(.data$node_type_to == "mediator") |>
     edges_to_formula()
 }
 
@@ -162,12 +166,13 @@ mediation_formula <- function(edges) {
 #'  node, this will be included in the graph (as will all pretreatment to
 #'  mediator, mediator to outcome, etc.)
 #' @return A formula object with outcomes on the LHS.
+#' @importFrom rlang .data
 #' @noRd
 outcome_formula <- function(edges) {
   edges %E>%
-    filter(state == "active") |>
+    filter(.data$state == "active") |>
     edges_df() |>
-    filter(node_type_to == "outcome") |>
+    filter(.data$node_type_to == "outcome") |>
     edges_to_formula()
 }
 
@@ -280,6 +285,7 @@ lm_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
 }
 
 #' Default parameters for glmnet_model
+#' @importFrom utils modifyList
 #' @noRd
 glmnet_model_params <- function(...) {
   defaults <- list(intercept = FALSE, lambda = 0.01)
@@ -389,6 +395,7 @@ brms_model_params <- function(...) {
 #'  as the basis for estimation.
 #' @return models A list of estimated BRMS models. The j^th element contains
 #'  y[j] ~ x1 + x2 + ...
+#' @importFrom stats update
 #' @noRd
 brm_cache <- function(formula, data, ...) {
   models <- list()

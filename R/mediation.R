@@ -117,11 +117,11 @@ graph_specification <- function(outcomes, treatments, mediators, pretreatments) 
     purrr::reduce(edges, graph_join) %N>%
       mutate(
         node_type = factor(
-          node_type,
+          .data$node_type,
           levels = c("intercept", "pretreatment", "treatment", "mediator", "outcome")
         )
       ) |>
-      arrange(node_type, name) |>
+      arrange(.data$node_type, .data$name) |>
       mutate(id = row_number())
   )
 }
@@ -142,6 +142,7 @@ graph_specification <- function(outcomes, treatments, mediators, pretreatments) 
 #'   corresponds to the inputs, one to the outputs, and every pair of inputs and
 #'   outputs are linked.
 #' @importFrom dplyr case_when mutate %>%
+#' @importFrom rlang .data
 #' @importFrom tidygraph %E>% tbl_graph activate
 #' @noRd
 expand_edges <- function(input, output, input_name, output_name) {
@@ -153,7 +154,7 @@ expand_edges <- function(input, output, input_name, output_name) {
       )
     ) %E>%
     mutate(state = "active") |>
-    activate(nodes)
+    activate("nodes")
 }
 
 #' Convert a Summarized Experiment to a data.frame
@@ -288,6 +289,7 @@ from_phyloseq <- function(exper, outcomes, treatments, mediators, pretreatments)
 #' @return result An object of class `mediation_data`, with separate slots for
 #'   each of the node types in a mediation analysis diagram.
 #' @importFrom dplyr bind_cols select
+#' @importFrom tidyselect where
 #' @noRd
 from_data_frame <- function(df, outcomes, treatments, mediators,
                             pretreatments) {
@@ -382,6 +384,8 @@ print_sub <- function(x) {
 setGeneric("nrow", function(x) nrow(x))
 
 #' How many samples in the mediation dataset?
+#' @param x The `mediation_data` object whose number of samples we want to
+#'   return.
 #' @export
 setMethod(nrow, "mediation_data", function(x) {
   nrow(x@outcomes)

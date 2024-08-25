@@ -2,10 +2,11 @@ fit_type <- function(model) {
   ifelse(is.null(model@estimates), "An unfitted", "A fitted")
 }
 
+#' @importFrom rlang .data
 node_subset <- function(edges, condition) {
   edges |>
-    filter(node_type %in% c(condition)) |>
-    pull(name)
+    filter(.data$node_type %in% c(condition)) |>
+    pull(.data$name)
 }
 
 vec_sub <- function(names) {
@@ -59,6 +60,9 @@ setMethod("show", "multimedia", function(object) {
 #' Taken from the post at
 #'
 #' https://blog.djnavarro.net/posts/2021-04-18_pretty-little-clis/
+#' 
+#' @param x A character vector potentially including ANSI.
+#' @param options Unused placeholder argument.
 #' @examples
 #' knitr::knit_hooks$set(output = ansi_aware_handler)
 #' options(crayon.enabled = TRUE)
@@ -73,6 +77,7 @@ ansi_aware_handler <- function(x, options) {
 }
 
 #' Print an object of class model
+#' @importFrom utils head
 #' @noRd
 setMethod("show", "model", function(object) {
   n_show <- 2

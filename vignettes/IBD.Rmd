@@ -180,7 +180,7 @@ direct <- list(
   CD = direct_effect(model, exper, 1, 3),
   UC = direct_effect(model, exper, 2, 3)
 ) |>
-  map_dfr(effect_summary, N = Inf, .id = "treatment")
+  map_dfr(effect_summary, .id = "treatment")
 
 vis_direct <- direct |>
   slice_max(abs(direct_effect), n = 20) |>
@@ -264,7 +264,7 @@ you can just read in the pre-computed result in the next block.
 #   CD = indirect_pathwise(model, exper, 1, 3),
 #   UC = indirect_pathwise(model, exper, 2, 3)
 # ) |>
-#   map_dfr(effect_summary, N = 12, .id = "treatment")
+#   map_dfr(effect_summary, .id = "treatment")
 
 indirect_sorted <- read_csv("https://drive.google.com/uc?export=download&id=1Ar7u2rU7DLMjvS-iV9OXwGcY4Rs1Q5wI")
 ```
@@ -328,7 +328,7 @@ inference <- readRDS(url("https://drive.google.com/uc?export=download&id=16A9MCb
 
 ```{r lasso_bootstrap_vis, fig.width = 9, fig.height = 3.5}
 filter_outcomes <- inference$indirect |>
-  effect_summary(N = Inf) |>
+  effect_summary() |>
   group_by(outcome) |>
   summarise(indirect_effect = median(indirect_effect)) |>
   slice_max(abs(indirect_effect), n = 20) |>

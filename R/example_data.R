@@ -101,3 +101,14 @@ demo_spline <- function(n_samples = 5e3, tau = c(2, 2)) {
   colnames(y) <- glue("outcome_{1:2}")
   bind_cols(y, mediator = mediator, treatment = factor(treatment))
 }
+
+#' Mindfulness Dataset
+#' 
+#' Data from a study of the relationship between mindfulness and the microbiome,
+#' stored as a phyloseq object. Measurements are from 50 subjects before and
+#' after a real and active control mindfulness intervention. We are interested
+#' in changes in subject-level metadata, stored in the sample_data slot
+#' @name mindfulness
+#' @docType data
+#' @keywords data
+NULL

@@ -7,12 +7,13 @@
 #'   treatment to mediator, etc. Otherwise, the vector of indices specifying
 #'   which edges to ignore.
 #' @return The ID of edges that match the `nulls` parameter.
+#' @importFrom rlang .data
 #' @importFrom dplyr row_number n pull
 #' @importFrom tidygraph %E>%
 #' @noRd
 matching_indices <- function(edges, nulls = NULL) {
   if (is.null(nulls)) {
-    ids <- quote(1:n())
+    ids <- quote(seq_len(n()))
   }
 
   G <- as.data.frame(edges)
@@ -20,20 +21,20 @@ matching_indices <- function(edges, nulls = NULL) {
     as.data.frame() |>
     mutate(
       edge_id = row_number(),
-      from_type = G$node_type[from],
-      to_type = G$node_type[to],
+      from_type = G$node_type[.data$from],
+      to_type = G$node_type[.data$to],
     )
 
   if (nulls == "T->Y") {
-    ids <- filter(E, from_type == "treatment", to_type == "outcome")
+    ids <- filter(E, .data$from_type == "treatment", .data$to_type == "outcome")
   } else if (nulls == "T->M") {
-    ids <- filter(E, from_type == "treatment", to_type == "mediator")
+    ids <- filter(E, .data$from_type == "treatment", .data$to_type == "mediator")
   } else if (nulls == "M->Y") {
-    ids <- filter(E, from_type == "mediator", to_type == "outcome")
+    ids <- filter(E, .data$from_type == "mediator", .data$to_type == "outcome")
   } else {
     ids <- filter(E, nulls)
   }
-  pull(ids, edge_id)
+  pull(ids, .data$edge_id)
 }
 
 #' Nullify Active Edges
@@ -85,10 +86,10 @@ nullify <- function(multimedia, nulls = NULL) {
   multimedia@edges <- multimedia@edges %E>%
     mutate(
       new_null = row_number() %in% nulls,
-      state = ifelse(state == "active" & new_null, "inactive", state)
+      state = ifelse(.data$state == "active" & .data$new_null, "inactive", .data$state)
     ) |>
-    select(-new_null) |>
-    activate(nodes)
+    select(-.data$new_null) |>
+    activate("nodes")
   multimedia
 }
 
@@ -226,6 +227,9 @@ null_contrast <- function(model, exper, nullification = "T->Y",
 #' It computes the proportion of synthetic null estimates that are among the top
 #' K largest effects (in magnitude) as an estimate of the FDR.
 #'
+#' @param contrast A data.frame summarizing the differences between outcomes across
+#'   hypothetical treatments, typically as output by `null_contrast`. Each row
+#'   is one outcome in one hypothetical scenario.
 #' @param effect Either "indirect_overall" (the default), "indirect_pathwise",
 #'   or "direct_effect" specifying the type of effect that we want to select.
 #' @param q_value The target for false discovery rate control. The last time the
@@ -234,6 +238,7 @@ null_contrast <- function(model, exper, nullification = "T->Y",
 #' @return fdr A data.frame specifying, for each candidate effect, whether it
 #'   should be selected.
 #' @importFrom dplyr filter summarise mutate pull ungroup
+#' @importFrom rlang .data
 #' @examples
 #' # example with null data - notice synthetic data has larger effect.
 #' exper <- demo_joy() |>
@@ -264,39 +269,39 @@ null_contrast <- function(model, exper, nullification = "T->Y",
 fdr_summary <- function(contrast, effect = "indirect_overall", q_value = 0.15) {
   if (effect == "indirect_overall") {
     fdr <- contrast |>
-      group_by(source, outcome) |>
-      summarise(indirect_effect = mean(indirect_effect), .group = "drop_last") |>
-      arrange(-abs(indirect_effect))
+      group_by(.data$source, .data$outcome) |>
+      summarise(indirect_effect = mean(.data$indirect_effect), .group = "drop_last") |>
+      arrange(-abs(.data$indirect_effect))
   } else if (effect == "indirect_pathwise") {
     fdr <- contrast |>
-      group_by(source, outcome, mediator) |>
-      summarise(indirect_effect = mean(indirect_effect), .group = "drop_last") |>
-      arrange(-abs(indirect_effect))
+      group_by(.data$source, .data$outcome, .data$mediator) |>
+      summarise(indirect_effect = mean(.data$indirect_effect), .group = "drop_last") |>
+      arrange(-abs(.data$indirect_effect))
   } else if (effect == "direct_effect") {
     fdr <- contrast |>
-      group_by(source, outcome) |>
-      summarise(direct_effect = mean(direct_effect), .groups = "drop_last") |>
-      arrange(-abs(direct_effect))
+      group_by(.data$source, .data$outcome) |>
+      summarise(direct_effect = mean(.data$direct_effect), .groups = "drop_last") |>
+      arrange(-abs(.data$direct_effect))
   }
 
   fdr <- fdr |>
     ungroup() |>
     mutate(
       rank = row_number(),
-      fdr_hat = cumsum(source == "synthetic") / rank
+      fdr_hat = cumsum(.data$source == "synthetic") / rank
     )
 
   cutoff <- fdr |>
-    filter(fdr_hat < q_value) |>
-    summarise(ix = max(rank)) |>
-    pull(ix)
+    filter(.data$fdr_hat < q_value) |>
+    summarise(ix = max(.data$rank)) |>
+    pull(.data$ix)
 
   if (length(cutoff) == 0) {
     fdr <- fdr |>
       mutate(keep = FALSE)
   } else {
     fdr <- fdr |>
-      mutate(keep = rank < cutoff & source == "real")
+      mutate(keep = .data$rank < cutoff & .data$source == "real")
   }
   fdr
 }

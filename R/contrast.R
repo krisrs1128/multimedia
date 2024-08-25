@@ -10,6 +10,7 @@
 #'  treatment profile to consider in the difference.
 #' @param profile2 An object of class `treatment_profile` containing the second
 #'  treatment profile to consider in the difference.
+#' @param ... Additional arguments to pass to `predict()`.
 #' @return A list with two elements, `mediators` and `outcomes`, containing the
 #'  differences in the predicted M(T') - M(T) and Y(T', M(T')) - Y(T, M(T))
 #'  between the two profiles T and T'.
@@ -45,6 +46,7 @@ contrast_predictions <- function(model, profile1, profile2, ...) {
 #' @return A list with two elements, `mediators` and `outcomes`, containing the
 #'  differences in the sampled M(T') - M(T) and Y(T', M(T')) - Y(T, M(T))
 #'  between the two profiles T and T'.
+#' @param ... Additional arguments to pass to `sample()`.
 #' @export
 #' @examples
 #' exper <- demo_joy() |>
@@ -103,6 +105,7 @@ path_difference <- function(y1, y2) {
 #' @importFrom dplyr everything mutate select bind_rows
 #' @importFrom tidyr pivot_longer
 #' @importFrom glue glue
+#' @importFrom rlang .data
 #' @export
 #' @examples
 #' # example with null data
@@ -150,8 +153,8 @@ direct_effect <- function(model, exper = NULL, t1 = 1, t2 = 2) {
   }
 
   bind_rows(result, .id = "indirect_setting") |>
-    mutate(indirect_setting = t_[[1]][as.integer(indirect_setting)]) |>
-    select(outcome, indirect_setting, contrast, direct_effect)
+    mutate(indirect_setting = t_[[1]][as.integer(.data$indirect_setting)]) |>
+    select(.data$outcome, .data$indirect_setting, .data$contrast, .data$direct_effect)
 }
 
 parse_name <- function(t_, t1, t2) {
@@ -169,6 +172,15 @@ parse_name <- function(t_, t1, t2) {
 #' \frac{1}{2} \sum_{j = 0}^{1} \sum_{i = 1}^{N} \hat{Y}_{i}(t2, \hat{M}(t2)) - \hat{Y}_{i}(t1, \hat{M}(t1))
 #' }
 #'
+#' @param model An object of class multimedia containing the estimated mediation
+#'  and outcome models whose mediation and outcome predictions we want to
+#'  compare.
+#' @param exper An object of class multimedia_data containing the mediation and
+#'   outcome data from which the direct effects are to be estimated.
+#' @param t1 The reference level of the treatment to be used when computing the
+#'  indirect effect.
+#' @param t2 The alternative level of the treatment to be used when computing
+#'  the indirect effect.
 #' @examples
 #' # example with null data
 #' exper <- demo_joy() |>
@@ -214,18 +226,27 @@ indirect_overall <- function(model, exper = NULL, t1 = 1, t2 = 2) {
   }
 
   bind_rows(result, .id = "direct_setting") |>
-    mutate(direct_setting = t_[[1]][as.integer(direct_setting)]) |>
-    select(outcome, direct_setting, contrast, indirect_effect)
+    mutate(direct_setting = t_[[1]][as.integer(.data$direct_setting)]) |>
+    select(.data$outcome, .data$direct_setting, .data$contrast, .data$indirect_effect)
 }
 
 #' Indirect Effects via Single Mediation Paths
+#' @param model An object of class multimedia containing the estimated mediation
+#'  and outcome models whose mediation and outcome predictions we want to
+#'  compare.
+#' @param exper An object of class multimedia_data containing the mediation and
+#'   outcome data from which the direct effects are to be estimated.
+#' @param t1 The reference level of the treatment to be used when computing the
+#'  (pathwise) indirect effect.
+#' @param t2 The alternative level of the treatment to be used when computing
+#'  the (pathwise) indirect effect.
+#' 
 #' @examples
 #' # example with null data
 #' exper <- demo_joy() |>
 #'   mediation_data("PHQ", "treatment", starts_with("ASV"))
 #' fit <- multimedia(exper) |>
 #'   estimate(exper)
-#'
 #' indirect_pathwise(fit)
 #'
 #' # example with another dataset
@@ -272,7 +293,7 @@ indirect_pathwise <- function(model, exper = NULL, t1 = 1, t2 = 2) {
   }
 
   bind_rows(result) |>
-    select(outcome, mediator, direct_setting, contrast, indirect_effect)
+    select(.data$outcome, .data$mediator, .data$direct_setting, .data$contrast, .data$indirect_effect)
 }
 
 #' Average Effects across j
@@ -286,6 +307,8 @@ indirect_pathwise <- function(model, exper = NULL, t1 = 1, t2 = 2) {
 #'   over.
 #' @importFrom dplyr group_by summarize  across
 #' @importFrom tidyselect matches
+#' @importFrom utils tail
+#' @importFrom rlang .data
 #' @seealso direct_effect indirect_effect
 #' @examples
 #' # example with null data
@@ -304,12 +327,11 @@ indirect_pathwise <- function(model, exper = NULL, t1 = 1, t2 = 2) {
 #'   direct_effect() |>
 #'   effect_summary()
 #' @export
-effect_summary <- function(effects, N = 10) {
-  effect_type <- tail(colnames(effects), 1)
+effect_summary <- function(effects) {
   if ("mediator" %in% colnames(effects)) {
-    effects <- group_by(effects, outcome, mediator)
+    effects <- group_by(effects, .data$outcome, .data$mediator)
   } else {
-    effects <- group_by(effects, outcome)
+    effects <- group_by(effects, .data$outcome)
   }
 
   effects |>

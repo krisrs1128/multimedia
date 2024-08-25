@@ -1,7 +1,9 @@
+#' @importFrom rlang .data
+#' @importFrom dplyr filter pull
 retrieve_names <- function(object, nm) {
   object@edges |>
-    filter(node_type == nm) |>
-    pull(name)
+    filter(.data$node_type == nm) |>
+    pull(.data$name)
 }
 
 #' Names of Mediators in a Multimedia Object

@@ -1,11 +1,15 @@
 
+#' @importFrom cli cli_warn
 #' @importFrom dplyr bind_rows
+#' @importFrom tidyselect ends_with
+#' @importFrom stats sd
 sensitivity_internal <- function(summarization, model, exper, n_rho = 10, 
                                  n_bootstrap = 100, progress = TRUE) {
   model_types <- c(model@mediation@model_type, model@outcome@model_type)
   supported_models <- c("rf_model()", "lm_model()", "glmnet_model()")
   if (!all(model_types %in% supported_models)) {
-    cli_message("Sensitivity analysis is only supported for models of type lm_model(), glmnet_model(), and rf_model()")
+    cli_warn("Sensitivity analysis is only supported for models of type lm_model(), glmnet_model(), and rf_model()")
+    return()
   }
 
   rho_seq <- seq(-1, 1, length.out = n_rho)
@@ -32,7 +36,7 @@ sensitivity_internal <- function(summarization, model, exper, n_rho = 10,
   }
 
   bind_rows(sensitivity_curve) |>
-    group_by(outcome, rho) |>
+    group_by(.data$outcome, .data$rho) |>
     summarise(across(ends_with("effect"), c(`_` = mean, standard_error = sd))) |>
     rename_with(~ gsub("__$", "", .))
 }

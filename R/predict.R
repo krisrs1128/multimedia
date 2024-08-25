@@ -5,6 +5,27 @@
 #' estimated DAG. It first samples `M* | T, X` and then `Y* | M*, T, X`. Each
 #' sampling step will call the sample method within the mediation and outcome
 #' models that make up the multimedia object on which this is called.
+#' @param x An object of class multimedia containing the estimated
+#'   mediation and outcome models whose mediation and outcome samples we
+#'   want to obtain.
+#' @param size A placeholder argument to agree with the default `sample` method
+#'   in R base. We always return the number of samples as set in either the
+#'   original input `x` or a new input `profile`.
+#' @param profile An object of class `treatment_profile` containing the
+#'   treatment profile to consider in the difference. Defaults to a profile with
+#'   all the unique treatment configurations observed in the original data,
+#'   shared across both the mediators and outcomes.
+#' @param mediators By default, we will return outcome predictions using the
+#'   predicted mediators from the mediation model. Modify this argument if you
+#'   would like to directly control the mediation inputs for the outcome model.
+#'   Must be a data.frame whose columns are named to match the
+#'   `mediators(object)`.
+#' @param pretreatment By default, we will return mediation and outcome model
+#'   predictions using the same pretreatment variables as used when initially
+#'   estimating the models (like setting `newdata = NULL` in usual `predict`).
+#'   To pass in different pretreatment variables, provide a data.frame here
+#'   whose columns match the pretreatments as the originally trained mediation
+#'   and outcome models.
 #' @examples
 #' exper <- demo_spline(tau = c(2, 1)) |>
 #'   mediation_data(starts_with("outcome"), "treatment", "mediator")
@@ -124,6 +145,17 @@ predict_across <- function(object, newdata, name) {
 #'   treatment profile to consider in the difference. Defaults to a profile with
 #'   all the unique treatment configurations observed in the original data,
 #'   shared across both the mediators and outcomes.
+#' @param mediators By default, we will return outcome predictions using the
+#'   predicted mediators from the mediation model. Modify this argument if you
+#'   would like to directly control the mediation inputs for the outcome model.
+#'   Must be a data.frame whose columns are named to match the
+#'   `mediators(object)`.
+#' @param pretreatment By default, we will return mediation and outcome model
+#'   predictions using the same pretreatment variables as used when initially
+#'   estimating the models (like setting `newdata = NULL` in usual `predict`).
+#'   To pass in different pretreatment variables, provide a data.frame here
+#'   whose columns match the pretreatments as the originally trained mediation
+#'   and outcome models.
 #' @return A list with two elements:
 #'   $mediators: A data.frame containing predicted values for the mediators. Each
 #'   row corresponds to one row of the newdata, or one row of the default
