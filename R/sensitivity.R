@@ -1,15 +1,49 @@
 
-#' @importFrom cli cli_warn
+#' Core Sensitivity Analysis Function
+#' 
+#' For causal identification, mediation analysis relies on several untestable
+#' assumptions. One important one is that there is no confounding between the
+#' counterfactual mediator and outcome variables. Even though we can never know
+#' whether this exists, we can measure the sensitivity of our conclusions to the
+#' existence/strength of such a confounder. In this function, we approach this
+#' by inducing (unallowable) correlation between the mediator and outcome model
+#' residuals, simulate forward, and see how conclusions change.
+#' 
+#' This function is an internal, core function that is wrapped by many
+#' sensitivity analysis wrappers. It allows general `summarization` functions as
+#' input. This allows us to apply the same residual-correlation to many kinds of
+#' output analysis, e.g., both indirect overall and pathwise effects.
+#' 
+#' @param summarization A function whose outputs we want to evaluate for
+#'   sensitivity to potentially unmeasured confounding. E.g.,
+#'   `indirect_pathwise`. The function must output its summaries as a tidy
+#'   `data.frame`.
+#' @param model A `multimedia` object containing the fitted models for
+#'   sensitivity analysis. Note that since our approach relies on correlating
+#'   simulated residual error, it is only applicable to models of class
+#'   `lm_model()`, `glmnet_model()` and `rf_model()`.
+#' @param exper The original `mediation_data` class object used to fit `model`.
+#'   These observations will be resampled to support bootstrap confidence
+#'   interval construction of the sensitivity curve.
+#' @param n_rho We will evaluate correlations Cor(e', e) between mediation and
+#'   outcome model errors ranging from `[-1, 1]` with density determined by this
+#'   parameter. Defaults to 10.
+#' @param n_bootstrap The number of bootstrap resamples used to build confidence
+#'   bands around the sensitivity curves. Defaults to 100.
+#' @param progress A logical indicating whether to show a progress bar.
+#' @return A `date.frame` giving the outputs of the `summarization` function
+#'   across many values of the correlation rho.
+#' @importFrom cli cli_abort
 #' @importFrom dplyr bind_rows
 #' @importFrom tidyselect ends_with
 #' @importFrom stats sd
+#' @noRd
 sensitivity_internal <- function(summarization, model, exper, n_rho = 10, 
                                  n_bootstrap = 100, progress = TRUE) {
   model_types <- c(model@mediation@model_type, model@outcome@model_type)
   supported_models <- c("rf_model()", "lm_model()", "glmnet_model()")
   if (!all(model_types %in% supported_models)) {
-    cli_warn("Sensitivity analysis is only supported for models of type lm_model(), glmnet_model(), and rf_model()")
-    return()
+    cli_abort("Sensitivity analysis is only supported for models of type lm_model(), glmnet_model(), and rf_model().")
   }
 
   rho_seq <- seq(-1, 1, length.out = n_rho)
@@ -42,6 +76,31 @@ sensitivity_internal <- function(summarization, model, exper, n_rho = 10,
 }
 
 #' Sensitivity Analysis for Overall Indirect Effect
+#' 
+#' For causal identification, mediation analysis relies on several untestable
+#' assumptions. One important one is that there is no confounding between the
+#' counterfactual mediator and outcome variables. Even though we can never know
+#' whether this exists, we can measure the sensitivity of our conclusions to the
+#' existence/strength of such a confounder. In this function, we approach this
+#' by inducing (unallowable) correlation between the mediator and outcome model
+#' residuals, simulate forward, and see how the estimated overall indirect
+#' effect changes.
+#' 
+#' @param model A `multimedia` object containing the fitted models for
+#'   sensitivity analysis. Note that since our approach relies on correlating
+#'   simulated residual error, it is only applicable to models of class
+#'   `lm_model()`, `glmnet_model()` and `rf_model()`.
+#' @param exper The original `mediation_data` class object used to fit `model`.
+#'   These observations will be resampled to support bootstrap confidence
+#'   interval construction of the sensitivity curve.
+#' @param n_rho We will evaluate correlations Cor(e', e) between mediation and
+#'   outcome model errors ranging from `[-1, 1]` with density determined by this
+#'   parameter. Defaults to 10.
+#' @param n_bootstrap The number of bootstrap resamples used to build confidence
+#'   bands around the sensitivity curves. Defaults to 100.
+#' @param progress A logical indicating whether to show a progress bar.
+#' @return A `date.frame` giving the outputs of `indirect_overall` across many
+#'   values of the correlation rho.
 #' @export
 sensitivity <- function(model, exper, n_rho = 10, n_bootstrap = 100, progress = TRUE) {
   (\(x) indirect_overall(x) |> 
@@ -50,6 +109,31 @@ sensitivity <- function(model, exper, n_rho = 10, n_bootstrap = 100, progress = 
 }
 
 #' Sensitivity Analysis for Pathwise Indirect Effects
+#' 
+#' For causal identification, mediation analysis relies on several untestable
+#' assumptions. One important one is that there is no confounding between the
+#' counterfactual mediator and outcome variables. Even though we can never know
+#' whether this exists, we can measure the sensitivity of our conclusions to the
+#' existence/strength of such a confounder. In this function, we approach this
+#' by inducing (unallowable) correlation between the mediator and outcome model
+#' residuals, simulate forward, and see how the estimated pathwise indirect
+#' effects change.
+#' 
+#' @param model A `multimedia` object containing the fitted models for
+#'   sensitivity analysis. Note that since our approach relies on correlating
+#'   simulated residual error, it is only applicable to models of class
+#'   `lm_model()`, `glmnet_model()` and `rf_model()`.
+#' @param exper The original `mediation_data` class object used to fit `model`.
+#'   These observations will be resampled to support bootstrap confidence
+#'   interval construction of the sensitivity curve.
+#' @param n_rho We will evaluate correlations Cor(e', e) between mediation and
+#'   outcome model errors ranging from `[-1, 1]` with density determined by this
+#'   parameter. Defaults to 10.
+#' @param n_bootstrap The number of bootstrap resamples used to build confidence
+#'   bands around the sensitivity curves. Defaults to 100.
+#' @param progress A logical indicating whether to show a progress bar.
+#' @return A `date.frame` giving the outputs of `indirect_overall` across many
+#'   values of the correlation rho.
 #' @export
 sensitivity_pathwise <- function(model, exper, n_rho = 10, n_bootstrap = 100, progress = TRUE) {
   (\(x) indirect_pathwise(x) |> 
@@ -64,6 +148,16 @@ sorted_treatments <- function(model) {
 }
 
 #' Sample from an SEM with Correlated Errors
+#' 
+#' @param model A `multimedia` object containing the fitted models for
+#'   sensitivity analysis. Note that since our approach relies on correlating
+#'   simulated residual error, it is only applicable to models of class
+#'   `lm_model()`, `glmnet_model()` and `rf_model()`.
+#' @param exper The original `mediation_data` class object used to fit `model`.
+#'   These observations will be resampled to support bootstrap confidence
+#'   interval construction of the sensitivity curve.
+#' @param rho The value of the correlation between all pairs of mediators and
+#'   outcomes.
 #' @importFrom MASS mvrnorm
 #' @examples
 #' xy_data <- demo_spline()
@@ -98,6 +192,8 @@ sensitivity_sample <- function(model, exper, rho = 0.0) {
   samples
 }
 
+#' Extract SDs from multimedia model objects
+#' 
 #' @examples
 #' xy_data <- demo_spline()
 #' exper <- mediation_data(xy_data, starts_with("outcome"), "treatment", "mediator")
@@ -108,6 +204,7 @@ sensitivity_sample <- function(model, exper, rho = 0.0) {
 #' @importFrom purrr map_dbl
 #' @importFrom cli cli_abort
 #' @importFrom glue glue
+#' @noRd
 standard_deviations <- function(model) {
   switch(model@model_type,
     "glmnet_model()" = map_dbl(model@estimates, ~ deviance(.) / .$nobs),
