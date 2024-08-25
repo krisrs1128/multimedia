@@ -17,7 +17,7 @@ biocViews:
     Regression
 Depends: 
     SummarizedExperiment,
-    R (>= 4.40),
+    R (>= 4.4.0),
     methods,
     tidyselect
 Imports:

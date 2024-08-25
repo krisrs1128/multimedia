@@ -39,7 +39,7 @@ profile1 <- setup_profile(model, t1, t1)
 profile2 <- setup_profile(model, t2, t2)
 contrast_samples(model, profile1, profile2)
 
-samples <- purrr::map(1:100, ~ contrast_samples(model, profile1, profile2))
+samples <- purrr::map(seq_len(100), ~ contrast_samples(model, profile1, profile2))
 hist(sapply(samples, \(x) x[[1]]$ASV1) )
 hist(sapply(samples, \(x) x[[1]]$ASV2) )
 }
