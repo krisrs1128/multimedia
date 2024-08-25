@@ -6,6 +6,11 @@
 \usage{
 sub_formula(formula, yj)
 }
+\arguments{
+\item{formula}{The original formula whose response we want to modify.}
+
+\item{yj}{The desired response term for the formula.}
+}
 \description{
 Helper to Modify Formulas
 }

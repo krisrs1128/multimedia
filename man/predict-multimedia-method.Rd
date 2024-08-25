@@ -15,6 +15,21 @@ want to obtain.}
 treatment profile to consider in the difference. Defaults to a profile with
 all the unique treatment configurations observed in the original data,
 shared across both the mediators and outcomes.}
+
+\item{mediators}{By default, we will return outcome predictions using the
+predicted mediators from the mediation model. Modify this argument if you
+would like to directly control the mediation inputs for the outcome model.
+Must be a data.frame whose columns are named to match the
+\code{mediators(object)}.}
+
+\item{pretreatment}{By default, we will return mediation and outcome model
+predictions using the same pretreatment variables as used when initially
+estimating the models (like setting \code{newdata = NULL} in usual \code{predict}).
+To pass in different pretreatment variables, provide a data.frame here
+whose columns match the pretreatments as the originally trained mediation
+and outcome models.}
+
+\item{...}{A placeholder to agree with \code{predict} in base R. Not ever used.}
 }
 \value{
 A list with two elements:

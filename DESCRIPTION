@@ -10,10 +10,14 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 VignetteBuilder: knitr
-biocViews: Software
+biocViews: 
+    Software, 
+    StatisticalMethod, 
+    StructuralEquationModels, 
+    Regression
 Depends: 
     SummarizedExperiment,
-    R (>= 3.50),
+    R (>= 4.40),
     methods,
     tidyselect
 Imports:
@@ -36,14 +40,23 @@ Imports:
 Suggests:
     BiocStyle,
     brms,
+    compositions,
     ggraph,
+    ggrepel,
     glmnet,
     glmnetUtils,
+    knitr,
     miniLNM,
     patchwork,
     ranger,
-    knitr,
     rmarkdown,
-    testthat (>= 3.0.0)
-LazyData: true
+    testthat (>= 3.0.0),
+    tidyr,
+    vroom
+BugReports:
+    https://github.com/krisrs1128/multimedia/issues
+URL: 
+    https://krisrs1128.github.io/multimedia,
+    https://github.com/krisrs1128/multimedia
+LazyData: false
 Config/testthat/edition: 3

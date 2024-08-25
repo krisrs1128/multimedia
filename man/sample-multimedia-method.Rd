@@ -6,6 +6,36 @@
 \usage{
 \S4method{sample}{multimedia}(x, size, pretreatment = NULL, profile = NULL, mediators = NULL, ...)
 }
+\arguments{
+\item{x}{An object of class multimedia containing the estimated
+mediation and outcome models whose mediation and outcome samples we
+want to obtain.}
+
+\item{size}{A placeholder argument to agree with the default \code{sample} method
+in R base. We always return the number of samples as set in either the
+original input \code{x} or a new input \code{profile}.}
+
+\item{pretreatment}{By default, we will return mediation and outcome model
+predictions using the same pretreatment variables as used when initially
+estimating the models (like setting \code{newdata = NULL} in usual \code{predict}).
+To pass in different pretreatment variables, provide a data.frame here
+whose columns match the pretreatments as the originally trained mediation
+and outcome models.}
+
+\item{profile}{An object of class \code{treatment_profile} containing the
+treatment profile to consider in the difference. Defaults to a profile with
+all the unique treatment configurations observed in the original data,
+shared across both the mediators and outcomes.}
+
+\item{mediators}{By default, we will return outcome predictions using the
+predicted mediators from the mediation model. Modify this argument if you
+would like to directly control the mediation inputs for the outcome model.
+Must be a data.frame whose columns are named to match the
+\code{mediators(object)}.}
+
+\item{...}{Additional options to pass to the @sampler method in the estimated
+mediation model.}
+}
 \description{
 This generalizes the built-in sample method to the multimedia class. Given an
 estimated multimedia object, this function supports sampling along the

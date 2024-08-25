@@ -6,6 +6,23 @@
 \usage{
 \S4method{[}{mediation_data,ANY,ANY,ANY}(x, i, j, ..., drop = TRUE)
 }
+\arguments{
+\item{x}{An object of class \code{mediation_data} whose samples we want to subset.}
+
+\item{i}{An integer or integer/logical vector specifying the samples to
+subset to.}
+
+\item{j}{A placeholder to argree with R's \code{[} function. Never used.}
+
+\item{...}{A placeholder to agree with R's \code{[} function. Never used.}
+
+\item{drop}{A placeholder to agree with R's \code{[} function. Never used.}
+}
+\value{
+A version of the input mediation_data object whose @mediators,
+@outcomes, @treatments, and @pretreatments rows have all been subsetted
+according to \code{i}.
+}
 \description{
 We can subset samples by indexing into a mediation dataset. It will subsample
 all fields -- pretreatments, treatments, mediators, and outcomes. Note that

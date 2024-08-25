@@ -6,6 +6,36 @@
 \usage{
 sensitivity(model, exper, n_rho = 10, n_bootstrap = 100, progress = TRUE)
 }
+\arguments{
+\item{model}{A \code{multimedia} object containing the fitted models for
+sensitivity analysis. Note that since our approach relies on correlating
+simulated residual error, it is only applicable to models of class
+\code{lm_model()}, \code{glmnet_model()} and \code{rf_model()}.}
+
+\item{exper}{The original \code{mediation_data} class object used to fit \code{model}.
+These observations will be resampled to support bootstrap confidence
+interval construction of the sensitivity curve.}
+
+\item{n_rho}{We will evaluate correlations Cor(e', e) between mediation and
+outcome model errors ranging from \verb{[-1, 1]} with density determined by this
+parameter. Defaults to 10.}
+
+\item{n_bootstrap}{The number of bootstrap resamples used to build confidence
+bands around the sensitivity curves. Defaults to 100.}
+
+\item{progress}{A logical indicating whether to show a progress bar.}
+}
+\value{
+A \code{date.frame} giving the outputs of \code{indirect_overall} across many
+values of the correlation rho.
+}
 \description{
-Sensitivity Analysis for Overall Indirect Effect
+For causal identification, mediation analysis relies on several untestable
+assumptions. One important one is that there is no confounding between the
+counterfactual mediator and outcome variables. Even though we can never know
+whether this exists, we can measure the sensitivity of our conclusions to the
+existence/strength of such a confounder. In this function, we approach this
+by inducing (unallowable) correlation between the mediator and outcome model
+residuals, simulate forward, and see how the estimated overall indirect
+effect changes.
 }

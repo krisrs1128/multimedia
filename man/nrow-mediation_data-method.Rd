@@ -6,6 +6,10 @@
 \usage{
 \S4method{nrow}{mediation_data}(x)
 }
+\arguments{
+\item{x}{The \code{mediation_data} object whose number of samples we want to
+return.}
+}
 \description{
 How many samples in the mediation dataset?
 }
