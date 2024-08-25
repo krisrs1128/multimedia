@@ -16,6 +16,8 @@ treatment profile to consider in the difference.}
 
 \item{profile2}{An object of class \code{treatment_profile} containing the second
 treatment profile to consider in the difference.}
+
+\item{...}{Additional arguments to pass to \code{predict()}.}
 }
 \value{
 A list with two elements, \code{mediators} and \code{outcomes}, containing the

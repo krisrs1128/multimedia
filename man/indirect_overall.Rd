@@ -6,6 +6,20 @@
 \usage{
 indirect_overall(model, exper = NULL, t1 = 1, t2 = 2)
 }
+\arguments{
+\item{model}{An object of class multimedia containing the estimated mediation
+and outcome models whose mediation and outcome predictions we want to
+compare.}
+
+\item{exper}{An object of class multimedia_data containing the mediation and
+outcome data from which the direct effects are to be estimated.}
+
+\item{t1}{The reference level of the treatment to be used when computing the
+indirect effect.}
+
+\item{t2}{The alternative level of the treatment to be used when computing
+the indirect effect.}
+}
 \description{
 Direct Effects from Estimated Model
 }

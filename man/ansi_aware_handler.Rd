@@ -6,6 +6,11 @@
 \usage{
 ansi_aware_handler(x, options)
 }
+\arguments{
+\item{x}{A character vector potentially including ANSI.}
+
+\item{options}{Unused placeholder argument.}
+}
 \description{
 Helper function for printing ANSI in Rmarkdown output. Use this at the start
 of your Rmarkdown files to include colors in the printed object names in the

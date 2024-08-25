@@ -4,7 +4,7 @@
 \alias{effect_summary}
 \title{Average Effects across j}
 \usage{
-effect_summary(effects, N = 10)
+effect_summary(effects)
 }
 \arguments{
 \item{effects}{The output from direct_effect or indirect_effect. A data.frame
