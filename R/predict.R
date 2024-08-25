@@ -102,9 +102,9 @@ setMethod("sample", "multimedia", function(
 #' @return A vector of predicted values for the outcome of interest.
 #' @noRd
 #' @examples
-#' exper <- demo_spline(tau = c(2, 1)) |>
+#' exper <- demo_spline(tau = c(2, 1)) |>  
 #'   mediation_data(starts_with("outcome"), "treatment", "mediator")
-#' fit <- multimedia(exper) |>
+#' fit <- multimedia(exper) |> 
 #'   estimate(exper)
 #' multimedia:::predict_across(fit@outcome, NULL, "outcome_1")
 #' multimedia:::predict_across(fit@outcome, NULL, "outcome_2")
@@ -112,17 +112,25 @@ setMethod("sample", "multimedia", function(
 #' # predict at newdata
 #' newdata <- bind_mediation(exper)
 #' multimedia:::predict_across(fit@outcome, newdata[seq_len(5), ], "outcome_2")
-#' @importFrom purrr map_dfc
+#' multimedia:::predict_across(
+#'   fit@outcome,
+#'   newdata[seq_len(5), ],
+#'   c("outcome_1", "outcome_2")
+#' )
+#' @importFrom purrr map set_names
+#' @importFrom dplyr bind_cols
 predict_across <- function(object, newdata, name) {
   # many univariate models
   if (is(object@estimates, "list")) {
     if (length(name) == 1) {
       return(object@predictor(object@estimates[[name]], newdata))
     } else {
-      predictions <- suppressMessages({
-        map_dfc(name, ~ object@predictor(object@estimates[[.]], newdata))
-      })
-      colnames(predictions) <- name
+      predictions <- map(
+        name,
+        ~ object@predictor(object@estimates[[.]], newdata),
+      ) |>
+      set_names(name) |>
+      bind_cols()
       return(predictions)
     }
   }

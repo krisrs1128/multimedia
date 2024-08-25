@@ -20,10 +20,10 @@
 #'   mediation or outcome model.
 #' @examples
 #' m <- lm_model()
-#' m@estimator(mpg ~ hp + wt, data = mtcars)
+#' estimator(m)(mpg ~ hp + wt, data = mtcars)
 #'
 #' m <- rf_model()
-#' m@estimator(mpg ~ hp + wt, data = mtcars)
+#' estimator(m)(mpg ~ hp + wt, data = mtcars)
 setClass(
   "model",
   representation(
@@ -242,7 +242,7 @@ estimate <- function(model, exper) {
 #' @importFrom stats lm
 #' @examples
 #' m <- lm_model()
-#' m@estimator(mpg ~ hp + wt, data = mtcars)
+#' estimator(m)(mpg ~ hp + wt, data = mtcars)
 #' @export
 lm_model <- function() {
   new(
@@ -433,7 +433,7 @@ brm_cache <- function(formula, data, ...) {
 #'   mediation_data(starts_with("outcome"), "treatment", "mediator")
 #' fit <- multimedia(exper, brms_model()) |>
 #'   estimate(exper)
-#' fit@outcome
+#' fit
 #' @export
 brms_model <- function(...) {
   check_if_installed("brms", "to use a BRMS model for multimedia estimation.")
@@ -449,6 +449,59 @@ brms_model <- function(...) {
   )
 }
 
+#' Accessor for Model Estimators
+#' @param object An object of class `model` whose estimator we would like to
+#'   call.
+#' @return A function that can be called with formula and data arguments, like
+#`   lm()`.
+#' @examples
+#' m <- lm_model()
+#' estimator(m)(mpg ~ hp + wt, data = mtcars)
+estimator <- function(object) {
+  object@estimator
+}
+
+#' Accessor for Outcome Models
+#' @param object An object of class multimedia whose outcome model estimates we
+#'   would like to extract.
+#' @return A list containing all the fitted outcome models.
+#' @examples
+#' exper <- mediation_data(
+#'   mindfulness, 
+#'   phyloseq::taxa_names(mindfulness), 
+#'   "treatment", 
+#'   starts_with("mediator"),   
+#'   "subject"
+#' )
+#' 
+#' m <- multimedia(exper)
+#' outcome_models(m)
+#' @export
+outcome_models <- function(object) {
+  object@outcomes@estimates
+}
+
+#' Accessor for Outcome Models
+#' @param object An object of class multimedia whose outcome model estimates we
+#'   would like to extract.
+#' @return A list containing all the fitted mediation models.
+#' @examples
+#' exper <- mediation_data(
+#'   mindfulness, 
+#'   phyloseq::taxa_names(mindfulness), 
+#'   "treatment", 
+#'   starts_with("mediator"),   
+#'   "subject"
+#' )
+#' 
+#' m <- multimedia(exper)
+#' mediation_models(m)
+#' @export
+mediation_models <- function(object) {
+  object@mediaton@estimates
+}
+
+
 #' Sample from a Bayesian Regression Model
 #'
 #' This samples from the posterior predictive for each component in
@@ -462,7 +515,7 @@ brms_model <- function(...) {
 #'   mediation_data("PHQ", "treatment", starts_with("ASV"))
 #' fit <- multimedia(exper, brms_model()) |>
 #'   estimate(exper)
-#' brms_sampler(fit@outcome@estimates)
+#' brms_sampler(outcome_models(fit))
 #' @noRd
 brms_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
   if (is.null(indices)) {
@@ -500,7 +553,7 @@ brms_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
 #' m <- lnm_model()
 #' mat <- data.frame(matrix(rpois(250, 10), 25, 10))
 #' colnames(mat) <- paste0("y", seq_len(6))
-#' fit <- m@estimator(y1 + y2 + y3 + y4 ~ y5 + y6, mat)
+#' fit <- estimator(m)(y1 + y2 + y3 + y4 ~ y5 + y6, mat)
 #' @export
 lnm_model <- function(...) {
   check_if_installed(

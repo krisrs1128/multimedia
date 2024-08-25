@@ -61,12 +61,10 @@ suggest novel microbe-metabolite relationships.
 ```{r setup}
 library(brms)
 library(compositions)
-library(dplyr)
 library(ggdist)
-library(ggplot2)
 library(glue)
 library(patchwork)
-library(tidyr)
+library(tidyverse)
 library(vroom)
 library(multimedia)
 set.seed(20231222)

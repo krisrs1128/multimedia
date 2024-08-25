@@ -61,7 +61,7 @@ matnorm <- \(n, m, ...) matrix(rnorm(n * m, ...), n, m)
 #' fx <- f(x)
 #' plot(x, fx[, 1])
 #' @noRd
-spline_fun <- function(D = 2, knots = NULL, h_ix = 1:10, ...) {
+spline_fun <- function(D = 2, knots = NULL, h_ix = seq_len(10), ...) {
   if (is.null(knots)) {
     knots <- seq(-4, 4, length.out = 5)
   }
@@ -98,7 +98,7 @@ demo_spline <- function(n_samples = 5e3, tau = c(2, 2)) {
   mediator <- rnorm(n_samples, 3 * (treatment - 0.5), 2)
   f <- spline_fun(sd = 0.2)
   y <- f(mediator) + matrix(treatment, ncol = 1) %*% tau
-  colnames(y) <- glue("outcome_{1:2}")
+  colnames(y) <- glue("outcome_{seq_len(2)}")
   bind_cols(y, mediator = mediator, treatment = factor(treatment))
 }
 

@@ -93,6 +93,7 @@ bind_mediation <- function(exper) {
 #'   mediation analysis. Each node is annotated with a `node_type`, describing
 #'   which of the parts of the mediation analysis graph the node belongs to.
 #' @importFrom purrr reduce
+#' @importFrom dplyr join_by
 #' @importFrom tidygraph graph_join %N>%
 #' @seealso multimedia
 #' @noRd
@@ -113,17 +114,15 @@ graph_specification <- function(outcomes, treatments, mediators, pretreatments) 
     edges <- c(edges, new_edges)
   }
 
-  suppressMessages(
-    purrr::reduce(edges, graph_join) %N>%
-      mutate(
-        node_type = factor(
-          .data$node_type,
-          levels = c("intercept", "pretreatment", "treatment", "mediator", "outcome")
-        )
-      ) |>
-      arrange(.data$node_type, .data$name) |>
-      mutate(id = row_number())
-  )
+  reduce(edges, graph_join, by = join_by("name", "node_type")) %N>%
+    mutate(
+      node_type = factor(
+        .data$node_type,
+        levels = c("intercept", "pretreatment", "treatment", "mediator", "outcome")
+      )
+    ) |>
+    arrange(.data$node_type, .data$name) |>
+    mutate(id = row_number())
 }
 
 #' Helper for `graph_specification`

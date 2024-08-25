@@ -56,10 +56,8 @@ for reorganizing the data later in this vignette.
 
 ```{r setup}
 library(glue)
+library(tidyverse)
 library(multimedia)
-library(ggplot2)
-library(dplyr)
-library(tidyr)
 set.seed(20240111)
 
 #' Helper to plot the real data
