@@ -103,6 +103,7 @@ path_difference <- function(y1, y2) {
 #'  settings of j in the equation above.
 #' @seealso effect_summary
 #' @importFrom dplyr everything mutate select bind_rows
+#' @importFrom tidyselect any_of
 #' @importFrom tidyr pivot_longer
 #' @importFrom glue glue
 #' @importFrom rlang .data
@@ -154,7 +155,7 @@ direct_effect <- function(model, exper = NULL, t1 = 1, t2 = 2) {
 
   bind_rows(result, .id = "indirect_setting") |>
     mutate(indirect_setting = t_[[1]][as.integer(.data$indirect_setting)]) |>
-    select(.data$outcome, .data$indirect_setting, .data$contrast, .data$direct_effect)
+    select(any_of(c("outcome", "indirect_setting", "contrast", "direct_effect")))
 }
 
 parse_name <- function(t_, t1, t2) {
@@ -227,7 +228,7 @@ indirect_overall <- function(model, exper = NULL, t1 = 1, t2 = 2) {
 
   bind_rows(result, .id = "direct_setting") |>
     mutate(direct_setting = t_[[1]][as.integer(.data$direct_setting)]) |>
-    select(.data$outcome, .data$direct_setting, .data$contrast, .data$indirect_effect)
+    select(any_of(c("outcome", "direct_setting", "contrast", "indirect_effect")))
 }
 
 #' Indirect Effects via Single Mediation Paths
@@ -293,7 +294,7 @@ indirect_pathwise <- function(model, exper = NULL, t1 = 1, t2 = 2) {
   }
 
   bind_rows(result) |>
-    select(.data$outcome, .data$mediator, .data$direct_setting, .data$contrast, .data$indirect_effect)
+    select(any_of(c("outcome", "mediator", "direct_setting", "contrast", "indirect_effect")))
 }
 
 #' Average Effects across j
