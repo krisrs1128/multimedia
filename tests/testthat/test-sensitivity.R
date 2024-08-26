@@ -1,4 +1,5 @@
 library(multimedia)
+set.seed(20240826)
 
 xy_data <- demo_spline()
 exper <- mediation_data(xy_data, starts_with("outcome"), "treatment", "mediator")
@@ -6,7 +7,9 @@ model <- multimedia(exper, outcome_estimator = glmnet_model(lambda = 1e-2)) |>
   estimate(exper)
 indirect_overall(model)
 
-sensitivity_curve <- sensitivity(model, exper, n_rho = 3, n_bootstrap = 10)
+subset_indices <- expand.grid(mediators = n_mediators(model), outcomes = n_outcomes(model))
+rho_seq <- c(-0.2, 0, 0.2)
+sensitivity_curve <- sensitivity(model, exper, subset_indices, rho_seq, n_bootstrap = 10)
 test_that("Sensitivity curve has correct bounds.", {
   expect_equal(nrow(sensitivity_curve), 3 * n_outcomes(model))
 })
