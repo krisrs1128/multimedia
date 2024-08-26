@@ -1,5 +1,6 @@
 
 library(multimedia)
+set.seed(20240826)
 
 # Fit random forest on toy data
 xy_data <- demo_spline()

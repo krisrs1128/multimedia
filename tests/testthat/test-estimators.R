@@ -1,5 +1,6 @@
 
 library(multimedia)
+set.seed(20240826)
 
 # Joy dataset example
 exper <- mediation_data(demo_joy(), "PHQ", "treatment", starts_with("ASV"))

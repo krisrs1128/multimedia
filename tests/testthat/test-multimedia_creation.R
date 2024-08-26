@@ -8,7 +8,7 @@ test_that("Can create a multimedia object from SummarizedExperiment", {
   expect_equal(mediators(model), paste0("ASV", 1:5))
 })
 
-
+data(mindfulness)
 test_that("Can create a multimedia object from phyloseq", {
   m <- mediation_data(mindfulness, phyloseq::taxa_names(mindfulness), "treatment", dplyr::starts_with("mediator"))
   model <- multimedia(m)
