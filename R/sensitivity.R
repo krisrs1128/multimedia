@@ -1,6 +1,5 @@
-
 #' Core Sensitivity Analysis Function
-#' 
+#'
 #' For causal identification, mediation analysis relies on several untestable
 #' assumptions. One important one is that there is no confounding between the
 #' counterfactual mediator and outcome variables. Even though we can never know
@@ -8,12 +7,12 @@
 #' existence/strength of such a confounder. In this function, we approach this
 #' by inducing (unallowable) correlation between the mediator and outcome model
 #' residuals, simulate forward, and see how conclusions change.
-#' 
+#'
 #' This function is an internal, core function that is wrapped by many
 #' sensitivity analysis wrappers. It allows general `summarization` functions as
 #' input. This allows us to apply the same residual-correlation to many kinds of
 #' output analysis, e.g., both indirect overall and pathwise effects.
-#' 
+#'
 #' @param summarization A function whose outputs we want to evaluate for
 #'   sensitivity to potentially unmeasured confounding. E.g.,
 #'   `indirect_pathwise`. The function must output its summaries as a tidy
@@ -25,9 +24,14 @@
 #' @param exper The original `mediation_data` class object used to fit `model`.
 #'   These observations will be resampled to support bootstrap confidence
 #'   interval construction of the sensitivity curve.
-#' @param n_rho We will evaluate correlations Cor(e', e) between mediation and
-#'   outcome model errors ranging from `[-1, 1]` with density determined by this
-#'   parameter. Defaults to 10.
+#' @param confound_ix A data.frame specifying which mediator/outcome should
+#'   be allowed to be correlated. Should have two columns: 'mediator' and
+#'   'outcome' specifying which pairs of mediators and outcomes should be
+#'   correlated. Defaults to NULL, which creates a data.frame with no rows (and
+#'   so enforcing independence between mediators and outcomes)
+#' @param rho_seq We will evaluate correlations Cor(e', e) between mediation and
+#'   outcome model errors ranging along this grid. Defaults to NULL, which
+#'   internally sets the sequence to rho = [-0.9, -0.7 ..., 0.7, 0.9].
 #' @param n_bootstrap The number of bootstrap resamples used to build confidence
 #'   bands around the sensitivity curves. Defaults to 100.
 #' @param progress A logical indicating whether to show a progress bar.
@@ -38,22 +42,28 @@
 #' @importFrom tidyselect ends_with
 #' @importFrom stats sd
 #' @noRd
-sensitivity_internal <- function(summarization, model, exper, n_rho = 10, 
-                                 n_bootstrap = 100, progress = TRUE) {
+sensitivity_subset <- function(summarization, model, exper,
+                               confound_ix = NULL, rho_seq = NULL, 
+                               n_bootstrap = 100, progress = TRUE) {
   model_types <- c(model@mediation@model_type, model@outcome@model_type)
   supported_models <- c("rf_model()", "lm_model()", "glmnet_model()")
   if (!all(model_types %in% supported_models)) {
     cli_abort("Sensitivity analysis is only supported for models of type lm_model(), glmnet_model(), and rf_model().")
   }
+  if (is.null(rho_seq)) {
+    rho_seq <- seq(-0.9, 0.9, by = 0.2)
+  }
 
-  rho_seq <- seq(-1, 1, length.out = n_rho)
   sensitivity_curve <- list()
   k <- 1
-  pb <- progress_bar$new(total = n_rho * n_bootstrap, format = "[:bar] :current/:total ETA: :eta")
-  for (i in seq_len(n_rho)) {
+  pb <- progress_bar$new(
+    total = length(rho_seq) * n_bootstrap, 
+    format = "[:bar] :current/:total ETA: :eta"
+  )
+  for (i in seq_along(rho_seq)) {
     for (b in seq_len(n_bootstrap)) {
       exper_ <- exper[sample(nrow(exper)), ]
-      samples <- sensitivity_sample(model, exper, rho_seq[i])
+      samples <- sensitivity_sample(model, exper, confound_ix, rho_seq[i])
       t_ <- model@treatments
       for (j in seq_len(nrow(t_))) {
         ix <- apply(exper_@treatments, 1, \(x) x == t_[j, ])
@@ -76,7 +86,7 @@ sensitivity_internal <- function(summarization, model, exper, n_rho = 10,
 }
 
 #' Sensitivity Analysis for Overall Indirect Effect
-#' 
+#'
 #' For causal identification, mediation analysis relies on several untestable
 #' assumptions. One important one is that there is no confounding between the
 #' counterfactual mediator and outcome variables. Even though we can never know
@@ -85,7 +95,7 @@ sensitivity_internal <- function(summarization, model, exper, n_rho = 10,
 #' by inducing (unallowable) correlation between the mediator and outcome model
 #' residuals, simulate forward, and see how the estimated overall indirect
 #' effect changes.
-#' 
+#'
 #' @param model A `multimedia` object containing the fitted models for
 #'   sensitivity analysis. Note that since our approach relies on correlating
 #'   simulated residual error, it is only applicable to models of class
@@ -93,23 +103,30 @@ sensitivity_internal <- function(summarization, model, exper, n_rho = 10,
 #' @param exper The original `mediation_data` class object used to fit `model`.
 #'   These observations will be resampled to support bootstrap confidence
 #'   interval construction of the sensitivity curve.
-#' @param n_rho We will evaluate correlations Cor(e', e) between mediation and
-#'   outcome model errors ranging from `[-1, 1]` with density determined by this
-#'   parameter. Defaults to 10.
+#' @param confound_ix A data.frame specifying which mediator/outcome should
+#'   be allowed to be correlated. Should have two columns: 'mediator' and
+#'   'outcome' specifying which pairs of mediators and outcomes should be
+#'   correlated. Defaults to NULL, which creates a data.frame with no rows (and
+#'   so enforcing independence between mediators and outcomes)
+#' @param rho_seq We will evaluate correlations Cor(e', e) between mediation and
+#'   outcome model errors ranging along this grid. Defaults to NULL, which
+#'   internally sets the sequence to rho = [-0.9, -0.7 ..., 0.7, 0.9].
 #' @param n_bootstrap The number of bootstrap resamples used to build confidence
 #'   bands around the sensitivity curves. Defaults to 100.
 #' @param progress A logical indicating whether to show a progress bar.
 #' @return A `date.frame` giving the outputs of `indirect_overall` across many
 #'   values of the correlation rho.
 #' @export
-sensitivity <- function(model, exper, n_rho = 10, n_bootstrap = 100, progress = TRUE) {
-  (\(x) indirect_overall(x) |> 
+sensitivity <- function(model, exper, confound_ix = NULL, rho_seq = NULL, 
+                        n_bootstrap = 100, progress = TRUE) {
+  (\(x) indirect_overall(x) |>
     effect_summary()) |>
-    sensitivity_internal(model, exper, n_rho, n_bootstrap, progress)
+    sensitivity_subset(model, exper, confound_ix, rho_seq, n_bootstrap, 
+                       progress)
 }
 
 #' Sensitivity Analysis for Pathwise Indirect Effects
-#' 
+#'
 #' For causal identification, mediation analysis relies on several untestable
 #' assumptions. One important one is that there is no confounding between the
 #' counterfactual mediator and outcome variables. Even though we can never know
@@ -118,7 +135,7 @@ sensitivity <- function(model, exper, n_rho = 10, n_bootstrap = 100, progress = 
 #' by inducing (unallowable) correlation between the mediator and outcome model
 #' residuals, simulate forward, and see how the estimated pathwise indirect
 #' effects change.
-#' 
+#'
 #' @param model A `multimedia` object containing the fitted models for
 #'   sensitivity analysis. Note that since our approach relies on correlating
 #'   simulated residual error, it is only applicable to models of class
@@ -126,19 +143,27 @@ sensitivity <- function(model, exper, n_rho = 10, n_bootstrap = 100, progress = 
 #' @param exper The original `mediation_data` class object used to fit `model`.
 #'   These observations will be resampled to support bootstrap confidence
 #'   interval construction of the sensitivity curve.
-#' @param n_rho We will evaluate correlations Cor(e', e) between mediation and
-#'   outcome model errors ranging from `[-1, 1]` with density determined by this
-#'   parameter. Defaults to 10.
+#' @param confound_ix A data.frame specifying which mediator/outcome should
+#'   be allowed to be correlated. Should have two columns: 'mediator' and
+#'   'outcome' specifying which pairs of mediators and outcomes should be
+#'   correlated. Defaults to NULL, which creates a data.frame with no rows (and
+#'   so enforcing independence between mediators and outcomes)
+#' @param rho_seq We will evaluate correlations Cor(e', e) between mediation and
+#'   outcome model errors ranging along this grid. Defaults to NULL, which
+#'   internally sets the sequence to rho = [-0.9, -0.7 ..., 0.7, 0.9].
 #' @param n_bootstrap The number of bootstrap resamples used to build confidence
 #'   bands around the sensitivity curves. Defaults to 100.
 #' @param progress A logical indicating whether to show a progress bar.
 #' @return A `date.frame` giving the outputs of `indirect_overall` across many
 #'   values of the correlation rho.
 #' @export
-sensitivity_pathwise <- function(model, exper, n_rho = 10, n_bootstrap = 100, progress = TRUE) {
-  (\(x) indirect_pathwise(x) |> 
+sensitivity_pathwise <- function(model, exper, confound_ix = NULL, 
+                                 rho_seq = NULL, n_bootstrap = 100,  
+                                 progress = TRUE) {
+  (\(x) indirect_pathwise(x) |>
     effect_summary()) |>
-    sensitivity_internal(model, exper, n_rho, n_bootstrap, progress)
+    sensitivity_subset(model, exper, confound_ix, rho_seq, n_bootstrap, 
+                       progress)
 }
 
 #' @importFrom dplyr arrange across everything
@@ -148,7 +173,7 @@ sorted_treatments <- function(model) {
 }
 
 #' Sample from an SEM with Correlated Errors
-#' 
+#'
 #' @param model A `multimedia` object containing the fitted models for
 #'   sensitivity analysis. Note that since our approach relies on correlating
 #'   simulated residual error, it is only applicable to models of class
@@ -156,6 +181,11 @@ sorted_treatments <- function(model) {
 #' @param exper The original `mediation_data` class object used to fit `model`.
 #'   These observations will be resampled to support bootstrap confidence
 #'   interval construction of the sensitivity curve.
+#' @param confound_ix A data.frame specifying which mediator/outcome should
+#'   be allowed to be correlated. Should have two columns: 'mediator' and
+#'   'outcome' specifying which pairs of mediators and outcomes should be
+#'   correlated. Defaults to NULL, which creates a data.frame with no rows (and
+#'   so enforcing independence between mediators and outcomes)
 #' @param rho The value of the correlation between all pairs of mediators and
 #'   outcomes.
 #' @importFrom MASS mvrnorm
@@ -163,25 +193,27 @@ sorted_treatments <- function(model) {
 #' xy_data <- demo_spline()
 #' exper <- mediation_data(xy_data, starts_with("outcome"), "treatment", "mediator")
 #' model <- multimedia(exper, outcome_estimator = rf_model(num.trees = 1e3)) |>
-#'  estimate(exper)
+#'   estimate(exper)
 #' multimedia:::sensitivity_sample(model, exper)
 #' @noRd
-sensitivity_sample <- function(model, exper, rho = 0.0) {
+sensitivity_sample <- function(model, exper, confound_ix = NULL, rho = 0.0) {
   Nm <- n_mediators(model)
   Ny <- n_outcomes(model)
-  Sigma <- covariance_matrix(model, rho)
-  epsilon <- mvrnorm(nrow(exper), rep(0, Nm + Ny), Sigma)
+  epsilon <- covariance_matrix(model, confound_ix, rho) |>
+    mvrnorm(nrow(exper), rep(0, Nm + Ny), Sigma = _)
 
   t_ <- model@treatments
   samples <- list()
   for (i in seq_len(nrow(t_))) {
     exper_ <- bind_mediation(exper)
-    exper_[, treatments(model)] <- t_[i,, drop=FALSE]
+    exper_[, treatments(model)] <- t_[i, , drop = FALSE]
 
     # sample the mediators and outcomes
-    m <- predict_across(model@mediation, exper_, mediators(model)) + epsilon[, seq_len(Nm), drop = FALSE]
+    m <- predict_across(model@mediation, exper_, mediators(model)) +
+      epsilon[, seq_len(Nm), drop = FALSE]
     exper_[, mediators(model)] <- m
-    y <- predict_across(model@outcome, exper_, outcomes(model)) + epsilon[, seq(Nm + 1, Nm + Ny), drop = FALSE]
+    y <- predict_across(model@outcome, exper_, outcomes(model)) +
+      epsilon[, seq(Nm + 1, Nm + Ny), drop = FALSE]
 
     # rename and save
     colnames(m) <- mediators(model)
@@ -193,12 +225,12 @@ sensitivity_sample <- function(model, exper, rho = 0.0) {
 }
 
 #' Extract SDs from multimedia model objects
-#' 
+#'
 #' @examples
 #' xy_data <- demo_spline()
 #' exper <- mediation_data(xy_data, starts_with("outcome"), "treatment", "mediator")
 #' model <- multimedia(exper, outcome_estimator = rf_model(num.trees = 1e3)) |>
-#'  estimate(exper)
+#'   estimate(exper)
 #' standard_deviations(model@outcome)
 #' standard_deviations(model@mediation)
 #' @importFrom purrr map_dbl
@@ -214,22 +246,25 @@ standard_deviations <- function(model) {
   )
 }
 
-covariance_matrix <- function(model, rho = 1) {
+covariance_matrix <- function(model, confound_ix = NULL, rho = 0.0) {
   sigma_m <- standard_deviations(model@mediation)
   sigma_y <- standard_deviations(model@outcome)
-
-  # Initialize with variances
-  Nm <- n_mediators(model)
-  Ny <- n_outcomes(model)
-  Sigma <- 0.5 * diag(c(sigma_m ^ 2, sigma_y ^ 2))
+  covariance <- diag(c(sigma_m^2, sigma_y^2))
+  if (rho == 0 || is.null(confound_ix)) {
+    return(covariance)
+  }
 
   # Fill in covariances
-  ix <- list(seq_len(Nm), seq(Nm + 1, Nm + Ny))
-  Sigma[ix[[1]], ix[[2]]] <- rho * sigma_m %*% t(sigma_y)
-  Sigma <- Sigma + t(Sigma)
+  Nm <- n_mediators(model)
+  for (i in seq_len(nrow(confound_ix))) {
+    m_ix <- confound_ix$mediators[i]
+    y_ix <- confound_ix$outcomes[i]
+    covariance[m_ix, Nm + y_ix] <- rho * sigma_m[m_ix] * sigma_y[y_ix]
+    covariance[Nm + y_ix, m_ix] <- rho * sigma_m[m_ix] * sigma_y[y_ix]
+  }
 
-  # Ensure PSD
-  eSigma <- eigen(Sigma)
-  eSigma$values <- pmax(0, eSigma$values)
-  eSigma$vectors %*% diag(eSigma$values) %*% t(eSigma$vectors)
+  # Ensure positive semi-definite
+  ecov <- eigen(covariance)
+  ecov$values <- pmax(0, ecov$values)
+  ecov$vectors %*% diag(ecov$values) %*% t(ecov$vectors)
 }
