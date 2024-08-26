@@ -102,13 +102,13 @@ edges_df <- function(edges) {
     as.data.frame() |>
     left_join(nodes, by = c("from" = "id")) |>
     dplyr::rename(
-      node_type_from = .data$node_type,
-      name_from = .data$name
+      node_type_from = "node_type",
+      name_from = "name"
     ) |>
     left_join(nodes, by = c("to" = "id")) |>
     dplyr::rename(
-      node_type_to = .data$node_type,
-      name_to = .data$name
+      node_type_to = "node_type",
+      name_to = "name"
     )
 }
 
@@ -473,7 +473,7 @@ estimator <- function(object) {
 #'   starts_with("mediator"),   
 #'   "subject"
 #' )
-#' 
+#'
 #' m <- multimedia(exper)
 #' outcome_models(m)
 #' @export

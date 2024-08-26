@@ -121,7 +121,7 @@ graph_specification <- function(outcomes, treatments, mediators, pretreatments) 
         levels = c("intercept", "pretreatment", "treatment", "mediator", "outcome")
       )
     ) |>
-    arrange(.data$node_type, .data$name) |>
+    arrange(across(c("node_type", "name")))|>
     mutate(id = row_number())
 }
 
@@ -287,7 +287,7 @@ from_phyloseq <- function(exper, outcomes, treatments, mediators, pretreatments)
 #'   Defaults to NULL, in which case the pretreatments slot will remain empty.
 #' @return result An object of class `mediation_data`, with separate slots for
 #'   each of the node types in a mediation analysis diagram.
-#' @importFrom dplyr bind_cols select
+#' @importFrom dplyr bind_cols select across
 #' @importFrom tidyselect where
 #' @noRd
 from_data_frame <- function(df, outcomes, treatments, mediators,
