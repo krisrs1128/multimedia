@@ -119,14 +119,15 @@ can run a sensitivity analysis: How strong would the confounder have to be
 before we would observe a flipped indirect effect estimate?
 
 ```{r sensitivity_analysis}
-#sensitivity_curve <- sensitivity(fit, exper, n_rho = 4)
+confound_ix <- expand.grid(mediator = 1, outcome = 1:2)
+#sensitivity_curve <- sensitivity(fit, exper, confound_ix)
 sensitivity_curve <- read_csv("https://drive.google.com/uc?export=download&id=1fEhg-aMRyfhAjgcJmsrxz2cmWCOdnM6C")
 ggplot(sensitivity_curve, aes(rho, col = outcome, fill = outcome)) +
   geom_vline(xintercept = 0, linewidth = 0.5) +
   geom_hline(yintercept = 0, linewidth = 0.5) +
   geom_line(aes(y = indirect_effect)) +
   geom_ribbon(aes(
-    y = indirect_effect, 
+    y = indirect_effect,
     ymin = indirect_effect - 2 * indirect_effect_standard_error,
     ymax = indirect_effect + 2 * indirect_effect_standard_error,
   ), alpha = 0.4) +

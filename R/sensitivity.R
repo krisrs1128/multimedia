@@ -253,12 +253,15 @@ covariance_matrix <- function(model, confound_ix = NULL, rho = 0.0) {
   if (rho == 0 || is.null(confound_ix)) {
     return(covariance)
   }
+  if (!(all(c("mediator", "outcome") %in% colnames(confound_ix)))) {
+    cli_abort(glue("Argument confound_ix seems incorrectly formatted. Are you sure you have columns called 'mediator' and 'outcome'? We found {colnames(confound_ix)}"))
+  }
 
   # Fill in covariances
   Nm <- n_mediators(model)
   for (i in seq_len(nrow(confound_ix))) {
-    m_ix <- confound_ix$mediators[i]
-    y_ix <- confound_ix$outcomes[i]
+    m_ix <- confound_ix$mediator[i]
+    y_ix <- confound_ix$outcome[i]
     covariance[m_ix, Nm + y_ix] <- rho * sigma_m[m_ix] * sigma_y[y_ix]
     covariance[Nm + y_ix, m_ix] <- rho * sigma_m[m_ix] * sigma_y[y_ix]
   }
@@ -267,4 +270,7 @@ covariance_matrix <- function(model, confound_ix = NULL, rho = 0.0) {
   ecov <- eigen(covariance)
   ecov$values <- pmax(0, ecov$values)
   ecov$vectors %*% diag(ecov$values) %*% t(ecov$vectors)
+}
+
+sensitivity_perturb <- function(model, exper, covariance, nu_seq = NULL, n_bootstrap = 100, progress = TRUE) {
 }

@@ -7,7 +7,7 @@ model <- multimedia(exper, outcome_estimator = glmnet_model(lambda = 1e-2)) |>
   estimate(exper)
 indirect_overall(model)
 
-subset_indices <- expand.grid(mediators = n_mediators(model), outcomes = n_outcomes(model))
+subset_indices <- expand.grid(mediator = n_mediators(model), outcome = n_outcomes(model))
 rho_seq <- c(-0.2, 0, 0.2)
 sensitivity_curve <- sensitivity(model, exper, subset_indices, rho_seq, n_bootstrap = 10)
 test_that("Sensitivity curve has correct bounds.", {
