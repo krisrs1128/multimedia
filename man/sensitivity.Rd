@@ -4,7 +4,14 @@
 \alias{sensitivity}
 \title{Sensitivity Analysis for Overall Indirect Effect}
 \usage{
-sensitivity(model, exper, n_rho = 10, n_bootstrap = 100, progress = TRUE)
+sensitivity(
+  model,
+  exper,
+  confound_ix = NULL,
+  rho_seq = NULL,
+  n_bootstrap = 100,
+  progress = TRUE
+)
 }
 \arguments{
 \item{model}{A \code{multimedia} object containing the fitted models for
@@ -16,9 +23,15 @@ simulated residual error, it is only applicable to models of class
 These observations will be resampled to support bootstrap confidence
 interval construction of the sensitivity curve.}
 
-\item{n_rho}{We will evaluate correlations Cor(e', e) between mediation and
-outcome model errors ranging from \verb{[-1, 1]} with density determined by this
-parameter. Defaults to 10.}
+\item{confound_ix}{A data.frame specifying which mediator/outcome should
+be allowed to be correlated. Should have two columns: 'mediator' and
+'outcome' specifying which pairs of mediators and outcomes should be
+correlated. Defaults to NULL, which creates a data.frame with no rows (and
+so enforcing independence between mediators and outcomes)}
+
+\item{rho_seq}{We will evaluate correlations Cor(e', e) between mediation and
+outcome model errors ranging along this grid. Defaults to NULL, which
+internally sets the sequence to rho = \link{-0.9, -0.7 ..., 0.7, 0.9}.}
 
 \item{n_bootstrap}{The number of bootstrap resamples used to build confidence
 bands around the sensitivity curves. Defaults to 100.}

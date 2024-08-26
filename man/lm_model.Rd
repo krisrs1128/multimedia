@@ -18,7 +18,7 @@ are many responses.
 }
 \examples{
 m <- lm_model()
-m@estimator(mpg ~ hp + wt, data = mtcars)
+estimator(m)(mpg ~ hp + wt, data = mtcars)
 }
 \seealso{
 model
