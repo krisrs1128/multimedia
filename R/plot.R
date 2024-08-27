@@ -62,11 +62,25 @@ plot_mediators <- function(indirect_effects, exper, n_digit = 3, n_panels = NULL
 }
 
 #' Generic Sensitivity Plot
+#'
 #' This function draws a curve of indirect effect against the sensitivity
 #' parameter, allowing users to specify the name of x and y-axis variables using
 #' the x_var and y_var inputs.
 #' 
+#' @param sensitivity_curve The output of a call to sensitivity or
+#'   sensitivity_perturb. A data.frame whose columns are: outcome, {x_var},
+#'   {y_var}, and {y_var}_standard_error, where x_var and y_var are defined in
+#'   the two arguments below.
+#' @param x_var The type of perturbation variable to plot along the x-axis.
+#'   Defaults to "rho", following the sensitivity approach implemented in
+#'   sensitivity_subset.
+#' @param y_var The type of effect to plot along the y-axis. Defaults to
+#'   indirect_effect.
+#' @examples
+#' sensitivity_curve <- read.csv(url("https://drive.google.com/uc?export=download&id=1fEhg-aMRyfhAjgcJmsrxz2cmWCOdnM6C"))
+#' plot_sensitivity(sensitivity_curve)
 #' @importFrom ggplot2 geom_vline aes geom_hline geom_ribbon scale_x_continuous
+#'   labs geom_line
 #' @importFrom glue glue
 #' @export
 plot_sensitivity <- function(sensitivity_curve, x_var = "rho", y_var = "indirect_effect") {

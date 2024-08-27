@@ -132,8 +132,8 @@ perturb <- matrix(
     0, 0, 0),
   nrow = 3, byrow = TRUE
 )
-sensitivity_curve <- sensitivity_perturb(fit, exper, perturb)
-#sensitivity_curve <- read_csv("https://drive.google.com/uc?export=download&id=1CkCdaAbiVeoo7ILYB1PavFzqiFb1N08A")
+#sensitivity_curve <- sensitivity_perturb(fit, exper, perturb)
+sensitivity_curve <- read_csv("https://drive.google.com/uc?export=download&id=1CkCdaAbiVeoo7ILYB1PavFzqiFb1N08A")
 plot_sensitivity(sensitivity_curve, x_var = "nu")
 ```
 
