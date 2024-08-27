@@ -677,3 +677,10 @@ rf_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
 
   bind_cols(y_hats)
 }
+
+setGeneric("estimator", \(object) standardGeneric("estimator"))
+
+#' Accessor for Estimators
+#' @export
+#' @noRd
+setMethod("estimator", "model", \(object) object@estimator)
