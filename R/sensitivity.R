@@ -38,7 +38,8 @@
 #' @return A `date.frame` giving the outputs of the `summarization` function
 #'   across many values of the correlation rho.
 #' @importFrom cli cli_abort
-#' @importFrom dplyr bind_rows
+#' @importFrom rlang sym
+#' @importFrom dplyr bind_rows rename_with
 #' @importFrom tidyselect ends_with
 #' @importFrom stats sd
 #' @noRd
@@ -77,7 +78,13 @@ sensitivity_factory <- function(summarization, model, exper, sampler, sensitivit
   }
 
   bind_rows(sensitivity_curve) |>
-    group_by(.data$outcome, .data$perturbation) |>
+    group_by(
+      .data$outcome, 
+      !!sym(
+        ifelse("mediator" %in% colnames(sensitivity_curve[[1]]), "mediator", "")
+        ),
+      .data$perturbation
+    ) |>
     summarise(across(ends_with("effect"), c(`_` = mean, standard_error = sd))) |>
     rename_with(~ gsub("__$", "", .))
 }
@@ -113,6 +120,13 @@ sensitivity_factory <- function(summarization, model, exper, sampler, sensitivit
 #' @param progress A logical indicating whether to show a progress bar.
 #' @return A `date.frame` giving the outputs of `indirect_overall` across many
 #'   values of the correlation rho.
+#' @examples
+#' xy_data <- demo_spline()
+#' exper <- mediation_data(xy_data, starts_with("outcome"), "treatment", "mediator")
+#' model <- multimedia(exper, outcome_estimator = glmnet_model(lambda = 1e-2)) |>
+#'  estimate(exper)
+#' rho_seq <- c(-0.2, 0, 0.2)
+#' sensitivity(model, exper, subset_indices, rho_seq, n_bootstrap = 2)
 #' @export
 sensitivity <- function(model, exper, confound_ix = NULL, rho_seq = NULL, 
                         n_bootstrap = 100, progress = TRUE) {
@@ -163,6 +177,14 @@ sensitivity <- function(model, exper, confound_ix = NULL, rho_seq = NULL,
 #' @param progress A logical indicating whether to show a progress bar.
 #' @return A `date.frame` giving the outputs of `indirect_overall` across many
 #'   values of the correlation rho.
+#' @examples
+#' xy_data <- demo_spline()
+#' exper <- mediation_data(xy_data, starts_with("outcome"), "treatment", "mediator")
+#' model <- multimedia(exper, outcome_estimator = glmnet_model(lambda = 1e-2)) |>
+#'  estimate(exper)
+#' rho_seq <- c(-0.2, 0, 0.2)
+#' subset_indices <- expand.grid(mediator = n_mediators(model), outcome = n_outcomes(model))
+#' sensitivity_pathwise(model, exper, subset_indices, rho_seq, n_bootstrap = 2)
 #' @export
 sensitivity_pathwise <- function(model, exper, confound_ix = NULL, 
                                  rho_seq = NULL, n_bootstrap = 100,  
