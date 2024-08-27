@@ -9,6 +9,9 @@ exper_df(exper)
 \arguments{
 \item{exper}{An object of class SummarizedExperiment.}
 }
+\value{
+A data.frame combining all slots of a multimedia object.
+}
 \description{
 This is a small helepr function to concatenate the colData and assays within
 SummarizedExperiment objects into a single data.frame. This is not necessary

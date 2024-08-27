@@ -11,6 +11,9 @@ sub_formula(formula, yj)
 
 \item{yj}{The desired response term for the formula.}
 }
+\value{
+A new formula object with the LHS replaced by yj.
+}
 \description{
 Helper to Modify Formulas
 }

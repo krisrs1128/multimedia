@@ -20,6 +20,10 @@ indirect effect.}
 \item{t2}{The alternative level of the treatment to be used when computing
 the indirect effect.}
 }
+\value{
+A data.frame summarizing the overall indirect effects associated with
+different settings of j in the equation above.
+}
 \description{
 Direct Effects from Estimated Model
 }

@@ -23,10 +23,13 @@ treatment profile to consider in the difference.}
 A list with two elements, \code{mediators} and \code{outcomes}, containing the
 differences in the sampled M(T') - M(T) and Y(T', M(T')) - Y(T, M(T))
 between the two profiles T and T'.
+
+A list with two elements, mediators and outcomes. These contrast the
+values of the mediator and outcomes under the two profiles T and T'.
 }
 \description{
 Given a fitted multimedia model, contrast sampled mediation and outcome data
-associated wtih two treatment profiles.
+associated with two treatment profiles.
 }
 \examples{
 exper <- demo_joy() |>

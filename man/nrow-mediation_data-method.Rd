@@ -10,6 +10,9 @@
 \item{x}{The \code{mediation_data} object whose number of samples we want to
 return.}
 }
+\value{
+An integer giving the number of samples in the mediation object.
+}
 \description{
 How many samples in the mediation dataset?
 }

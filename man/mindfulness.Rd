@@ -4,6 +4,14 @@
 \name{mindfulness}
 \alias{mindfulness}
 \title{Mindfulness Dataset}
+\format{
+An object of class phyloseq.
+}
+\value{
+A phyloseq object with 307 samples and 55 taxa. Samples are described
+by 7 variables (potential mediators) in the sample_data slot. There is no
+associated phylogenetic tree.
+}
 \description{
 Data from a study of the relationship between mindfulness and the microbiome,
 stored as a phyloseq object. Measurements are from 50 subjects before and

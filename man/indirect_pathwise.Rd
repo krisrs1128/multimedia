@@ -20,6 +20,10 @@ outcome data from which the direct effects are to be estimated.}
 \item{t2}{The alternative level of the treatment to be used when computing
 the (pathwise) indirect effect.}
 }
+\value{
+A data.frame summarizing the pathwise (per-mediator) indirect effects
+associated with different settings of the direct effect.
+}
 \description{
 Indirect Effects via Single Mediation Paths
 }
