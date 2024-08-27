@@ -49,8 +49,8 @@ exper <- demo_spline(tau = c(2, 1)) |>
 fit <- multimedia(exper) |>
   estimate(exper)
 samples <- sample(fit)
-samples@mediators
-samples@outcomes
+mediators(samples)
+outcomes(samples)
 
 # sampling with just different "n" has no effect.
 samples <- sample(fit, 100)
@@ -59,6 +59,6 @@ samples <- sample(fit, 100)
 t1 <- data.frame(treatment = factor(rep(c(0, 1), each = 50)))
 profile <- setup_profile(fit, t_mediator = t1, t_outcome = t1)
 samples <- sample(fit, profile = profile)
-samples@mediators
-samples@outcomes
+mediators(samples)
+outcomes(samples)
 }
