@@ -183,7 +183,7 @@ any associations present in our finite sample.
 new_assign <- treatments(exper)[sample(nrow(treatments(exper))),, drop=FALSE]
 profile <- setup_profile(model, new_assign, new_assign)
 m1 <- sample(model, profile = profile, pretreatment = pretreatments(exper))
-m2 <- sample(altered, profile = profile, pretreatment = ptreatments(exper))
+m2 <- sample(altered, profile = profile, pretreatment = pretreatments(exper))
 ```
 
 The sampled objects above have the same class as `exper`. We can extract the
