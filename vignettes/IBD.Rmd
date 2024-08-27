@@ -231,10 +231,10 @@ through the mediators, which in this case are microbiome compositions.
 ```{r, fig.width = 8, fig.height = 4}
 eig <- \(x, k) 100 * round(x[k] / sum(x), 4)
 
-mds <- cmdscale(dist(exper@mediators), eig = TRUE, k = 2)
+mds <- cmdscale(dist(mediators(exper)), eig = TRUE, k = 2)
 coords <- data.frame(mds$points) |>
-  bind_cols(exper@treatments) |>
-  bind_cols(exper@outcomes[, vis_outcomes]) |>
+  bind_cols(treatments(exper)) |>
+  bind_cols(outcomes(exper)[, vis_outcomes]) |>
   pivot_longer(top_effects$outcome, names_to = "outcome", values_to = "abundance") |>
   left_join(top_effects) |>
   group_by(outcome) |>
@@ -296,14 +296,14 @@ altered <- model |>
   estimate(exper)
 
 # sample at original treatment assignments
-profile <- setup_profile(model, exper@treatments, exper@treatments)
+profile <- setup_profile(model, treatments(exper), treatments(exper))
 samples <- list(
-  real = exper@outcomes,
-  fitted = sample(model, profile = profile)@outcomes,
-  altered = sample(altered, profile = profile)@outcomes
+  real = outcomes(exper),
+  fitted = outcomes(sample(model, profile = profile)),
+  altered = outcomes(sample(altered, profile = profile))
 ) |>
   bind_rows(.id = "source") |>
-  bind_cols(treatment = rep(exper@treatments$Study.Group, 3)) |>
+  bind_cols(treatment = rep(treatments(exper)$Study.Group, 3)) |>
   pivot_longer(direct$outcome) |>
   mutate(name = factor(name, levels = unique(direct$outcome)))
 
@@ -377,8 +377,8 @@ the number of taxa and metabolites in this analysis.
 
 ```{r reduced_experiment}
 exper2 <- exper
-exper2@outcomes <- exp(exper2@outcomes[, 1:50]) - 1
-exper2@mediators <- exper2@mediators[, 1:50]
+outcomes(exper2) <- exp(outcomes(exper2)[, 1:50]) - 1
+mediators(exper2) <- mediators(exper2)[, 1:50]
 ```
 
 ```{r hurdle_estimate}
@@ -412,9 +412,9 @@ the zero probability as a linear function of species abundance. We would need a
 step function preidctor to support the kinds of transitions we see above.
 
 ```{r hurdle_synthetic, fig.width = 12, fig.height = 9}
-profile <- setup_profile(model, exper@treatments, exper@treatments)
-samples <- sample(model, profile = profile, pretreatment = exper@pretreatments)
-colnames(samples@outcomes) <- colnames(exper2@outcomes)
+profile <- setup_profile(model, treatments(exper), treatments(exper))
+samples <- sample(model, profile = profile, pretreatment = pretreatments(exper))
+colnames(outcomes(samples)) <- colnames(outcomes(exper2))
 plot_mediators(indirect_sorted, samples, treatment = "Study.Group")
 ```
 

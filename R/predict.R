@@ -34,8 +34,8 @@
 #' fit <- multimedia(exper) |>
 #'   estimate(exper)
 #' samples <- sample(fit)
-#' samples@mediators
-#' samples@outcomes
+#' mediators(samples)
+#' outcomes(samples)
 #'
 #' # sampling with just different "n" has no effect.
 #' samples <- sample(fit, 100)
@@ -44,8 +44,8 @@
 #' t1 <- data.frame(treatment = factor(rep(c(0, 1), each = 50)))
 #' profile <- setup_profile(fit, t_mediator = t1, t_outcome = t1)
 #' samples <- sample(fit, profile = profile)
-#' samples@mediators
-#' samples@outcomes
+#' mediators(samples)
+#' outcomes(samples)
 #' @importFrom cli cli_warn
 #' @export
 setMethod("sample", "multimedia", function(
@@ -106,12 +106,12 @@ setMethod("sample", "multimedia", function(
 #'   mediation_data(starts_with("outcome"), "treatment", "mediator")
 #' fit <- multimedia(exper) |> 
 #'   estimate(exper)
-#' multimedia:::predict_across(fit@outcome, NULL, "outcome_1")
-#' multimedia:::predict_across(fit@outcome, NULL, "outcome_2")
+#' multimedia:::predict_across(outcomes(fit), NULL, "outcome_1")
+#' multimedia:::predict_across(outcome_model(fit), NULL, "outcome_2")
 #'
 #' # predict at newdata
 #' newdata <- bind_mediation(exper)
-#' multimedia:::predict_across(fit@outcome, newdata[seq_len(5), ], "outcome_2")
+#' multimedia:::predict_across(outcome_model(fit), newdata[seq_len(5), ], "outcome_2")
 #' multimedia:::predict_across(
 #'   fit@outcome,
 #'   newdata[seq_len(5), ],

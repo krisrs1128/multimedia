@@ -72,8 +72,8 @@ plot_exper <- function(fit, profile) {
 #' Convert a SummarizedExperiment to long form
 pivot_samples <- function(fit, profile) {
   exper_sample <- sample(fit, profile = profile)
-  exper_sample@outcomes |>
-    bind_cols(exper_sample@mediators, t_outcome) |>
+  outcomes(exper_sample) |>
+    bind_cols(mediators(exper_sample), t_outcome) |>
     pivot_longer(starts_with("outcome"), names_to = "outcome")
 }
 ```

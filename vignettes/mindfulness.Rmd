@@ -66,12 +66,10 @@ ways. The point of mediation analysis is to provide evidence for one or the
 other of these possibilities.
 
 ```{r libraries}
-library(dplyr)
 library(ggdist)
-library(ggplot2)
 library(ggrepel)
 library(phyloseq)
-library(tidyr)
+library(tidyverse)
 library(multimedia)
 data(mindfulness)
 set.seed(20231228)
@@ -106,7 +104,7 @@ subject-level parameters, and our sample size is not that large.
 
 ```{r lnm}
 # use Flavonifractor as the reference for the log-ratio transform
-exper@outcomes <- exper@outcomes |>
+outcomes(exper) <- outcomes(exper) |>
   select(Flavonifractor, everything())
 
 model <- multimedia(
@@ -155,7 +153,7 @@ it controls for subject-level baselines and includes direct effects of treatment
 
 ```{r mediator_plot, fig.width = 12, fig.height = 6}
 exper_rela <- exper
-exper_rela@outcomes <- normalize(exper@outcomes)
+outcomes(exper_rela) <- normalize(outcomes(exper))
 plot_mediators(indirect, exper_rela)
 ```
 
@@ -182,10 +180,10 @@ across the population because the study was randomized, but we want to remove
 any associations present in our finite sample.
 
 ```{r mediation_sample}
-new_assign <- exper@treatments[sample(nrow(exper@treatments)),, drop=FALSE]
+new_assign <- treatments(exper)[sample(nrow(treatments(exper))),, drop=FALSE]
 profile <- setup_profile(model, new_assign, new_assign)
-m1 <- sample(model, profile = profile, pretreatment = exper@pretreatments)
-m2 <- sample(altered, profile = profile, pretreatment = exper@pretreatments)
+m1 <- sample(model, profile = profile, pretreatment = pretreatments(exper))
+m2 <- sample(altered, profile = profile, pretreatment = ptreatments(exper))
 ```
 
 The sampled objects above have the same class as `exper`. We can extract the
@@ -197,9 +195,9 @@ effects above.
 
 ```{r synthetic_mediation_plot, fig.width = 10, fig.height = 4}
 list(
-  real = bind_cols(exper@treatments, exper@mediators, exper@pretreatments),
-  original = bind_cols(new_assign, m1@mediators, exper@pretreatments),
-  altered = bind_cols(new_assign, m2@mediators, exper@pretreatments)
+  real = bind_cols(treatments(exper), mediators(exper), pretreatments(exper)),
+  original = bind_cols(new_assign, mediators(m1), pretreatments(exper)),
+  altered = bind_cols(new_assign, mediators(m2), pretreatments(exper))
 ) |>
   bind_rows(.id = "source") |>
   pivot_longer(starts_with("mediator"), names_to = "mediator") |>
@@ -226,15 +224,15 @@ altered_indirect <- model |>
   nullify("M->Y") |>
   estimate(exper)
 
-profile <- setup_profile(model, exper@treatments, exper@treatments)
-y1 <- sample(model, profile = profile, pretreatment = exper@pretreatments)
-y2 <- sample(altered_direct, profile = profile, pretreatment = exper@pretreatments)
-y3 <- sample(altered_indirect, profile = profile, pretreatment = exper@pretreatments)
+profile <- setup_profile(model, treatments(exper), treatments(exper))
+y1 <- sample(model, profile = profile, pretreatment = pretreatments(exper))
+y2 <- sample(altered_direct, profile = profile, pretreatment = pretreatments(exper))
+y3 <- sample(altered_indirect, profile = profile, pretreatment = pretreatments(exper))
 ```
 
 
 ```{r alteration_plot, fig.width = 8, fig.height = 7}
-taxa_order <- normalize(exper@outcomes) |>
+taxa_order <- normalize(outcomes(exper)) |>
   log() |>
   apply(2, \(x) {
     x[is.infinite(x)] <- NA
@@ -243,15 +241,15 @@ taxa_order <- normalize(exper@outcomes) |>
   order()
 
 combined_samples <- list(
-  "Original Data" = normalize(exper@outcomes),
-  "Full Model" = normalize(y1@outcomes),
-  "No Direct Effect" = normalize(y2@outcomes),
-  "No Indirect Effect" = normalize(y3@outcomes)
+  "Original Data" = normalize(outcomes(exper)),
+  "Full Model" = normalize(outcomes(y1)),
+  "No Direct Effect" = normalize(outcomes(y2)),
+  "No Indirect Effect" = normalize(outcomes(y3))
 ) |>
   bind_rows(.id = "source") |>
-  mutate(treatment = rep(exper@treatments$treatment, 4)) |>
-  pivot_longer(colnames(exper@outcomes)) |>
-  mutate(name = factor(name, levels = colnames(exper@outcomes)[taxa_order]))
+  mutate(treatment = rep(treatments(exper)$treatment, 4)) |>
+  pivot_longer(colnames(outcomes(exper))) |>
+  mutate(name = factor(name, levels = colnames(outcomes(exper))[taxa_order]))
 
 ggplot(combined_samples) +
   geom_boxplot(
