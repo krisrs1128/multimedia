@@ -6,6 +6,22 @@ retrieve_names <- function(object, nm) {
     pull(.data$name)
 }
 
+#' Methods for accessing mediators
+#' @noRd
+setGeneric("mediators", \(object) standardGeneric("mediators"))
+
+#' Methods for accessing outcomes
+#' @noRd
+setGeneric("treatments", \(object) standardGeneric("treatments"))
+
+#' Methods for accessing outcomes
+#' @noRd
+setGeneric("outcomes", \(object) standardGeneric("outcomes"))
+
+#' Methods for accessing pretreatments
+#' @noRd
+setGeneric("pretreatments", \(object) standardGeneric("pretreatments"))
+
 #' Names of Mediators in a Multimedia Object
 #'
 #' This is a helper that returns the names of the mediator variables in an
@@ -21,9 +37,26 @@ retrieve_names <- function(object, nm) {
 #' multimedia(exper) |>
 #'   mediators()
 #' @export
-mediators <- function(object) {
-  retrieve_names(object, "mediator")
-}
+setMethod("mediators", "multimedia",
+  \(object) {
+    retrieve_names(object, "mediator")
+})
+
+#' Access to @mediators in Mediation Data
+#'
+#' This is an accessor returns the @mediators slot in a mediation_data object.
+#'
+#' @param object An object of class mediation_data.
+#' @return m A data.frame whose rows are samples and columns are values of mediators across those samples.
+#' @examples
+#' exper <- demo_joy() |>
+#'   mediation_data("PHQ", "treatment", starts_with("ASV"))
+#' mediators(exper)
+#' @export
+setMethod("mediators", "mediation_data",
+  \(object) {
+    object@mediators
+})
 
 #' Names of Outcomes in a Multimedia Object
 #'
@@ -44,9 +77,68 @@ mediators <- function(object) {
 #' multimedia(exper) |>
 #'   outcomes()
 #' @export
-outcomes <- function(object) {
-  retrieve_names(object, "outcome")
-}
+setMethod("outcomes", "multimedia",
+  \(object) {
+    retrieve_names(object, "outcome")
+})
+
+#' @export
+setMethod("outcomes", "mediation_data",
+  \(object) {
+    object@outcomes
+})
+
+#' @export
+setMethod("treatments", "mediation_data",
+  \(object) {
+    object@treatments
+})
+
+#' @export
+setMethod("pretreatments", "mediation_data",
+  \(object) {
+    object@pretreatments
+})
+
+setGeneric("edges", \(object) standardGeneric("edges"))
+setGeneric("outcomes<-", \(object, value) standardGeneric("outcomes<-"))
+setGeneric("treatments<-", \(object, value) standardGeneric("treatments<-"))
+setGeneric("pretreatments<-", \(object, value) standardGeneric("pretreatments<-"))
+setGeneric("mediators<-", \(object, value) standardGeneric("mediators<-"))
+
+#' @export
+setMethod("outcomes<-", "mediation_data",
+  \(object, value) {
+    object@outcomes <- value
+    object
+})
+
+#' @export
+setMethod("mediators<-", "mediation_data",
+  \(object, value) {
+    object@mediators <- value
+    object
+})
+
+#' @export
+setMethod("treatments<-", "mediation_data",
+  \(object, value) {
+    object@treatments <- value
+    object
+})
+
+#' @export
+setMethod("pretreatments<-", "mediation_data",
+  \(object, value) {
+    object@pretreatments <- value
+    object
+})
+
+setMethod("edges", "multimedia",
+  \(object) {
+    object@edges
+  })
+
 
 #' Names of Treatments in a Multimedia Object
 #'
@@ -62,9 +154,10 @@ outcomes <- function(object) {
 #' multimedia(exper) |>
 #'   treatments()
 #' @export
-treatments <- function(object) {
-  retrieve_names(object, "treatment")
-}
+setMethod("treatments", "multimedia",
+  function(object) {
+    retrieve_names(object, "treatment")
+})
 
 #' Number of Mediators in a Multimedia Object
 #'
@@ -92,4 +185,9 @@ n_mediators <- function(object) {
 #' @export
 n_outcomes <- function(object) {
   length(outcomes(object))
+}
+
+#' @export
+outcome_model <- function(object) {
+  object@outcome
 }

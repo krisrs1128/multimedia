@@ -347,7 +347,7 @@ glmnet_model <- function(...) {
 #' @importFrom stats deviance
 #' @examples
 #' m <- glmnet_model()
-#' fit <- m@estimator(mpg ~ hp + wt, data = mtcars)
+#' fit <- estimator(m)(mpg ~ hp + wt, data = mtcars)
 #' multimedia:::glmnet_sampler(fit, mtcars)
 #'
 #' plm <- parallelize(glmnetUtils::glmnet)
