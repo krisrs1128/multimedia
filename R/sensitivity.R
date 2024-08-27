@@ -290,5 +290,27 @@ covariance_matrix <- function(model, confound_ix = NULL, rho = 0.0) {
   ecov$vectors %*% diag(ecov$values) %*% t(ecov$vectors)
 }
 
-# sensitivity_perturb <- function(model, exper, perturb, nu_seq = NULL, n_bootstrap = 100, progress = TRUE) {
-# }
+sensitivity_perturb_sample <- function(model, exper, perturb = NULL, nu = 0.0) {
+  Nm <- n_mediators(model)
+  Ny <- n_outcomes(model)
+  epsilon <- (covariance_matrix(model) + nu * perturb) |>
+    mvrnorm(nrow(exper), rep(0, Nm + Ny), Sigma = _)
+  sensitivity_sample(model, exper, epsilon)
+}
+
+sensitivity_perturb <- function(model, exper, perturb, nu_seq = NULL, n_bootstrap = 100, progress = TRUE) {
+  if (is.null(nu_seq)) {
+    nu_seq <- seq(-0.1, 0.1, by = 0.04)
+  }
+
+  summarization <- \(x) {
+    indirect_overall(x) |>
+      effect_summary()
+  }
+
+  sampler <- \(model, exper, nu) {
+    sensitivity_perturb_sample(model, exper, perturb, nu)
+  }
+  sensitivity_factory(summarization, model, exper, sampler, nu_seq, n_bootstrap, progress) |>
+    rename(nu = "perturbation")
+}
