@@ -34,7 +34,7 @@ contrast_predictions <- function(model, profile1, profile2, ...) {
 #' Difference between Samples at Contrasting Profiles
 #'
 #' Given a fitted multimedia model, contrast sampled mediation and outcome data
-#' associated wtih two treatment profiles.
+#' associated with two treatment profiles.
 #'
 #' @param model An object of class multimedia containing the estimated mediation
 #'  and outcome models whose mediation and outcome predictions we want to
@@ -47,6 +47,8 @@ contrast_predictions <- function(model, profile1, profile2, ...) {
 #'  differences in the sampled M(T') - M(T) and Y(T', M(T')) - Y(T, M(T))
 #'  between the two profiles T and T'.
 #' @param ... Additional arguments to pass to `sample()`.
+#' @return A list with two elements, mediators and outcomes. These contrast the
+#'   values of the mediator and outcomes under the two profiles T and T'.
 #' @export
 #' @examples
 #' exper <- demo_joy() |>
@@ -182,6 +184,8 @@ parse_name <- function(t_, t1, t2) {
 #'  indirect effect.
 #' @param t2 The alternative level of the treatment to be used when computing
 #'  the indirect effect.
+#' @return A data.frame summarizing the overall indirect effects associated with
+#'   different settings of j in the equation above.
 #' @examples
 #' # example with null data
 #' exper <- demo_joy() |>
@@ -241,7 +245,8 @@ indirect_overall <- function(model, exper = NULL, t1 = 1, t2 = 2) {
 #'  (pathwise) indirect effect.
 #' @param t2 The alternative level of the treatment to be used when computing
 #'  the (pathwise) indirect effect.
-#' 
+#' @return A data.frame summarizing the pathwise (per-mediator) indirect effects
+#'   associated with different settings of the direct effect.
 #' @examples
 #' # example with null data
 #' exper <- demo_joy() |>

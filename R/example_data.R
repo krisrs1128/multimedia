@@ -108,6 +108,10 @@ demo_spline <- function(n_samples = 5e3, tau = c(2, 2)) {
 #' stored as a phyloseq object. Measurements are from 50 subjects before and
 #' after a real and active control mindfulness intervention. We are interested
 #' in changes in subject-level metadata, stored in the sample_data slot
+#' @format An object of class phyloseq.
+#' @return A phyloseq object with 307 samples and 55 taxa. Samples are described
+#'   by 7 variables (potential mediators) in the sample_data slot. There is no
+#'   associated phylogenetic tree.
 #' @name mindfulness
 #' @docType data
 #' @keywords data

@@ -38,6 +38,7 @@ setClass(
 #' Helper to Modify Formulas
 #' @param formula The original formula whose response we want to modify.
 #' @param yj The desired response term for the formula.
+#' @return A new formula object with the LHS replaced by yj.
 #' @importFrom stats update.formula as.formula
 sub_formula <- function(formula, yj) {
   update.formula(formula, as.formula(glue("{yj} ~ .")))
@@ -89,7 +90,6 @@ parallelize <- function(f) {
 #'  mediation analysis. For example, if a treatment node leads into a mediation
 #'  node, this will be included in the graph (as will all pretreatment to mediator,
 #'  mediator to outcome, etc.)
-#'
 #' @importFrom tidygraph %N>%
 #' @importFrom dplyr left_join rename
 #' @importFrom rlang .data

@@ -165,6 +165,7 @@ expand_edges <- function(input, output, input_name, output_name) {
 #'
 #' @param exper An object of class SummarizedExperiment.
 #' @importFrom SummarizedExperiment assay colData
+#' @return A data.frame combining all slots of a multimedia object.
 #' @examples
 #' demo_joy() |>
 #'   multimedia:::exper_df()
@@ -385,6 +386,7 @@ setGeneric("nrow", function(x) nrow(x))
 #' How many samples in the mediation dataset?
 #' @param x The `mediation_data` object whose number of samples we want to
 #'   return.
+#' @return An integer giving the number of samples in the mediation object.
 #' @export
 setMethod(nrow, "mediation_data", function(x) {
   nrow(x@outcomes)

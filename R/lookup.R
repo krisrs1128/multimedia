@@ -299,7 +299,11 @@ n_outcomes <- function(object) {
 #' Access the Outcome Model in a Multimedia Object
 #' 
 #' This is an accessor to the outcome slot of a multimedia object.
-#' @param object An object of class multimedia
+#' @param object An object of class multimedia.
+#' @return NULL, if not fitted, or the model learned from the training mediation
+#'   data object. For models fit in parallel across outcomes (e.g.,
+#'   glmnet_model()) a list of separate model objects. For models fitted jointly
+#'   across outcomes (e.g., lnm_model()), a single model object of that class.
 #' @examples
 #' exper <- demo_joy() |>
 #'   mediation_data("PHQ", "treatment", starts_with("ASV"))

@@ -286,6 +286,7 @@ standard_deviations <- function(model) {
   )
 }
 
+#' @noRd
 covariance_matrix <- function(model, confound_ix = NULL, rho = 0.0) {
   sigma_m <- standard_deviations(model@mediation)
   sigma_y <- standard_deviations(model@outcome)
@@ -312,6 +313,7 @@ covariance_matrix <- function(model, confound_ix = NULL, rho = 0.0) {
   ecov$vectors %*% diag(ecov$values) %*% t(ecov$vectors)
 }
 
+#' @noRd
 sensitivity_perturb_sample <- function(model, exper, perturb = NULL, nu = 0.0) {
   Nm <- n_mediators(model)
   Ny <- n_outcomes(model)
@@ -320,6 +322,7 @@ sensitivity_perturb_sample <- function(model, exper, perturb = NULL, nu = 0.0) {
   sensitivity_sample(model, exper, epsilon)
 }
 
+#' @export
 sensitivity_perturb <- function(model, exper, perturb, nu_seq = NULL, n_bootstrap = 100, progress = TRUE) {
   if (is.null(nu_seq)) {
     nu_seq <- seq(-0.1, 0.1, by = 0.04)

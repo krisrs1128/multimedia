@@ -62,6 +62,8 @@ setMethod("show", "multimedia", function(object) {
 #' 
 #' @param x A character vector potentially including ANSI.
 #' @param options Unused placeholder argument.
+#' @return A string with HTML reformatted to ensure colors appear in printed
+#'   code blocks in rmarkdown output.
 #' @examples
 #' knitr::knit_hooks$set(output = ansi_aware_handler)
 #' options(crayon.enabled = TRUE)
