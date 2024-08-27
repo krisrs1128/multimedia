@@ -60,3 +60,28 @@ plot_mediators <- function(indirect_effects, exper, n_digit = 3, n_panels = NULL
   patchwork::wrap_plots(p, ...) +
     patchwork::plot_layout(guides = "collect")
 }
+
+#' Generic Sensitivity Plot
+#' This function draws a curve of indirect effect against the sensitivity
+#' parameter, allowing users to specify the name of x and y-axis variables using
+#' the x_var and y_var inputs.
+#' 
+#' @importFrom ggplot2 geom_vline aes geom_hline geom_ribbon scale_x_continuous
+#' @importFrom glue glue
+#' @export
+plot_sensitivity <- function(sensitivity_curve, x_var = "rho", y_var = "indirect_effect") {
+  ggplot(sensitivity_curve, aes(.data[[x_var]], col = .data[["outcome"]], fill = .data[["outcome"]])) +
+    geom_vline(xintercept = 0, linewidth = 0.5) +
+    geom_hline(yintercept = 0, linewidth = 0.5) +
+    geom_line(aes(y = .data[[y_var]])) +
+    geom_ribbon(aes(
+      y = .data[[y_var]],
+      ymin = .data[[y_var]] - 2 * .data[[glue("{y_var}_standard_error")]],
+      ymax = .data[[y_var]] + 2 * .data[[glue("{y_var}_standard_error")]],
+    ), alpha = 0.4) +
+    scale_x_continuous(expand = c(0, 0)) +
+    labs(
+      x = glue("Strength {x_var} of Hypothetical Confounder"),
+      y = "Indirect Effect"
+    )
+}
