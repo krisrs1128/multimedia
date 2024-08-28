@@ -115,4 +115,6 @@ demo_spline <- function(n_samples = 5e3, tau = c(2, 2)) {
 #' @name mindfulness
 #' @docType data
 #' @keywords data
+#' @examples
+#' data(mindfulness)
 NULL

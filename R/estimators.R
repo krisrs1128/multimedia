@@ -479,6 +479,7 @@ estimator <- function(object) {
 #'   would like to extract.
 #' @return A list containing all the fitted outcome models.
 #' @examples
+#' data(mindfulness)
 #' exper <- mediation_data(
 #'     mindfulness,
 #'     phyloseq::taxa_names(mindfulness),
@@ -499,6 +500,7 @@ outcome_models <- function(object) {
 #'   would like to extract.
 #' @return A list containing all the fitted mediation models.
 #' @examples
+#' data(mindfulness)
 #' exper <- mediation_data(
 #'     mindfulness,
 #'     phyloseq::taxa_names(mindfulness),
@@ -671,7 +673,7 @@ rf_model <- function(...) {
 #' @importFrom dplyr bind_cols
 #' @examples
 #' m <- rf_model()
-#' fit <- m@estimator(mpg ~ hp + wt, data = mtcars)
+#' fit <- estimator(m)(mpg ~ hp + wt, data = mtcars)
 #' multimedia:::rf_sampler(fit, mtcars)
 #'
 #' prf <- parallelize(ranger::ranger)
