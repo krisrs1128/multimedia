@@ -113,8 +113,10 @@ below has one sample with this kind of configuration and three others that keep
 all edges at control.
 
 ```{r new_treat}
-t_mediator <- treatments(model)[c(2, rep(1, 3)),, drop=FALSE]
-t_outcome <- treatments(model)[rep(1, 4),, drop=FALSE]
+t_mediator <- data.frame(treatment = factor(c("Treatment", "Control", "Control", "Control")))
+t_outcome <- t_mediator
+t_outcome$treatment[1] <- "Control"
+
 profile <- setup_profile(model, t_mediator, t_outcome)
 sample(model, profile = profile)
 predict(model, profile = profile)
