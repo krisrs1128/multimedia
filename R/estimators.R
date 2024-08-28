@@ -359,8 +359,8 @@ glmnet_model <- function(...) {
 #' fit <- plm(mpg + disp ~ hp + wt, data = mtcars)
 #' multimedia:::glmnet_sampler(fit, mtcars)
 #' @noRd
-glmnet_sampler <- function(fits, newdata = NULL, indices = NULL,
-                           lambda_ix = 1, ...) {
+glmnet_sampler <- function(fits, newdata = NULL, indices = NULL, lambda_ix = 1,
+                           ...) {
     if (is.null(indices)) {
         indices <- seq_along(fits)
     }

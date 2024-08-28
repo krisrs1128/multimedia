@@ -68,7 +68,9 @@ setMethod("sample", "multimedia", function(
     if (is.null(mediators)) {
         mediators <- list()
         for (i in seq_along(profile@t_mediator)) {
-            mediators[[i]] <- bind_cols(pretreatment, profile@t_mediator[[i]]) |>
+            mediators[[i]] <- bind_cols(
+                pretreatment, profile@t_mediator[[i]]
+            ) |>
                 x@mediation@sampler(
                     x@mediation@estimates, newdata = _, indices = i, ...
                 )

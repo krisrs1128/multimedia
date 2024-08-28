@@ -11,15 +11,15 @@ vignette: >
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
-  fig.align = "center",
-  collapse = TRUE,
-  comment = "#>",
-  warning = FALSE,
-  message = FALSE,
-  eval = TRUE,
-  cache = FALSE,
-  dev.args = list(bg = "transparent"),
-  out.width = 600
+    fig.align = "center",
+    collapse = TRUE,
+    comment = "#>",
+    warning = FALSE,
+    message = FALSE,
+    eval = TRUE,
+    cache = FALSE,
+    dev.args = list(bg = "transparent"),
+    out.width = 600
 )
 
 knitr::knit_hooks$set(output = multimedia::ansi_aware_handler)
@@ -27,29 +27,31 @@ options(crayon.enabled = TRUE)
 
 suppressPackageStartupMessages(library(ggplot2))
 options(
-  ggplot2.discrete.colour = c(
-    "#9491D9", "#F24405", "#3F8C61", "#8C2E62", "#F2B705", "#11A0D9"
-  ),
-  ggplot2.discrete.fill = c(
-    "#9491D9", "#F24405", "#3F8C61", "#8C2E62", "#F2B705", "#11A0D9"
-  ),
-  ggplot2.continuous.colour = function(...)
-    scale_color_distiller(palette = "Spectral", ...),
-  ggplot2.continuous.fill = function(...)
-    scale_fill_distiller(palette = "Spectral", ...)
+    ggplot2.discrete.colour = c(
+        "#9491D9", "#F24405", "#3F8C61", "#8C2E62", "#F2B705", "#11A0D9"
+    ),
+    ggplot2.discrete.fill = c(
+        "#9491D9", "#F24405", "#3F8C61", "#8C2E62", "#F2B705", "#11A0D9"
+    ),
+    ggplot2.continuous.colour = function(...) {
+        scale_color_distiller(palette = "Spectral", ...)
+    },
+    ggplot2.continuous.fill = function(...) {
+        scale_fill_distiller(palette = "Spectral", ...)
+    }
 )
 
 th <- theme_classic() +
-  theme(
-    panel.background = element_rect(fill = "transparent"),
-    strip.background = element_rect(fill = "transparent"),
-    plot.background = element_rect(fill = "transparent", color = NA),
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(),
-    legend.background = element_rect(fill = "transparent"),
-    legend.box.background = element_rect(fill = "transparent"),
-    legend.position = "bottom"
-  )
+    theme(
+        panel.background = element_rect(fill = "transparent"),
+        strip.background = element_rect(fill = "transparent"),
+        plot.background = element_rect(fill = "transparent", color = NA),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.background = element_rect(fill = "transparent"),
+        legend.box.background = element_rect(fill = "transparent"),
+        legend.position = "bottom"
+    )
 theme_set(th)
 ```
 
@@ -83,7 +85,7 @@ regression model for each mediation and outcome variable.
 
 ```{r estimate}
 model <- multimedia(exper) |>
-  estimate(exper)
+    estimate(exper)
 
 model
 ```
@@ -94,8 +96,8 @@ the `ggraph` code below.
 
 ```{r graph}
 ggraph(edges(model)) +
-  geom_edge_link(arrow = arrow()) +
-  geom_node_label(aes(label = name, fill = node_type))
+    geom_edge_link(arrow = arrow()) +
+    geom_node_label(aes(label = name, fill = node_type))
 ```
 
 Now that we've coupled the mediation and outcome models, we can propogate
@@ -119,7 +121,9 @@ below has one sample with this kind of configuration and three others that keep
 all edges at control.
 
 ```{r new_treat}
-t_mediator <- data.frame(treatment = factor(c("Treatment", "Control", "Control", "Control")))
+t_mediator <- data.frame(
+    treatment = factor(c("Treatment", "Control", "Control", "Control"))
+)
 t_outcome <- t_mediator
 t_outcome$treatment[1] <- "Control"
 
@@ -132,7 +136,7 @@ We can also contrast the predictions and samples under different profiles.
 
 ```{r contrast}
 profile_control <- setup_profile(
-  model, treatments(model)[rep(1, 4),, drop = FALSE], t_outcome
+    model, treatments(model)[rep(1, 4), , drop = FALSE], t_outcome
 )
 contrast_predictions(model, profile, profile_control)
 contrast_samples(model, profile, profile_control)
@@ -172,7 +176,7 @@ simulated data.
 
 ```{r glmnet}
 model <- multimedia(exper, glmnet_model(lambda = .1)) |>
-  estimate(exper)
+    estimate(exper)
 
 direct_effect(model, exper)
 indirect_overall(model, exper)

@@ -11,15 +11,15 @@ vignette: >
 
 ```{r invisible, include = FALSE}
 knitr::opts_chunk$set(
-  fig.align = "center",
-  collapse = TRUE,
-  comment = "#>",
-  warning = FALSE,
-  message = FALSE,
-  eval = TRUE,
-  cache = FALSE,
-  dev.args = list(bg = "transparent"),
-  out.width = 600
+    fig.align = "center",
+    collapse = TRUE,
+    comment = "#>",
+    warning = FALSE,
+    message = FALSE,
+    eval = TRUE,
+    cache = FALSE,
+    dev.args = list(bg = "transparent"),
+    out.width = 600
 )
 
 knitr::knit_hooks$set(output = multimedia::ansi_aware_handler)
@@ -27,23 +27,31 @@ options(crayon.enabled = TRUE)
 
 suppressPackageStartupMessages(library(ggplot2))
 options(
-  ggplot2.discrete.colour = c("#9491D9", "#F24405", "#3F8C61", "#8C2E62", "#F2B705", "#11A0D9"),
-  ggplot2.discrete.fill = c("#9491D9", "#F24405", "#3F8C61", "#8C2E62", "#F2B705", "#11A0D9"),
-  ggplot2.continuous.colour = function(...) scale_color_distiller(palette = "Spectral", ...),
-  ggplot2.continuous.fill = function(...) scale_fill_distiller(palette = "Spectral", ...)
+    ggplot2.discrete.colour = c(
+        "#9491D9", "#F24405", "#3F8C61", "#8C2E62", "#F2B705", "#11A0D9"
+    ),
+    ggplot2.discrete.fill = c(
+        "#9491D9", "#F24405", "#3F8C61", "#8C2E62", "#F2B705", "#11A0D9"
+    ),
+    ggplot2.continuous.colour = function(...) {
+        scale_color_distiller(palette = "Spectral", ...)
+    },
+    ggplot2.continuous.fill = function(...) {
+        scale_fill_distiller(palette = "Spectral", ...)
+    }
 )
 
 th <- theme_classic() +
-  theme(
-    panel.background = element_rect(fill = "transparent"),
-    strip.background = element_rect(fill = "transparent"),
-    plot.background = element_rect(fill = "transparent", color = NA),
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(),
-    legend.background = element_rect(fill = "transparent"),
-    legend.box.background = element_rect(fill = "transparent"),
-    legend.position = "bottom"
-  )
+    theme(
+        panel.background = element_rect(fill = "transparent"),
+        strip.background = element_rect(fill = "transparent"),
+        plot.background = element_rect(fill = "transparent", color = NA),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.background = element_rect(fill = "transparent"),
+        legend.box.background = element_rect(fill = "transparent"),
+        legend.position = "bottom"
+    )
 
 theme_set(th)
 ```
@@ -72,21 +80,24 @@ set.seed(20231222)
 
 # Data Processing
 
-We'll load data from the Borenstein Lab's [microbiome-metabolome curated data](https://github.com/borenstein-lab/microbiome-metabolome-curated-data)
+We'll load data from the Borenstein Lab's 
+[microbiome-metabolome curated data](https://go.wisc.edu/582dhj)
 repository. This is a great resource that consistently documents each study and
-ensures uniform data processing. Our data is from [Franzosa et
-al.'s](https://doi.org/10.1038/s41564-018-0306-4) study of intestinal bowel
+ensures uniform data processing. Our data is from 
+[Franzosa et al.'s](https://go.wisc.edu/14b4a2) study of intestinal bowel
 disease. We'll treat disease status as the treatment, the microbiome as
 mediators, and metabolites as the outcome, in the spirit of that study's
 discussion:
 
-> Together, these findings suggest that yet-to-be characterized molecules in the gut metabolome, linked to inflammation and ultimately IBD, may be largely microbially derived or modified.
+> Together, these findings suggest that yet-to-be characterized molecules in the
+gut metabolome, linked to inflammation and ultimately IBD, may be largely
+microbially derived or modified.
 
 ```{r read_data}
 Sys.setenv("VROOM_CONNECTION_SIZE" = 5e6)
-taxa <- read_tsv("https://raw.githubusercontent.com/borenstein-lab/microbiome-metabolome-curated-data/main/data/processed_data/FRANZOSA_IBD_2019/genera.tsv")[, -1]
-metabolites <- read_tsv("https://raw.githubusercontent.com/borenstein-lab/microbiome-metabolome-curated-data/main/data/processed_data/FRANZOSA_IBD_2019/mtb.tsv")[, -1]
-metadata <- read_tsv("https://github.com/borenstein-lab/microbiome-metabolome-curated-data/raw/main/data/processed_data/FRANZOSA_IBD_2019/metadata.tsv")
+taxa <- read_tsv("https://go.wisc.edu/l015v0")[, -1]
+metabolites <- read_tsv("https://go.wisc.edu/0t3gs3")[, -1]
+metadata <- read_tsv("https://go.wisc.edu/9z36wr")
 ```
 
 We'll filter quite aggressively so that the examples in this vignette run
@@ -99,60 +110,60 @@ read them in the `.Rmd` source.
 
 ```{r functions, echo = FALSE}
 filter_mean <- function(x, threshold = 3) {
-  x[, colMeans(x) > threshold]
+    x[, colMeans(x) > threshold]
 }
 
 simplify_tax_names <- function(x) {
-  colnames(x) <- colnames(x) |>
-    str_extract("g__.*+") |>
-    str_replace("g__", "g") |>
-    str_remove_all("[[:punct:]]")
-  x
+    colnames(x) <- colnames(x) |>
+        str_extract("g__.*+") |>
+        str_replace("g__", "g") |>
+        str_remove_all("[[:punct:]]")
+    x
 }
 
 simplify_metab_names <- function(x) {
-  new_names <- colnames(x) |>
-    str_remove_all("[[\\.|\\/|\\*|,|\\:|\\(|\\)]]") |>
-    str_replace_all("-", "_") |>
-    str_replace_all(" ", "_") |>
-    str_remove("Cluster_|Clser") |>
-    str_remove("HILIC|C8|C18") |>
-    str_remove("pos|neg") |>
-    str_remove("__")
+    new_names <- colnames(x) |>
+        str_remove_all("[[\\.|\\/|\\*|,|\\:|\\(|\\)]]") |>
+        str_replace_all("-", "_") |>
+        str_replace_all(" ", "_") |>
+        str_remove("Cluster_|Clser") |>
+        str_remove("HILIC|C8|C18") |>
+        str_remove("pos|neg") |>
+        str_remove("__")
 
-  colnames(x) <- paste0("m", new_names)
-  x
+    colnames(x) <- paste0("m", new_names)
+    x
 }
 
 annotated_metabolites <- function(metabolites) {
-  str_remove(colnames(metabolites), "C18-neg_Cluster_[0-9]+: ") |>
-    str_remove("C8-pos_Cluster_[0-9]+: ") |>
-    str_remove("HILIC-neg_Cluster_[0-9]+: ") |>
-    str_remove("HILIC-pos_Cluster_[0-9]+: ") |>
-    unique() |>
-    setdiff("NA")
+    str_remove(colnames(metabolites), "C18-neg_Cluster_[0-9]+: ") |>
+        str_remove("C8-pos_Cluster_[0-9]+: ") |>
+        str_remove("HILIC-neg_Cluster_[0-9]+: ") |>
+        str_remove("HILIC-pos_Cluster_[0-9]+: ") |>
+        unique() |>
+        setdiff("NA")
 }
 ```
 
 ```{r}
 taxa <- clr(taxa) |>
-  filter_mean() |>
-  simplify_tax_names()
+    filter_mean() |>
+    simplify_tax_names()
 
 metabolites <- log(1 + metabolites) |>
-  filter_mean(threshold = 6) |>
-  select(matches(annotated_metabolites(metabolites))) |>
-  simplify_metab_names()
+    filter_mean(threshold = 6) |>
+    select(matches(annotated_metabolites(metabolites))) |>
+    simplify_metab_names()
 
 combined <- metabolites |>
-  bind_cols(taxa, metadata) |>
-  as_tibble()
+    bind_cols(taxa, metadata) |>
+    as_tibble()
 
 exper <- mediation_data(
-  combined,
-  colnames(metabolites),
-  "Study.Group",
-  colnames(taxa)
+    combined,
+    colnames(metabolites),
+    "Study.Group",
+    colnames(taxa)
 )
 
 exper
@@ -165,7 +176,7 @@ metabolite, only a subset of microbes is expected to influence its abundance.
 
 ```{r lasso}
 model <- multimedia(exper, glmnet_model(lambda = 0.1)) |>
-  estimate(exper)
+    estimate(exper)
 ```
 
 We can have different direct effects depending on the treatment assignments of
@@ -177,25 +188,29 @@ boxplots.
 
 ```{r, lasso_direct, fig.width = 6, fig.height = 5}
 direct <- list(
-  CD = direct_effect(model, exper, 1, 3),
-  UC = direct_effect(model, exper, 2, 3)
+    CD = direct_effect(model, exper, 1, 3),
+    UC = direct_effect(model, exper, 2, 3)
 ) |>
-  map_dfr(effect_summary, .id = "treatment")
+    map_dfr(effect_summary, .id = "treatment")
 
 vis_direct <- direct |>
-  slice_max(abs(direct_effect), n = 20) |>
-  pull(outcome)
+    slice_max(abs(direct_effect), n = 20) |>
+    pull(outcome)
 
 combined |>
-  select(any_of(vis_direct), Study.Group) |>
-  pivot_longer(-Study.Group, names_to = "feature") |>
-  ggplot() +
-  geom_boxplot(aes(value, reorder(feature, value, median), fill = Study.Group)) +
-  labs(
-    x = "log(1 + intensity)",
-    y = "Metabolite",
-    fill = "Group"
-  )
+    select(any_of(vis_direct), Study.Group) |>
+    pivot_longer(-Study.Group, names_to = "feature") |>
+    ggplot() +
+    geom_boxplot(
+        aes(value, reorder(feature, value, median),
+            fill = Study.Group
+        )
+    ) +
+    labs(
+        x = "log(1 + intensity)",
+        y = "Metabolite",
+        fill = "Group"
+    )
 ```
 
 The block below calculates the analogous overall indirect effects. We're
@@ -206,19 +221,25 @@ top direct and indirect effects in the object `top_effects`.
 
 ```{r}
 indirect_effect <- list(
-  CD = indirect_overall(model, exper, 1, 3),
-  UC = indirect_overall(model, exper, 2, 3)
+    CD = indirect_overall(model, exper, 1, 3),
+    UC = indirect_overall(model, exper, 2, 3)
 )
 
 top_direct <- dplyr::rename(direct, effect = direct_effect)
-top_indirect <- dplyr::rename(bind_rows(indirect_effect), effect = indirect_effect)
+top_indirect <- dplyr::rename(bind_rows(indirect_effect),
+    effect = indirect_effect
+)
 top_effects <- list(direct = top_direct, indirect = top_indirect) |>
-  bind_rows(.id = "type")
+    bind_rows(.id = "type")
 
-vis_outcomes <- c("m0181_hydrocinnamic_acid", "m1303_lithocholate", "m0036_creatinine", "m0253_sphingosine", "m1478_C182_CE", "m0295_arginine")
+vis_outcomes <- c(
+    "m0181_hydrocinnamic_acid", "m1303_lithocholate",
+    "m0036_creatinine", "m0253_sphingosine", "m1478_C182_CE",
+    "m0295_arginine"
+)
 top_effects <- bind_rows(
-  filter(top_effects, outcome %in% vis_outcomes[1:3], type == "indirect"),
-  filter(top_effects, outcome %in% vis_outcomes[4:6], type == "direct"),
+    filter(top_effects, outcome %in% vis_outcomes[1:3], type == "indirect"),
+    filter(top_effects, outcome %in% vis_outcomes[4:6], type == "direct"),
 )
 ```
 
@@ -233,23 +254,26 @@ eig <- \(x, k) 100 * round(x[k] / sum(x), 4)
 
 mds <- cmdscale(dist(mediators(exper)), eig = TRUE, k = 2)
 coords <- data.frame(mds$points) |>
-  bind_cols(treatments(exper)) |>
-  bind_cols(outcomes(exper)[, vis_outcomes]) |>
-  pivot_longer(top_effects$outcome, names_to = "outcome", values_to = "abundance") |>
-  left_join(top_effects) |>
-  group_by(outcome) |>
-  mutate(abundance_quantile = as.integer(as.factor(cut(abundance, 10))) / 10)
+    bind_cols(treatments(exper)) |>
+    bind_cols(outcomes(exper)[, vis_outcomes]) |>
+    pivot_longer(top_effects$outcome,
+        names_to = "outcome",
+        values_to = "abundance"
+    ) |>
+    left_join(top_effects) |>
+    group_by(outcome) |>
+    mutate(abundance_quantile = as.integer(as.factor(cut(abundance, 10))) / 10)
 
 ggplot(coords) +
-  geom_point(aes(X1, X2, col = Study.Group, size = abundance_quantile)) +
-  scale_size_area(max_size = 1.5, breaks = c(0.25, 0.5, 0.75)) +
-  labs(
-    x = glue("MDS1 [{eig(mds$eig, 1)}%]"),
-    y = glue("MDS2 [{eig(mds$eig, 2)}%]"),
-    size = "Metabolite Abundance Quantile",
-    col = "Group"
-  ) +
-  facet_wrap(~ type + reorder(outcome, -abundance))
+    geom_point(aes(X1, X2, col = Study.Group, size = abundance_quantile)) +
+    scale_size_area(max_size = 1.5, breaks = c(0.25, 0.5, 0.75)) +
+    labs(
+        x = glue("MDS1 [{eig(mds$eig, 1)}%]"),
+        y = glue("MDS2 [{eig(mds$eig, 2)}%]"),
+        size = "Metabolite Abundance Quantile",
+        col = "Group"
+    ) +
+    facet_wrap(~ type + reorder(outcome, -abundance))
 ```
 
 Pathwise indirect effects are those that appear when modifying the treatment
@@ -266,7 +290,7 @@ you can just read in the pre-computed result in the next block.
 # ) |>
 #   map_dfr(effect_summary, .id = "treatment")
 
-indirect_sorted <- read_csv("https://drive.google.com/uc?export=download&id=1Ar7u2rU7DLMjvS-iV9OXwGcY4Rs1Q5wI")
+indirect_sorted <- read_csv("https://go.wisc.edu/n04p94")
 ```
 
 We can look at the effects which have the strongest indirect effects. These make
@@ -277,9 +301,9 @@ Biophila, which consequently increases the abundance of the metabolite.
 
 ```{r lasso_mediators_plot, fig.width = 9, fig.height = 4.5}
 p <- indirect_sorted %>%
-  split(.$treatment) |>
-  map(~ arrange(., -indirect_effect) |>
-    plot_mediators(exper, treatment = "Study.Group", nrow = 2))
+    split(.$treatment) |>
+    map(~ arrange(., -indirect_effect) |>
+        plot_mediators(exper, treatment = "Study.Group", nrow = 2))
 
 p[["CD"]]
 ```
@@ -292,25 +316,25 @@ the direct treatment edge is needed to improve model fit.
 
 ```{r lasso_synthetic, fig.width = 12, fig.heigth = 7}
 altered <- model |>
-  nullify("T->Y") |>
-  estimate(exper)
+    nullify("T->Y") |>
+    estimate(exper)
 
 # sample at original treatment assignments
 profile <- setup_profile(model, treatments(exper), treatments(exper))
 samples <- list(
-  real = outcomes(exper),
-  fitted = outcomes(sample(model, profile = profile)),
-  altered = outcomes(sample(altered, profile = profile))
+    real = outcomes(exper),
+    fitted = outcomes(sample(model, profile = profile)),
+    altered = outcomes(sample(altered, profile = profile))
 ) |>
-  bind_rows(.id = "source") |>
-  bind_cols(treatment = rep(treatments(exper)$Study.Group, 3)) |>
-  pivot_longer(direct$outcome) |>
-  mutate(name = factor(name, levels = unique(direct$outcome)))
+    bind_rows(.id = "source") |>
+    bind_cols(treatment = rep(treatments(exper)$Study.Group, 3)) |>
+    pivot_longer(direct$outcome) |>
+    mutate(name = factor(name, levels = unique(direct$outcome)))
 
 # visualize
 ggplot(filter(samples, samples$name %in% unique(samples$name)[1:20])) +
-  geom_boxplot(aes(value, name, fill = treatment)) +
-  facet_wrap(~source)
+    geom_boxplot(aes(value, name, fill = treatment)) +
+    facet_wrap(~source)
 ```
 
 How can we understand the uncertainty of the estimated models? One approach is
@@ -322,40 +346,40 @@ again slow, so you can skip ahead and load a pre-computed version.
 
 ```{r lasso_bootstrap}
 fs <- list(direct = direct_effect, indirect = indirect_overall)
-#inference <- bootstrap(model, exper, fs, B = 1000)
-inference <- readRDS(url("https://drive.google.com/uc?export=download&id=16A9MCblgf327SiL0hataAHYfs38wB_K1"))
+# inference <- bootstrap(model, exper, fs, B = 1000)
+inference <- readRDS(url("https://go.wisc.edu/33ty1f"))
 ```
 
 ```{r lasso_bootstrap_vis, fig.width = 9, fig.height = 3.5}
 filter_outcomes <- inference$indirect |>
-  effect_summary() |>
-  group_by(outcome) |>
-  summarise(indirect_effect = median(indirect_effect)) |>
-  slice_max(abs(indirect_effect), n = 20) |>
-  pull(outcome)
+    effect_summary() |>
+    group_by(outcome) |>
+    summarise(indirect_effect = median(indirect_effect)) |>
+    slice_max(abs(indirect_effect), n = 20) |>
+    pull(outcome)
 
 p1 <- filter(inference$indirect, outcome %in% filter_outcomes) |>
-  ggplot() +
-  geom_vline(xintercept = 0) +
-  stat_slabinterval(
-    aes(indirect_effect, reorder(outcome, indirect_effect, median)),
-    .width = c(.66, .95)
-  ) +
-  labs(x = "Indirect Effect", y = "Metabolite")
+    ggplot() +
+    geom_vline(xintercept = 0) +
+    stat_slabinterval(
+        aes(indirect_effect, reorder(outcome, indirect_effect, median)),
+        .width = c(.66, .95)
+    ) +
+    labs(x = "Indirect Effect", y = "Metabolite")
 
 filter_outcomes <- inference$direct |>
-  group_by(outcome) |>
-  summarise(direct_effect = median(direct_effect)) |>
-  slice_max(abs(direct_effect), n = 20) |>
-  pull(outcome)
+    group_by(outcome) |>
+    summarise(direct_effect = median(direct_effect)) |>
+    slice_max(abs(direct_effect), n = 20) |>
+    pull(outcome)
 p2 <- filter(inference$direct, outcome %in% filter_outcomes) |>
-  ggplot() +
-  geom_vline(xintercept = 0) +
-  stat_slabinterval(
-    aes(direct_effect, reorder(outcome, direct_effect, median)),
-    .width = c(.66, .95)
-  ) +
-  labs(x = "Direct Effect", y = "Metabolite")
+    ggplot() +
+    geom_vline(xintercept = 0) +
+    stat_slabinterval(
+        aes(direct_effect, reorder(outcome, direct_effect, median)),
+        .width = c(.66, .95)
+    ) +
+    labs(x = "Direct Effect", y = "Metabolite")
 
 p1 | p2
 ```
@@ -387,7 +411,7 @@ mediators(exper2) <- mediators(exper2)[, 1:50]
 #   brms_model(family = hurdle_lognormal())
 # ) |>
 #   estimate(exper2)
-model <- readRDS(url("https://uwmadison.box.com/shared/static/803fpu7skhjpd8f5ye6pb3crkc67qhl1.rds"))
+model <- readRDS(url("https://go.wisc.edu/5e26op"))
 ```
 
 With the updated model, we can again compute pathwise indirect effects. This
@@ -397,9 +421,9 @@ effect on microbe abundance. If this hadn't been present, and if the metabolite
 simply vanished, then that would be a direct effect.
 
 ```{r hurdle_indirect, fig.width = 12, fig.height = 9}
-#indirect_sorted <- indirect_pathwise(model, exper2) |>
-indirect_sorted <- read_csv("https://drive.google.com/uc?export=download&id=1aX6h98udBxqR3RBOjbUnoY1wLMfFUceB") |>
-  effect_summary()
+# indirect_sorted <- indirect_pathwise(model, exper2) |>
+indirect_sorted <- read_csv("https://go.wisc.edu/j3z503") |>
+    effect_summary()
 plot_mediators(indirect_sorted, exper2, treatment = "Study.Group")
 ```
 
@@ -425,16 +449,16 @@ hurdle model's effectiveness in accurately reflecting features that influence
 zero-inflation.
 
 ```{r hurdle_direct, fig.width = 6, height = 5}
-#direct <- direct_effect(model, exper) |>
-direct <- read_csv("https://drive.google.com/uc?export=download&id=10dYU4ahizRk7hjsi6JKJWdNKdAI1qyXS") |>
-  effect_summary()
+# direct <- direct_effect(model, exper) |>
+direct <- read_csv("https://go.wisc.edu/3ik252") |>
+    effect_summary()
 
 combined |>
-  select(any_of(direct$outcome), Study.Group) |>
-  pivot_longer(-Study.Group, names_to = "feature") |>
-  mutate(feature = factor(feature, levels = unique(direct$outcome))) |>
-  ggplot() +
-  geom_boxplot(aes(value, feature, fill = Study.Group))
+    select(any_of(direct$outcome), Study.Group) |>
+    pivot_longer(-Study.Group, names_to = "feature") |>
+    mutate(feature = factor(feature, levels = unique(direct$outcome))) |>
+    ggplot() +
+    geom_boxplot(aes(value, feature, fill = Study.Group))
 ```
 
 ```{r}

@@ -11,15 +11,15 @@ vignette: >
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
-  fig.align = "center",
-  collapse = TRUE,
-  comment = "#>",
-  warning = FALSE,
-  message = FALSE,
-  eval = TRUE,
-  cache = FALSE,
-  dev.args = list(bg = "transparent"),
-  out.width = 600
+    fig.align = "center",
+    collapse = TRUE,
+    comment = "#>",
+    warning = FALSE,
+    message = FALSE,
+    eval = TRUE,
+    cache = FALSE,
+    dev.args = list(bg = "transparent"),
+    out.width = 600
 )
 
 knitr::knit_hooks$set(output = multimedia::ansi_aware_handler)
@@ -27,29 +27,31 @@ options(crayon.enabled = TRUE)
 
 suppressPackageStartupMessages(library(ggplot2))
 options(
-  ggplot2.discrete.colour = c(
-    "#9491D9", "#F24405", "#3F8C61", "#8C2E62", "#F2B705", "#11A0D9"
-  ),
-  ggplot2.discrete.fill = c(
-    "#9491D9", "#F24405", "#3F8C61", "#8C2E62", "#F2B705", "#11A0D9"
-  ),
-  ggplot2.continuous.colour = function(...)
-    scale_color_distiller(palette = "Spectral", ...),
-  ggplot2.continuous.fill = function(...)
-    scale_fill_distiller(palette = "Spectral", ...)
+    ggplot2.discrete.colour = c(
+        "#9491D9", "#F24405", "#3F8C61", "#8C2E62", "#F2B705", "#11A0D9"
+    ),
+    ggplot2.discrete.fill = c(
+        "#9491D9", "#F24405", "#3F8C61", "#8C2E62", "#F2B705", "#11A0D9"
+    ),
+    ggplot2.continuous.colour = function(...) {
+        scale_color_distiller(palette = "Spectral", ...)
+    },
+    ggplot2.continuous.fill = function(...) {
+        scale_fill_distiller(palette = "Spectral", ...)
+    }
 )
 
 th <- theme_classic() +
-  theme(
-    panel.background = element_rect(fill = "transparent"),
-    strip.background = element_rect(fill = "transparent"),
-    plot.background = element_rect(fill = "transparent", color = NA),
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(),
-    legend.background = element_rect(fill = "transparent"),
-    legend.box.background = element_rect(fill = "transparent"),
-    legend.position = "bottom"
-  )
+    theme(
+        panel.background = element_rect(fill = "transparent"),
+        strip.background = element_rect(fill = "transparent"),
+        plot.background = element_rect(fill = "transparent", color = NA),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.background = element_rect(fill = "transparent"),
+        legend.box.background = element_rect(fill = "transparent"),
+        legend.position = "bottom"
+    )
 theme_set(th)
 ```
 
@@ -68,19 +70,19 @@ set.seed(20240111)
 
 #' Helper to plot the real data
 plot_exper <- function(fit, profile) {
-  pivot_samples(fit, profile) |>
-    ggplot() +
-    geom_point(aes(mediator, value, col = factor(treatment))) +
-    facet_grid(. ~ outcome) +
-    theme(legend.position = "bottom")
+    pivot_samples(fit, profile) |>
+        ggplot() +
+        geom_point(aes(mediator, value, col = factor(treatment))) +
+        facet_grid(. ~ outcome) +
+        theme(legend.position = "bottom")
 }
 
 #' Convert a SummarizedExperiment to long form
 pivot_samples <- function(fit, profile) {
-  exper_sample <- sample(fit, profile = profile)
-  outcomes(exper_sample) |>
-    bind_cols(mediators(exper_sample), t_outcome) |>
-    pivot_longer(starts_with("outcome"), names_to = "outcome")
+    exper_sample <- sample(fit, profile = profile)
+    outcomes(exper_sample) |>
+        bind_cols(mediators(exper_sample), t_outcome) |>
+        pivot_longer(starts_with("outcome"), names_to = "outcome")
 }
 ```
 
@@ -93,7 +95,9 @@ random spline functions for the direct effect.
 
 ```{r prepare_data}
 xy_data <- demo_spline()
-xy_long <- list(true = pivot_longer(xy_data, starts_with("outcome"), names_to = "outcome"))
+xy_long <- list(
+    true = pivot_longer(xy_data, starts_with("outcome"), names_to = "outcome")
+)
 ```
 
 The block below estimates a random forest model on these randomly generated data
@@ -101,22 +105,25 @@ The block below estimates a random forest model on these randomly generated data
 vary `ranger` parameters using the arguments to `rf_model()`.
 
 ```{r fit_model}
-exper <- mediation_data(xy_data, starts_with("outcome"), "treatment", "mediator")
+exper <- mediation_data(
+    xy_data, starts_with("outcome"), "treatment", "mediator"
+)
+
 fit <- multimedia(
-  exper,
-  outcome_estimator = rf_model(num.trees = 1e3)
+    exper,
+    outcome_estimator = rf_model(num.trees = 1e3)
 ) |>
-  estimate(exper)
+    estimate(exper)
 ```
 
 Let's look at the estimated effects.
 
 ```{r effect_estimates}
 direct_effect(fit) |>
-  effect_summary()
+    effect_summary()
 
 indirect_overall(fit) |>
-  effect_summary()
+    effect_summary()
 ```
 
 Mediation analysis depends on untestable assumptions on the absence of
@@ -126,20 +133,22 @@ before we would observe a flipped indirect effect estimate?
 
 ```{r sensitivity_analysis}
 confound_ix <- expand.grid(mediator = 1, outcome = 1:2)
-#sensitivity_curve <- sensitivity(fit, exper, confound_ix)
-sensitivity_curve <- read_csv("https://drive.google.com/uc?export=download&id=1fEhg-aMRyfhAjgcJmsrxz2cmWCOdnM6C")
+# sensitivity_curve <- sensitivity(fit, exper, confound_ix)
+sensitivity_curve <- read_csv("https://go.wisc.edu/0xcyr1")
 plot_sensitivity(sensitivity_curve)
 ```
 
 ```{r}
 perturb <- matrix(
-  c(0, 3, 0,
-    3, 0, 0,
-    0, 0, 0),
-  nrow = 3, byrow = TRUE
+    c(
+        0, 3, 0,
+        3, 0, 0,
+        0, 0, 0
+    ),
+    nrow = 3, byrow = TRUE
 )
-#sensitivity_curve <- sensitivity_perturb(fit, exper, perturb)
-sensitivity_curve <- read_csv("https://drive.google.com/uc?export=download&id=1CkCdaAbiVeoo7ILYB1PavFzqiFb1N08A")
+# sensitivity_curve <- sensitivity_perturb(fit, exper, perturb)
+sensitivity_curve <- read_csv("https://go.wisc.edu/75mz1b")
 plot_sensitivity(sensitivity_curve, x_var = "nu")
 ```
 
@@ -160,44 +169,48 @@ than random forest, outcome model.
 
 ```{r alteration}
 altered_m <- nullify(fit, "T->M") |>
-  estimate(exper)
+    estimate(exper)
 altered_ty <- nullify(fit, "T->Y") |>
-  estimate(exper)
+    estimate(exper)
 
 fit_lm <- multimedia(
-  exper,
-  outcome_estimator = lm_model()
+    exper,
+    outcome_estimator = lm_model()
 ) |>
-  estimate(exper)
+    estimate(exper)
 ```
 
 We can sample from these models and organize the results into one long
 data.frame. The function `pivot_samples` is defined at the top of the script.
 
 ```{r reshape_altered}
+pretty_labels <- c(
+    "Original Data", "RF (Full)", "RF (T-\\->M)", "RF (T-\\->Y)", "Linear Model"
+)
+
 xy_long <- c(
-  xy_long,
-  list(
-    altered_m = pivot_samples(altered_m, profile),
-    altered_ty = pivot_samples(altered_ty, profile),
-    linear = pivot_samples(fit_lm, profile)
-  )
-) |>
-  bind_rows(.id = "fit_type") |>
-  mutate(
-    fit_type = case_when(
-      fit_type == "linear" ~ "Linear Model",
-      fit_type == "true" ~ "Original Data",
-      fit_type == "fitted" ~ "RF (Full)",
-      fit_type == "altered_ty" ~ "RF (T-\\->Y)",
-      fit_type == "altered_m" ~ "RF (T-\\->M)"
-    ),
-    fit_type = factor(fit_type, levels = c("Original Data", "RF (Full)", "RF (T-\\->M)", "RF (T-\\->Y)", "Linear Model")),
-    outcome = case_when(
-      outcome == "outcome_1" ~ "Y[1]",
-      outcome == "outcome_2" ~ "Y[2]"
+    xy_long,
+    list(
+        altered_m = pivot_samples(altered_m, profile),
+        altered_ty = pivot_samples(altered_ty, profile),
+        linear = pivot_samples(fit_lm, profile)
     )
-  )
+) |>
+    bind_rows(.id = "fit_type") |>
+    mutate(
+        fit_type = case_when(
+            fit_type == "linear" ~ "Linear Model",
+            fit_type == "true" ~ "Original Data",
+            fit_type == "fitted" ~ "RF (Full)",
+            fit_type == "altered_ty" ~ "RF (T-\\->Y)",
+            fit_type == "altered_m" ~ "RF (T-\\->M)"
+        ),
+        fit_type = factor(fit_type, levels = pretty_labels),
+        outcome = case_when(
+            outcome == "outcome_1" ~ "Y[1]",
+            outcome == "outcome_2" ~ "Y[2]"
+        )
+    )
 ```
 
 The figure below compares the original data and model with the various nullified
@@ -205,17 +218,17 @@ versions, using the combined `xy_long` dataset constructed above.
 
 ```{r visualize_long, fig.width = 8, fig.height = 3}
 xy_long |>
-  sample_frac(size = 0.1) |>
-  ggplot(aes(mediator, col = treatment)) +
-  geom_point(aes(y = value), size = 0.4, alpha = 0.9) +
-  geom_rug(alpha = 0.99, linewidth = 0.1) +
-  facet_grid(outcome ~ fit_type) +
-  labs(x = expression("Mediator M"), y = "Outcome", col = "Treatment") +
-  theme(
-    strip.text = element_text(size = 11),
-    axis.title = element_text(size = 14),
-    legend.title = element_text(size = 12)
-  )
+    sample_frac(size = 0.1) |>
+    ggplot(aes(mediator, col = treatment)) +
+    geom_point(aes(y = value), size = 0.4, alpha = 0.9) +
+    geom_rug(alpha = 0.99, linewidth = 0.1) +
+    facet_grid(outcome ~ fit_type) +
+    labs(x = expression("Mediator M"), y = "Outcome", col = "Treatment") +
+    theme(
+        strip.text = element_text(size = 11),
+        axis.title = element_text(size = 14),
+        legend.title = element_text(size = 12)
+    )
 ```
 
 We can calculate bootstrap confidence intervals for the direct and overall
@@ -223,16 +236,16 @@ indirect effects using the block below.
 
 ```{r bootstraps}
 fs <- list(direct_effect = direct_effect, indirect_overall = indirect_overall)
-#bootstraps <- bootstrap(fit, exper, fs = fs)
-bootstraps <- readRDS(url("https://drive.google.com/uc?export=download&id=1vhWcY5UruCyLNJbTDTVFLBHV_6ITQdYT"))
+# bootstraps <- bootstrap(fit, exper, fs = fs)
+bootstraps <- readRDS(url("https://go.wisc.edu/977l04"))
 
 ggplot(bootstraps$direct_effect) +
-  geom_histogram(aes(direct_effect)) +
-  facet_wrap(~outcome)
+    geom_histogram(aes(direct_effect)) +
+    facet_wrap(~outcome)
 
 ggplot(bootstraps$indirect_overall) +
-  geom_histogram(aes(indirect_effect)) +
-  facet_wrap(~outcome)
+    geom_histogram(aes(indirect_effect)) +
+    facet_wrap(~outcome)
 ```
 
 ```{r}

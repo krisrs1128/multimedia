@@ -11,15 +11,15 @@ vignette: >
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
-  fig.align = "center",
-  collapse = TRUE,
-  comment = "#>",
-  warning = FALSE,
-  message = FALSE,
-  eval = TRUE,
-  cache = FALSE,
-  dev.args = list(bg = "transparent"),
-  out.width = 600
+    fig.align = "center",
+    collapse = TRUE,
+    comment = "#>",
+    warning = FALSE,
+    message = FALSE,
+    eval = TRUE,
+    cache = FALSE,
+    dev.args = list(bg = "transparent"),
+    out.width = 600
 )
 
 knitr::knit_hooks$set(output = multimedia::ansi_aware_handler)
@@ -27,36 +27,38 @@ options(crayon.enabled = TRUE)
 
 suppressPackageStartupMessages(library(ggplot2))
 options(
-  ggplot2.discrete.colour = c(
-    "#9491D9", "#F24405", "#3F8C61", "#8C2E62", "#F2B705", "#11A0D9"
-  ),
-  ggplot2.discrete.fill = c(
-    "#9491D9", "#F24405", "#3F8C61", "#8C2E62", "#F2B705", "#11A0D9"
-  ),
-  ggplot2.continuous.colour = function(...)
-    scale_color_distiller(palette = "Spectral", ...),
-  ggplot2.continuous.fill = function(...)
-    scale_fill_distiller(palette = "Spectral", ...)
+    ggplot2.discrete.colour = c(
+        "#9491D9", "#F24405", "#3F8C61", "#8C2E62", "#F2B705", "#11A0D9"
+    ),
+    ggplot2.discrete.fill = c(
+        "#9491D9", "#F24405", "#3F8C61", "#8C2E62", "#F2B705", "#11A0D9"
+    ),
+    ggplot2.continuous.colour = function(...) {
+        scale_color_distiller(palette = "Spectral", ...)
+    },
+    ggplot2.continuous.fill = function(...) {
+        scale_fill_distiller(palette = "Spectral", ...)
+    }
 )
 
 th <- theme_classic() +
-  theme(
-    panel.background = element_rect(fill = "transparent"),
-    strip.background = element_rect(fill = "transparent"),
-    plot.background = element_rect(fill = "transparent", color = NA),
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(),
-    legend.background = element_rect(fill = "transparent"),
-    legend.box.background = element_rect(fill = "transparent"),
-    legend.position = "bottom"
-  )
+    theme(
+        panel.background = element_rect(fill = "transparent"),
+        strip.background = element_rect(fill = "transparent"),
+        plot.background = element_rect(fill = "transparent", color = NA),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.background = element_rect(fill = "transparent"),
+        legend.box.background = element_rect(fill = "transparent"),
+        legend.position = "bottom"
+    )
 theme_set(th)
 ```
 
 ```{r helpers, include = FALSE}
 normalize <- function(x) {
-  x <- as_tibble(x)
-  x / rowSums(x)
+    x <- as_tibble(x)
+    x / rowSums(x)
 }
 ```
 
@@ -92,11 +94,11 @@ profiles.
 
 ```{r data}
 exper <- mediation_data(
-  mindfulness,
-  taxa_names(mindfulness),
-  "treatment",
-  starts_with("mediator"),
-  "subject"
+    mindfulness,
+    taxa_names(mindfulness),
+    "treatment",
+    starts_with("mediator"),
+    "subject"
 )
 
 exper
@@ -111,14 +113,14 @@ subject-level parameters, and our sample size is not that large.
 ```{r lnm}
 # use Flavonifractor as the reference for the log-ratio transform
 outcomes(exper) <- outcomes(exper) |>
-  select(Flavonifractor, everything())
+    select(Flavonifractor, everything())
 
 model <- multimedia(
-  exper,
-  lnm_model(seed = .Random.seed[1]),
-  glmnet_model(lambda = 0.5, alpha = 0)
+    exper,
+    lnm_model(seed = .Random.seed[1]),
+    glmnet_model(lambda = 0.5, alpha = 0)
 ) |>
-  estimate(exper)
+    estimate(exper)
 ```
 
 # Evaluating Effects
@@ -131,9 +133,9 @@ interpreted on a probability scale.
 ```{r lnm_direct}
 direct <- direct_effect(model, exper)
 direct |>
-  group_by(outcome) |>
-  summarise(direct_effect = mean(direct_effect)) |>
-  arrange(-abs(direct_effect))
+    group_by(outcome) |>
+    summarise(direct_effect = mean(direct_effect)) |>
+    arrange(-abs(direct_effect))
 ```
 
 These are the indirect effects when we set mediators to the treatment setting
@@ -141,9 +143,9 @@ one at a time.
 
 ```{r lnm_indirect}
 indirect <- indirect_pathwise(model, exper) |>
-  group_by(mediator, outcome) |>
-  summarise(indirect_effect = mean(indirect_effect)) |>
-  arrange(-abs(indirect_effect))
+    group_by(mediator, outcome) |>
+    summarise(indirect_effect = mean(indirect_effect)) |>
+    arrange(-abs(indirect_effect))
 indirect
 ```
 
@@ -173,8 +175,8 @@ mediators.
 
 ```{r alteration_m}
 altered <- model |>
-  nullify("T->M") |>
-  estimate(exper)
+    nullify("T->M") |>
+    estimate(exper)
 ```
 
 These modified models can be used to simulate synthetic null data that help
@@ -186,7 +188,7 @@ across the population because the study was randomized, but we want to remove
 any associations present in our finite sample.
 
 ```{r mediation_sample}
-new_assign <- treatments(exper)[sample(nrow(treatments(exper))),, drop=FALSE]
+new_assign <- treatments(exper)[sample(nrow(treatments(exper))), , drop = FALSE]
 profile <- setup_profile(model, new_assign, new_assign)
 m1 <- sample(model, profile = profile, pretreatment = pretreatments(exper))
 m2 <- sample(altered, profile = profile, pretreatment = pretreatments(exper))
@@ -201,15 +203,17 @@ effects above.
 
 ```{r synthetic_mediation_plot, fig.width = 10, fig.height = 4}
 list(
-  real = bind_cols(treatments(exper), mediators(exper), pretreatments(exper)),
-  original = bind_cols(new_assign, mediators(m1), pretreatments(exper)),
-  altered = bind_cols(new_assign, mediators(m2), pretreatments(exper))
+    real = bind_cols(treatments(exper), mediators(exper), pretreatments(exper)),
+    original = bind_cols(new_assign, mediators(m1), pretreatments(exper)),
+    altered = bind_cols(new_assign, mediators(m2), pretreatments(exper))
 ) |>
-  bind_rows(.id = "source") |>
-  pivot_longer(starts_with("mediator"), names_to = "mediator") |>
-  ggplot() +
-  geom_boxplot(aes(value, reorder(mediator, value, median), fill = treatment)) +
-  facet_grid(~source)
+    bind_rows(.id = "source") |>
+    pivot_longer(starts_with("mediator"), names_to = "mediator") |>
+    ggplot() +
+    geom_boxplot(
+        aes(value, reorder(mediator, value, median), fill = treatment)
+    ) +
+    facet_grid(~source)
 ```
 
 Here is the analogous alteration that removes all direct effects. The $x$-axis
@@ -223,68 +227,70 @@ sources of heterogeneity.
 
 ```{r outcome_alteration}
 altered_direct <- model |>
-  nullify("T->Y") |>
-  estimate(exper)
+    nullify("T->Y") |>
+    estimate(exper)
 
 altered_indirect <- model |>
-  nullify("M->Y") |>
-  estimate(exper)
+    nullify("M->Y") |>
+    estimate(exper)
 
 profile <- setup_profile(model, treatments(exper), treatments(exper))
 y1 <- sample(model, profile = profile, pretreatment = pretreatments(exper))
 y2 <- sample(
-  altered_direct, profile = profile, pretreatment = pretreatments(exper)
-  )
+    altered_direct,
+    profile = profile, pretreatment = pretreatments(exper)
+)
 y3 <- sample(
-  altered_indirect, profile = profile, pretreatment = pretreatments(exper)
-  )
+    altered_indirect,
+    profile = profile, pretreatment = pretreatments(exper)
+)
 ```
 
 
 ```{r alteration_plot, fig.width = 8, fig.height = 7}
 taxa_order <- normalize(outcomes(exper)) |>
-  log() |>
-  apply(2, \(x) {
-    x[is.infinite(x)] <- NA
-    median(x, na.rm = TRUE)
-  }) |>
-  order()
+    log() |>
+    apply(2, \(x) {
+        x[is.infinite(x)] <- NA
+        median(x, na.rm = TRUE)
+    }) |>
+    order()
 
 combined_samples <- list(
-  "Original Data" = normalize(outcomes(exper)),
-  "Full Model" = normalize(outcomes(y1)),
-  "No Direct Effect" = normalize(outcomes(y2)),
-  "No Indirect Effect" = normalize(outcomes(y3))
+    "Original Data" = normalize(outcomes(exper)),
+    "Full Model" = normalize(outcomes(y1)),
+    "No Direct Effect" = normalize(outcomes(y2)),
+    "No Indirect Effect" = normalize(outcomes(y3))
 ) |>
-  bind_rows(.id = "source") |>
-  mutate(treatment = rep(treatments(exper)$treatment, 4)) |>
-  pivot_longer(colnames(outcomes(exper))) |>
-  mutate(name = factor(name, levels = colnames(outcomes(exper))[taxa_order]))
+    bind_rows(.id = "source") |>
+    mutate(treatment = rep(treatments(exper)$treatment, 4)) |>
+    pivot_longer(colnames(outcomes(exper))) |>
+    mutate(name = factor(name, levels = colnames(outcomes(exper))[taxa_order]))
 
 ggplot(combined_samples) +
-  geom_boxplot(
-    aes(log(value), name, fill = treatment),
-    size = 0.4, outlier.size = 0.8, position = "identity",
-    alpha = 0.7
-  ) +
-  labs(x = "log(Relative Abundance)", y = "Genus", fill = "", col = "") +
-  facet_grid(~source, scales = "free") +
-  theme(panel.border = element_rect(fill = NA))
+    geom_boxplot(
+        aes(log(value), name, fill = treatment),
+        size = 0.4, outlier.size = 0.8, position = "identity",
+        alpha = 0.7
+    ) +
+    labs(x = "log(Relative Abundance)", y = "Genus", fill = "", col = "") +
+    facet_grid(~source, scales = "free") +
+    theme(panel.border = element_rect(fill = NA))
 ```
 
 ```{r alteration_presence, fig.width = 6, fig.height = 7}
 combined_samples |>
-  group_by(name, source, treatment) |>
-  summarise(presence = mean(value > 0)) |>
-  ggplot() +
-  geom_col(
-    aes(presence, name, fill = treatment, col = treatment),
-    position = "identity", width = 1,
-    alpha = 0.7
-  ) +
-  facet_grid(~source, scales = "free") +
-  scale_x_continuous(expand = c(0, 0)) +
-  theme(panel.border = element_rect(fill = NA))
+    group_by(name, source, treatment) |>
+    summarise(presence = mean(value > 0)) |>
+    ggplot() +
+    geom_col(
+        aes(presence, name, fill = treatment, col = treatment),
+        position = "identity", width = 1,
+        alpha = 0.7
+    ) +
+    facet_grid(~source, scales = "free") +
+    scale_x_continuous(expand = c(0, 0)) +
+    theme(panel.border = element_rect(fill = NA))
 ```
 
 # Synthetic Null Testing
@@ -314,7 +320,7 @@ discovery rate for the rule that selects features up to that point.
 ```{r direct_contrast}
 contrast <- null_contrast(model, exper, "T->Y", direct_effect)
 fdr_direct <- fdr_summary(contrast, "direct_effect") |>
-  dplyr::rename(effect = direct_effect)
+    dplyr::rename(effect = direct_effect)
 ```
 
 The indirect effect analog is shown below. It seems we have more evidence for
@@ -324,53 +330,55 @@ difficulty of estimating indirect effects in mediation analysis.
 ```{r indirect_contrast}
 contrast <- null_contrast(model, exper, "M->Y", indirect_overall)
 fdr_indirect <- fdr_summary(contrast, "indirect_overall") |>
-  dplyr::rename(effect = indirect_effect)
+    dplyr::rename(effect = indirect_effect)
 ```
 
 ```{r contrast_plot, fig.width = 7, fig.height = 3}
 fdr_data <- bind_rows(fdr_direct, fdr_indirect, .id = "effect_type") |>
-  mutate(effect_type = c("Direct", "Indirect")[as.integer(effect_type)])
+    mutate(effect_type = c("Direct", "Indirect")[as.integer(effect_type)])
 ggplot(fdr_data, aes(effect, fdr_hat)) +
-  geom_text_repel(
-    data = filter(fdr_data, keep), 
-    aes(label = outcome, col = source), size = 3, force = 10
-  ) +
-  labs(x = "Effect", y = expression(widehat(FDR)), col = "Data Source") +
-  geom_point(aes(col = source, size = keep)) +
-  scale_size_discrete("Selected", range = c(.5, 3), guide = FALSE) +
-  scale_y_continuous(limits = c(-0.1, 0.55)) +
-  facet_wrap(~effect_type, scales = "free_x") +
-  theme(
-    axis.text.x = element_text(size = 12),
-    axis.text.y = element_text(size = 12),
-    strip.text = element_text(size = 14),
-    legend.text = element_text(size = 12)
-  )
+    geom_text_repel(
+        data = filter(fdr_data, keep),
+        aes(label = outcome, col = source), size = 3, force = 10
+    ) +
+    labs(x = "Effect", y = expression(widehat(FDR)), col = "Data Source") +
+    geom_point(aes(col = source, size = keep)) +
+    scale_size_discrete("Selected", range = c(.5, 3), guide = FALSE) +
+    scale_y_continuous(limits = c(-0.1, 0.55)) +
+    facet_wrap(~effect_type, scales = "free_x") +
+    theme(
+        axis.text.x = element_text(size = 12),
+        axis.text.y = element_text(size = 12),
+        strip.text = element_text(size = 14),
+        legend.text = element_text(size = 12)
+    )
 ```
 
 ```{r, fig.width = 7, fig.height = 4.3}
 bind_mediation(exper_rela) |>
-  select(subject, starts_with("mediator"), treatment, Roseburia, Blautia, 
-         Faecalibacterium) |>
-  pivot_longer(starts_with("mediator"), names_to = "mediator") |>
-  mutate(mediator = str_remove(mediator, "mediator.")) |>
-  pivot_longer(
-    Roseburia:Faecalibacterium, 
-    names_to = "taxon", values_to = "abundance"
-  ) |>
-  group_by(subject, mediator, treatment, taxon) |>
-  summarise(abundance = mean(abundance), value = mean(value)) |>
-  ggplot() +
-  geom_point(aes(value, abundance, col = treatment)) +
-  facet_grid(taxon ~ mediator, scales = "free") +
-  labs(y = "Relative Abundance", x = "Mediator Value", col = "") +
-  theme(
-    axis.title = element_text(size = 14),
-    strip.text = element_text(size = 12),
-    strip.text.y = element_text(size = 12, angle = 0),
-    legend.text = element_text(size = 12),
-    panel.border = element_rect(fill = NA)
-  )
+    select(
+        subject, starts_with("mediator"), treatment, Roseburia, Blautia,
+        Faecalibacterium
+    ) |>
+    pivot_longer(starts_with("mediator"), names_to = "mediator") |>
+    mutate(mediator = str_remove(mediator, "mediator.")) |>
+    pivot_longer(
+        Roseburia:Faecalibacterium,
+        names_to = "taxon", values_to = "abundance"
+    ) |>
+    group_by(subject, mediator, treatment, taxon) |>
+    summarise(abundance = mean(abundance), value = mean(value)) |>
+    ggplot() +
+    geom_point(aes(value, abundance, col = treatment)) +
+    facet_grid(taxon ~ mediator, scales = "free") +
+    labs(y = "Relative Abundance", x = "Mediator Value", col = "") +
+    theme(
+        axis.title = element_text(size = 14),
+        strip.text = element_text(size = 12),
+        strip.text.y = element_text(size = 12, angle = 0),
+        legend.text = element_text(size = 12),
+        panel.border = element_rect(fill = NA)
+    )
 ```
 
 Here is the analog for indirect pathwise effects. Since these effects
@@ -380,14 +388,14 @@ distinguish between individual mediators, we can facet by these variables.
 contrast <- null_contrast(model, exper, "M->Y", indirect_pathwise)
 fdr <- fdr_summary(contrast, "indirect_pathwise")
 ggplot(fdr, aes(indirect_effect, fdr_hat)) +
-  geom_text_repel(
-    data = filter(fdr, keep), 
-    aes(label = outcome, fill = source), size = 4
-  ) +
-  labs(x = "Indirect Effect", y = "Estimated False Discovery Rate") +
-  geom_point(aes(col = source, size = keep)) +
-  scale_size_discrete(range = c(.2, 3)) +
-  facet_wrap(~mediator)
+    geom_text_repel(
+        data = filter(fdr, keep),
+        aes(label = outcome, fill = source), size = 4
+    ) +
+    labs(x = "Indirect Effect", y = "Estimated False Discovery Rate") +
+    geom_point(aes(col = source, size = keep)) +
+    scale_size_discrete(range = c(.2, 3)) +
+    facet_wrap(~mediator)
 ```
 
 # Random Forests
@@ -400,11 +408,11 @@ help to transform the response to relative abundances.
 
 ```{r rf_estimate}
 model <- multimedia(
-  exper_rela,
-  rf_model(num.trees = 50),
-  glmnet_model(lambda = 0.5, alpha = 0)
+    exper_rela,
+    rf_model(num.trees = 50),
+    glmnet_model(lambda = 0.5, alpha = 0)
 ) |>
-  estimate(exper_rela)
+    estimate(exper_rela)
 ```
 
 We can compute direct and indirect effects from the estimated model.
@@ -412,14 +420,14 @@ We can compute direct and indirect effects from the estimated model.
 ```{r rf_effects}
 direct <- direct_effect(model, exper_rela)
 direct_sorted <- direct |>
-  group_by(outcome, contrast) |>
-  summarise(direct_effect = mean(direct_effect)) |>
-  arrange(-direct_effect)
+    group_by(outcome, contrast) |>
+    summarise(direct_effect = mean(direct_effect)) |>
+    arrange(-direct_effect)
 
 indirect_sorted <- indirect_pathwise(model, exper_rela) |>
-  group_by(outcome, mediator, contrast) |>
-  summarise(indirect_effect = mean(indirect_effect)) |>
-  arrange(-abs(indirect_effect))
+    group_by(outcome, mediator, contrast) |>
+    summarise(indirect_effect = mean(indirect_effect)) |>
+    arrange(-abs(indirect_effect))
 
 direct_sorted
 indirect_sorted
@@ -444,7 +452,7 @@ across all bootstrap iterations.
 
 ```{r rf_bootstrap}
 funs <- list(direct = direct_effect, indirect = indirect_overall)
-#inference <- bootstrap(model, exper_rela, funs, B = 1e3)
+# inference <- bootstrap(model, exper_rela, funs, B = 1e3)
 inference <- readRDS(url("https://go.wisc.edu/ba3e87"))
 ```
 
@@ -462,20 +470,22 @@ be at play, lying behind the observed direct effects.
 
 ```{r rf_bootstrap_figures, fig.width = 8.5, fig.height = 7}
 p1 <- ggplot(inference$indirect) +
-  geom_vline(xintercept = 0) +
-  stat_slabinterval(
-    aes(indirect_effect, reorder(outcome, indirect_effect, median)),
-    .width = c(.66, .95)
-  ) +
-  labs(title = "Indirect Effects", y = "Taxon", x = "Effect (Rel. Abund Scale)")
+    geom_vline(xintercept = 0) +
+    stat_slabinterval(
+        aes(indirect_effect, reorder(outcome, indirect_effect, median)),
+        .width = c(.66, .95)
+    ) +
+    labs(
+        title = "Indirect Effects", y = "Taxon", x = "Effect (Rel. Abund Scale)"
+    )
 
 p2 <- ggplot(inference$direct) +
-  geom_vline(xintercept = 0) +
-  stat_slabinterval(
-    aes(direct_effect, reorder(outcome, direct_effect, median)),
-    .width = c(.66, .95)
-  ) +
-  labs(title = "Direct Effects", y = "Taxon", x = "Effect (Rel. Abund Scale)")
+    geom_vline(xintercept = 0) +
+    stat_slabinterval(
+        aes(direct_effect, reorder(outcome, direct_effect, median)),
+        .width = c(.66, .95)
+    ) +
+    labs(title = "Direct Effects", y = "Taxon", x = "Effect (Rel. Abund Scale)")
 
 p1 | p2
 ```
