@@ -208,8 +208,8 @@ bootstrap <- function(model, exper, fs = NULL, B = 1000) {
 #'     estimate(exper) |>
 #'     null_contrast(exper)
 #' @export
-null_contrast <- function(model, exper, nullification = "T->Y",
-                          f = direct_effect) {
+null_contrast <- function(
+    model, exper, nullification = "T->Y", f = direct_effect) {
     cli_text("Fitting the nullified model...")
     altered <- model |>
         nullify(nullification) |>

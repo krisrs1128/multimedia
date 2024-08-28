@@ -188,7 +188,7 @@ is to use the bootstrap. Each function in the third argument, `fs`, will get its
 own data.frame with the bootstrap distribution for that estimator.
 
 ```{r bootstrap}
-bootstrap(model, exper, c(direct_effect = direct_effect)) |>
+bootstrap(model, exper, c(direct_effect = direct_effect))$direct_effect |>
     head(10)
 ```
 

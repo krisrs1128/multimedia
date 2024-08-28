@@ -15,13 +15,17 @@ check_profile <- function(object) {
         m_samples <- map(object@t_mediator, nrow)
         y_samples <- map(object@t_outcome, nrow)
         if (n_distinct(y_samples) != 1) {
-            cli_abort("Number of rows in treatment profile must agree across all
-                      outcomes.")
+            cli_abort(
+                "Number of rows in treatment profile must
+                agree across all outcomes."
+            )
         }
 
         if (!all(m_samples %in% y_samples)) {
-            cli_abort("Number of samples in treatment profile must agree across
-                      mediators and outcomes.")
+            cli_abort(
+                "Number of samples in treatment profile must
+                agree across mediators and outcomes."
+            )
         }
     }
 }

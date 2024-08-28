@@ -43,9 +43,9 @@
 #' @importFrom tidyselect ends_with
 #' @importFrom stats sd
 #' @noRd
-sensitivity_factory <- function(summarization, model, exper, sampler,
-                                sensitivity_seq = NULL, n_bootstrap = 100,
-                                progress = TRUE) {
+sensitivity_factory <- function(
+    summarization, model, exper, sampler, sensitivity_seq = NULL,
+    n_bootstrap = 100, progress = TRUE) {
     check_supported(model)
     sensitivity_curve <- list()
     k <- 1
@@ -199,9 +199,9 @@ sensitivity <- function(model, exper, confound_ix = NULL, rho_seq = NULL,
 #' )
 #' sensitivity_pathwise(model, exper, subset_indices, rho_seq, n_bootstrap = 2)
 #' @export
-sensitivity_pathwise <- function(model, exper, confound_ix = NULL,
-                                 rho_seq = NULL, n_bootstrap = 100,
-                                 progress = TRUE) {
+sensitivity_pathwise <- function(
+    model, exper, confound_ix = NULL, rho_seq = NULL, n_bootstrap = 100,
+    progress = TRUE) {
     summarization <- \(x) {
         indirect_pathwise(x) |>
             effect_summary()
@@ -247,8 +247,8 @@ sorted_treatments <- function(model) {
 #'     estimate(exper)
 #' multimedia:::sensitivity_sample(model, exper)
 #' @noRd
-sensitivity_subset_sample <- function(model, exper, confound_ix = NULL,
-                                      rho = 0.0) {
+sensitivity_subset_sample <- function(
+    model, exper, confound_ix = NULL, rho = 0.0) {
     Nm <- n_mediators(model)
     Ny <- n_outcomes(model)
     epsilon <- covariance_matrix(model, confound_ix, rho) |>
@@ -315,9 +315,11 @@ covariance_matrix <- function(model, confound_ix = NULL, rho = 0.0) {
         return(covariance)
     }
     if (!(all(c("mediator", "outcome") %in% colnames(confound_ix)))) {
-        cli_abort(glue("Argument confound_ix seems incorrectly formatted. Are
-                       you sure you have columns called 'mediator' and
-                       'outcome'? We found {colnames(confound_ix)}"))
+        cli_abort(glue(
+            "Argument confound_ix seems incorrectly formatted. Are you sure
+            you have columns called 'mediator' and 'outcome'? We found
+            {colnames(confound_ix)}"
+        ))
     }
 
     # Fill in covariances
@@ -345,8 +347,8 @@ sensitivity_perturb_sample <- function(model, exper, perturb = NULL, nu = 0.0) {
 }
 
 #' @export
-sensitivity_perturb <- function(model, exper, perturb, nu_seq = NULL,
-                                n_bootstrap = 100, progress = TRUE) {
+sensitivity_perturb <- function(
+    model, exper, perturb, nu_seq = NULL, n_bootstrap = 100, progress = TRUE) {
     if (is.null(nu_seq)) {
         nu_seq <- seq(-0.1, 0.1, by = 0.04)
     }
@@ -369,7 +371,9 @@ check_supported <- function(model) {
     model_types <- c(model@mediation@model_type, model@outcome@model_type)
     supported_models <- c("rf_model()", "lm_model()", "glmnet_model()")
     if (!all(model_types %in% supported_models)) {
-        cli_abort("Sensitivity analysis is only supported for models of type
-                  lm_model(), glmnet_model(), and rf_model().")
+        cli_abort(
+            "Sensitivity analysis is only supported for models of type
+            lm_model(), glmnet_model(), and rf_model()."
+        )
     }
 }

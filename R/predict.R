@@ -57,8 +57,10 @@ setMethod("sample", "multimedia", function(
     if (missing(size)) {
         size <- 1
     } else {
-        cli_warn("The size argument in sample is ignored. Please adjust the
-                  treatment profile to adjust the number of samples.")
+        cli_warn(
+            "The size argument in sample is ignored. Please adjust the
+            treatment profile to adjust the number of samples."
+        )
     }
     if (is.null(profile)) {
         profile <- setup_profile(x)

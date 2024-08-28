@@ -40,8 +40,9 @@
 #' @importFrom ggplot2 ggplot aes .data geom_point labs
 #' @importFrom glue glue
 #' @export
-plot_mediators <- function(indirect_effects, exper, n_digit = 3,
-                           n_panels = NULL, treatment = "treatment", ...) {
+plot_mediators <- function(
+    indirect_effects, exper, n_digit = 3, n_panels = NULL,
+    treatment = "treatment", ...) {
     check_if_installed(
         "patchwork",
         "to visualize indirect effects as a multipanel plot."
@@ -89,8 +90,8 @@ plot_mediators <- function(indirect_effects, exper, n_digit = 3,
 #'   labs geom_line
 #' @importFrom glue glue
 #' @export
-plot_sensitivity <- function(sensitivity_curve, x_var = "rho",
-                             y_var = "indirect_effect") {
+plot_sensitivity <- function(
+    sensitivity_curve, x_var = "rho", y_var = "indirect_effect") {
     ggplot(
         sensitivity_curve,
         aes(.data[[x_var]],

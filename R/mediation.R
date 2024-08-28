@@ -212,8 +212,8 @@ exper_df <- function(exper) {
 #' # one outcome, multiple mediators
 #' mediation_data(demo_joy(), "PHQ", "treatment", starts_with("ASV"))
 #' @export
-mediation_data <- function(x, outcomes, treatments, mediators,
-                           pretreatments = NULL) {
+mediation_data <- function(
+    x, outcomes, treatments, mediators, pretreatments = NULL) {
     result <- NULL
     if ("SummarizedExperiment" %in% class(x)) {
         result <- from_summarized_experiment(
@@ -257,8 +257,8 @@ mediation_data <- function(x, outcomes, treatments, mediators,
 #' @return result An object of class `mediation_data`, with separate slots for
 #'   each of the node types in a mediation analysis diagram.
 #' @noRd
-from_summarized_experiment <- function(exper, outcomes, treatments, mediators,
-                                       pretreatments) {
+from_summarized_experiment <- function(
+    exper, outcomes, treatments, mediators, pretreatments) {
     exper_df(exper) |>
         from_data_frame(outcomes, treatments, mediators, pretreatments)
 }
@@ -275,8 +275,8 @@ from_summarized_experiment <- function(exper, outcomes, treatments, mediators,
 #'   each of the node types in a mediation analysis diagram.
 #' @importFrom phyloseq otu_table sample_data
 #' @noRd
-from_phyloseq <- function(exper, outcomes, treatments, mediators,
-                          pretreatments) {
+from_phyloseq <- function(
+    exper, outcomes, treatments, mediators, pretreatments) {
     if (attr(otu_table(exper), "taxa_are_rows")) {
         counts <- t(otu_table(exper))
     } else {
@@ -301,8 +301,8 @@ from_phyloseq <- function(exper, outcomes, treatments, mediators,
 #' @importFrom dplyr bind_cols select across
 #' @importFrom tidyselect where
 #' @noRd
-from_data_frame <- function(df, outcomes, treatments, mediators,
-                            pretreatments) {
+from_data_frame <- function(
+    df, outcomes, treatments, mediators, pretreatments) {
     vars <- list(
         outcomes = quote(outcomes),
         treatments = quote(treatments),
@@ -360,9 +360,9 @@ from_data_frame <- function(df, outcomes, treatments, mediators,
 #' )
 #' multimedia(exper)
 #' @export
-multimedia <- function(mediation_data,
-                       outcome_estimator = lm_model(),
-                       mediation_estimator = lm_model()) {
+multimedia <- function(
+    mediation_data, outcome_estimator = lm_model(),
+    mediation_estimator = lm_model()) {
     vars <- list(
         outcomes = colnames(mediation_data@outcomes),
         treatments = colnames(mediation_data@treatments),
