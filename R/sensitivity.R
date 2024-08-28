@@ -112,7 +112,7 @@ sensitivity_factory <- function(summarization, model, exper, sampler,
 #'   so enforcing independence between mediators and outcomes)
 #' @param rho_seq We will evaluate correlations Cor(e', e) between mediation and
 #'   outcome model errors ranging along this grid. Defaults to NULL, which
-#'   internally sets the sequence to rho = [-0.9, -0.7 ..., 0.7, 0.9].
+#'   internally sets the sequence to rho = (-0.9, -0.7 ..., 0.7, 0.9).
 #' @param n_bootstrap The number of bootstrap resamples used to build confidence
 #'   bands around the sensitivity curves. Defaults to 100.
 #' @param progress A logical indicating whether to show a progress bar.
@@ -129,7 +129,8 @@ sensitivity_factory <- function(summarization, model, exper, sampler,
 #' ) |>
 #'     estimate(exper)
 #' rho_seq <- c(-0.2, 0, 0.2)
-#' sensitivity(model, exper, subset_indices, rho_seq, n_bootstrap = 2)
+#' confound_ix <- expand.grid(mediator = 1, outcome = 1:2)
+#' sensitivity(model, exper, confound_ix, rho_seq, n_bootstrap = 2)
 #' @export
 sensitivity <- function(model, exper, confound_ix = NULL, rho_seq = NULL,
                         n_bootstrap = 100, progress = TRUE) {
@@ -176,7 +177,7 @@ sensitivity <- function(model, exper, confound_ix = NULL, rho_seq = NULL,
 #'   so enforcing independence between mediators and outcomes)
 #' @param rho_seq We will evaluate correlations Cor(e', e) between mediation and
 #'   outcome model errors ranging along this grid. Defaults to NULL, which
-#'   internally sets the sequence to rho = [-0.9, -0.7 ..., 0.7, 0.9].
+#'   internally sets the sequence to rho = (-0.9, -0.7 ..., 0.7, 0.9).
 #' @param n_bootstrap The number of bootstrap resamples used to build confidence
 #'   bands around the sensitivity curves. Defaults to 100.
 #' @param progress A logical indicating whether to show a progress bar.

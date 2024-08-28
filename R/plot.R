@@ -72,9 +72,9 @@ plot_mediators <- function(indirect_effects, exper, n_digit = 3,
 #' the x_var and y_var inputs.
 #'
 #' @param sensitivity_curve The output of a call to sensitivity or
-#'   sensitivity_perturb. A data.frame whose columns are: outcome, {x_var},
-#'   {y_var}, and {y_var}_standard_error, where x_var and y_var are defined in
-#'   the two arguments below.
+#'   sensitivity_perturb. A data.frame whose columns are: outcome, \{x_var\},
+#'   \{y_var\}, and \{y_var\}_standard_error, where x_var and y_var are defined
+#'   in the two arguments below.
 #' @param x_var The type of perturbation variable to plot along the x-axis.
 #'   Defaults to "rho", following the sensitivity approach implemented in
 #'   sensitivity_subset.
