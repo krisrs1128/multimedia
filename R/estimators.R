@@ -457,6 +457,7 @@ brms_model <- function(...) {
 #' @examples
 #' m <- lm_model()
 #' estimator(m)(mpg ~ hp + wt, data = mtcars)
+#' @export
 estimator <- function(object) {
   object@estimator
 }

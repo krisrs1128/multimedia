@@ -2,8 +2,9 @@ Package: multimedia
 Title: Multimodal Mediation Analysis
 Version: 0.1.0
 Authors@R:
-    person("Kris", "Sankaran", , "ksankaran@wisc.edu", role = c("aut", "cre"),
-           comment = c(ORCID = "0000-0002-9415-1971"))
+    c(person("Kris", "Sankaran", , "ksankaran@wisc.edu", role = c("aut", "cre"),
+     comment = c(ORCID = "0000-0002-9415-1971")),
+     person("Hanying", "Jiang", , "hjiang252@wisc.edu", role = "aut"))
 Description: multimedia is an R package for multimodal mediation analysis of microbiome data. It make advanced mediation analysis techniques easy to use, ensuring that all statistical components are transparent and adaptable to specific problem contexts. The package provides a uniform interface to direct and indirect effect estimation, synthetic null hypothesis testing, and bootstrap confidence interval construction.
 License: CC0
 Encoding: UTF-8
