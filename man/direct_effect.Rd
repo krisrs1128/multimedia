@@ -40,9 +40,9 @@ to the ' \code{effect_summary} function.
 \examples{
 # example with null data
 exper <- demo_joy() |>
-  mediation_data("PHQ", "treatment", starts_with("ASV"))
+    mediation_data("PHQ", "treatment", starts_with("ASV"))
 fit <- multimedia(exper) |>
-  estimate(exper)
+    estimate(exper)
 
 direct_effect(fit)
 direct_effect(fit, t1 = 2, t2 = 1)
@@ -50,9 +50,9 @@ direct_effect(fit, t1 = 2, t2 = 2)
 
 # example with another dataset
 exper <- demo_spline(tau = c(2, 1)) |>
-  mediation_data(starts_with("outcome"), "treatment", "mediator")
+    mediation_data(starts_with("outcome"), "treatment", "mediator")
 fit <- multimedia(exper) |>
-  estimate(exper)
+    estimate(exper)
 direct_effect(fit)
 }
 \seealso{

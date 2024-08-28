@@ -25,14 +25,14 @@
 #' m <- rf_model()
 #' estimator(m)(mpg ~ hp + wt, data = mtcars)
 setClass(
-  "model",
-  representation(
-    estimator = "ANY",
-    estimates = "ANY",
-    sampler = "ANY",
-    model_type = "ANY",
-    predictor = "ANY"
-  )
+    "model",
+    representation(
+        estimator = "ANY",
+        estimates = "ANY",
+        sampler = "ANY",
+        model_type = "ANY",
+        predictor = "ANY"
+    )
 )
 
 #' Helper to Modify Formulas
@@ -41,7 +41,7 @@ setClass(
 #' @return A new formula object with the LHS replaced by yj.
 #' @importFrom stats update.formula as.formula
 sub_formula <- function(formula, yj) {
-  update.formula(formula, as.formula(glue("{yj} ~ .")))
+    update.formula(formula, as.formula(glue("{yj} ~ .")))
 }
 
 #' Parallelize Estimation across Responses
@@ -67,18 +67,18 @@ sub_formula <- function(formula, yj) {
 #' prf(mpg + hp ~ wt + disp + cyl, data = mtcars)
 #' @export
 parallelize <- function(f) {
-  function(formula, ...) {
-    models <- list()
+    function(formula, ...) {
+        models <- list()
 
-    ys <- lhs.vars(formula)
-    pb <- progress_bar$new(total = length(ys), format = "[:bar] :current/:total ETA: :eta")
-    for (j in seq_along(ys)) {
-      fmla <- sub_formula(formula, ys[j])
-      models[[ys[j]]] <- f(fmla, ...)
-      pb$tick()
+        ys <- lhs.vars(formula)
+        pb <- progress_bar$new(total = length(ys), format = "[:bar] :current/:total ETA: :eta")
+        for (j in seq_along(ys)) {
+            fmla <- sub_formula(formula, ys[j])
+            models[[ys[j]]] <- f(fmla, ...)
+            pb$tick()
+        }
+        models
     }
-    models
-  }
 }
 
 #' Define Edges associated with the Mediation Analysis DAG
@@ -95,37 +95,37 @@ parallelize <- function(f) {
 #' @importFrom rlang .data
 #' @noRd
 edges_df <- function(edges) {
-  nodes <- edges %N>%
-    as.data.frame()
+    nodes <- edges %N>%
+        as.data.frame()
 
-  edges %E>%
-    as.data.frame() |>
-    left_join(nodes, by = c("from" = "id")) |>
-    dplyr::rename(
-      node_type_from = "node_type",
-      name_from = "name"
-    ) |>
-    left_join(nodes, by = c("to" = "id")) |>
-    dplyr::rename(
-      node_type_to = "node_type",
-      name_to = "name"
-    )
+    edges %E>%
+        as.data.frame() |>
+        left_join(nodes, by = c("from" = "id")) |>
+        dplyr::rename(
+            node_type_from = "node_type",
+            name_from = "name"
+        ) |>
+        left_join(nodes, by = c("to" = "id")) |>
+        dplyr::rename(
+            node_type_to = "node_type",
+            name_to = "name"
+        )
 }
 
 #' Construct a Formula from a Graph
 #' @importFrom dplyr pull
 #' @noRd
 edges_to_formula <- function(edges) {
-  collapse <- \(e, v) {
-    pull(e, eval(v)) |>
-      unique() |>
-      paste0(collapse = "+")
-  }
+    collapse <- \(e, v) {
+        pull(e, eval(v)) |>
+            unique() |>
+            paste0(collapse = "+")
+    }
 
-  predictors <- collapse(edges, quote(name_from))
-  outcomes <- collapse(edges, quote(name_to))
-  glue("{outcomes} ~ {predictors}") |>
-    as.formula()
+    predictors <- collapse(edges, quote(name_from))
+    outcomes <- collapse(edges, quote(name_to))
+    glue("{outcomes} ~ {predictors}") |>
+        as.formula()
 }
 
 #' Generate a Mediation Formula
@@ -145,11 +145,11 @@ edges_to_formula <- function(edges) {
 #' @importFrom rlang .data
 #' @noRd
 mediation_formula <- function(edges) {
-  edges %E>%
-    filter(.data$state == "active") |>
-    edges_df() |>
-    filter(.data$node_type_to == "mediator") |>
-    edges_to_formula()
+    edges %E>%
+        filter(.data$state == "active") |>
+        edges_df() |>
+        filter(.data$node_type_to == "mediator") |>
+        edges_to_formula()
 }
 
 #' Generate an Outcome Formula
@@ -169,11 +169,11 @@ mediation_formula <- function(edges) {
 #' @importFrom rlang .data
 #' @noRd
 outcome_formula <- function(edges) {
-  edges %E>%
-    filter(.data$state == "active") |>
-    edges_df() |>
-    filter(.data$node_type_to == "outcome") |>
-    edges_to_formula()
+    edges %E>%
+        filter(.data$state == "active") |>
+        edges_df() |>
+        filter(.data$node_type_to == "outcome") |>
+        edges_to_formula()
 }
 
 #' Estimate a Mediation Model
@@ -195,38 +195,38 @@ outcome_formula <- function(edges) {
 #' @importFrom tidyselect everything
 #' @examples
 #' exper <- demo_joy() |>
-#'   mediation_data("PHQ", "treatment", starts_with("ASV"))
+#'     mediation_data("PHQ", "treatment", starts_with("ASV"))
 #' multimedia(exper) |>
-#'   estimate(exper)
+#'     estimate(exper)
 #'
 #' # example with another dataset
 #' exper <- demo_spline(tau = c(2, 1)) |>
-#'   mediation_data(starts_with("outcome"), "treatment", "mediator")
+#'     mediation_data(starts_with("outcome"), "treatment", "mediator")
 #' multimedia(exper) |>
-#'   estimate(exper)
+#'     estimate(exper)
 #'
 #' # example with another model
 #' exper <- demo_spline(tau = c(2, 1)) |>
-#'   mediation_data(starts_with("outcome"), "treatment", "mediator")
+#'     mediation_data(starts_with("outcome"), "treatment", "mediator")
 #' multimedia(exper, rf_model()) |>
-#'   estimate(exper)
+#'     estimate(exper)
 #' @export
 estimate <- function(model, exper) {
-  # estimate mediation model
-  data <- bind_mediation(exper)
+    # estimate mediation model
+    data <- bind_mediation(exper)
 
-  f <- mediation_formula(model@edges)
-  mediation_est <- model@mediation@estimator
-  model@mediation@estimates <- mediation_est(f, data)
+    f <- mediation_formula(model@edges)
+    mediation_est <- model@mediation@estimator
+    model@mediation@estimates <- mediation_est(f, data)
 
-  # estimate outcome model
-  f <- outcome_formula(model@edges)
-  outcome_est <- model@outcome@estimator
-  model@outcome@estimates <- outcome_est(f, data)
-  model@treatments <- unique(exper@treatments) |>
-    arrange(across(everything()))
+    # estimate outcome model
+    f <- outcome_formula(model@edges)
+    outcome_est <- model@outcome@estimator
+    model@outcome@estimates <- outcome_est(f, data)
+    model@treatments <- unique(exper@treatments) |>
+        arrange(across(everything()))
 
-  model
+    model
 }
 
 #' Linear Model across Responses
@@ -245,14 +245,14 @@ estimate <- function(model, exper) {
 #' estimator(m)(mpg ~ hp + wt, data = mtcars)
 #' @export
 lm_model <- function() {
-  new(
-    "model",
-    estimator = parallelize(lm),
-    estimates = NULL,
-    sampler = lm_sampler,
-    predictor = predict,
-    model_type = "lm_model()"
-  )
+    new(
+        "model",
+        estimator = parallelize(lm),
+        estimates = NULL,
+        sampler = lm_sampler,
+        predictor = predict,
+        model_type = "lm_model()"
+    )
 }
 
 #' Sample a Linear Model
@@ -269,27 +269,27 @@ lm_model <- function() {
 #' @importFrom stats lm
 #' @noRd
 lm_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
-  if (is.null(indices)) {
-    indices <- seq_along(fits)
-  }
+    if (is.null(indices)) {
+        indices <- seq_along(fits)
+    }
 
-  nm <- names(fits)
-  y_hats <- list()
-  for (i in indices) {
-    sigma <- summary(fits[[i]])$sigma
-    y_ <- predict(fits[[i]], newdata = newdata, ...)
-    y_hats[[nm[i]]] <- y_ + rnorm(length(y_), 0, sigma)
-  }
+    nm <- names(fits)
+    y_hats <- list()
+    for (i in indices) {
+        sigma <- summary(fits[[i]])$sigma
+        y_ <- predict(fits[[i]], newdata = newdata, ...)
+        y_hats[[nm[i]]] <- y_ + rnorm(length(y_), 0, sigma)
+    }
 
-  bind_cols(y_hats)
+    bind_cols(y_hats)
 }
 
 #' Default parameters for glmnet_model
 #' @importFrom utils modifyList
 #' @noRd
 glmnet_model_params <- function(...) {
-  defaults <- list(intercept = FALSE, lambda = 0.01)
-  modifyList(defaults, list(...))
+    defaults <- list(intercept = FALSE, lambda = 0.01)
+    modifyList(defaults, list(...))
 }
 
 #' Regularized Glmnet Model across Responses
@@ -306,37 +306,37 @@ glmnet_model_params <- function(...) {
 #' @importFrom insight check_if_installed
 #' @examples
 #' exper <- demo_joy() |>
-#'   mediation_data("PHQ", "treatment", starts_with("ASV"))
+#'     mediation_data("PHQ", "treatment", starts_with("ASV"))
 #' multimedia(exper, glmnet_model(lambda = 1)) |>
-#'   estimate(exper)
+#'     estimate(exper)
 #'
 #' multimedia(exper, glmnet_model(lambda = 1), glmnet_model()) |>
-#'   estimate(exper)
+#'     estimate(exper)
 #'
 #' # example with another dataset
 #' exper <- demo_spline(tau = c(2, 1)) |>
-#'   mediation_data(starts_with("outcome"), "treatment", "mediator")
+#'     mediation_data(starts_with("outcome"), "treatment", "mediator")
 #' multimedia(exper, glmnet_model(lambda = 0.1)) |>
-#'   estimate(exper)
+#'     estimate(exper)
 #' @export
 glmnet_model <- function(...) {
-  check_if_installed(
-    c("glmnet", "glmnetUtils"),
-    "to use a glmnet regression model for multimedia estimation."
-  )
-  requireNamespace("glmnetUtils", quietly = TRUE)
+    check_if_installed(
+        c("glmnet", "glmnetUtils"),
+        "to use a glmnet regression model for multimedia estimation."
+    )
+    requireNamespace("glmnetUtils", quietly = TRUE)
 
-  params <- glmnet_model_params(...)
-  new(
-    "model",
-    estimator = parallelize(\(fmla, data) inject(glmnetUtils::glmnet(fmla, data, !!!params))),
-    estimates = NULL,
-    sampler = glmnet_sampler,
-    predictor = \(object, ...) {
-      predict(object, s = object$lambda.1se, ...)[, 1]
-    },
-    model_type = "glmnet_model()"
-  )
+    params <- glmnet_model_params(...)
+    new(
+        "model",
+        estimator = parallelize(\(fmla, data) inject(glmnetUtils::glmnet(fmla, data, !!!params))),
+        estimates = NULL,
+        sampler = glmnet_sampler,
+        predictor = \(object, ...) {
+            predict(object, s = object$lambda.1se, ...)[, 1]
+        },
+        model_type = "glmnet_model()"
+    )
 }
 
 #' Sample from a Glmnet Model
@@ -355,27 +355,27 @@ glmnet_model <- function(...) {
 #' multimedia:::glmnet_sampler(fit, mtcars)
 #' @noRd
 glmnet_sampler <- function(fits, newdata = NULL, indices = NULL, lambda_ix = 1, ...) {
-  if (is.null(indices)) {
-    indices <- seq_along(fits)
-  }
-  requireNamespace("glmnetUtils", quietly = TRUE)
+    if (is.null(indices)) {
+        indices <- seq_along(fits)
+    }
+    requireNamespace("glmnetUtils", quietly = TRUE)
 
-  nm <- names(fits)
-  y_hats <- list()
-  for (i in indices) {
-    sigma <- deviance(fits[[i]]) / fits[[i]]$nobs
-    y_ <- predict(fits[[i]], newdata = newdata, ...)[, lambda_ix]
-    y_hats[[nm[i]]] <- y_ + rnorm(length(y_), 0, sigma)
-  }
+    nm <- names(fits)
+    y_hats <- list()
+    for (i in indices) {
+        sigma <- deviance(fits[[i]]) / fits[[i]]$nobs
+        y_ <- predict(fits[[i]], newdata = newdata, ...)[, lambda_ix]
+        y_hats[[nm[i]]] <- y_ + rnorm(length(y_), 0, sigma)
+    }
 
-  bind_cols(y_hats)
+    bind_cols(y_hats)
 }
 
 #' Default parameters for brms model
 #' @noRd
 brms_model_params <- function(...) {
-  defaults <- list(chains = 1, refresh = 0, silent = 0)
-  modifyList(defaults, list(...))
+    defaults <- list(chains = 1, refresh = 0, silent = 0)
+    modifyList(defaults, list(...))
 }
 
 #' Refit BRMS Models without Recompilation
@@ -398,19 +398,19 @@ brms_model_params <- function(...) {
 #' @importFrom stats update
 #' @noRd
 brm_cache <- function(formula, data, ...) {
-  models <- list()
+    models <- list()
 
-  ys <- lhs.vars(formula)
-  models[[ys[1]]] <- brms::brm(sub_formula(formula, ys[1]), data, ...)
-  if (length(ys) == 1) {
-    return(models)
-  }
+    ys <- lhs.vars(formula)
+    models[[ys[1]]] <- brms::brm(sub_formula(formula, ys[1]), data, ...)
+    if (length(ys) == 1) {
+        return(models)
+    }
 
-  for (j in seq(2, length(ys))) {
-    fmla <- sub_formula(formula, ys[j])
-    models[[ys[j]]] <- update(models[[1]], fmla, newdata = data, recompile = FALSE, ...)
-  }
-  models
+    for (j in seq(2, length(ys))) {
+        fmla <- sub_formula(formula, ys[j])
+        models[[ys[j]]] <- update(models[[1]], fmla, newdata = data, recompile = FALSE, ...)
+    }
+    models
 }
 
 #' Bayesian Regression Model across Responses
@@ -424,29 +424,29 @@ brm_cache <- function(formula, data, ...) {
 #' @seealso glmnet_model lnm_model rf_model lm_model
 #' @examples
 #' exper <- demo_joy() |>
-#'   mediation_data("PHQ", "treatment", starts_with("ASV"))
+#'     mediation_data("PHQ", "treatment", starts_with("ASV"))
 #' multimedia(exper, brms_model()) |>
-#'   estimate(exper)
+#'     estimate(exper)
 #'
 #' # example with another dataset
 #' exper <- demo_spline(tau = c(2, 1)) |>
-#'   mediation_data(starts_with("outcome"), "treatment", "mediator")
+#'     mediation_data(starts_with("outcome"), "treatment", "mediator")
 #' fit <- multimedia(exper, brms_model()) |>
-#'   estimate(exper)
+#'     estimate(exper)
 #' fit
 #' @export
 brms_model <- function(...) {
-  check_if_installed("brms", "to use a BRMS model for multimedia estimation.")
-  params <- brms_model_params(...)
-  requireNamespace("brms", quietly = TRUE)
-  new(
-    "model",
-    estimator = \(fmla, data) inject(brm_cache(fmla, data, !!!params)),
-    estimates = NULL,
-    sampler = brms_sampler,
-    predictor = \(object, ...) predict(object, robust = TRUE, ...)[, "Estimate"],
-    model_type = "brms_model()"
-  )
+    check_if_installed("brms", "to use a BRMS model for multimedia estimation.")
+    params <- brms_model_params(...)
+    requireNamespace("brms", quietly = TRUE)
+    new(
+        "model",
+        estimator = \(fmla, data) inject(brm_cache(fmla, data, !!!params)),
+        estimates = NULL,
+        sampler = brms_sampler,
+        predictor = \(object, ...) predict(object, robust = TRUE, ...)[, "Estimate"],
+        model_type = "brms_model()"
+    )
 }
 
 #' Accessor for Model Estimators
@@ -459,7 +459,7 @@ brms_model <- function(...) {
 #' estimator(m)(mpg ~ hp + wt, data = mtcars)
 #' @export
 estimator <- function(object) {
-  object@estimator
+    object@estimator
 }
 
 #' Accessor for Outcome Models
@@ -468,18 +468,18 @@ estimator <- function(object) {
 #' @return A list containing all the fitted outcome models.
 #' @examples
 #' exper <- mediation_data(
-#'   mindfulness,
-#'   phyloseq::taxa_names(mindfulness),
-#'   "treatment",
-#'   starts_with("mediator"),
-#'   "subject"
+#'     mindfulness,
+#'     phyloseq::taxa_names(mindfulness),
+#'     "treatment",
+#'     starts_with("mediator"),
+#'     "subject"
 #' )
 #'
 #' m <- multimedia(exper)
 #' outcome_models(m)
 #' @export
 outcome_models <- function(object) {
-  object@outcomes@estimates
+    object@outcomes@estimates
 }
 
 #' Accessor for Outcome Models
@@ -488,18 +488,18 @@ outcome_models <- function(object) {
 #' @return A list containing all the fitted mediation models.
 #' @examples
 #' exper <- mediation_data(
-#'   mindfulness,
-#'   phyloseq::taxa_names(mindfulness),
-#'   "treatment",
-#'   starts_with("mediator"),
-#'   "subject"
+#'     mindfulness,
+#'     phyloseq::taxa_names(mindfulness),
+#'     "treatment",
+#'     starts_with("mediator"),
+#'     "subject"
 #' )
 #'
 #' m <- multimedia(exper)
 #' mediation_models(m)
 #' @export
 mediation_models <- function(object) {
-  object@mediaton@estimates
+    object@mediaton@estimates
 }
 
 
@@ -513,30 +513,30 @@ mediation_models <- function(object) {
 #' @importFrom insight check_if_installed
 #' @examples
 #' exper <- demo_joy() |>
-#'   mediation_data("PHQ", "treatment", starts_with("ASV"))
+#'     mediation_data("PHQ", "treatment", starts_with("ASV"))
 #' fit <- multimedia(exper, brms_model()) |>
-#'   estimate(exper)
+#'     estimate(exper)
 #' brms_sampler(outcome_models(fit))
 #' @noRd
 brms_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
-  if (is.null(indices)) {
-    indices <- seq_along(fits)
-  }
-  check_if_installed("brms", "to use a BRMS model for multimedia estimation.")
+    if (is.null(indices)) {
+        indices <- seq_along(fits)
+    }
+    check_if_installed("brms", "to use a BRMS model for multimedia estimation.")
 
-  nm <- names(fits)
-  y_hats <- list()
-  for (i in indices) {
-    y_hats[[nm[i]]] <- brms::posterior_predict(
-      fits[[i]],
-      newdata,
-      resp = nm[i],
-      ndraws = 1,
-      ...
-    ) |>
-      as.numeric()
-  }
-  bind_cols(y_hats)
+    nm <- names(fits)
+    y_hats <- list()
+    for (i in indices) {
+        y_hats[[nm[i]]] <- brms::posterior_predict(
+            fits[[i]],
+            newdata,
+            resp = nm[i],
+            ndraws = 1,
+            ...
+        ) |>
+            as.numeric()
+    }
+    bind_cols(y_hats)
 }
 
 #' Logistic Normal Multinomial Model
@@ -557,21 +557,21 @@ brms_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
 #' fit <- estimator(m)(y1 + y2 + y3 + y4 ~ y5 + y6, mat)
 #' @export
 lnm_model <- function(...) {
-  check_if_installed(
-    "miniLNM",
-    "to use a LNM model for multimedia estimation. Please run devtools::install_github('krisrs1128/miniLNM')",
-    prompt = FALSE
-  )
-  requireNamespace("miniLNM", quietly = TRUE)
+    check_if_installed(
+        "miniLNM",
+        "to use a LNM model for multimedia estimation. Please run devtools::install_github('krisrs1128/miniLNM')",
+        prompt = FALSE
+    )
+    requireNamespace("miniLNM", quietly = TRUE)
 
-  new(
-    "model",
-    estimator = \(fmla, data) inject(miniLNM::lnm(fmla, data, ...)),
-    estimates = NULL,
-    sampler = lnm_sampler,
-    predictor = predict,
-    model_type = "lnm_model()"
-  )
+    new(
+        "model",
+        estimator = \(fmla, data) inject(miniLNM::lnm(fmla, data, ...)),
+        estimates = NULL,
+        sampler = lnm_sampler,
+        predictor = predict,
+        model_type = "lnm_model()"
+    )
 }
 
 #' Sample from the Logistic Normal Multinomial
@@ -595,12 +595,12 @@ lnm_model <- function(...) {
 #' lnm_sampler(fit, depth = 100)
 #' @noRd
 lnm_sampler <- function(fit, newdata = NULL, indices = NULL, ...) {
-  nm <- lhs.vars(fit@formula)
-  if (is.null(indices)) {
-    indices <- seq_along(nm)
-  }
-  requireNamespace("miniLNM", quietly = TRUE)
-  sample(fit, newdata = newdata, ...)[, nm[indices], drop = FALSE]
+    nm <- lhs.vars(fit@formula)
+    if (is.null(indices)) {
+        indices <- seq_along(nm)
+    }
+    requireNamespace("miniLNM", quietly = TRUE)
+    sample(fit, newdata = newdata, ...)[, nm[indices], drop = FALSE]
 }
 
 #' Random Forest Model
@@ -616,29 +616,29 @@ lnm_sampler <- function(fit, newdata = NULL, indices = NULL, ...) {
 #'  sampler functions associated wtih a lienar model.
 #' @examples
 #' exper <- demo_joy() |>
-#'   mediation_data("PHQ", "treatment", starts_with("ASV"))
+#'     mediation_data("PHQ", "treatment", starts_with("ASV"))
 #' multimedia(exper, rf_model(num.trees = 10)) |>
-#'   estimate(exper)
+#'     estimate(exper)
 #'
 #' # example with another dataset
 #' exper <- demo_spline(tau = c(2, 1)) |>
-#'   mediation_data(starts_with("outcome"), "treatment", "mediator")
+#'     mediation_data(starts_with("outcome"), "treatment", "mediator")
 #' multimedia(exper, rf_model(num.trees = 20, max.depth = 2)) |>
-#'   estimate(exper)
+#'     estimate(exper)
 #' @seealso model lm_model rf_model glmnet_model brms_model
 #' @export
 rf_model <- function(...) {
-  check_if_installed("ranger", "to use a random forest model for multimedia estimation.")
-  requireNamespace("ranger", quietly = TRUE)
+    check_if_installed("ranger", "to use a random forest model for multimedia estimation.")
+    requireNamespace("ranger", quietly = TRUE)
 
-  new(
-    "model",
-    estimator = parallelize(\(fmla, data) ranger::ranger(fmla, data, ...)),
-    estimates = NULL,
-    sampler = rf_sampler,
-    model_type = "rf_model()",
-    predictor = \(object, ...) predict(object, ...)$predictions
-  )
+    new(
+        "model",
+        estimator = parallelize(\(fmla, data) ranger::ranger(fmla, data, ...)),
+        estimates = NULL,
+        sampler = rf_sampler,
+        model_type = "rf_model()",
+        predictor = \(object, ...) predict(object, ...)$predictions
+    )
 }
 
 #' Sample from a Random Forest Model
@@ -663,20 +663,20 @@ rf_model <- function(...) {
 #' multimedia:::rf_sampler(fit, mtcars)
 #' @noRd
 rf_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
-  if (is.null(indices)) {
-    indices <- seq_along(fits)
-  }
-  requireNamespace("ranger", quietly = TRUE)
+    if (is.null(indices)) {
+        indices <- seq_along(fits)
+    }
+    requireNamespace("ranger", quietly = TRUE)
 
-  nm <- names(fits)
-  y_hats <- list()
-  for (i in indices) {
-    sigma <- fits[[i]]$prediction.error
-    y_ <- predict(fits[[i]], data = newdata, ...)$predictions
-    y_hats[[nm[i]]] <- y_ + rnorm(length(y_), 0, sigma)
-  }
+    nm <- names(fits)
+    y_hats <- list()
+    for (i in indices) {
+        sigma <- fits[[i]]$prediction.error
+        y_ <- predict(fits[[i]], data = newdata, ...)$predictions
+        y_hats[[nm[i]]] <- y_ + rnorm(length(y_), 0, sigma)
+    }
 
-  bind_cols(y_hats)
+    bind_cols(y_hats)
 }
 
 setGeneric("estimator", \(object) standardGeneric("estimator"))

@@ -12,6 +12,10 @@ retrieve_names(object, nm)
 \item{nm}{A string specifying the node type to filter down to, e.g.,
 'treatment' or 'mediator'.}
 }
+\value{
+A character vector containing all the names of the variables of the
+node type \code{nm}.
+}
 \description{
 This returns all the variables modeled within a multimedia object. This can
 be helpful for overviewing an experiment and is called by the print methods
@@ -20,7 +24,7 @@ mediators.
 }
 \examples{
 exper <- demo_joy() |>
-  mediation_data("PHQ", "treatment", starts_with("ASV"))
+    mediation_data("PHQ", "treatment", starts_with("ASV"))
 multimedia(exper) |>
-  multimedia:::retrieve_names("mediator")
+    multimedia:::retrieve_names("mediator")
 }

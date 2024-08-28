@@ -52,9 +52,9 @@ can predict forward along the DAG using these as inputs.
 }
 \examples{
 exper <- demo_spline(tau = c(2, 1)) |>
-  mediation_data(starts_with("outcome"), "treatment", "mediator")
+    mediation_data(starts_with("outcome"), "treatment", "mediator")
 fit <- multimedia(exper, rf_model()) |>
-  estimate(exper)
+    estimate(exper)
 predict(fit)
 
 # at new treatment configurations

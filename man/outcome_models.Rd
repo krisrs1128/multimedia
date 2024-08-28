@@ -18,11 +18,11 @@ Accessor for Outcome Models
 }
 \examples{
 exper <- mediation_data(
-  mindfulness, 
-  phyloseq::taxa_names(mindfulness), 
-  "treatment", 
-  starts_with("mediator"),   
-  "subject"
+    mindfulness,
+    phyloseq::taxa_names(mindfulness),
+    "treatment",
+    starts_with("mediator"),
+    "subject"
 )
 
 m <- multimedia(exper)

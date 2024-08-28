@@ -20,7 +20,7 @@ This is an accessor to the outcome slot of a multimedia object.
 }
 \examples{
 exper <- demo_joy() |>
-  mediation_data("PHQ", "treatment", starts_with("ASV"))
+    mediation_data("PHQ", "treatment", starts_with("ASV"))
 multimedia(exper) |>
-  outcome_model()
+    outcome_model()
 }

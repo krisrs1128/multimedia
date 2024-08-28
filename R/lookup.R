@@ -8,17 +8,19 @@
 #' @param object An object of class multimedia
 #' @param nm A string specifying the node type to filter down to, e.g.,
 #'   'treatment' or 'mediator'.
+#' @return A character vector containing all the names of the variables of the
+#'   node type `nm`.
 #' @importFrom rlang .data
 #' @importFrom dplyr filter pull
 #' @examples
 #' exper <- demo_joy() |>
-#'   mediation_data("PHQ", "treatment", starts_with("ASV"))
+#'     mediation_data("PHQ", "treatment", starts_with("ASV"))
 #' multimedia(exper) |>
-#'   multimedia:::retrieve_names("mediator")
+#'     multimedia:::retrieve_names("mediator")
 retrieve_names <- function(object, nm) {
-  object@edges |>
-    filter(.data$node_type == nm) |>
-    pull(.data$name)
+    object@edges |>
+        filter(.data$node_type == nm) |>
+        pull(.data$name)
 }
 
 # Define setter and getter generics for multimedia and mediation_data S4 classes
@@ -43,15 +45,15 @@ setGeneric("treatments<-", \(object, value) standardGeneric("treatments<-"))
 #' @return m A vector of strings containing the names of all the mediators.
 #' @examples
 #' exper <- demo_joy() |>
-#'   mediation_data("PHQ", "treatment", starts_with("ASV"))
+#'     mediation_data("PHQ", "treatment", starts_with("ASV"))
 #' multimedia(exper) |>
-#'   mediators()
+#'     mediators()
 #' @export
 setMethod(
-  "mediators", "multimedia",
-  \(object) {
-    retrieve_names(object, "mediator")
-  }
+    "mediators", "multimedia",
+    \(object) {
+        retrieve_names(object, "mediator")
+    }
 )
 
 #' Access to @mediators in Mediation Data
@@ -59,17 +61,18 @@ setMethod(
 #' This is an accessor returns the @mediators slot in a mediation_data object.
 #'
 #' @param object An object of class mediation_data.
-#' @return m A data.frame whose rows are samples and columns are values of mediators across those samples.
+#' @return m A data.frame whose rows are samples and columns are values of
+#'   mediators across those samples.
 #' @examples
 #' exper <- demo_joy() |>
-#'   mediation_data("PHQ", "treatment", starts_with("ASV"))
+#'     mediation_data("PHQ", "treatment", starts_with("ASV"))
 #' mediators(exper)
 #' @export
 setMethod(
-  "mediators", "mediation_data",
-  \(object) {
-    object@mediators
-  }
+    "mediators", "mediation_data",
+    \(object) {
+        object@mediators
+    }
 )
 
 #' Names of Outcomes in a Multimedia Object
@@ -82,20 +85,20 @@ setMethod(
 #' @return m A vector of strings containing the names of all the outcomes.
 #' @examples
 #' exper <- demo_joy() |>
-#'   mediation_data("PHQ", "treatment", starts_with("ASV"))
+#'     mediation_data("PHQ", "treatment", starts_with("ASV"))
 #' multimedia(exper) |>
-#'   outcomes()
+#'     outcomes()
 #'
 #' exper <- demo_spline(tau = c(2, 1)) |>
-#'   mediation_data(starts_with("outcome"), "treatment", "mediator")
+#'     mediation_data(starts_with("outcome"), "treatment", "mediator")
 #' multimedia(exper) |>
-#'   outcomes()
+#'     outcomes()
 #' @export
 setMethod(
-  "outcomes", "multimedia",
-  \(object) {
-    retrieve_names(object, "outcome")
-  }
+    "outcomes", "multimedia",
+    \(object) {
+        retrieve_names(object, "outcome")
+    }
 )
 
 #' Outcomes Data in a Mediation Data Object
@@ -109,14 +112,14 @@ setMethod(
 #' @return A data.frame whose rows are samples and columns different outcomes.
 #' @examples
 #' exper <- demo_joy() |>
-#'   mediation_data("PHQ", "treatment", starts_with("ASV"))
+#'     mediation_data("PHQ", "treatment", starts_with("ASV"))
 #' outcomes(exper)
 #' @export
 setMethod(
-  "outcomes", "mediation_data",
-  \(object) {
-    object@outcomes
-  }
+    "outcomes", "mediation_data",
+    \(object) {
+        object@outcomes
+    }
 )
 
 #' Treatments in a Mediation Data Object
@@ -130,14 +133,14 @@ setMethod(
 #' @return A data.frame whose rows are samples and columns different treatments.
 #' @examples
 #' exper <- demo_joy() |>
-#'   mediation_data("PHQ", "treatment", starts_with("ASV"))
+#'     mediation_data("PHQ", "treatment", starts_with("ASV"))
 #' treatments(exper)
 #' @export
 setMethod(
-  "treatments", "mediation_data",
-  \(object) {
-    object@treatments
-  }
+    "treatments", "mediation_data",
+    \(object) {
+        object@treatments
+    }
 )
 
 #' Pretreatments in a Mediation Data Object
@@ -151,14 +154,14 @@ setMethod(
 #' @return A data.frame whose rows are samples and columns different pretreatments.
 #' @examples
 #' exper <- demo_joy() |>
-#'   mediation_data("PHQ", "treatment", starts_with("ASV"))
+#'     mediation_data("PHQ", "treatment", starts_with("ASV"))
 #' pretreatments(exper)
 #' @export
 setMethod(
-  "pretreatments", "mediation_data",
-  \(object) {
-    object@pretreatments
-  }
+    "pretreatments", "mediation_data",
+    \(object) {
+        object@pretreatments
+    }
 )
 
 #' Set the Outcomes in a Mediation Data Object
@@ -171,16 +174,16 @@ setMethod(
 #' @return A version of `object` whose outcomes slot has been replaced.
 #' @examples
 #' exper <- demo_joy() |>
-#'   mediation_data("PHQ", "treatment", starts_with("ASV"))
+#'     mediation_data("PHQ", "treatment", starts_with("ASV"))
 #' outcomes(exper) <- data.frame(y = 1:10)
 #' exper
 #' @export
 setMethod(
-  "outcomes<-", "mediation_data",
-  \(object, value) {
-    object@outcomes <- value
-    object
-  }
+    "outcomes<-", "mediation_data",
+    \(object, value) {
+        object@outcomes <- value
+        object
+    }
 )
 
 #' Set the Mediators in a Mediation Data Object
@@ -193,16 +196,16 @@ setMethod(
 #' @return A version of `object` whose mediators slot has been replaced.
 #' @examples
 #' exper <- demo_joy() |>
-#'   mediation_data("PHQ", "treatment", starts_with("ASV"))
+#'     mediation_data("PHQ", "treatment", starts_with("ASV"))
 #' mediators(exper) <- data.frame(m = 1:10)
 #' exper
 #' @export
 setMethod(
-  "mediators<-", "mediation_data",
-  \(object, value) {
-    object@mediators <- value
-    object
-  }
+    "mediators<-", "mediation_data",
+    \(object, value) {
+        object@mediators <- value
+        object
+    }
 )
 
 #' Set the Treatments in a Mediation Data Object
@@ -215,16 +218,16 @@ setMethod(
 #' @return A version of `object` whose treatment slot has been replaced.
 #' @examples
 #' exper <- demo_joy() |>
-#'   mediation_data("PHQ", "treatment", starts_with("ASV"))
+#'     mediation_data("PHQ", "treatment", starts_with("ASV"))
 #' treatments(exper) <- data.frame(t = rep(0, 10))
 #' exper
 #' @export
 setMethod(
-  "treatments<-", "mediation_data",
-  \(object, value) {
-    object@treatments <- value
-    object
-  }
+    "treatments<-", "mediation_data",
+    \(object, value) {
+        object@treatments <- value
+        object
+    }
 )
 
 #' Set the Pretreatments in a Mediation Data Object
@@ -237,16 +240,16 @@ setMethod(
 #' @return A version of `object` whose pretreatments slot has been replaced.
 #' @examples
 #' exper <- demo_joy() |>
-#'   mediation_data("PHQ", "treatment", starts_with("ASV"))
+#'     mediation_data("PHQ", "treatment", starts_with("ASV"))
 #' pretreatments(exper) <- data.frame(x = 1:10)
 #' exper
 #' @export
 setMethod(
-  "pretreatments<-", "mediation_data",
-  \(object, value) {
-    object@pretreatments <- value
-    object
-  }
+    "pretreatments<-", "mediation_data",
+    \(object, value) {
+        object@pretreatments <- value
+        object
+    }
 )
 
 #' Access Mediation Model DAG
@@ -259,15 +262,15 @@ setMethod(
 #' @return A data.frame whose rows give edges in the mediation analysis DAG.
 #' @examples
 #' exper <- demo_joy() |>
-#'   mediation_data("PHQ", "treatment", starts_with("ASV"))
+#'     mediation_data("PHQ", "treatment", starts_with("ASV"))
 #' multimedia(exper) |>
-#'   edges()
+#'     edges()
 #' @export
 setMethod(
-  "edges", "multimedia",
-  \(object) {
-    object@edges
-  }
+    "edges", "multimedia",
+    \(object) {
+        object@edges
+    }
 )
 
 
@@ -281,15 +284,15 @@ setMethod(
 #' @return m A vector of strings containing the names of all the treatments.
 #' @examples
 #' exper <- demo_joy() |>
-#'   mediation_data("PHQ", "treatment", starts_with("ASV"))
+#'     mediation_data("PHQ", "treatment", starts_with("ASV"))
 #' multimedia(exper) |>
-#'   treatments()
+#'     treatments()
 #' @export
 setMethod(
-  "treatments", "multimedia",
-  function(object) {
-    retrieve_names(object, "treatment")
-  }
+    "treatments", "multimedia",
+    function(object) {
+        retrieve_names(object, "treatment")
+    }
 )
 
 #' Number of Mediators in a Multimedia Object
@@ -298,12 +301,12 @@ setMethod(
 #' @return An integer specifying the number of mediators.
 #' @examples
 #' exper <- demo_joy() |>
-#'   mediation_data("PHQ", "treatment", starts_with("ASV"))
+#'     mediation_data("PHQ", "treatment", starts_with("ASV"))
 #' multimedia(exper) |>
-#'   n_mediators()
+#'     n_mediators()
 #' @export
 n_mediators <- function(object) {
-  length(mediators(object))
+    length(mediators(object))
 }
 
 #' Number of Outcomes in a Multimedia Object
@@ -312,12 +315,12 @@ n_mediators <- function(object) {
 #' @return An integer specifying the number of outcomes.
 #' @examples
 #' exper <- demo_joy() |>
-#'   mediation_data("PHQ", "treatment", starts_with("ASV"))
+#'     mediation_data("PHQ", "treatment", starts_with("ASV"))
 #' multimedia(exper) |>
-#'   n_outcomes()
+#'     n_outcomes()
 #' @export
 n_outcomes <- function(object) {
-  length(outcomes(object))
+    length(outcomes(object))
 }
 
 #' Access the Outcome Model in a Multimedia Object
@@ -330,10 +333,10 @@ n_outcomes <- function(object) {
 #'   across outcomes (e.g., lnm_model()), a single model object of that class.
 #' @examples
 #' exper <- demo_joy() |>
-#'   mediation_data("PHQ", "treatment", starts_with("ASV"))
+#'     mediation_data("PHQ", "treatment", starts_with("ASV"))
 #' multimedia(exper) |>
-#'   outcome_model()
+#'     outcome_model()
 #' @export
 outcome_model <- function(object) {
-  object@outcome
+    object@outcome
 }

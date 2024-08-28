@@ -17,13 +17,13 @@ setClassUnion("data.frameOrNull", members = c("data.frame", "NULL"))
 #'   across all samples.
 #' @noRd
 setClass(
-  "multimedia",
-  representation(
-    edges = "ANY",
-    outcome = "modelOrNull",
-    mediation = "modelOrNull",
-    treatments = "ANY"
-  )
+    "multimedia",
+    representation(
+        edges = "ANY",
+        outcome = "modelOrNull",
+        mediation = "modelOrNull",
+        treatments = "ANY"
+    )
 )
 
 #' An S4 Class Representing a Mediation Analysis Dataset
@@ -43,13 +43,13 @@ setClass(
 #'   pretreatments across all samples.
 #' @noRd
 setClass(
-  "mediation_data",
-  representation(
-    mediators = "data.frame",
-    outcomes = "data.frame",
-    treatments = "data.frame",
-    pretreatments = "data.frameOrNull"
-  )
+    "mediation_data",
+    representation(
+        mediators = "data.frame",
+        outcomes = "data.frame",
+        treatments = "data.frame",
+        pretreatments = "data.frameOrNull"
+    )
 )
 
 #' Convert `mediation_data` to a single data.frame
@@ -64,18 +64,18 @@ setClass(
 #'   `mediation_data` object.
 #' @examples
 #' exper <- demo_joy() |>
-#'   mediation_data("PHQ", "treatment", starts_with("ASV"))
+#'     mediation_data("PHQ", "treatment", starts_with("ASV"))
 #' exper
 #' bind_mediation(exper)
 #'
 #' exper <- demo_spline(tau = c(2, 1)) |>
-#'   mediation_data(starts_with("outcome"), "treatment", "mediator")
+#'     mediation_data(starts_with("outcome"), "treatment", "mediator")
 #' exper
 #' bind_mediation(exper)
 #' @importFrom purrr map_dfc
 #' @export
 bind_mediation <- function(exper) {
-  map_dfc(slotNames(exper), ~ slot(exper, .))
+    map_dfc(slotNames(exper), ~ slot(exper, .))
 }
 
 #' Define all Edges in a Mediation Analysis
@@ -98,31 +98,31 @@ bind_mediation <- function(exper) {
 #' @seealso multimedia
 #' @noRd
 graph_specification <- function(outcomes, treatments, mediators, pretreatments) {
-  edges <- list(
-    expand_edges(c("1"), mediators, "intercept", "mediator"),
-    expand_edges(c("1"), outcomes, "intercept", "outcome"),
-    expand_edges(treatments, mediators, "treatment", "mediator"),
-    expand_edges(mediators, outcomes, "mediator", "outcome"),
-    expand_edges(treatments, outcomes, "treatment", "outcome")
-  )
-
-  if (length(pretreatments) > 0) {
-    new_edges <- list(
-      expand_edges(pretreatments, outcomes, "pretreatment", "outcome"),
-      expand_edges(pretreatments, mediators, "pretreatment", "mediator")
+    edges <- list(
+        expand_edges(c("1"), mediators, "intercept", "mediator"),
+        expand_edges(c("1"), outcomes, "intercept", "outcome"),
+        expand_edges(treatments, mediators, "treatment", "mediator"),
+        expand_edges(mediators, outcomes, "mediator", "outcome"),
+        expand_edges(treatments, outcomes, "treatment", "outcome")
     )
-    edges <- c(edges, new_edges)
-  }
 
-  reduce(edges, graph_join, by = join_by("name", "node_type")) %N>%
-    mutate(
-      node_type = factor(
-        .data$node_type,
-        levels = c("intercept", "pretreatment", "treatment", "mediator", "outcome")
-      )
-    ) |>
-    arrange(across(c("node_type", "name"))) |>
-    mutate(id = row_number())
+    if (length(pretreatments) > 0) {
+        new_edges <- list(
+            expand_edges(pretreatments, outcomes, "pretreatment", "outcome"),
+            expand_edges(pretreatments, mediators, "pretreatment", "mediator")
+        )
+        edges <- c(edges, new_edges)
+    }
+
+    reduce(edges, graph_join, by = join_by("name", "node_type")) %N>%
+        mutate(
+            node_type = factor(
+                .data$node_type,
+                levels = c("intercept", "pretreatment", "treatment", "mediator", "outcome")
+            )
+        ) |>
+        arrange(across(c("node_type", "name"))) |>
+        mutate(id = row_number())
 }
 
 #' Helper for `graph_specification`
@@ -145,15 +145,15 @@ graph_specification <- function(outcomes, treatments, mediators, pretreatments) 
 #' @importFrom tidygraph %E>% tbl_graph activate
 #' @noRd
 expand_edges <- function(input, output, input_name, output_name) {
-  tbl_graph(edges = expand.grid(input, output), node_key = "name") |>
-    mutate(
-      node_type = case_when(
-        name %in% input ~ input_name,
-        name %in% output ~ output_name,
-      )
-    ) %E>%
-    mutate(state = "active") |>
-    activate("nodes")
+    tbl_graph(edges = expand.grid(input, output), node_key = "name") |>
+        mutate(
+            node_type = case_when(
+                name %in% input ~ input_name,
+                name %in% output ~ output_name,
+            )
+        ) %E>%
+        mutate(state = "active") |>
+        activate("nodes")
 }
 
 #' Convert a Summarized Experiment to a data.frame
@@ -168,9 +168,9 @@ expand_edges <- function(input, output, input_name, output_name) {
 #' @return A data.frame combining all slots of a multimedia object.
 #' @examples
 #' demo_joy() |>
-#'   multimedia:::exper_df()
+#'     multimedia:::exper_df()
 exper_df <- function(exper) {
-  bind_cols(t(assay(exper)), data.frame(colData(exper)), .name_repair = "minimal")
+    bind_cols(t(assay(exper)), data.frame(colData(exper)), .name_repair = "minimal")
 }
 
 #' `mediation_data` Constructor
@@ -205,36 +205,36 @@ exper_df <- function(exper) {
 #' @export
 mediation_data <- function(x, outcomes, treatments, mediators,
                            pretreatments = NULL) {
-  result <- NULL
-  if ("SummarizedExperiment" %in% class(x)) {
-    result <- from_summarized_experiment(
-      x,
-      outcomes,
-      treatments,
-      mediators,
-      pretreatments
-    )
-  } else if ("phyloseq" %in% class(x)) {
-    result <- from_phyloseq(
-      x,
-      outcomes,
-      treatments,
-      mediators,
-      pretreatments
-    )
-  }
+    result <- NULL
+    if ("SummarizedExperiment" %in% class(x)) {
+        result <- from_summarized_experiment(
+            x,
+            outcomes,
+            treatments,
+            mediators,
+            pretreatments
+        )
+    } else if ("phyloseq" %in% class(x)) {
+        result <- from_phyloseq(
+            x,
+            outcomes,
+            treatments,
+            mediators,
+            pretreatments
+        )
+    }
 
-  if ("data.frame" %in% class(x)) {
-    result <- from_data_frame(
-      x,
-      outcomes,
-      treatments,
-      mediators,
-      pretreatments
-    )
-  }
+    if ("data.frame" %in% class(x)) {
+        result <- from_data_frame(
+            x,
+            outcomes,
+            treatments,
+            mediators,
+            pretreatments
+        )
+    }
 
-  result
+    result
 }
 
 #' Helper to Convert SummarizedExperiment to a data.frame
@@ -250,8 +250,8 @@ mediation_data <- function(x, outcomes, treatments, mediators,
 #' @noRd
 from_summarized_experiment <- function(exper, outcomes, treatments, mediators,
                                        pretreatments) {
-  exper_df(exper) |>
-    from_data_frame(outcomes, treatments, mediators, pretreatments)
+    exper_df(exper) |>
+        from_data_frame(outcomes, treatments, mediators, pretreatments)
 }
 
 #' Helper to Convert a phyloseq object to a data.frame
@@ -267,14 +267,14 @@ from_summarized_experiment <- function(exper, outcomes, treatments, mediators,
 #' @importFrom phyloseq otu_table sample_data
 #' @noRd
 from_phyloseq <- function(exper, outcomes, treatments, mediators, pretreatments) {
-  if (attr(otu_table(exper), "taxa_are_rows")) {
-    counts <- t(otu_table(exper))
-  } else {
-    counts <- otu_table(exper)
-  }
+    if (attr(otu_table(exper), "taxa_are_rows")) {
+        counts <- t(otu_table(exper))
+    } else {
+        counts <- otu_table(exper)
+    }
 
-  bind_cols(counts, data.frame(sample_data(exper))) |>
-    from_data_frame(outcomes, treatments, mediators, pretreatments)
+    bind_cols(counts, data.frame(sample_data(exper))) |>
+        from_data_frame(outcomes, treatments, mediators, pretreatments)
 }
 
 #' `mediation_data` from a data.frame
@@ -293,25 +293,25 @@ from_phyloseq <- function(exper, outcomes, treatments, mediators, pretreatments)
 #' @noRd
 from_data_frame <- function(df, outcomes, treatments, mediators,
                             pretreatments) {
-  vars <- list(
-    outcomes = quote(outcomes),
-    treatments = quote(treatments),
-    mediators = quote(mediators),
-    pretreatments = quote(pretreatments)
-  )
+    vars <- list(
+        outcomes = quote(outcomes),
+        treatments = quote(treatments),
+        mediators = quote(mediators),
+        pretreatments = quote(pretreatments)
+    )
 
-  result <- list()
-  for (i in seq_along(vars)) {
-    result[[names(vars)[i]]] <- select(df, eval(vars[[i]])) |>
-      mutate(across(where(is.character), as.factor)) |>
-      as.data.frame()
+    result <- list()
+    for (i in seq_along(vars)) {
+        result[[names(vars)[i]]] <- select(df, eval(vars[[i]])) |>
+            mutate(across(where(is.character), as.factor)) |>
+            as.data.frame()
 
-    if (ncol(result[[names(vars)[i]]]) == 0) {
-      result[[names(vars)[i]]] <- NULL
+        if (ncol(result[[names(vars)[i]]]) == 0) {
+            result[[names(vars)[i]]] <- NULL
+        }
     }
-  }
 
-  do.call(\(...) new("mediation_data", ...), result)
+    do.call(\(...) new("mediation_data", ...), result)
 }
 
 #' `multimedia` Constructor
@@ -332,51 +332,51 @@ from_data_frame <- function(df, outcomes, treatments, mediators,
 #' @seealso multimedia-class
 #' @examples
 #' exper <- demo_joy() |>
-#'   mediation_data("PHQ", "treatment", starts_with("ASV"))
+#'     mediation_data("PHQ", "treatment", starts_with("ASV"))
 #' multimedia(exper)
 #'
 #' exper <- demo_spline(tau = c(2, 1)) |>
-#'   mediation_data(starts_with("outcome"), "treatment", "mediator")
+#'     mediation_data(starts_with("outcome"), "treatment", "mediator")
 #' multimedia(exper)
 #'
 #' # real data example with a pretreatment variable
 #' data(mindfulness)
 #' exper <- mediation_data(
-#'   mindfulness,
-#'   phyloseq::taxa_names(mindfulness),
-#'   "treatment",
-#'   starts_with("mediator"),
-#'   "subject"
+#'     mindfulness,
+#'     phyloseq::taxa_names(mindfulness),
+#'     "treatment",
+#'     starts_with("mediator"),
+#'     "subject"
 #' )
 #' multimedia(exper)
 #' @export
 multimedia <- function(mediation_data,
                        outcome_estimator = lm_model(),
                        mediation_estimator = lm_model()) {
-  vars <- list(
-    outcomes = colnames(mediation_data@outcomes),
-    treatments = colnames(mediation_data@treatments),
-    mediators = colnames(mediation_data@mediators),
-    pretreatments = colnames(mediation_data@pretreatments)
-  )
+    vars <- list(
+        outcomes = colnames(mediation_data@outcomes),
+        treatments = colnames(mediation_data@treatments),
+        mediators = colnames(mediation_data@mediators),
+        pretreatments = colnames(mediation_data@pretreatments)
+    )
 
-  new(
-    "multimedia",
-    edges = do.call(graph_specification, vars),
-    outcome = outcome_estimator,
-    mediation = mediation_estimator
-  )
+    new(
+        "multimedia",
+        edges = do.call(graph_specification, vars),
+        outcome = outcome_estimator,
+        mediation = mediation_estimator
+    )
 }
 
 #' Pretty printing x -> comma separated string
 #' @noRd
 print_sub <- function(x) {
-  if (length(x) > 2) {
-    res <- paste0(c(head(x, 1), "...", tail(x, 1)), collapse = ",")
-  } else {
-    res <- paste0(x, collapse = ",")
-  }
-  res
+    if (length(x) > 2) {
+        res <- paste0(c(head(x, 1), "...", tail(x, 1)), collapse = ",")
+    } else {
+        res <- paste0(x, collapse = ",")
+    }
+    res
 }
 
 #' How many samples in the mediation dataset?
@@ -389,7 +389,7 @@ setGeneric("nrow", function(x) nrow(x))
 #' @return An integer giving the number of samples in the mediation object.
 #' @export
 setMethod(nrow, "mediation_data", function(x) {
-  nrow(x@outcomes)
+    nrow(x@outcomes)
 })
 
 #' Subset a mediation dataset
@@ -411,16 +411,16 @@ setMethod(nrow, "mediation_data", function(x) {
 #' @export
 #' @examples
 #' exper <- demo_joy() |>
-#'   mediation_data("PHQ", "treatment", starts_with("ASV"))
+#'     mediation_data("PHQ", "treatment", starts_with("ASV"))
 #' exper[1]
 #' exper[1:10]
 setMethod(
-  "[", "mediation_data",
-  function(x, i, j, ..., drop = TRUE) {
-    x@mediators <- x@mediators[i, , drop = FALSE]
-    x@outcomes <- x@outcomes[i, , drop = FALSE]
-    x@treatments <- x@treatments[i, , drop = FALSE]
-    x@pretreatments <- x@pretreatments[i, , drop = FALSE]
-    x
-  }
+    "[", "mediation_data",
+    function(x, i, j, ..., drop = TRUE) {
+        x@mediators <- x@mediators[i, , drop = FALSE]
+        x@outcomes <- x@outcomes[i, , drop = FALSE]
+        x@treatments <- x@treatments[i, , drop = FALSE]
+        x@pretreatments <- x@pretreatments[i, , drop = FALSE]
+        x
+    }
 )

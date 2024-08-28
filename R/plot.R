@@ -17,48 +17,49 @@
 #'   overlay on points? This is necessary when there are several potential
 #'   treatment variables. Defaults to "treatment."
 #' @param ... Further keyword arguments passed to `patchwork::wrap_plots`.
+#' @return A patchwork-based arrangement of ggplot2 grobs.
 #' @examples
 #' # dataset with no true effects
 #' exper <- demo_joy() |>
-#'   mediation_data("PHQ", "treatment", starts_with("ASV"))
+#'     mediation_data("PHQ", "treatment", starts_with("ASV"))
 #' ie <- multimedia(exper) |>
-#'   estimate(exper) |>
-#'   indirect_pathwise() |>
-#'   effect_summary()
+#'     estimate(exper) |>
+#'     indirect_pathwise() |>
+#'     effect_summary()
 #' plot_mediators(ie, exper)
 #'
 #' # another dataset
 #' exper <- demo_spline(tau = c(2, 1)) |>
-#'   mediation_data(starts_with("outcome"), "treatment", "mediator")
+#'     mediation_data(starts_with("outcome"), "treatment", "mediator")
 #' ie <- multimedia(exper, rf_model()) |>
-#'   estimate(exper) |>
-#'   indirect_pathwise() |>
-#'   effect_summary()
+#'     estimate(exper) |>
+#'     indirect_pathwise() |>
+#'     effect_summary()
 #' plot_mediators(ie, exper)
 #'
 #' @importFrom ggplot2 ggplot aes .data geom_point labs
 #' @importFrom glue glue
 #' @export
-plot_mediators <- function(indirect_effects, exper, n_digit = 3, n_panels = NULL,
-                           treatment = "treatment", ...) {
-  check_if_installed("patchwork", "to visualize indirect effects as a multipanel plot.")
-  if (is.null(n_panels)) {
-    n_panels <- min(nrow(indirect_effects), 12)
-  }
+plot_mediators <- function(indirect_effects, exper, n_digit = 3,
+                           n_panels = NULL, treatment = "treatment", ...) {
+    check_if_installed("patchwork", "to visualize indirect effects as a multipanel plot.")
+    if (is.null(n_panels)) {
+        n_panels <- min(nrow(indirect_effects), 12)
+    }
 
-  p <- list()
-  combined <- bind_mediation(exper)
-  for (i in seq_len(n_panels)) {
-    m <- indirect_effects$mediator[i]
-    y <- indirect_effects$outcome[i]
-    effect <- indirect_effects$indirect_effect[i]
-    p[[i]] <- ggplot(combined, aes(.data[[m]], .data[[y]])) +
-      geom_point(aes(col = .data[[treatment]]), alpha = 0.7) +
-      labs(title = glue("IE: {round(effect, n_digit)}"))
-  }
+    p <- list()
+    combined <- bind_mediation(exper)
+    for (i in seq_len(n_panels)) {
+        m <- indirect_effects$mediator[i]
+        y <- indirect_effects$outcome[i]
+        effect <- indirect_effects$indirect_effect[i]
+        p[[i]] <- ggplot(combined, aes(.data[[m]], .data[[y]])) +
+            geom_point(aes(col = .data[[treatment]]), alpha = 0.7) +
+            labs(title = glue("IE: {round(effect, n_digit)}"))
+    }
 
-  patchwork::wrap_plots(p, ...) +
-    patchwork::plot_layout(guides = "collect")
+    patchwork::wrap_plots(p, ...) +
+        patchwork::plot_layout(guides = "collect")
 }
 
 #' Generic Sensitivity Plot
@@ -76,26 +77,28 @@ plot_mediators <- function(indirect_effects, exper, n_digit = 3, n_panels = NULL
 #'   sensitivity_subset.
 #' @param y_var The type of effect to plot along the y-axis. Defaults to
 #'   indirect_effect.
+#' @return A ggplot2 grob plotting the sensitivity parameter against the effect
+#'   specified by `y_var`.
 #' @examples
-#' sensitivity_curve <- read.csv(url("https://drive.google.com/uc?export=download&id=1fEhg-aMRyfhAjgcJmsrxz2cmWCOdnM6C"))
+#' sensitivity_curve <- read.csv(url("https://go.wisc.edu/j2kvcj"))
 #' plot_sensitivity(sensitivity_curve)
 #' @importFrom ggplot2 geom_vline aes geom_hline geom_ribbon scale_x_continuous
 #'   labs geom_line
 #' @importFrom glue glue
 #' @export
 plot_sensitivity <- function(sensitivity_curve, x_var = "rho", y_var = "indirect_effect") {
-  ggplot(sensitivity_curve, aes(.data[[x_var]], col = .data[["outcome"]], fill = .data[["outcome"]])) +
-    geom_vline(xintercept = 0, linewidth = 0.5) +
-    geom_hline(yintercept = 0, linewidth = 0.5) +
-    geom_line(aes(y = .data[[y_var]])) +
-    geom_ribbon(aes(
-      y = .data[[y_var]],
-      ymin = .data[[y_var]] - 2 * .data[[glue("{y_var}_standard_error")]],
-      ymax = .data[[y_var]] + 2 * .data[[glue("{y_var}_standard_error")]],
-    ), alpha = 0.4) +
-    scale_x_continuous(expand = c(0, 0)) +
-    labs(
-      x = glue("Strength {x_var} of Hypothetical Confounder"),
-      y = "Indirect Effect"
-    )
+    ggplot(sensitivity_curve, aes(.data[[x_var]], col = .data[["outcome"]], fill = .data[["outcome"]])) +
+        geom_vline(xintercept = 0, linewidth = 0.5) +
+        geom_hline(yintercept = 0, linewidth = 0.5) +
+        geom_line(aes(y = .data[[y_var]])) +
+        geom_ribbon(aes(
+            y = .data[[y_var]],
+            ymin = .data[[y_var]] - 2 * .data[[glue("{y_var}_standard_error")]],
+            ymax = .data[[y_var]] + 2 * .data[[glue("{y_var}_standard_error")]],
+        ), alpha = 0.4) +
+        scale_x_continuous(expand = c(0, 0)) +
+        labs(
+            x = glue("Strength {x_var} of Hypothetical Confounder"),
+            y = "Indirect Effect"
+        )
 }

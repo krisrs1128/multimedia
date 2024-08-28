@@ -11,17 +11,17 @@
 #' @importFrom cli cli_abort
 #' @noRd
 check_profile <- function(object) {
-  if (is(object@t_mediator, "list")) {
-    m_samples <- map(object@t_mediator, nrow)
-    y_samples <- map(object@t_outcome, nrow)
-    if (n_distinct(y_samples) != 1) {
-      cli_abort("Number of rows in treatment profile must agree across all outcomes.")
-    }
+    if (is(object@t_mediator, "list")) {
+        m_samples <- map(object@t_mediator, nrow)
+        y_samples <- map(object@t_outcome, nrow)
+        if (n_distinct(y_samples) != 1) {
+            cli_abort("Number of rows in treatment profile must agree across all outcomes.")
+        }
 
-    if (!all(m_samples %in% y_samples)) {
-      cli_abort("Number of samples in treatment profile must agree across mediators and outcomes.")
+        if (!all(m_samples %in% y_samples)) {
+            cli_abort("Number of samples in treatment profile must agree across mediators and outcomes.")
+        }
     }
-  }
 }
 
 #' Define a `treatment_profile` object
@@ -51,9 +51,9 @@ check_profile <- function(object) {
 #' @seealso check_profile
 #' @examples
 #' exper <- demo_spline(tau = c(2, 1)) |>
-#'   mediation_data(starts_with("outcome"), "treatment", "mediator")
+#'     mediation_data(starts_with("outcome"), "treatment", "mediator")
 #' fit <- multimedia(exper) |>
-#'   estimate(exper)
+#'     estimate(exper)
 #'
 #' t1 <- data.frame(treatment = factor(rep(c(0, 1), each = 5)))
 #' profile <- setup_profile(fit, t_mediator = t1, t_outcome = t1)
@@ -64,31 +64,31 @@ check_profile <- function(object) {
 #' profile
 #' @export
 setup_profile <- function(x, t_mediator = NULL, t_outcome = NULL) {
-  if (is.null(t_mediator)) {
-    t_mediator <- x@treatments
-  }
-  if (is.null(t_outcome)) {
-    t_outcome <- x@treatments
-  }
+    if (is.null(t_mediator)) {
+        t_mediator <- x@treatments
+    }
+    if (is.null(t_outcome)) {
+        t_outcome <- x@treatments
+    }
 
-  # apply treatments to all mediators/outcomes
-  if (!is(t_mediator, "list")) {
-    t_mediator <- t_mediator |>
-      replicate(n_mediators(x), expr = _, simplify = FALSE) |>
-      set_names(mediators(x))
-  }
-  if (!is(t_outcome, "list")) {
-    t_outcome <- t_outcome |>
-      replicate(n_outcomes(x), expr = _, simplify = FALSE) |>
-      set_names(outcomes(x))
-  }
+    # apply treatments to all mediators/outcomes
+    if (!is(t_mediator, "list")) {
+        t_mediator <- t_mediator |>
+            replicate(n_mediators(x), expr = _, simplify = FALSE) |>
+            set_names(mediators(x))
+    }
+    if (!is(t_outcome, "list")) {
+        t_outcome <- t_outcome |>
+            replicate(n_outcomes(x), expr = _, simplify = FALSE) |>
+            set_names(outcomes(x))
+    }
 
-  if (any(map_lgl(t_mediator[[1]], is.character)) ||
-    any(map_lgl(t_outcome[[1]], is.character))) {
-    cli_abort("All treatment columns must be either numeric or factor variables. Character column detected.")
-  }
+    if (any(map_lgl(t_mediator[[1]], is.character)) ||
+        any(map_lgl(t_outcome[[1]], is.character))) {
+        cli_abort("All treatment columns must be either numeric or factor variables. Character column detected.")
+    }
 
-  new("treatment_profile", t_mediator = t_mediator, t_outcome = t_outcome)
+    new("treatment_profile", t_mediator = t_mediator, t_outcome = t_outcome)
 }
 
 #' Define a Treatment Profile
@@ -100,9 +100,9 @@ setup_profile <- function(x, t_mediator = NULL, t_outcome = NULL) {
 #' @seealso setup_profile check_profile
 #' @examples
 #' exper <- demo_spline(tau = c(2, 1)) |>
-#'   mediation_data(starts_with("outcome"), "treatment", "mediator")
+#'     mediation_data(starts_with("outcome"), "treatment", "mediator")
 #' fit <- multimedia(exper) |>
-#'   estimate(exper)
+#'     estimate(exper)
 #'
 #' # helpers for defining treatment profiles
 #' t1 <- data.frame(treatment = factor(rep(c(0, 1), each = 5)))
@@ -114,10 +114,10 @@ setup_profile <- function(x, t_mediator = NULL, t_outcome = NULL) {
 #' profile
 #' @export
 setClass(
-  "treatment_profile",
-  representation(
-    t_mediator = "ANY",
-    t_outcome = "ANY"
-  ),
-  validity = check_profile
+    "treatment_profile",
+    representation(
+        t_mediator = "ANY",
+        t_outcome = "ANY"
+    ),
+    validity = check_profile
 )

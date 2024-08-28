@@ -20,7 +20,7 @@ It lets you supply a new mediators data.frame for the object.
 }
 \examples{
 exper <- demo_joy() |>
-  mediation_data("PHQ", "treatment", starts_with("ASV"))
+    mediation_data("PHQ", "treatment", starts_with("ASV"))
 mediators(exper) <- data.frame(m = 1:10)
 exper
 }

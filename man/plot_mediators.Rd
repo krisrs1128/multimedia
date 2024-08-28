@@ -33,6 +33,9 @@ treatment variables. Defaults to "treatment."}
 
 \item{...}{Further keyword arguments passed to \code{patchwork::wrap_plots}.}
 }
+\value{
+A patchwork-based arrangement of ggplot2 grobs.
+}
 \description{
 This is a helper function to visualize the raw data responsible for the
 largest indirect effects. It returns a faceted plot of outcome vs. mediator
@@ -41,20 +44,20 @@ pairs for those with high pathwise indirect effects.
 \examples{
 # dataset with no true effects
 exper <- demo_joy() |>
-  mediation_data("PHQ", "treatment", starts_with("ASV"))
+    mediation_data("PHQ", "treatment", starts_with("ASV"))
 ie <- multimedia(exper) |>
-  estimate(exper) |>
-  indirect_pathwise() |>
-  effect_summary()
+    estimate(exper) |>
+    indirect_pathwise() |>
+    effect_summary()
 plot_mediators(ie, exper)
 
 # another dataset
 exper <- demo_spline(tau = c(2, 1)) |>
-  mediation_data(starts_with("outcome"), "treatment", "mediator")
+    mediation_data(starts_with("outcome"), "treatment", "mediator")
 ie <- multimedia(exper, rf_model()) |>
-  estimate(exper) |>
-  indirect_pathwise() |>
-  effect_summary()
+    estimate(exper) |>
+    indirect_pathwise() |>
+    effect_summary()
 plot_mediators(ie, exper)
 
 }

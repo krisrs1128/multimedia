@@ -36,9 +36,9 @@ possible mediator and outcome treatments.
 }
 \examples{
 exper <- demo_spline(tau = c(2, 1)) |>
-  mediation_data(starts_with("outcome"), "treatment", "mediator")
+    mediation_data(starts_with("outcome"), "treatment", "mediator")
 fit <- multimedia(exper) |>
-  estimate(exper)
+    estimate(exper)
 
 t1 <- data.frame(treatment = factor(rep(c(0, 1), each = 5)))
 profile <- setup_profile(fit, t_mediator = t1, t_outcome = t1)

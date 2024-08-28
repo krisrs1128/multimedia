@@ -36,6 +36,10 @@ Must be a data.frame whose columns are named to match the
 \item{...}{Additional options to pass to the @sampler method in the estimated
 mediation model.}
 }
+\value{
+An object of class \code{multimedia} with mediator and outcome slots
+sampled according to the description above.
+}
 \description{
 This generalizes the built-in sample method to the multimedia class. Given an
 estimated multimedia object, this function supports sampling along the
@@ -45,9 +49,9 @@ models that make up the multimedia object on which this is called.
 }
 \examples{
 exper <- demo_spline(tau = c(2, 1)) |>
-  mediation_data(starts_with("outcome"), "treatment", "mediator")
+    mediation_data(starts_with("outcome"), "treatment", "mediator")
 fit <- multimedia(exper) |>
-  estimate(exper)
+    estimate(exper)
 samples <- sample(fit)
 mediators(samples)
 outcomes(samples)

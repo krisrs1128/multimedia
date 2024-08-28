@@ -20,7 +20,7 @@ lets you supply a new treatments data.frame for the object.
 }
 \examples{
 exper <- demo_joy() |>
-  mediation_data("PHQ", "treatment", starts_with("ASV"))
+    mediation_data("PHQ", "treatment", starts_with("ASV"))
 treatments(exper) <- data.frame(t = rep(0, 10))
 exper
 }

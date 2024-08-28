@@ -17,7 +17,7 @@ Number of Outcomes in a Multimedia Object
 }
 \examples{
 exper <- demo_joy() |>
-  mediation_data("PHQ", "treatment", starts_with("ASV"))
+    mediation_data("PHQ", "treatment", starts_with("ASV"))
 multimedia(exper) |>
-  n_outcomes()
+    n_outcomes()
 }

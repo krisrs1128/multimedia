@@ -19,7 +19,7 @@ mediation analysis, and it returns all variables of node type treatment.
 }
 \examples{
 exper <- demo_joy() |>
-  mediation_data("PHQ", "treatment", starts_with("ASV"))
+    mediation_data("PHQ", "treatment", starts_with("ASV"))
 multimedia(exper) |>
-  treatments()
+    treatments()
 }

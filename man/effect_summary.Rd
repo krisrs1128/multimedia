@@ -22,19 +22,19 @@ the effect estimates given in equation (10) of the preprint.
 \examples{
 # example with null data
 exper <- demo_joy() |>
-  mediation_data("PHQ", "treatment", starts_with("ASV"))
+    mediation_data("PHQ", "treatment", starts_with("ASV"))
 multimedia(exper) |>
-  estimate(exper) |>
-  direct_effect() |>
-  effect_summary()
+    estimate(exper) |>
+    direct_effect() |>
+    effect_summary()
 
 # example with another dataset
 exper <- demo_spline(tau = c(2, 1)) |>
-  mediation_data(starts_with("outcome"), "treatment", "mediator")
+    mediation_data(starts_with("outcome"), "treatment", "mediator")
 multimedia(exper) |>
-  estimate(exper) |>
-  direct_effect() |>
-  effect_summary()
+    estimate(exper) |>
+    direct_effect() |>
+    effect_summary()
 }
 \seealso{
 direct_effect indirect_effect

@@ -31,7 +31,7 @@ across each source.
 }
 \examples{
 exper <- demo_joy() |>
-  mediation_data("PHQ", "treatment", starts_with("ASV"))
+    mediation_data("PHQ", "treatment", starts_with("ASV"))
 exper[1]
 exper[1:10]
 }

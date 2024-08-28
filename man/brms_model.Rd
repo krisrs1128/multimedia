@@ -19,15 +19,15 @@ an outcome or mediation model. This can be helpful when we want to share informa
 }
 \examples{
 exper <- demo_joy() |>
-  mediation_data("PHQ", "treatment", starts_with("ASV"))
+    mediation_data("PHQ", "treatment", starts_with("ASV"))
 multimedia(exper, brms_model()) |>
-  estimate(exper)
+    estimate(exper)
 
 # example with another dataset
 exper <- demo_spline(tau = c(2, 1)) |>
-  mediation_data(starts_with("outcome"), "treatment", "mediator")
+    mediation_data(starts_with("outcome"), "treatment", "mediator")
 fit <- multimedia(exper, brms_model()) |>
-  estimate(exper)
+    estimate(exper)
 fit
 }
 \seealso{

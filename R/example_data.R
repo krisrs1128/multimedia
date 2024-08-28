@@ -5,9 +5,9 @@
 #' random_numeric(10, 2, runif)
 #' @noRd
 random_numeric <- function(nrow, ncol, p = rnorm) {
-  matrix(p(nrow * ncol), nrow = nrow, ncol = ncol) |>
-    as.data.frame() |>
-    rename_with(~ gsub("V", "", .))
+    matrix(p(nrow * ncol), nrow = nrow, ncol = ncol) |>
+        as.data.frame() |>
+        rename_with(~ gsub("V", "", .))
 }
 
 #' A Demo Dataset (Random)
@@ -33,15 +33,15 @@ random_numeric <- function(nrow, ncol, p = rnorm) {
 #' demo_joy(n_samples = 2, n_mediators = 20)
 #' @export
 demo_joy <- function(n_samples = 100, n_mediators = 5, n_pretreatment = 3) {
-  treatment <- sample(c("Treatment", "Control"), n_samples, replace = TRUE)
-  mediators <- random_numeric(n_samples, n_mediators) |>
-    rename_with(~ glue("ASV{.}"))
-  outcome <- random_numeric(n_samples, 1)[[1]]
+    treatment <- sample(c("Treatment", "Control"), n_samples, replace = TRUE)
+    mediators <- random_numeric(n_samples, n_mediators) |>
+        rename_with(~ glue("ASV{.}"))
+    outcome <- random_numeric(n_samples, 1)[[1]]
 
-  SummarizedExperiment(
-    assays = SimpleList(counts = t(as.matrix(mediators))),
-    colData = DataFrame(treatment = treatment, PHQ = outcome)
-  )
+    SummarizedExperiment(
+        assays = SimpleList(counts = t(as.matrix(mediators))),
+        colData = DataFrame(treatment = treatment, PHQ = outcome)
+    )
 }
 
 #' @importFrom stats rnorm
@@ -62,16 +62,16 @@ matnorm <- \(n, m, ...) matrix(rnorm(n * m, ...), n, m)
 #' plot(x, fx[, 1])
 #' @noRd
 spline_fun <- function(D = 2, knots = NULL, h_ix = seq_len(10), ...) {
-  if (is.null(knots)) {
-    knots <- seq(-4, 4, length.out = 5)
-  }
+    if (is.null(knots)) {
+        knots <- seq(-4, 4, length.out = 5)
+    }
 
-  h_dim <- splines::ns(h_ix, knots = knots, intercept = TRUE)
-  B <- matnorm(D, ncol(h_dim))
-  function(x) {
-    H <- splines::ns(x, knots = knots, intercept = TRUE)
-    scale(H %*% t(B) + rnorm(nrow(H), ...))
-  }
+    h_dim <- splines::ns(h_ix, knots = knots, intercept = TRUE)
+    B <- matnorm(D, ncol(h_dim))
+    function(x) {
+        H <- splines::ns(x, knots = knots, intercept = TRUE)
+        scale(H %*% t(B) + rnorm(nrow(H), ...))
+    }
 }
 
 #' A Demo Dataset (Spline)
@@ -90,16 +90,16 @@ spline_fun <- function(D = 2, knots = NULL, h_ix = seq_len(10), ...) {
 #' demo_spline()
 #' @export
 demo_spline <- function(n_samples = 5e3, tau = c(2, 2)) {
-  if (n_samples < 15) {
-    cli_abort("Spline generation requires at least 15 samples.")
-  }
+    if (n_samples < 15) {
+        cli_abort("Spline generation requires at least 15 samples.")
+    }
 
-  treatment <- rep(c(0, 1), each = n_samples / 2)
-  mediator <- rnorm(n_samples, 3 * (treatment - 0.5), 2)
-  f <- spline_fun(sd = 0.2)
-  y <- f(mediator) + matrix(treatment, ncol = 1) %*% tau
-  colnames(y) <- glue("outcome_{seq_len(2)}")
-  bind_cols(y, mediator = mediator, treatment = factor(treatment))
+    treatment <- rep(c(0, 1), each = n_samples / 2)
+    mediator <- rnorm(n_samples, 3 * (treatment - 0.5), 2)
+    f <- spline_fun(sd = 0.2)
+    y <- f(mediator) + matrix(treatment, ncol = 1) %*% tau
+    colnames(y) <- glue("outcome_{seq_len(2)}")
+    bind_cols(y, mediator = mediator, treatment = factor(treatment))
 }
 
 #' Mindfulness Dataset

@@ -19,12 +19,12 @@ mediation analysis, and it returns all variables of node type outcome.
 }
 \examples{
 exper <- demo_joy() |>
-  mediation_data("PHQ", "treatment", starts_with("ASV"))
+    mediation_data("PHQ", "treatment", starts_with("ASV"))
 multimedia(exper) |>
-  outcomes()
+    outcomes()
 
 exper <- demo_spline(tau = c(2, 1)) |>
-  mediation_data(starts_with("outcome"), "treatment", "mediator")
+    mediation_data(starts_with("outcome"), "treatment", "mediator")
 multimedia(exper) |>
-  outcomes()
+    outcomes()
 }

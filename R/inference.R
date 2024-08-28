@@ -12,29 +12,29 @@
 #' @importFrom tidygraph %E>%
 #' @noRd
 matching_indices <- function(edges, nulls = NULL) {
-  if (is.null(nulls)) {
-    ids <- quote(seq_len(n()))
-  }
+    if (is.null(nulls)) {
+        ids <- quote(seq_len(n()))
+    }
 
-  G <- as.data.frame(edges)
-  E <- edges %E>%
-    as.data.frame() |>
-    mutate(
-      edge_id = row_number(),
-      from_type = G$node_type[.data$from],
-      to_type = G$node_type[.data$to],
-    )
+    G <- as.data.frame(edges)
+    E <- edges %E>%
+        as.data.frame() |>
+        mutate(
+            edge_id = row_number(),
+            from_type = G$node_type[.data$from],
+            to_type = G$node_type[.data$to],
+        )
 
-  if (nulls == "T->Y") {
-    ids <- filter(E, .data$from_type == "treatment", .data$to_type == "outcome")
-  } else if (nulls == "T->M") {
-    ids <- filter(E, .data$from_type == "treatment", .data$to_type == "mediator")
-  } else if (nulls == "M->Y") {
-    ids <- filter(E, .data$from_type == "mediator", .data$to_type == "outcome")
-  } else {
-    ids <- filter(E, nulls)
-  }
-  pull(ids, .data$edge_id)
+    if (nulls == "T->Y") {
+        ids <- filter(E, .data$from_type == "treatment", .data$to_type == "outcome")
+    } else if (nulls == "T->M") {
+        ids <- filter(E, .data$from_type == "treatment", .data$to_type == "mediator")
+    } else if (nulls == "M->Y") {
+        ids <- filter(E, .data$from_type == "mediator", .data$to_type == "outcome")
+    } else {
+        ids <- filter(E, nulls)
+    }
+    pull(ids, .data$edge_id)
 }
 
 #' Nullify Active Edges
@@ -57,40 +57,40 @@ matching_indices <- function(edges, nulls = NULL) {
 #' @examples
 #' # example with null data
 #' exper <- demo_joy() |>
-#'   mediation_data("PHQ", "treatment", starts_with("ASV"))
+#'     mediation_data("PHQ", "treatment", starts_with("ASV"))
 #' fit <- multimedia(exper) |>
-#'   estimate(exper)
+#'     estimate(exper)
 #'
 #' nullify(fit, "T->M") |>
-#'   estimate(exper) |>
-#'   indirect_overall()
+#'     estimate(exper) |>
+#'     indirect_overall()
 #' nullify(fit, "T->Y") |>
-#'   estimate(exper) |>
-#'   direct_effect()
+#'     estimate(exper) |>
+#'     direct_effect()
 #'
 #' # example with another dataset
 #' exper <- demo_spline(tau = c(2, 1)) |>
-#'   mediation_data(starts_with("outcome"), "treatment", "mediator")
+#'     mediation_data(starts_with("outcome"), "treatment", "mediator")
 #' fit <- multimedia(exper) |>
-#'   estimate(exper)
+#'     estimate(exper)
 #'
 #' nullify(fit, "T->M") |>
-#'   estimate(exper) |>
-#'   indirect_overall()
+#'     estimate(exper) |>
+#'     indirect_overall()
 #' nullify(fit, "T->Y") |>
-#'   estimate(exper) |>
-#'   direct_effect()
+#'     estimate(exper) |>
+#'     direct_effect()
 #' @export
 nullify <- function(multimedia, nulls = NULL) {
-  nulls <- matching_indices(multimedia@edges, nulls)
-  multimedia@edges <- multimedia@edges %E>%
-    mutate(
-      new_null = row_number() %in% nulls,
-      state = ifelse(.data$state == "active" & .data$new_null, "inactive", .data$state)
-    ) |>
-    select(-.data$new_null) |>
-    activate("nodes")
-  multimedia
+    nulls <- matching_indices(multimedia@edges, nulls)
+    multimedia@edges <- multimedia@edges %E>%
+        mutate(
+            new_null = row_number() %in% nulls,
+            state = ifelse(.data$state == "active" & .data$new_null, "inactive", .data$state)
+        ) |>
+        select(-.data$new_null) |>
+        activate("nodes")
+    multimedia
 }
 
 #' Bootstrap Distribution for Estimators
@@ -114,46 +114,46 @@ nullify <- function(multimedia, nulls = NULL) {
 #' @examples
 #' # example with null data
 #' exper <- demo_joy() |>
-#'   mediation_data("PHQ", "treatment", starts_with("ASV"))
+#'     mediation_data("PHQ", "treatment", starts_with("ASV"))
 #' multimedia(exper) |>
-#'   bootstrap(exper, B = 100)
+#'     bootstrap(exper, B = 100)
 #'
 #' # example with another dataset
 #' exper <- demo_spline(n_samples = 100, tau = c(2, 1)) |>
-#'   mediation_data(starts_with("outcome"), "treatment", "mediator")
+#'     mediation_data(starts_with("outcome"), "treatment", "mediator")
 #' samples <- multimedia(exper, rf_model(num.trees = 1e3)) |>
-#'   bootstrap(exper, B = 100)
+#'     bootstrap(exper, B = 100)
 #' ggplot2::ggplot(samples$direct_effect) +
-#'   ggplot2::geom_histogram(ggplot2::aes(direct_effect, fill = indirect_setting), bins = 15) +
-#'   ggplot2::facet_wrap(~outcome, scales = "free")
+#'     ggplot2::geom_histogram(ggplot2::aes(direct_effect, fill = indirect_setting), bins = 15) +
+#'     ggplot2::facet_wrap(~outcome, scales = "free")
 #' @export
 bootstrap <- function(model, exper, fs = NULL, B = 1000) {
-  if (is.null(fs)) {
-    fs <- list(direct_effect = direct_effect)
-  }
-  if (is.null(names(fs))) {
-    names(fs) <- seq_along(fs)
-  }
-
-  stats <- list()
-  for (f in seq_along(fs)) {
-    nf <- names(fs)[f]
-    cli_text(glue("Bootstrapping {nf}"))
-    stats[[nf]] <- list()
-    pb <- progress_bar$new(total = B, format = "[:bar] :current/:total ETA: :eta")
-    for (b in seq_len(B)) {
-      # resample and ensure contrast t1/t2 consistency
-      exper_b <- exper[sample(nrow(exper), nrow(exper), replace = TRUE), ]
-      exper_b <- exper_b[order(exper_b@treatments[[1]]), ]
-
-      # estimate model and effects
-      model_b <- suppressMessages(estimate(model, exper_b))
-      stats[[nf]][[b]] <- fs[[f]](model_b, exper_b)
-      pb$tick()
+    if (is.null(fs)) {
+        fs <- list(direct_effect = direct_effect)
     }
-    stats[[nf]] <- bind_rows(stats[[nf]], .id = "bootstrap")
-  }
-  stats
+    if (is.null(names(fs))) {
+        names(fs) <- seq_along(fs)
+    }
+
+    stats <- list()
+    for (f in seq_along(fs)) {
+        nf <- names(fs)[f]
+        cli_text(glue("Bootstrapping {nf}"))
+        stats[[nf]] <- list()
+        pb <- progress_bar$new(total = B, format = "[:bar] :current/:total ETA: :eta")
+        for (b in seq_len(B)) {
+            # resample and ensure contrast t1/t2 consistency
+            exper_b <- exper[sample(nrow(exper), nrow(exper), replace = TRUE), ]
+            exper_b <- exper_b[order(exper_b@treatments[[1]]), ]
+
+            # estimate model and effects
+            model_b <- suppressMessages(estimate(model, exper_b))
+            stats[[nf]][[b]] <- fs[[f]](model_b, exper_b)
+            pb$tick()
+        }
+        stats[[nf]] <- bind_rows(stats[[nf]], .id = "bootstrap")
+    }
+    stats
 }
 
 #' Compare Effects from Experimental vs. Null Mediation Data
@@ -181,42 +181,42 @@ bootstrap <- function(model, exper, fs = NULL, B = 1000) {
 #' @examples
 #' # example with null data - notice synthetic data has larger effect.
 #' exper <- demo_joy() |>
-#'   mediation_data("PHQ", "treatment", starts_with("ASV"))
+#'     mediation_data("PHQ", "treatment", starts_with("ASV"))
 #' multimedia(exper) |>
-#'   estimate(exper) |>
-#'   null_contrast(exper)
+#'     estimate(exper) |>
+#'     null_contrast(exper)
 #'
 #' # example with another dataset - synthetic effect is smaller.
 #' exper <- demo_spline(tau = c(2, 1)) |>
-#'   mediation_data(starts_with("outcome"), "treatment", "mediator")
+#'     mediation_data(starts_with("outcome"), "treatment", "mediator")
 #' multimedia(exper) |>
-#'   estimate(exper) |>
-#'   null_contrast(exper)
+#'     estimate(exper) |>
+#'     null_contrast(exper)
 #' @export
 null_contrast <- function(model, exper, nullification = "T->Y",
                           f = direct_effect) {
-  cli_text("Fitting the nullified model...")
-  altered <- model |>
-    nullify(nullification) |>
-    estimate(exper)
+    cli_text("Fitting the nullified model...")
+    altered <- model |>
+        nullify(nullification) |>
+        estimate(exper)
 
-  cli_text("Generating synthetic data...")
-  profile <- setup_profile(altered, exper@treatments, exper@treatments)
-  synth_data <- sample(
-    altered,
-    profile = profile,
-    pretreatment = exper@pretreatments
-  )
+    cli_text("Generating synthetic data...")
+    profile <- setup_profile(altered, exper@treatments, exper@treatments)
+    synth_data <- sample(
+        altered,
+        profile = profile,
+        pretreatment = exper@pretreatments
+    )
 
-  cli_text("Fitting the full model on synthetic data...")
-  synth_model <- estimate(model, synth_data)
+    cli_text("Fitting the full model on synthetic data...")
+    synth_model <- estimate(model, synth_data)
 
-  cli_text("Estimating effects on real and synthetic data...")
-  bind_rows(
-    real = f(model, exper),
-    synthetic = f(synth_model, synth_data),
-    .id = "source"
-  )
+    cli_text("Estimating effects on real and synthetic data...")
+    bind_rows(
+        real = f(model, exper),
+        synthetic = f(synth_model, synth_data),
+        .id = "source"
+    )
 }
 
 #' Calibration using Synthetic Nulls
@@ -242,66 +242,66 @@ null_contrast <- function(model, exper, nullification = "T->Y",
 #' @examples
 #' # example with null data - notice synthetic data has larger effect.
 #' exper <- demo_joy() |>
-#'   mediation_data("PHQ", "treatment", starts_with("ASV"))
+#'     mediation_data("PHQ", "treatment", starts_with("ASV"))
 #' multimedia(exper) |>
-#'   estimate(exper) |>
-#'   null_contrast(exper) |>
-#'   fdr_summary("direct_effect")
+#'     estimate(exper) |>
+#'     null_contrast(exper) |>
+#'     fdr_summary("direct_effect")
 #'
 #' multimedia(exper) |>
-#'   estimate(exper) |>
-#'   null_contrast(exper, "M->Y", indirect_overall) |>
-#'   fdr_summary("indirect_overall")
+#'     estimate(exper) |>
+#'     null_contrast(exper, "M->Y", indirect_overall) |>
+#'     fdr_summary("indirect_overall")
 #'
 #' # example with another dataset - synthetic effect is smaller.
 #' exper <- demo_spline(tau = c(2, 1)) |>
-#'   mediation_data(starts_with("outcome"), "treatment", "mediator")
+#'     mediation_data(starts_with("outcome"), "treatment", "mediator")
 #' multimedia(exper) |>
-#'   estimate(exper) |>
-#'   null_contrast(exper) |>
-#'   fdr_summary("direct_effect")
+#'     estimate(exper) |>
+#'     null_contrast(exper) |>
+#'     fdr_summary("direct_effect")
 #'
 #' multimedia(exper) |>
-#'   estimate(exper) |>
-#'   null_contrast(exper, "M->Y", indirect_overall) |>
-#'   fdr_summary("indirect_overall")
+#'     estimate(exper) |>
+#'     null_contrast(exper, "M->Y", indirect_overall) |>
+#'     fdr_summary("indirect_overall")
 #' @export
 fdr_summary <- function(contrast, effect = "indirect_overall", q_value = 0.15) {
-  if (effect == "indirect_overall") {
-    fdr <- contrast |>
-      group_by(.data$source, .data$outcome) |>
-      summarise(indirect_effect = mean(.data$indirect_effect), .group = "drop_last") |>
-      arrange(-abs(.data$indirect_effect))
-  } else if (effect == "indirect_pathwise") {
-    fdr <- contrast |>
-      group_by(.data$source, .data$outcome, .data$mediator) |>
-      summarise(indirect_effect = mean(.data$indirect_effect), .group = "drop_last") |>
-      arrange(-abs(.data$indirect_effect))
-  } else if (effect == "direct_effect") {
-    fdr <- contrast |>
-      group_by(.data$source, .data$outcome) |>
-      summarise(direct_effect = mean(.data$direct_effect), .groups = "drop_last") |>
-      arrange(-abs(.data$direct_effect))
-  }
+    if (effect == "indirect_overall") {
+        fdr <- contrast |>
+            group_by(.data$source, .data$outcome) |>
+            summarise(indirect_effect = mean(.data$indirect_effect), .group = "drop_last") |>
+            arrange(-abs(.data$indirect_effect))
+    } else if (effect == "indirect_pathwise") {
+        fdr <- contrast |>
+            group_by(.data$source, .data$outcome, .data$mediator) |>
+            summarise(indirect_effect = mean(.data$indirect_effect), .group = "drop_last") |>
+            arrange(-abs(.data$indirect_effect))
+    } else if (effect == "direct_effect") {
+        fdr <- contrast |>
+            group_by(.data$source, .data$outcome) |>
+            summarise(direct_effect = mean(.data$direct_effect), .groups = "drop_last") |>
+            arrange(-abs(.data$direct_effect))
+    }
 
-  fdr <- fdr |>
-    ungroup() |>
-    mutate(
-      rank = row_number(),
-      fdr_hat = cumsum(.data$source == "synthetic") / rank
-    )
-
-  cutoff <- fdr |>
-    filter(.data$fdr_hat < q_value) |>
-    summarise(ix = max(.data$rank)) |>
-    pull(.data$ix)
-
-  if (length(cutoff) == 0) {
     fdr <- fdr |>
-      mutate(keep = FALSE)
-  } else {
-    fdr <- fdr |>
-      mutate(keep = .data$rank < cutoff & .data$source == "real")
-  }
-  fdr
+        ungroup() |>
+        mutate(
+            rank = row_number(),
+            fdr_hat = cumsum(.data$source == "synthetic") / rank
+        )
+
+    cutoff <- fdr |>
+        filter(.data$fdr_hat < q_value) |>
+        summarise(ix = max(.data$rank)) |>
+        pull(.data$ix)
+
+    if (length(cutoff) == 0) {
+        fdr <- fdr |>
+            mutate(keep = FALSE)
+    } else {
+        fdr <- fdr |>
+            mutate(keep = .data$rank < cutoff & .data$source == "real")
+    }
+    fdr
 }

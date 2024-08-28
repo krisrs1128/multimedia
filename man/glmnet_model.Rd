@@ -21,18 +21,18 @@ high-dimensional.
 }
 \examples{
 exper <- demo_joy() |>
-  mediation_data("PHQ", "treatment", starts_with("ASV"))
+    mediation_data("PHQ", "treatment", starts_with("ASV"))
 multimedia(exper, glmnet_model(lambda = 1)) |>
-  estimate(exper)
+    estimate(exper)
 
 multimedia(exper, glmnet_model(lambda = 1), glmnet_model()) |>
-  estimate(exper)
+    estimate(exper)
 
 # example with another dataset
 exper <- demo_spline(tau = c(2, 1)) |>
-  mediation_data(starts_with("outcome"), "treatment", "mediator")
+    mediation_data(starts_with("outcome"), "treatment", "mediator")
 multimedia(exper, glmnet_model(lambda = 0.1)) |>
-  estimate(exper)
+    estimate(exper)
 }
 \seealso{
 model lm_model rf_model

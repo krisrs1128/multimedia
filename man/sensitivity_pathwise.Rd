@@ -56,7 +56,7 @@ effects change.
 xy_data <- demo_spline()
 exper <- mediation_data(xy_data, starts_with("outcome"), "treatment", "mediator")
 model <- multimedia(exper, outcome_estimator = glmnet_model(lambda = 1e-2)) |>
- estimate(exper)
+    estimate(exper)
 rho_seq <- c(-0.2, 0, 0.2)
 subset_indices <- expand.grid(mediator = n_mediators(model), outcome = n_outcomes(model))
 sensitivity_pathwise(model, exper, subset_indices, rho_seq, n_bootstrap = 2)

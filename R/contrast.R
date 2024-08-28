@@ -17,18 +17,18 @@
 #' @export
 #' @examples
 #' exper <- demo_joy() |>
-#'   mediation_data("PHQ", "treatment", starts_with("ASV"))
+#'     mediation_data("PHQ", "treatment", starts_with("ASV"))
 #' model <- multimedia(exper) |>
-#'   estimate(exper)
+#'     estimate(exper)
 #' t1 <- data.frame(treatment = factor("Treatment"))
 #' t2 <- data.frame(treatment = factor("Control"))
 #' profile1 <- setup_profile(model, t1, t1)
 #' profile2 <- setup_profile(model, t2, t2)
 #' contrast_predictions(model, profile1, profile2)
 contrast_predictions <- function(model, profile1, profile2, ...) {
-  y_hat_1 <- predict(model, profile1, ...)
-  y_hat_2 <- predict(model, profile2, ...)
-  path_difference(y_hat_1, y_hat_2)
+    y_hat_1 <- predict(model, profile1, ...)
+    y_hat_2 <- predict(model, profile2, ...)
+    path_difference(y_hat_1, y_hat_2)
 }
 
 #' Difference between Samples at Contrasting Profiles
@@ -52,9 +52,9 @@ contrast_predictions <- function(model, profile1, profile2, ...) {
 #' @export
 #' @examples
 #' exper <- demo_joy() |>
-#'   mediation_data("PHQ", "treatment", starts_with("ASV"))
+#'     mediation_data("PHQ", "treatment", starts_with("ASV"))
 #' model <- multimedia(exper) |>
-#'   estimate(exper)
+#'     estimate(exper)
 #' t1 <- data.frame(treatment = factor("Treatment"))
 #' t2 <- data.frame(treatment = factor("Control"))
 #' profile1 <- setup_profile(model, t1, t1)
@@ -65,19 +65,19 @@ contrast_predictions <- function(model, profile1, profile2, ...) {
 #' hist(sapply(samples, \(x) x[[1]]$ASV1))
 #' hist(sapply(samples, \(x) x[[1]]$ASV2))
 contrast_samples <- function(model, profile1, profile2, ...) {
-  y1 <- sample(model, profile = profile1, ...)
-  y2 <- sample(model, profile = profile2, ...)
+    y1 <- sample(model, profile = profile1, ...)
+    y2 <- sample(model, profile = profile2, ...)
 
-  y1 <- list(mediators = y1@mediators, outcomes = y1@outcomes)
-  y2 <- list(mediators = y2@mediators, outcomes = y2@outcomes)
-  path_difference(y1, y2)
+    y1 <- list(mediators = y1@mediators, outcomes = y1@outcomes)
+    y2 <- list(mediators = y2@mediators, outcomes = y2@outcomes)
+    path_difference(y1, y2)
 }
 
 path_difference <- function(y1, y2) {
-  list(
-    mediators = y1$mediators - y2$mediators,
-    outcomes = y1$outcomes - y2$outcomes
-  )
+    list(
+        mediators = y1$mediators - y2$mediators,
+        outcomes = y1$outcomes - y2$outcomes
+    )
 }
 
 #' Direct Effects from Estimated Model
@@ -113,9 +113,9 @@ path_difference <- function(y1, y2) {
 #' @examples
 #' # example with null data
 #' exper <- demo_joy() |>
-#'   mediation_data("PHQ", "treatment", starts_with("ASV"))
+#'     mediation_data("PHQ", "treatment", starts_with("ASV"))
 #' fit <- multimedia(exper) |>
-#'   estimate(exper)
+#'     estimate(exper)
 #'
 #' direct_effect(fit)
 #' direct_effect(fit, t1 = 2, t2 = 1)
@@ -123,45 +123,45 @@ path_difference <- function(y1, y2) {
 #'
 #' # example with another dataset
 #' exper <- demo_spline(tau = c(2, 1)) |>
-#'   mediation_data(starts_with("outcome"), "treatment", "mediator")
+#'     mediation_data(starts_with("outcome"), "treatment", "mediator")
 #' fit <- multimedia(exper) |>
-#'   estimate(exper)
+#'     estimate(exper)
 #' direct_effect(fit)
 direct_effect <- function(model, exper = NULL, t1 = 1, t2 = 2) {
-  pretreatment <- NULL
-  if (!is.null(exper)) {
-    pretreatment <- exper@pretreatments
-  }
+    pretreatment <- NULL
+    if (!is.null(exper)) {
+        pretreatment <- exper@pretreatments
+    }
 
-  result <- list()
-  t_ <- model@treatments
-  for (i in seq_len(nrow(t_))) {
-    profile1 <- setup_profile(model, t_[i, , drop = FALSE], t_[t1, , drop = FALSE])
-    profile2 <- setup_profile(model, t_[i, , drop = FALSE], t_[t2, , drop = FALSE])
+    result <- list()
+    t_ <- model@treatments
+    for (i in seq_len(nrow(t_))) {
+        profile1 <- setup_profile(model, t_[i, , drop = FALSE], t_[t1, , drop = FALSE])
+        profile2 <- setup_profile(model, t_[i, , drop = FALSE], t_[t2, , drop = FALSE])
 
-    y_hat <- contrast_predictions(
-      model,
-      profile1,
-      profile2,
-      pretreatment = pretreatment
-    )[["outcomes"]] |>
-      colMeans()
+        y_hat <- contrast_predictions(
+            model,
+            profile1,
+            profile2,
+            pretreatment = pretreatment
+        )[["outcomes"]] |>
+            colMeans()
 
-    result[[i]] <- data.frame(
-      outcome = names(y_hat),
-      direct_effect = y_hat,
-      contrast = rep(parse_name(t_, t1, t2), n_outcomes(model)),
-      row.names = NULL
-    )
-  }
+        result[[i]] <- data.frame(
+            outcome = names(y_hat),
+            direct_effect = y_hat,
+            contrast = rep(parse_name(t_, t1, t2), n_outcomes(model)),
+            row.names = NULL
+        )
+    }
 
-  bind_rows(result, .id = "indirect_setting") |>
-    mutate(indirect_setting = t_[[1]][as.integer(.data$indirect_setting)]) |>
-    select(any_of(c("outcome", "indirect_setting", "contrast", "direct_effect")))
+    bind_rows(result, .id = "indirect_setting") |>
+        mutate(indirect_setting = t_[[1]][as.integer(.data$indirect_setting)]) |>
+        select(any_of(c("outcome", "indirect_setting", "contrast", "direct_effect")))
 }
 
 parse_name <- function(t_, t1, t2) {
-  glue("{apply(t_[t1,, drop=F], 1, paste0, collapse=',')} - {apply(t_[t2,, drop=F], 1, paste0, collapse=',')}")
+    glue("{apply(t_[t1,, drop=F], 1, paste0, collapse=',')} - {apply(t_[t2,, drop=F], 1, paste0, collapse=',')}")
 }
 
 #' Overall Indirect Effect
@@ -189,50 +189,50 @@ parse_name <- function(t_, t1, t2) {
 #' @examples
 #' # example with null data
 #' exper <- demo_joy() |>
-#'   mediation_data("PHQ", "treatment", starts_with("ASV"))
+#'     mediation_data("PHQ", "treatment", starts_with("ASV"))
 #' fit <- multimedia(exper) |>
-#'   estimate(exper)
+#'     estimate(exper)
 #'
 #' indirect_overall(fit)
 #'
 #' # example with another dataset
 #' exper <- demo_spline(tau = c(2, 1)) |>
-#'   mediation_data(starts_with("outcome"), "treatment", "mediator")
+#'     mediation_data(starts_with("outcome"), "treatment", "mediator")
 #' fit <- multimedia(exper) |>
-#'   estimate(exper)
+#'     estimate(exper)
 #' indirect_overall(fit)
 #' @export
 indirect_overall <- function(model, exper = NULL, t1 = 1, t2 = 2) {
-  pretreatment <- NULL
-  if (!is.null(exper)) {
-    pretreatment <- exper@pretreatments
-  }
+    pretreatment <- NULL
+    if (!is.null(exper)) {
+        pretreatment <- exper@pretreatments
+    }
 
-  t_ <- model@treatments
-  result <- list()
-  for (i in seq_len(nrow(t_))) {
-    profile1 <- setup_profile(model, t_[t1, , drop = FALSE], t_[i, , drop = FALSE])
-    profile2 <- setup_profile(model, t_[t2, , drop = FALSE], t_[i, , drop = FALSE])
+    t_ <- model@treatments
+    result <- list()
+    for (i in seq_len(nrow(t_))) {
+        profile1 <- setup_profile(model, t_[t1, , drop = FALSE], t_[i, , drop = FALSE])
+        profile2 <- setup_profile(model, t_[t2, , drop = FALSE], t_[i, , drop = FALSE])
 
-    y_hat <- contrast_predictions(
-      model,
-      profile1,
-      profile2,
-      pretreatment = pretreatment
-    )[["outcomes"]] |>
-      colMeans()
+        y_hat <- contrast_predictions(
+            model,
+            profile1,
+            profile2,
+            pretreatment = pretreatment
+        )[["outcomes"]] |>
+            colMeans()
 
-    result[[i]] <- data.frame(
-      outcome = names(y_hat),
-      indirect_effect = y_hat,
-      contrast = rep(parse_name(t_, t1, t2), n_outcomes(model)),
-      row.names = NULL
-    )
-  }
+        result[[i]] <- data.frame(
+            outcome = names(y_hat),
+            indirect_effect = y_hat,
+            contrast = rep(parse_name(t_, t1, t2), n_outcomes(model)),
+            row.names = NULL
+        )
+    }
 
-  bind_rows(result, .id = "direct_setting") |>
-    mutate(direct_setting = t_[[1]][as.integer(.data$direct_setting)]) |>
-    select(any_of(c("outcome", "direct_setting", "contrast", "indirect_effect")))
+    bind_rows(result, .id = "direct_setting") |>
+        mutate(direct_setting = t_[[1]][as.integer(.data$direct_setting)]) |>
+        select(any_of(c("outcome", "direct_setting", "contrast", "indirect_effect")))
 }
 
 #' Indirect Effects via Single Mediation Paths
@@ -250,56 +250,56 @@ indirect_overall <- function(model, exper = NULL, t1 = 1, t2 = 2) {
 #' @examples
 #' # example with null data
 #' exper <- demo_joy() |>
-#'   mediation_data("PHQ", "treatment", starts_with("ASV"))
+#'     mediation_data("PHQ", "treatment", starts_with("ASV"))
 #' fit <- multimedia(exper) |>
-#'   estimate(exper)
+#'     estimate(exper)
 #' indirect_pathwise(fit)
 #'
 #' # example with another dataset
 #' exper <- demo_spline(tau = c(2, 1)) |>
-#'   mediation_data(starts_with("outcome"), "treatment", "mediator")
+#'     mediation_data(starts_with("outcome"), "treatment", "mediator")
 #' fit <- multimedia(exper) |>
-#'   estimate(exper)
+#'     estimate(exper)
 #' indirect_pathwise(fit)
 #' @importFrom cli cli_text
 #' @export
 indirect_pathwise <- function(model, exper = NULL, t1 = 1, t2 = 2) {
-  pretreatment <- NULL
-  if (!is.null(exper)) {
-    pretreatment <- exper@pretreatments
-  }
-
-  k <- 1
-  m <- mediators(model)
-  t_ <- model@treatments
-  result <- list()
-  for (i in seq_len(nrow(t_))) {
-    cli_text(glue("Indirect effects for direct setting {i}"))
-    profile2 <- setup_profile(model, t_[t2, , drop = FALSE], t_[i, , drop = FALSE])
-    y_hat_2 <- predict(model, profile2, pretreatment = pretreatment)
-
-    pb <- progress_bar$new(total = length(m), format = "[:bar] Mediator: :current/:total ETA: :eta")
-    for (j in seq_along(m)) {
-      profile1 <- profile2
-      profile1@t_mediator[[j]] <- t_[t1, , drop = FALSE]
-      y_hat_1 <- predict(model, profile1, pretreatment = pretreatment)
-      y_diff <- colMeans(path_difference(y_hat_1, y_hat_2)[["outcomes"]])
-
-      result[[k]] <- data.frame(
-        outcome = names(y_diff),
-        indirect_effect = y_diff,
-        mediator = rep(m[j], n_outcomes(model)),
-        contrast = rep(parse_name(t_, t1, t2), n_outcomes(model)),
-        direct_setting = t_[[1]][i],
-        row.names = NULL
-      )
-      pb$tick()
-      k <- k + 1
+    pretreatment <- NULL
+    if (!is.null(exper)) {
+        pretreatment <- exper@pretreatments
     }
-  }
 
-  bind_rows(result) |>
-    select(any_of(c("outcome", "mediator", "direct_setting", "contrast", "indirect_effect")))
+    k <- 1
+    m <- mediators(model)
+    t_ <- model@treatments
+    result <- list()
+    for (i in seq_len(nrow(t_))) {
+        cli_text(glue("Indirect effects for direct setting {i}"))
+        profile2 <- setup_profile(model, t_[t2, , drop = FALSE], t_[i, , drop = FALSE])
+        y_hat_2 <- predict(model, profile2, pretreatment = pretreatment)
+
+        pb <- progress_bar$new(total = length(m), format = "[:bar] Mediator: :current/:total ETA: :eta")
+        for (j in seq_along(m)) {
+            profile1 <- profile2
+            profile1@t_mediator[[j]] <- t_[t1, , drop = FALSE]
+            y_hat_1 <- predict(model, profile1, pretreatment = pretreatment)
+            y_diff <- colMeans(path_difference(y_hat_1, y_hat_2)[["outcomes"]])
+
+            result[[k]] <- data.frame(
+                outcome = names(y_diff),
+                indirect_effect = y_diff,
+                mediator = rep(m[j], n_outcomes(model)),
+                contrast = rep(parse_name(t_, t1, t2), n_outcomes(model)),
+                direct_setting = t_[[1]][i],
+                row.names = NULL
+            )
+            pb$tick()
+            k <- k + 1
+        }
+    }
+
+    bind_rows(result) |>
+        select(any_of(c("outcome", "mediator", "direct_setting", "contrast", "indirect_effect")))
 }
 
 #' Average Effects across j
@@ -319,27 +319,27 @@ indirect_pathwise <- function(model, exper = NULL, t1 = 1, t2 = 2) {
 #' @examples
 #' # example with null data
 #' exper <- demo_joy() |>
-#'   mediation_data("PHQ", "treatment", starts_with("ASV"))
+#'     mediation_data("PHQ", "treatment", starts_with("ASV"))
 #' multimedia(exper) |>
-#'   estimate(exper) |>
-#'   direct_effect() |>
-#'   effect_summary()
+#'     estimate(exper) |>
+#'     direct_effect() |>
+#'     effect_summary()
 #'
 #' # example with another dataset
 #' exper <- demo_spline(tau = c(2, 1)) |>
-#'   mediation_data(starts_with("outcome"), "treatment", "mediator")
+#'     mediation_data(starts_with("outcome"), "treatment", "mediator")
 #' multimedia(exper) |>
-#'   estimate(exper) |>
-#'   direct_effect() |>
-#'   effect_summary()
+#'     estimate(exper) |>
+#'     direct_effect() |>
+#'     effect_summary()
 #' @export
 effect_summary <- function(effects) {
-  if ("mediator" %in% colnames(effects)) {
-    effects <- group_by(effects, .data$outcome, .data$mediator)
-  } else {
-    effects <- group_by(effects, .data$outcome)
-  }
+    if ("mediator" %in% colnames(effects)) {
+        effects <- group_by(effects, .data$outcome, .data$mediator)
+    } else {
+        effects <- group_by(effects, .data$outcome)
+    }
 
-  effects |>
-    summarise(across(matches("effect"), mean))
+    effects |>
+        summarise(across(matches("effect"), mean))
 }

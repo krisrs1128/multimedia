@@ -19,12 +19,16 @@ sensitivity_subset.}
 \item{y_var}{The type of effect to plot along the y-axis. Defaults to
 indirect_effect.}
 }
+\value{
+A ggplot2 grob plotting the sensitivity parameter against the effect
+specified by \code{y_var}.
+}
 \description{
 This function draws a curve of indirect effect against the sensitivity
 parameter, allowing users to specify the name of x and y-axis variables using
 the x_var and y_var inputs.
 }
 \examples{
-sensitivity_curve <- read.csv(url("https://drive.google.com/uc?export=download&id=1fEhg-aMRyfhAjgcJmsrxz2cmWCOdnM6C"))
+sensitivity_curve <- read.csv(url("https://go.wisc.edu/j2kvcj"))
 plot_sensitivity(sensitivity_curve)
 }

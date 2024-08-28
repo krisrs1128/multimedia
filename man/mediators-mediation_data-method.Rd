@@ -10,13 +10,14 @@
 \item{object}{An object of class mediation_data.}
 }
 \value{
-m A data.frame whose rows are samples and columns are values of mediators across those samples.
+m A data.frame whose rows are samples and columns are values of
+mediators across those samples.
 }
 \description{
 This is an accessor returns the @mediators slot in a mediation_data object.
 }
 \examples{
 exper <- demo_joy() |>
-  mediation_data("PHQ", "treatment", starts_with("ASV"))
+    mediation_data("PHQ", "treatment", starts_with("ASV"))
 mediators(exper)
 }

@@ -32,27 +32,27 @@ K largest effects (in magnitude) as an estimate of the FDR.
 \examples{
 # example with null data - notice synthetic data has larger effect.
 exper <- demo_joy() |>
-  mediation_data("PHQ", "treatment", starts_with("ASV"))
+    mediation_data("PHQ", "treatment", starts_with("ASV"))
 multimedia(exper) |>
-  estimate(exper) |>
-  null_contrast(exper) |>
-  fdr_summary("direct_effect")
+    estimate(exper) |>
+    null_contrast(exper) |>
+    fdr_summary("direct_effect")
 
 multimedia(exper) |>
-  estimate(exper) |>
-  null_contrast(exper, "M->Y", indirect_overall) |>
-  fdr_summary("indirect_overall")
+    estimate(exper) |>
+    null_contrast(exper, "M->Y", indirect_overall) |>
+    fdr_summary("indirect_overall")
 
 # example with another dataset - synthetic effect is smaller.
 exper <- demo_spline(tau = c(2, 1)) |>
-  mediation_data(starts_with("outcome"), "treatment", "mediator")
+    mediation_data(starts_with("outcome"), "treatment", "mediator")
 multimedia(exper) |>
-  estimate(exper) |>
-  null_contrast(exper) |>
-  fdr_summary("direct_effect")
+    estimate(exper) |>
+    null_contrast(exper) |>
+    fdr_summary("direct_effect")
 
 multimedia(exper) |>
-  estimate(exper) |>
-  null_contrast(exper, "M->Y", indirect_overall) |>
-  fdr_summary("indirect_overall")
+    estimate(exper) |>
+    null_contrast(exper, "M->Y", indirect_overall) |>
+    fdr_summary("indirect_overall")
 }

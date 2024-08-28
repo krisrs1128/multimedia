@@ -28,11 +28,13 @@
 #'   and outcome models.
 #' @param ... Additional options to pass to the @sampler method in the estimated
 #'   mediation model.
+#' @return An object of class `multimedia` with mediator and outcome slots
+#'   sampled according to the description above.
 #' @examples
 #' exper <- demo_spline(tau = c(2, 1)) |>
-#'   mediation_data(starts_with("outcome"), "treatment", "mediator")
+#'     mediation_data(starts_with("outcome"), "treatment", "mediator")
 #' fit <- multimedia(exper) |>
-#'   estimate(exper)
+#'     estimate(exper)
 #' samples <- sample(fit)
 #' mediators(samples)
 #' outcomes(samples)
@@ -52,44 +54,44 @@ setMethod("sample", "multimedia", function(
     x, size, pretreatment = NULL,
     profile = NULL,
     mediators = NULL, ...) {
-  if (missing(size)) {
-    size <- 1
-  } else {
-    cli_warn("The size argument in sample is ignored. Please adjust the treatment profile to adjust the number of samples.")
-  }
-  if (is.null(profile)) {
-    profile <- setup_profile(x)
-  }
-
-  # if mediators are not provided, sample them
-  if (is.null(mediators)) {
-    mediators <- list()
-    for (i in seq_along(profile@t_mediator)) {
-      mediators[[i]] <- bind_cols(pretreatment, profile@t_mediator[[i]]) |>
-        x@mediation@sampler(x@mediation@estimates, newdata = _, indices = i, ...)
+    if (missing(size)) {
+        size <- 1
+    } else {
+        cli_warn("The size argument in sample is ignored. Please adjust the treatment profile to adjust the number of samples.")
     }
-    mediators <- bind_cols(mediators)
-  }
+    if (is.null(profile)) {
+        profile <- setup_profile(x)
+    }
 
-  # sample outcome given everything else
-  outcomes <- list()
-  nm <- names(profile@t_outcome)
-  for (i in seq_along(profile@t_outcome)) {
-    outcomes[[nm[i]]] <- bind_cols(
-      pretreatment,
-      profile@t_outcome[[i]],
-      mediators
-    ) |>
-      x@outcome@sampler(x@outcome@estimates, newdata = _, indices = i)
-  }
-  outcomes <- bind_cols(outcomes)
+    # if mediators are not provided, sample them
+    if (is.null(mediators)) {
+        mediators <- list()
+        for (i in seq_along(profile@t_mediator)) {
+            mediators[[i]] <- bind_cols(pretreatment, profile@t_mediator[[i]]) |>
+                x@mediation@sampler(x@mediation@estimates, newdata = _, indices = i, ...)
+        }
+        mediators <- bind_cols(mediators)
+    }
 
-  new("mediation_data",
-    outcomes = outcomes,
-    mediators = mediators,
-    treatments = profile@t_outcome[[1]],
-    pretreatments = pretreatment
-  )
+    # sample outcome given everything else
+    outcomes <- list()
+    nm <- names(profile@t_outcome)
+    for (i in seq_along(profile@t_outcome)) {
+        outcomes[[nm[i]]] <- bind_cols(
+            pretreatment,
+            profile@t_outcome[[i]],
+            mediators
+        ) |>
+            x@outcome@sampler(x@outcome@estimates, newdata = _, indices = i)
+    }
+    outcomes <- bind_cols(outcomes)
+
+    new("mediation_data",
+        outcomes = outcomes,
+        mediators = mediators,
+        treatments = profile@t_outcome[[1]],
+        pretreatments = pretreatment
+    )
 })
 
 #' Predictions from a Single Outcome
@@ -103,9 +105,9 @@ setMethod("sample", "multimedia", function(
 #' @noRd
 #' @examples
 #' exper <- demo_spline(tau = c(2, 1)) |>
-#'   mediation_data(starts_with("outcome"), "treatment", "mediator")
+#'     mediation_data(starts_with("outcome"), "treatment", "mediator")
 #' fit <- multimedia(exper) |>
-#'   estimate(exper)
+#'     estimate(exper)
 #' multimedia:::predict_across(outcomes(fit), NULL, "outcome_1")
 #' multimedia:::predict_across(outcome_model(fit), NULL, "outcome_2")
 #'
@@ -113,30 +115,30 @@ setMethod("sample", "multimedia", function(
 #' newdata <- bind_mediation(exper)
 #' multimedia:::predict_across(outcome_model(fit), newdata[seq_len(5), ], "outcome_2")
 #' multimedia:::predict_across(
-#'   fit@outcome,
-#'   newdata[seq_len(5), ],
-#'   c("outcome_1", "outcome_2")
+#'     fit@outcome,
+#'     newdata[seq_len(5), ],
+#'     c("outcome_1", "outcome_2")
 #' )
 #' @importFrom purrr map set_names
 #' @importFrom dplyr bind_cols
 predict_across <- function(object, newdata, name) {
-  # many univariate models
-  if (is(object@estimates, "list")) {
-    if (length(name) == 1) {
-      return(object@predictor(object@estimates[[name]], newdata))
-    } else {
-      predictions <- map(
-        name,
-        ~ object@predictor(object@estimates[[.]], newdata),
-      ) |>
-        set_names(name) |>
-        bind_cols()
-      return(predictions)
+    # many univariate models
+    if (is(object@estimates, "list")) {
+        if (length(name) == 1) {
+            return(object@predictor(object@estimates[[name]], newdata))
+        } else {
+            predictions <- map(
+                name,
+                ~ object@predictor(object@estimates[[.]], newdata),
+            ) |>
+                set_names(name) |>
+                bind_cols()
+            return(predictions)
+        }
     }
-  }
 
-  # single multivariate model
-  object@predictor(object@estimates, newdata)[, name]
+    # single multivariate model
+    object@predictor(object@estimates, newdata)[, name]
 }
 
 #' Predictions from a Multimedia Class
@@ -178,9 +180,9 @@ predict_across <- function(object, newdata, name) {
 #'   one row of the default treatment profile, if no newdata is given.
 #' @examples
 #' exper <- demo_spline(tau = c(2, 1)) |>
-#'   mediation_data(starts_with("outcome"), "treatment", "mediator")
+#'     mediation_data(starts_with("outcome"), "treatment", "mediator")
 #' fit <- multimedia(exper, rf_model()) |>
-#'   estimate(exper)
+#'     estimate(exper)
 #' predict(fit)
 #'
 #' # at new treatment configurations
@@ -195,30 +197,30 @@ predict_across <- function(object, newdata, name) {
 setMethod("predict", "multimedia", function(
     object, profile = NULL, mediators = NULL, pretreatment = NULL,
     ...) {
-  if (is.null(profile)) {
-    profile <- setup_profile(object)
-  }
-  if (is.null(mediators)) {
-    nm <- names(profile@t_mediator)
-    mediators <- list()
-    for (i in seq_along(profile@t_mediator)) {
-      mediators[[nm[i]]] <- bind_cols(pretreatment, profile@t_mediator[[i]]) |>
-        predict_across(object@mediation, newdata = _, name = nm[i])
+    if (is.null(profile)) {
+        profile <- setup_profile(object)
     }
-    mediators <- bind_cols(mediators)
-  }
+    if (is.null(mediators)) {
+        nm <- names(profile@t_mediator)
+        mediators <- list()
+        for (i in seq_along(profile@t_mediator)) {
+            mediators[[nm[i]]] <- bind_cols(pretreatment, profile@t_mediator[[i]]) |>
+                predict_across(object@mediation, newdata = _, name = nm[i])
+        }
+        mediators <- bind_cols(mediators)
+    }
 
-  # predict outcome given everything else
-  nm <- names(profile@t_outcome)
-  outcomes <- list()
-  for (i in seq_along(profile@t_outcome)) {
-    outcomes[[nm[i]]] <- bind_cols(
-      pretreatment,
-      profile@t_outcome[[i]],
-      mediators
-    ) |>
-      predict_across(object@outcome, newdata = _, name = nm[i]) |>
-      as.numeric()
-  }
-  list(mediators = mediators, outcomes = bind_cols(outcomes))
+    # predict outcome given everything else
+    nm <- names(profile@t_outcome)
+    outcomes <- list()
+    for (i in seq_along(profile@t_outcome)) {
+        outcomes[[nm[i]]] <- bind_cols(
+            pretreatment,
+            profile@t_outcome[[i]],
+            mediators
+        ) |>
+            predict_across(object@outcome, newdata = _, name = nm[i]) |>
+            as.numeric()
+    }
+    list(mediators = mediators, outcomes = bind_cols(outcomes))
 })

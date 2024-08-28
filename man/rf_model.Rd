@@ -22,15 +22,15 @@ ranger.
 }
 \examples{
 exper <- demo_joy() |>
-  mediation_data("PHQ", "treatment", starts_with("ASV"))
+    mediation_data("PHQ", "treatment", starts_with("ASV"))
 multimedia(exper, rf_model(num.trees = 10)) |>
-  estimate(exper)
+    estimate(exper)
 
 # example with another dataset
 exper <- demo_spline(tau = c(2, 1)) |>
-  mediation_data(starts_with("outcome"), "treatment", "mediator")
+    mediation_data(starts_with("outcome"), "treatment", "mediator")
 multimedia(exper, rf_model(num.trees = 20, max.depth = 2)) |>
-  estimate(exper)
+    estimate(exper)
 }
 \seealso{
 model lm_model rf_model glmnet_model brms_model
