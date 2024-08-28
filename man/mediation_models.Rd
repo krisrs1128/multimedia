@@ -17,6 +17,7 @@ A list containing all the fitted mediation models.
 Accessor for Outcome Models
 }
 \examples{
+data(mindfulness)
 exper <- mediation_data(
     mindfulness,
     phyloseq::taxa_names(mindfulness),

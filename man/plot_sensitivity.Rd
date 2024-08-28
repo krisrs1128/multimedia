@@ -8,9 +8,9 @@ plot_sensitivity(sensitivity_curve, x_var = "rho", y_var = "indirect_effect")
 }
 \arguments{
 \item{sensitivity_curve}{The output of a call to sensitivity or
-sensitivity_perturb. A data.frame whose columns are: outcome, {x_var},
-{y_var}, and {y_var}_standard_error, where x_var and y_var are defined in
-the two arguments below.}
+sensitivity_perturb. A data.frame whose columns are: outcome, \{x_var\},
+\{y_var\}, and \{y_var\}_standard_error, where x_var and y_var are defined
+in the two arguments below.}
 
 \item{x_var}{The type of perturbation variable to plot along the x-axis.
 Defaults to "rho", following the sensitivity approach implemented in

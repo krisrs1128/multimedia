@@ -18,4 +18,7 @@ stored as a phyloseq object. Measurements are from 50 subjects before and
 after a real and active control mindfulness intervention. We are interested
 in changes in subject-level metadata, stored in the sample_data slot
 }
+\examples{
+data(mindfulness)
+}
 \keyword{data}

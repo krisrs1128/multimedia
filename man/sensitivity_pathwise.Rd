@@ -31,7 +31,7 @@ so enforcing independence between mediators and outcomes)}
 
 \item{rho_seq}{We will evaluate correlations Cor(e', e) between mediation and
 outcome model errors ranging along this grid. Defaults to NULL, which
-internally sets the sequence to rho = \link{-0.9, -0.7 ..., 0.7, 0.9}.}
+internally sets the sequence to rho = (-0.9, -0.7 ..., 0.7, 0.9).}
 
 \item{n_bootstrap}{The number of bootstrap resamples used to build confidence
 bands around the sensitivity curves. Defaults to 100.}
