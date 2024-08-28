@@ -42,7 +42,10 @@
 #' @export
 plot_mediators <- function(indirect_effects, exper, n_digit = 3,
                            n_panels = NULL, treatment = "treatment", ...) {
-    check_if_installed("patchwork", "to visualize indirect effects as a multipanel plot.")
+    check_if_installed(
+        "patchwork",
+        "to visualize indirect effects as a multipanel plot."
+    )
     if (is.null(n_panels)) {
         n_panels <- min(nrow(indirect_effects), 12)
     }
@@ -86,16 +89,28 @@ plot_mediators <- function(indirect_effects, exper, n_digit = 3,
 #'   labs geom_line
 #' @importFrom glue glue
 #' @export
-plot_sensitivity <- function(sensitivity_curve, x_var = "rho", y_var = "indirect_effect") {
-    ggplot(sensitivity_curve, aes(.data[[x_var]], col = .data[["outcome"]], fill = .data[["outcome"]])) +
+plot_sensitivity <- function(sensitivity_curve, x_var = "rho",
+                             y_var = "indirect_effect") {
+    ggplot(
+        sensitivity_curve,
+        aes(.data[[x_var]],
+            col = .data[["outcome"]],
+            fill = .data[["outcome"]]
+        )
+    ) +
         geom_vline(xintercept = 0, linewidth = 0.5) +
         geom_hline(yintercept = 0, linewidth = 0.5) +
         geom_line(aes(y = .data[[y_var]])) +
-        geom_ribbon(aes(
-            y = .data[[y_var]],
-            ymin = .data[[y_var]] - 2 * .data[[glue("{y_var}_standard_error")]],
-            ymax = .data[[y_var]] + 2 * .data[[glue("{y_var}_standard_error")]],
-        ), alpha = 0.4) +
+        geom_ribbon(
+            aes(
+                y = .data[[y_var]],
+                ymin = .data[[y_var]] -
+                    2 * .data[[glue("{y_var}_standard_error")]],
+                ymax = .data[[y_var]] +
+                    2 * .data[[glue("{y_var}_standard_error")]],
+            ),
+            alpha = 0.4
+        ) +
         scale_x_continuous(expand = c(0, 0)) +
         labs(
             x = glue("Strength {x_var} of Hypothetical Confounder"),

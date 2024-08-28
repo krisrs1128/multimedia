@@ -22,32 +22,48 @@ add_s <- function(df) {
 }
 
 setMethod("show", "mediation_data", function(object) {
+    tr <- treatments(object)
+    m <- mediators(object)
+    o <- outcomes(object)
+    pr <- pretreatments(object)
+
     cat(col_magenta("[Mediation Data]"), "\n")
     cat(glue("{nrow(object)} samples with measurements for,"), "\n")
-    cat(glue("{ncol(object@treatments)} treatment{add_s(object@treatments)}: {vec_sub(colnames(object@treatments))}"), "\n")
-    cat(glue("{ncol(object@mediators)} mediator{add_s(object@mediators)}: {vec_sub(colnames(object@mediators))}"), "\n")
-    cat(glue("{ncol(object@outcomes)} outcome{add_s(object@outcomes)}: {vec_sub(colnames(object@outcomes))}"), "\n")
-    if (!is.null(object@pretreatments)) {
-        cat(glue("{ncol(object@pretreatments)} pretreatment{add_s(object@pretreatments)}: {vec_sub(colnames(object@pretreatments))}"), "\n")
+    cat(glue("{ncol(tr)} treatment{add_s(tr)}: {vec_sub(colnames(tr))}"), "\n")
+    cat(glue("{ncol(m)} mediator{add_s(m)}: {vec_sub(colnames(m))}"), "\n")
+    cat(glue("{ncol(o)} outcome{add_s(o)}: {vec_sub(colnames(o))}"), "\n")
+    if (!is.null(pr)) {
+        cat(glue(
+            "{ncol(pr)} pretreatment{add_s(pr)}: {vec_sub(colnames(pr))}"
+        ), "\n")
     }
 })
 
 #' @importFrom cli col_magenta col_cyan
 setMethod("show", "multimedia", function(object) {
     cat(col_magenta("[Multimedia Analysis]"), "\n")
-    cat(glue("Treatments: {vec_sub(node_subset(object@edges, 'treatment'))}"), "\n")
+    cat(glue(
+        "Treatments: {vec_sub(node_subset(object@edges, 'treatment'))}"
+    ), "\n")
     cat(glue("Outcomes: {vec_sub(node_subset(object@edges, 'outcome'))}"), "\n")
-    cat(glue("Mediators: {vec_sub(node_subset(object@edges, 'mediator'))}"), "\n")
+    cat(
+        glue(
+            "Mediators: {vec_sub(node_subset(object@edges, 'mediator'))}"
+        ), "\n"
+    )
 
     pretreatment <- node_subset(object@edges, "pretreatment")
     if (length(pretreatment) > 0) {
         cat(glue("Pretreatment: {pretreatment}"), "\n")
     }
 
+    med <- object@mediation
+    out <- object@outcome
+
     cat(" ", "\n")
     cat(col_magenta("[Models]"), "\n")
-    cat(glue("mediation: {fit_type(object@mediation)} {object@mediation@model_type}."), "\n")
-    cat(glue("outcome: {fit_type(object@outcome)} {object@outcome@model_type}."), "\n")
+    cat(glue("mediation: {fit_type(med)} {med@model_type}."), "\n")
+    cat(glue("outcome: {fit_type(out)} {out@model_type}."), "\n")
 })
 
 #' Pretty Printing
@@ -86,7 +102,12 @@ setMethod("show", "model", function(object) {
     if (is(object@estimates, "list")) {
         print(head(object@estimates, n_show))
         if (n_show < length(object@estimates)) {
-            cat(glue("... and {length(object@estimates) - n_show} other estimates."), "\n")
+            cat(
+                glue(
+                    "...and {length(object@estimates) - n_show} other estimates"
+                ),
+                "\n"
+            )
         }
     } else {
         print(object@estimates)

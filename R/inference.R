@@ -26,11 +26,17 @@ matching_indices <- function(edges, nulls = NULL) {
         )
 
     if (nulls == "T->Y") {
-        ids <- filter(E, .data$from_type == "treatment", .data$to_type == "outcome")
+        ids <- filter(
+            E, .data$from_type == "treatment", .data$to_type == "outcome"
+        )
     } else if (nulls == "T->M") {
-        ids <- filter(E, .data$from_type == "treatment", .data$to_type == "mediator")
+        ids <- filter(
+            E, .data$from_type == "treatment", .data$to_type == "mediator"
+        )
     } else if (nulls == "M->Y") {
-        ids <- filter(E, .data$from_type == "mediator", .data$to_type == "outcome")
+        ids <- filter(
+            E, .data$from_type == "mediator", .data$to_type == "outcome"
+        )
     } else {
         ids <- filter(E, nulls)
     }
@@ -86,7 +92,10 @@ nullify <- function(multimedia, nulls = NULL) {
     multimedia@edges <- multimedia@edges %E>%
         mutate(
             new_null = row_number() %in% nulls,
-            state = ifelse(.data$state == "active" & .data$new_null, "inactive", .data$state)
+            state = ifelse(
+                .data$state == "active" & .data$new_null,
+                "inactive", .data$state
+            )
         ) |>
         select(-.data$new_null) |>
         activate("nodes")
@@ -124,7 +133,10 @@ nullify <- function(multimedia, nulls = NULL) {
 #' samples <- multimedia(exper, rf_model(num.trees = 1e3)) |>
 #'     bootstrap(exper, B = 100)
 #' ggplot2::ggplot(samples$direct_effect) +
-#'     ggplot2::geom_histogram(ggplot2::aes(direct_effect, fill = indirect_setting), bins = 15) +
+#'     ggplot2::geom_histogram(
+#'         ggplot2::aes(direct_effect, fill = indirect_setting),
+#'         bins = 15
+#'     ) +
 #'     ggplot2::facet_wrap(~outcome, scales = "free")
 #' @export
 bootstrap <- function(model, exper, fs = NULL, B = 1000) {
@@ -140,7 +152,10 @@ bootstrap <- function(model, exper, fs = NULL, B = 1000) {
         nf <- names(fs)[f]
         cli_text(glue("Bootstrapping {nf}"))
         stats[[nf]] <- list()
-        pb <- progress_bar$new(total = B, format = "[:bar] :current/:total ETA: :eta")
+        pb <- progress_bar$new(
+            total = B,
+            format = "[:bar] :current/:total ETA: :eta"
+        )
         for (b in seq_len(B)) {
             # resample and ensure contrast t1/t2 consistency
             exper_b <- exper[sample(nrow(exper), nrow(exper), replace = TRUE), ]
@@ -227,9 +242,9 @@ null_contrast <- function(model, exper, nullification = "T->Y",
 #' It computes the proportion of synthetic null estimates that are among the top
 #' K largest effects (in magnitude) as an estimate of the FDR.
 #'
-#' @param contrast A data.frame summarizing the differences between outcomes across
-#'   hypothetical treatments, typically as output by `null_contrast`. Each row
-#'   is one outcome in one hypothetical scenario.
+#' @param contrast A data.frame summarizing the differences between outcomes
+#'   across hypothetical treatments, typically as output by `null_contrast`.
+#'   Each row is one outcome in one hypothetical scenario.
 #' @param effect Either "indirect_overall" (the default), "indirect_pathwise",
 #'   or "direct_effect" specifying the type of effect that we want to select.
 #' @param q_value The target for false discovery rate control. The last time the
@@ -270,17 +285,26 @@ fdr_summary <- function(contrast, effect = "indirect_overall", q_value = 0.15) {
     if (effect == "indirect_overall") {
         fdr <- contrast |>
             group_by(.data$source, .data$outcome) |>
-            summarise(indirect_effect = mean(.data$indirect_effect), .group = "drop_last") |>
+            summarise(
+                indirect_effect = mean(.data$indirect_effect),
+                .group = "drop_last"
+            ) |>
             arrange(-abs(.data$indirect_effect))
     } else if (effect == "indirect_pathwise") {
         fdr <- contrast |>
             group_by(.data$source, .data$outcome, .data$mediator) |>
-            summarise(indirect_effect = mean(.data$indirect_effect), .group = "drop_last") |>
+            summarise(
+                indirect_effect = mean(.data$indirect_effect),
+                .group = "drop_last"
+            ) |>
             arrange(-abs(.data$indirect_effect))
     } else if (effect == "direct_effect") {
         fdr <- contrast |>
             group_by(.data$source, .data$outcome) |>
-            summarise(direct_effect = mean(.data$direct_effect), .groups = "drop_last") |>
+            summarise(
+                direct_effect = mean(.data$direct_effect),
+                .groups = "drop_last"
+            ) |>
             arrange(-abs(.data$direct_effect))
     }
 

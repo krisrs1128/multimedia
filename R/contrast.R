@@ -61,7 +61,10 @@ contrast_predictions <- function(model, profile1, profile2, ...) {
 #' profile2 <- setup_profile(model, t2, t2)
 #' contrast_samples(model, profile1, profile2)
 #'
-#' samples <- purrr::map(seq_len(100), ~ contrast_samples(model, profile1, profile2))
+#' samples <- purrr::map(
+#'     seq_len(100),
+#'     ~ contrast_samples(model, profile1, profile2)
+#' )
 #' hist(sapply(samples, \(x) x[[1]]$ASV1))
 #' hist(sapply(samples, \(x) x[[1]]$ASV2))
 contrast_samples <- function(model, profile1, profile2, ...) {
@@ -83,15 +86,10 @@ path_difference <- function(y1, y2) {
 #' Direct Effects from Estimated Model
 #'
 #' Estimate direct effects associated with a multimedia model. These estimates
-#' are formed using Equation (10) of our preprint:
-#'
-#' \deqn{
-#' \frac{1}{2} \sum_{j = 0}^{1} \sum_{i = 1}^{N} \hat{Y}_{i}(t2, \hat{M}(t2)) - \hat{Y}_{i}(t1, \hat{M}(t1))
-#' }
-#'
-#' Rather than providing this average, this function returns the estimated
-#' difference for each $j$. To average across all j, this result can be passed
-#' to the ' `effect_summary` function.
+#' are formed using Equation (10) of our paper. Rather than providing this
+#' average, this function returns the estimated difference for each $j$. To
+#' average across all j, this result can be passed to the ' `effect_summary`
+#' function.
 #' @param model An object of class multimedia containing the estimated mediation
 #'  and outcome models whose mediation and outcome predictions we want to
 #'  compare.
@@ -136,32 +134,46 @@ direct_effect <- function(model, exper = NULL, t1 = 1, t2 = 2) {
     result <- list()
     t_ <- model@treatments
     for (i in seq_len(nrow(t_))) {
-        profile1 <- setup_profile(model, t_[i, , drop = FALSE], t_[t1, , drop = FALSE])
-        profile2 <- setup_profile(model, t_[i, , drop = FALSE], t_[t2, , drop = FALSE])
+        profile1 <- setup_profile(
+            model, t_[i, , drop = FALSE], t_[t1, , drop = FALSE]
+        )
+        profile2 <- setup_profile(
+            model, t_[i, , drop = FALSE], t_[t2, , drop = FALSE]
+        )
 
         y_hat <- contrast_predictions(
-            model,
-            profile1,
-            profile2,
+            model, profile1, profile2,
             pretreatment = pretreatment
         )[["outcomes"]] |>
             colMeans()
 
         result[[i]] <- data.frame(
-            outcome = names(y_hat),
-            direct_effect = y_hat,
+            outcome = names(y_hat), direct_effect = y_hat,
             contrast = rep(parse_name(t_, t1, t2), n_outcomes(model)),
             row.names = NULL
         )
     }
 
     bind_rows(result, .id = "indirect_setting") |>
-        mutate(indirect_setting = t_[[1]][as.integer(.data$indirect_setting)]) |>
-        select(any_of(c("outcome", "indirect_setting", "contrast", "direct_effect")))
+        mutate(
+            indirect_setting = t_[[1]][as.integer(.data$indirect_setting)]
+        ) |>
+        select(
+            any_of(c(
+                "outcome", "indirect_setting", "contrast",
+                "direct_effect"
+            ))
+        )
 }
 
 parse_name <- function(t_, t1, t2) {
-    glue("{apply(t_[t1,, drop=F], 1, paste0, collapse=',')} - {apply(t_[t2,, drop=F], 1, paste0, collapse=',')}")
+    glue(
+        "{
+            apply(t_[t1,, drop=F], 1, paste0, collapse=',')
+        } - {
+            apply(t_[t2,, drop=F], 1, paste0, collapse=',')
+        }"
+    )
 }
 
 #' Overall Indirect Effect
@@ -169,11 +181,7 @@ parse_name <- function(t_, t1, t2) {
 #' Direct Effects from Estimated Model
 #'
 #' Estimate direct effects associated with a multimedia model. These estimates
-#' are formed using Equation (10) of our preprint:
-#'
-#' \deqn{
-#' \frac{1}{2} \sum_{j = 0}^{1} \sum_{i = 1}^{N} \hat{Y}_{i}(t2, \hat{M}(t2)) - \hat{Y}_{i}(t1, \hat{M}(t1))
-#' }
+#' are formed using Equation (10) of our preprint.
 #'
 #' @param model An object of class multimedia containing the estimated mediation
 #'  and outcome models whose mediation and outcome predictions we want to
@@ -211,8 +219,12 @@ indirect_overall <- function(model, exper = NULL, t1 = 1, t2 = 2) {
     t_ <- model@treatments
     result <- list()
     for (i in seq_len(nrow(t_))) {
-        profile1 <- setup_profile(model, t_[t1, , drop = FALSE], t_[i, , drop = FALSE])
-        profile2 <- setup_profile(model, t_[t2, , drop = FALSE], t_[i, , drop = FALSE])
+        profile1 <- setup_profile(
+            model, t_[t1, , drop = FALSE], t_[i, , drop = FALSE]
+        )
+        profile2 <- setup_profile(
+            model, t_[t2, , drop = FALSE], t_[i, , drop = FALSE]
+        )
 
         y_hat <- contrast_predictions(
             model,
@@ -231,8 +243,12 @@ indirect_overall <- function(model, exper = NULL, t1 = 1, t2 = 2) {
     }
 
     bind_rows(result, .id = "direct_setting") |>
-        mutate(direct_setting = t_[[1]][as.integer(.data$direct_setting)]) |>
-        select(any_of(c("outcome", "direct_setting", "contrast", "indirect_effect")))
+        mutate(
+            direct_setting = t_[[1]][as.integer(.data$direct_setting)]
+        ) |>
+        select(any_of(
+            c("outcome", "direct_setting", "contrast", "indirect_effect")
+        ))
 }
 
 #' Indirect Effects via Single Mediation Paths
@@ -275,10 +291,15 @@ indirect_pathwise <- function(model, exper = NULL, t1 = 1, t2 = 2) {
     result <- list()
     for (i in seq_len(nrow(t_))) {
         cli_text(glue("Indirect effects for direct setting {i}"))
-        profile2 <- setup_profile(model, t_[t2, , drop = FALSE], t_[i, , drop = FALSE])
+        profile2 <- setup_profile(
+            model, t_[t2, , drop = FALSE], t_[i, , drop = FALSE]
+        )
         y_hat_2 <- predict(model, profile2, pretreatment = pretreatment)
 
-        pb <- progress_bar$new(total = length(m), format = "[:bar] Mediator: :current/:total ETA: :eta")
+        pb <- progress_bar$new(
+            total = length(m),
+            format = "[:bar] Mediator: :current/:total ETA: :eta"
+        )
         for (j in seq_along(m)) {
             profile1 <- profile2
             profile1@t_mediator[[j]] <- t_[t1, , drop = FALSE]
@@ -299,7 +320,10 @@ indirect_pathwise <- function(model, exper = NULL, t1 = 1, t2 = 2) {
     }
 
     bind_rows(result) |>
-        select(any_of(c("outcome", "mediator", "direct_setting", "contrast", "indirect_effect")))
+        select(any_of(c(
+            "outcome", "mediator", "direct_setting", "contrast",
+            "indirect_effect"
+        )))
 }
 
 #' Average Effects across j

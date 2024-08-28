@@ -71,7 +71,10 @@ parallelize <- function(f) {
         models <- list()
 
         ys <- lhs.vars(formula)
-        pb <- progress_bar$new(total = length(ys), format = "[:bar] :current/:total ETA: :eta")
+        pb <- progress_bar$new(
+            total = length(ys),
+            format = "[:bar] :current/:total ETA: :eta"
+        )
         for (j in seq_along(ys)) {
             fmla <- sub_formula(formula, ys[j])
             models[[ys[j]]] <- f(fmla, ...)
@@ -88,8 +91,8 @@ parallelize <- function(f) {
 #'
 #' @param edges A tidygraph graph storing edges between all variables in the
 #'  mediation analysis. For example, if a treatment node leads into a mediation
-#'  node, this will be included in the graph (as will all pretreatment to mediator,
-#'  mediator to outcome, etc.)
+#'  node, this will be included in the graph (as will all pretreatment to
+#'  mediator, mediator to outcome, etc.)
 #' @importFrom tidygraph %N>%
 #' @importFrom dplyr left_join rename
 #' @importFrom rlang .data
@@ -329,7 +332,9 @@ glmnet_model <- function(...) {
     params <- glmnet_model_params(...)
     new(
         "model",
-        estimator = parallelize(\(fmla, data) inject(glmnetUtils::glmnet(fmla, data, !!!params))),
+        estimator = parallelize(
+            \(fmla, data) inject(glmnetUtils::glmnet(fmla, data, !!!params))
+        ),
         estimates = NULL,
         sampler = glmnet_sampler,
         predictor = \(object, ...) {
@@ -354,7 +359,8 @@ glmnet_model <- function(...) {
 #' fit <- plm(mpg + disp ~ hp + wt, data = mtcars)
 #' multimedia:::glmnet_sampler(fit, mtcars)
 #' @noRd
-glmnet_sampler <- function(fits, newdata = NULL, indices = NULL, lambda_ix = 1, ...) {
+glmnet_sampler <- function(fits, newdata = NULL, indices = NULL,
+                           lambda_ix = 1, ...) {
     if (is.null(indices)) {
         indices <- seq_along(fits)
     }
@@ -408,15 +414,19 @@ brm_cache <- function(formula, data, ...) {
 
     for (j in seq(2, length(ys))) {
         fmla <- sub_formula(formula, ys[j])
-        models[[ys[j]]] <- update(models[[1]], fmla, newdata = data, recompile = FALSE, ...)
+        models[[ys[j]]] <- update(
+            models[[1]], fmla,
+            newdata = data, recompile = FALSE, ...
+        )
     }
     models
 }
 
 #' Bayesian Regression Model across Responses
 #'
-#' Apply a Bayesian regression model in parallel across each response $y$ in
-#' an outcome or mediation model. This can be helpful when we want to share information across related
+#' Apply a Bayesian regression model in parallel across each response $y$ in an
+#' outcome or mediation model. This can be helpful when we want to share
+#' information across related
 #' @param ... Keyword parameters passed to brm..
 #' @return model An object of class `model` with estimator, predictor, and
 #'  sampler functions associated wtih a Bayesian regression model.
@@ -444,7 +454,9 @@ brms_model <- function(...) {
         estimator = \(fmla, data) inject(brm_cache(fmla, data, !!!params)),
         estimates = NULL,
         sampler = brms_sampler,
-        predictor = \(object, ...) predict(object, robust = TRUE, ...)[, "Estimate"],
+        predictor = \(object, ...) {
+            predict(object, robust = TRUE, ...)[, "Estimate"]
+        },
         model_type = "brms_model()"
     )
 }
@@ -559,7 +571,8 @@ brms_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
 lnm_model <- function(...) {
     check_if_installed(
         "miniLNM",
-        "to use a LNM model for multimedia estimation. Please run devtools::install_github('krisrs1128/miniLNM')",
+        "to use a LNM model for multimedia estimation. Please run,
+        devtools::install_github('krisrs1128/miniLNM')",
         prompt = FALSE
     )
     requireNamespace("miniLNM", quietly = TRUE)
@@ -628,7 +641,10 @@ lnm_sampler <- function(fit, newdata = NULL, indices = NULL, ...) {
 #' @seealso model lm_model rf_model glmnet_model brms_model
 #' @export
 rf_model <- function(...) {
-    check_if_installed("ranger", "to use a random forest model for multimedia estimation.")
+    check_if_installed(
+        "ranger",
+        "to use a random forest model for multimedia estimation."
+    )
     requireNamespace("ranger", quietly = TRUE)
 
     new(

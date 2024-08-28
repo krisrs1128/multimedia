@@ -30,7 +30,9 @@ setGeneric("mediators<-", \(object, value) standardGeneric("mediators<-"))
 setGeneric("outcomes", \(object) standardGeneric("outcomes"))
 setGeneric("outcomes<-", \(object, value) standardGeneric("outcomes<-"))
 setGeneric("pretreatments", \(object) standardGeneric("pretreatments"))
-setGeneric("pretreatments<-", \(object, value) standardGeneric("pretreatments<-"))
+setGeneric("pretreatments<-", \(object, value) {
+    standardGeneric("pretreatments<-")
+})
 setGeneric("treatments", \(object) standardGeneric("treatments"))
 setGeneric("treatments<-", \(object, value) standardGeneric("treatments<-"))
 
@@ -147,11 +149,12 @@ setMethod(
 #'
 #' This is an accessor function to the @pretreatments slot in a mediation data
 #' object. It returns the entire set of observed pretreatments, in contrast to
-#' pretreatments() applied to a multimedia object, which only returns the names of
-#' the pretreatment variables.
+#' pretreatments() applied to a multimedia object, which only returns the names
+#' of the pretreatment variables.
 #'
 #' @param object An object of class mediation_data.
-#' @return A data.frame whose rows are samples and columns different pretreatments.
+#' @return A data.frame whose rows are samples and columns different
+#'   pretreatments.
 #' @examples
 #' exper <- demo_joy() |>
 #'     mediation_data("PHQ", "treatment", starts_with("ASV"))
@@ -210,8 +213,8 @@ setMethod(
 
 #' Set the Treatments in a Mediation Data Object
 #'
-#' This is an setter method for the treatments slot in a mediation data object. It
-#' lets you supply a new treatments data.frame for the object.
+#' This is an setter method for the treatments slot in a mediation data object.
+#' It lets you supply a new treatments data.frame for the object.
 #'
 #' @param object An object of class mediation_data.
 #' @param values The new treatment values for the object.
@@ -232,8 +235,8 @@ setMethod(
 
 #' Set the Pretreatments in a Mediation Data Object
 #'
-#' This is an setter method for the pretreatments slot in a mediation data object. It
-#' lets you supply a new pretreatments data.frame for the object.
+#' This is an setter method for the pretreatments slot in a mediation data
+#' object. It lets you supply a new pretreatments data.frame for the object.
 #'
 #' @param object An object of class mediation_data.
 #' @param values The new pretreatment values for the object.

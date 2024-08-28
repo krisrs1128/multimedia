@@ -57,7 +57,8 @@ setMethod("sample", "multimedia", function(
     if (missing(size)) {
         size <- 1
     } else {
-        cli_warn("The size argument in sample is ignored. Please adjust the treatment profile to adjust the number of samples.")
+        cli_warn("The size argument in sample is ignored. Please adjust the
+                  treatment profile to adjust the number of samples.")
     }
     if (is.null(profile)) {
         profile <- setup_profile(x)
@@ -68,7 +69,9 @@ setMethod("sample", "multimedia", function(
         mediators <- list()
         for (i in seq_along(profile@t_mediator)) {
             mediators[[i]] <- bind_cols(pretreatment, profile@t_mediator[[i]]) |>
-                x@mediation@sampler(x@mediation@estimates, newdata = _, indices = i, ...)
+                x@mediation@sampler(
+                    x@mediation@estimates, newdata = _, indices = i, ...
+                )
         }
         mediators <- bind_cols(mediators)
     }
@@ -113,7 +116,9 @@ setMethod("sample", "multimedia", function(
 #'
 #' # predict at newdata
 #' newdata <- bind_mediation(exper)
-#' multimedia:::predict_across(outcome_model(fit), newdata[seq_len(5), ], "outcome_2")
+#' multimedia:::predict_across(
+#'     outcome_model(fit), newdata[seq_len(5), ], "outcome_2"
+#' )
 #' multimedia:::predict_across(
 #'     fit@outcome,
 #'     newdata[seq_len(5), ],
@@ -170,8 +175,8 @@ predict_across <- function(object, newdata, name) {
 #'   and outcome models.
 #' @param ... A placeholder to agree with `predict` in base R. Not ever used.
 #' @return A list with two elements:
-#'   $mediators: A data.frame containing predicted values for the mediators. Each
-#'   row corresponds to one row of the newdata, or one row of the default
+#'   $mediators: A data.frame containing predicted values for the mediators.
+#'   Each row corresponds to one row of the newdata, or one row of the default
 #'   treatment profile, if no newdata is given.
 #'
 #'   $outcomes: A data.frame containing predicted values for the outcomes, given
@@ -204,7 +209,9 @@ setMethod("predict", "multimedia", function(
         nm <- names(profile@t_mediator)
         mediators <- list()
         for (i in seq_along(profile@t_mediator)) {
-            mediators[[nm[i]]] <- bind_cols(pretreatment, profile@t_mediator[[i]]) |>
+            mediators[[nm[i]]] <- bind_cols(
+                pretreatment, profile@t_mediator[[i]]
+            ) |>
                 predict_across(object@mediation, newdata = _, name = nm[i])
         }
         mediators <- bind_cols(mediators)

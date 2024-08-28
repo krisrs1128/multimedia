@@ -97,7 +97,8 @@ bind_mediation <- function(exper) {
 #' @importFrom tidygraph graph_join %N>%
 #' @seealso multimedia
 #' @noRd
-graph_specification <- function(outcomes, treatments, mediators, pretreatments) {
+graph_specification <- function(outcomes, treatments, mediators,
+                                pretreatments) {
     edges <- list(
         expand_edges(c("1"), mediators, "intercept", "mediator"),
         expand_edges(c("1"), outcomes, "intercept", "outcome"),
@@ -118,7 +119,10 @@ graph_specification <- function(outcomes, treatments, mediators, pretreatments) 
         mutate(
             node_type = factor(
                 .data$node_type,
-                levels = c("intercept", "pretreatment", "treatment", "mediator", "outcome")
+                levels = c(
+                    "intercept", "pretreatment", "treatment", "mediator",
+                    "outcome"
+                )
             )
         ) |>
         arrange(across(c("node_type", "name"))) |>
@@ -170,7 +174,10 @@ expand_edges <- function(input, output, input_name, output_name) {
 #' demo_joy() |>
 #'     multimedia:::exper_df()
 exper_df <- function(exper) {
-    bind_cols(t(assay(exper)), data.frame(colData(exper)), .name_repair = "minimal")
+    bind_cols(
+        t(assay(exper)), data.frame(colData(exper)),
+        .name_repair = "minimal"
+    )
 }
 
 #' `mediation_data` Constructor
@@ -198,7 +205,9 @@ exper_df <- function(exper) {
 #' @seealso mediation_data-class
 #' @examples
 #' # multiple outcomes, one mediator
-#' mediation_data(demo_spline(), starts_with("outcome"), "treatment", "mediator")
+#' mediation_data(
+#'     demo_spline(), starts_with("outcome"), "treatment", "mediator"
+#' )
 #'
 #' # one outcome, multiple mediators
 #' mediation_data(demo_joy(), "PHQ", "treatment", starts_with("ASV"))
@@ -266,7 +275,8 @@ from_summarized_experiment <- function(exper, outcomes, treatments, mediators,
 #'   each of the node types in a mediation analysis diagram.
 #' @importFrom phyloseq otu_table sample_data
 #' @noRd
-from_phyloseq <- function(exper, outcomes, treatments, mediators, pretreatments) {
+from_phyloseq <- function(exper, outcomes, treatments, mediators,
+                          pretreatments) {
     if (attr(otu_table(exper), "taxa_are_rows")) {
         counts <- t(otu_table(exper))
     } else {
