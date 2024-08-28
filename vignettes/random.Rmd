@@ -121,23 +121,20 @@ below has one sample with this kind of configuration and three others that keep
 all edges at control.
 
 ```{r new_treat}
-t_mediator <- data.frame(
-    treatment = factor(c("Treatment", "Control", "Control", "Control"))
-)
-t_outcome <- t_mediator
-t_outcome$treatment[1] <- "Control"
+t_mediator <- factor(c("Treatment", rep("Control", 3)))
+t_outcome <- factor(rep("Control", 4), levels = c("Treatment", "Control"))
 
 profile <- setup_profile(model, t_mediator, t_outcome)
 sample(model, profile = profile)
 predict(model, profile = profile)
+
+setup_profile(model, t_mediator, t_outcome)
 ```
 
 We can also contrast the predictions and samples under different profiles.
 
 ```{r contrast}
-profile_control <- setup_profile(
-    model, treatments(model)[rep(1, 4), , drop = FALSE], t_outcome
-)
+profile_control <- setup_profile(model, t_outcome, t_outcome)
 contrast_predictions(model, profile, profile_control)
 contrast_samples(model, profile, profile_control)
 ```
@@ -191,7 +188,8 @@ is to use the bootstrap. Each function in the third argument, `fs`, will get its
 own data.frame with the bootstrap distribution for that estimator.
 
 ```{r bootstrap}
-bootstrap(model, exper, c(direct_effect = direct_effect))
+bootstrap(model, exper, c(direct_effect = direct_effect)) |>
+    head(10)
 ```
 
 We can also generate synthetic nulls to calibrate selection sets. The third

@@ -66,11 +66,22 @@ check_profile <- function(object) {
 #' profile
 #' @export
 setup_profile <- function(x, t_mediator = NULL, t_outcome = NULL) {
+    # default mediator and outcome
     if (is.null(t_mediator)) {
         t_mediator <- x@treatments
     }
     if (is.null(t_outcome)) {
         t_outcome <- x@treatments
+    }
+
+    # if given as a vector, convert to a data.frame
+    if (is.factor(t_mediator) | is.numeric(t_mediator)) {
+        t_mediator <- data.frame(t_mediator) |>
+            set_names(treatments(x))
+    }
+    if (is.factor(t_outcome) | is.numeric(t_outcome)) {
+        t_outcome <- data.frame(t_outcome) |>
+            set_names(treatments(x))
     }
 
     # apply treatments to all mediators/outcomes
