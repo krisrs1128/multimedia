@@ -27,10 +27,16 @@ options(crayon.enabled = TRUE)
 
 suppressPackageStartupMessages(library(ggplot2))
 options(
-  ggplot2.discrete.colour = c("#9491D9", "#F24405", "#3F8C61", "#8C2E62", "#F2B705", "#11A0D9"),
-  ggplot2.discrete.fill = c("#9491D9", "#F24405", "#3F8C61", "#8C2E62", "#F2B705", "#11A0D9"),
-  ggplot2.continuous.colour = function(...) scale_color_distiller(palette = "Spectral", ...),
-  ggplot2.continuous.fill = function(...) scale_fill_distiller(palette = "Spectral", ...)
+  ggplot2.discrete.colour = c(
+    "#9491D9", "#F24405", "#3F8C61", "#8C2E62", "#F2B705", "#11A0D9"
+  ),
+  ggplot2.discrete.fill = c(
+    "#9491D9", "#F24405", "#3F8C61", "#8C2E62", "#F2B705", "#11A0D9"
+  ),
+  ggplot2.continuous.colour = function(...)
+    scale_color_distiller(palette = "Spectral", ...),
+  ggplot2.continuous.fill = function(...)
+    scale_fill_distiller(palette = "Spectral", ...)
 )
 
 th <- theme_classic() +
@@ -125,7 +131,9 @@ predict(model, profile = profile)
 We can also contrast the predictions and samples under different profiles.
 
 ```{r contrast}
-profile_control <- setup_profile(model, treatments(model)[rep(1, 4),, drop = FALSE], t_outcome)
+profile_control <- setup_profile(
+  model, treatments(model)[rep(1, 4),, drop = FALSE], t_outcome
+)
 contrast_predictions(model, profile, profile_control)
 contrast_samples(model, profile, profile_control)
 ```
@@ -134,7 +142,11 @@ contrast_samples(model, profile, profile_control)
 
 It's a small step from contrasting different configurations to asking for the
 direct and indirect treatments effects. The direct effect is defined as the
-average of $\hat{Y}\left(\hat{M}\left(t'\right), 1\right) - \hat{Y}\left(\hat{M}\left(t'\right), 0\right)$ 
+average of 
+$$
+\hat{Y}\left(\hat{M}\left(t'\right), 1\right) -  
+\hat{Y}\left(\hat{M}\left(t'\right), 0\right)
+$$
 across mediator treatment effects $t'$. The hats mean that we use the predicted
 values from the mediation and outcome values. I've distinguished between
 "overall" and "pathwise" indirect effects because we're working with
