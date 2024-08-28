@@ -129,13 +129,18 @@ Must be a data.frame whose columns are named to match the
 mediation model.</p></dd>
 
 </dl></div>
+    <div id="value">
+    <h2>Value</h2>
+    <p>An object of class <code>multimedia</code> with mediator and outcome slots
+sampled according to the description above.</p>
+    </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">exper</span> <span class="op">&lt;-</span> <span class="fu"><a href="demo_spline.html">demo_spline</a></span><span class="op">(</span>tau <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="mediation_data.html">mediation_data</a></span><span class="op">(</span><span class="fu">starts_with</span><span class="op">(</span><span class="st">"outcome"</span><span class="op">)</span>, <span class="st">"treatment"</span>, <span class="st">"mediator"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="mediation_data.html">mediation_data</a></span><span class="op">(</span><span class="fu">starts_with</span><span class="op">(</span><span class="st">"outcome"</span><span class="op">)</span>, <span class="st">"treatment"</span>, <span class="st">"mediator"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="multimedia.html">multimedia</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="estimate.html">estimate</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="estimate.html">estimate</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">mediators</span><span class="op">(</span><span class="va">samples</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 1</span></span>

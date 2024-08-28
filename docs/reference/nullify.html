@@ -111,40 +111,40 @@ matching <code>nulls</code> removed. Enables sampling of synthetic null controls
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># example with null data</span></span></span>
 <span class="r-in"><span><span class="va">exper</span> <span class="op">&lt;-</span> <span class="fu"><a href="demo_joy.html">demo_joy</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="mediation_data.html">mediation_data</a></span><span class="op">(</span><span class="st">"PHQ"</span>, <span class="st">"treatment"</span>, <span class="fu">starts_with</span><span class="op">(</span><span class="st">"ASV"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="mediation_data.html">mediation_data</a></span><span class="op">(</span><span class="st">"PHQ"</span>, <span class="st">"treatment"</span>, <span class="fu">starts_with</span><span class="op">(</span><span class="st">"ASV"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="multimedia.html">multimedia</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="estimate.html">estimate</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="estimate.html">estimate</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">nullify</span><span class="op">(</span><span class="va">fit</span>, <span class="st">"T-&gt;M"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="estimate.html">estimate</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="indirect_overall.html">indirect_overall</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="estimate.html">estimate</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="indirect_overall.html">indirect_overall</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   outcome direct_setting            contrast indirect_effect</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1     PHQ        Control Control - Treatment               0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2     PHQ      Treatment Control - Treatment               0</span>
 <span class="r-in"><span><span class="fu">nullify</span><span class="op">(</span><span class="va">fit</span>, <span class="st">"T-&gt;Y"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="estimate.html">estimate</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="direct_effect.html">direct_effect</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="estimate.html">estimate</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="direct_effect.html">direct_effect</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   outcome indirect_setting            contrast direct_effect</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1     PHQ          Control Control - Treatment             0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2     PHQ        Treatment Control - Treatment             0</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># example with another dataset</span></span></span>
 <span class="r-in"><span><span class="va">exper</span> <span class="op">&lt;-</span> <span class="fu"><a href="demo_spline.html">demo_spline</a></span><span class="op">(</span>tau <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="mediation_data.html">mediation_data</a></span><span class="op">(</span><span class="fu">starts_with</span><span class="op">(</span><span class="st">"outcome"</span><span class="op">)</span>, <span class="st">"treatment"</span>, <span class="st">"mediator"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="mediation_data.html">mediation_data</a></span><span class="op">(</span><span class="fu">starts_with</span><span class="op">(</span><span class="st">"outcome"</span><span class="op">)</span>, <span class="st">"treatment"</span>, <span class="st">"mediator"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="multimedia.html">multimedia</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="estimate.html">estimate</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="estimate.html">estimate</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">nullify</span><span class="op">(</span><span class="va">fit</span>, <span class="st">"T-&gt;M"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="estimate.html">estimate</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="indirect_overall.html">indirect_overall</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="estimate.html">estimate</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="indirect_overall.html">indirect_overall</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     outcome direct_setting contrast indirect_effect</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1 outcome_1              0    0 - 1               0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2 outcome_2              0    0 - 1               0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3 outcome_1              1    0 - 1               0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4 outcome_2              1    0 - 1               0</span>
 <span class="r-in"><span><span class="fu">nullify</span><span class="op">(</span><span class="va">fit</span>, <span class="st">"T-&gt;Y"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="estimate.html">estimate</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="direct_effect.html">direct_effect</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="estimate.html">estimate</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="direct_effect.html">direct_effect</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     outcome indirect_setting contrast direct_effect</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1 outcome_1                0    0 - 1             0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2 outcome_2                0    0 - 1             0</span>

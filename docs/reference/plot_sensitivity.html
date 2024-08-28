@@ -85,9 +85,9 @@ the x_var and y_var inputs.</p>
 
 <dl><dt id="arg-sensitivity-curve">sensitivity_curve<a class="anchor" aria-label="anchor" href="#arg-sensitivity-curve"></a></dt>
 <dd><p>The output of a call to sensitivity or
-sensitivity_perturb. A data.frame whose columns are: outcome, x_var,
-y_var, and y_var_standard_error, where x_var and y_var are defined in
-the two arguments below.</p></dd>
+sensitivity_perturb. A data.frame whose columns are: outcome, {x_var},
+{y_var}, and {y_var}_standard_error, where x_var and y_var are defined
+in the two arguments below.</p></dd>
 
 
 <dt id="arg-x-var">x_var<a class="anchor" aria-label="anchor" href="#arg-x-var"></a></dt>
@@ -101,10 +101,15 @@ sensitivity_subset.</p></dd>
 indirect_effect.</p></dd>
 
 </dl></div>
+    <div id="value">
+    <h2>Value</h2>
+    <p>A ggplot2 grob plotting the sensitivity parameter against the effect
+specified by <code>y_var</code>.</p>
+    </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">sensitivity_curve</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">url</a></span><span class="op">(</span><span class="st">"https://drive.google.com/uc?export=download&amp;id=1fEhg-aMRyfhAjgcJmsrxz2cmWCOdnM6C"</span><span class="op">)</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">sensitivity_curve</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">url</a></span><span class="op">(</span><span class="st">"https://go.wisc.edu/j2kvcj"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">plot_sensitivity</span><span class="op">(</span><span class="va">sensitivity_curve</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plot_sensitivity-1.png" alt="" width="700" height="433"></span>
 </code></pre></div>

@@ -121,16 +121,20 @@ treatment variables. Defaults to "treatment."</p></dd>
 <dd><p>Further keyword arguments passed to <code><a href="https://patchwork.data-imaginist.com/reference/wrap_plots.html" class="external-link">patchwork::wrap_plots</a></code>.</p></dd>
 
 </dl></div>
+    <div id="value">
+    <h2>Value</h2>
+    <p>A patchwork-based arrangement of ggplot2 grobs.</p>
+    </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># dataset with no true effects</span></span></span>
 <span class="r-in"><span><span class="va">exper</span> <span class="op">&lt;-</span> <span class="fu"><a href="demo_joy.html">demo_joy</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="mediation_data.html">mediation_data</a></span><span class="op">(</span><span class="st">"PHQ"</span>, <span class="st">"treatment"</span>, <span class="fu">starts_with</span><span class="op">(</span><span class="st">"ASV"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="mediation_data.html">mediation_data</a></span><span class="op">(</span><span class="st">"PHQ"</span>, <span class="st">"treatment"</span>, <span class="fu">starts_with</span><span class="op">(</span><span class="st">"ASV"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ie</span> <span class="op">&lt;-</span> <span class="fu"><a href="multimedia.html">multimedia</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="estimate.html">estimate</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="indirect_pathwise.html">indirect_pathwise</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="effect_summary.html">effect_summary</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="estimate.html">estimate</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="indirect_pathwise.html">indirect_pathwise</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="effect_summary.html">effect_summary</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Indirect effects for direct setting 1</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Indirect effects for direct setting 2</span>
 <span class="r-in"><span><span class="fu">plot_mediators</span><span class="op">(</span><span class="va">ie</span>, <span class="va">exper</span><span class="op">)</span></span></span>
@@ -138,11 +142,11 @@ treatment variables. Defaults to "treatment."</p></dd>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># another dataset</span></span></span>
 <span class="r-in"><span><span class="va">exper</span> <span class="op">&lt;-</span> <span class="fu"><a href="demo_spline.html">demo_spline</a></span><span class="op">(</span>tau <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="mediation_data.html">mediation_data</a></span><span class="op">(</span><span class="fu">starts_with</span><span class="op">(</span><span class="st">"outcome"</span><span class="op">)</span>, <span class="st">"treatment"</span>, <span class="st">"mediator"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="mediation_data.html">mediation_data</a></span><span class="op">(</span><span class="fu">starts_with</span><span class="op">(</span><span class="st">"outcome"</span><span class="op">)</span>, <span class="st">"treatment"</span>, <span class="st">"mediator"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ie</span> <span class="op">&lt;-</span> <span class="fu"><a href="multimedia.html">multimedia</a></span><span class="op">(</span><span class="va">exper</span>, <span class="fu"><a href="rf_model.html">rf_model</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="estimate.html">estimate</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="indirect_pathwise.html">indirect_pathwise</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="effect_summary.html">effect_summary</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="estimate.html">estimate</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="indirect_pathwise.html">indirect_pathwise</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="effect_summary.html">effect_summary</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Indirect effects for direct setting 1</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Indirect effects for direct setting 2</span>
 <span class="r-in"><span><span class="fu">plot_mediators</span><span class="op">(</span><span class="va">ie</span>, <span class="va">exper</span><span class="op">)</span></span></span>

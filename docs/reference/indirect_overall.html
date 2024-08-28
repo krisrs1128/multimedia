@@ -108,19 +108,16 @@ different settings of j in the equation above.</p>
     <div id="details">
     <h2>Details</h2>
     <p>Estimate direct effects associated with a multimedia model. These estimates
-are formed using Equation (10) of our preprint:</p>
-<p>$$
-\frac{1}{2} \sum_{j = 0}^{1} \sum_{i = 1}^{N} \hat{Y}_{i}(t2, \hat{M}(t2)) - \hat{Y}_{i}(t1, \hat{M}(t1))
-$$</p>
+are formed using Equation (10) of our preprint.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># example with null data</span></span></span>
 <span class="r-in"><span><span class="va">exper</span> <span class="op">&lt;-</span> <span class="fu"><a href="demo_joy.html">demo_joy</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="mediation_data.html">mediation_data</a></span><span class="op">(</span><span class="st">"PHQ"</span>, <span class="st">"treatment"</span>, <span class="fu">starts_with</span><span class="op">(</span><span class="st">"ASV"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="mediation_data.html">mediation_data</a></span><span class="op">(</span><span class="st">"PHQ"</span>, <span class="st">"treatment"</span>, <span class="fu">starts_with</span><span class="op">(</span><span class="st">"ASV"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="multimedia.html">multimedia</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="estimate.html">estimate</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="estimate.html">estimate</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">indirect_overall</span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   outcome direct_setting            contrast indirect_effect</span>
@@ -129,9 +126,9 @@ $$</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># example with another dataset</span></span></span>
 <span class="r-in"><span><span class="va">exper</span> <span class="op">&lt;-</span> <span class="fu"><a href="demo_spline.html">demo_spline</a></span><span class="op">(</span>tau <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="mediation_data.html">mediation_data</a></span><span class="op">(</span><span class="fu">starts_with</span><span class="op">(</span><span class="st">"outcome"</span><span class="op">)</span>, <span class="st">"treatment"</span>, <span class="st">"mediator"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="mediation_data.html">mediation_data</a></span><span class="op">(</span><span class="fu">starts_with</span><span class="op">(</span><span class="st">"outcome"</span><span class="op">)</span>, <span class="st">"treatment"</span>, <span class="st">"mediator"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="multimedia.html">multimedia</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="estimate.html">estimate</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="estimate.html">estimate</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">indirect_overall</span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     outcome direct_setting contrast indirect_effect</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1 outcome_1              0    0 - 1      -0.5951599</span>
