@@ -162,7 +162,7 @@ bootstrap <- function(model, exper, fs = NULL, B = 1000) {
             exper_b <- exper_b[order(exper_b@treatments[[1]]), ]
 
             # estimate model and effects
-            model_b <- suppressMessages(estimate(model, exper_b))
+            model_b <- estimate(model, exper_b)
             stats[[nf]][[b]] <- fs[[f]](model_b, exper_b)
             pb$tick()
         }
