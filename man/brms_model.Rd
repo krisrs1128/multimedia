@@ -14,8 +14,9 @@ model An object of class \code{model} with estimator, predictor, and
 sampler functions associated wtih a Bayesian regression model.
 }
 \description{
-Apply a Bayesian regression model in parallel across each response $y$ in
-an outcome or mediation model. This can be helpful when we want to share information across related
+Apply a Bayesian regression model in parallel across each response $y$ in an
+outcome or mediation model. This can be helpful when we want to share
+information across related
 }
 \examples{
 exper <- demo_joy() |>

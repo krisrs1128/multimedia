@@ -33,8 +33,8 @@ and outcome models.}
 }
 \value{
 A list with two elements:
-$mediators: A data.frame containing predicted values for the mediators. Each
-row corresponds to one row of the newdata, or one row of the default
+$mediators: A data.frame containing predicted values for the mediators.
+Each row corresponds to one row of the newdata, or one row of the default
 treatment profile, if no newdata is given.
 
 $outcomes: A data.frame containing predicted values for the outcomes, given

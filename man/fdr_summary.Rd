@@ -7,9 +7,9 @@
 fdr_summary(contrast, effect = "indirect_overall", q_value = 0.15)
 }
 \arguments{
-\item{contrast}{A data.frame summarizing the differences between outcomes across
-hypothetical treatments, typically as output by \code{null_contrast}. Each row
-is one outcome in one hypothetical scenario.}
+\item{contrast}{A data.frame summarizing the differences between outcomes
+across hypothetical treatments, typically as output by \code{null_contrast}.
+Each row is one outcome in one hypothetical scenario.}
 
 \item{effect}{Either "indirect_overall" (the default), "indirect_pathwise",
 or "direct_effect" specifying the type of effect that we want to select.}

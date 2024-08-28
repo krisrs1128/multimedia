@@ -37,7 +37,9 @@ the input data starting with the string mediator.
 }
 \examples{
 # multiple outcomes, one mediator
-mediation_data(demo_spline(), starts_with("outcome"), "treatment", "mediator")
+mediation_data(
+    demo_spline(), starts_with("outcome"), "treatment", "mediator"
+)
 
 # one outcome, multiple mediators
 mediation_data(demo_joy(), "PHQ", "treatment", starts_with("ASV"))

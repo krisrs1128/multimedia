@@ -15,8 +15,8 @@
 A version of \code{object} whose treatment slot has been replaced.
 }
 \description{
-This is an setter method for the treatments slot in a mediation data object. It
-lets you supply a new treatments data.frame for the object.
+This is an setter method for the treatments slot in a mediation data object.
+It lets you supply a new treatments data.frame for the object.
 }
 \examples{
 exper <- demo_joy() |>

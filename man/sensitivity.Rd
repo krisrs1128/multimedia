@@ -54,8 +54,13 @@ effect changes.
 }
 \examples{
 xy_data <- demo_spline()
-exper <- mediation_data(xy_data, starts_with("outcome"), "treatment", "mediator")
-model <- multimedia(exper, outcome_estimator = glmnet_model(lambda = 1e-2)) |>
+exper <- mediation_data(
+    xy_data, starts_with("outcome"), "treatment", "mediator"
+)
+model <- multimedia(
+    exper,
+    outcome_estimator = glmnet_model(lambda = 1e-2)
+) |>
     estimate(exper)
 rho_seq <- c(-0.2, 0, 0.2)
 sensitivity(model, exper, subset_indices, rho_seq, n_bootstrap = 2)
