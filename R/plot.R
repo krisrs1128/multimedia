@@ -66,7 +66,7 @@ plot_mediators <- function(indirect_effects, exper, n_digit = 3, n_panels = NULL
 #' This function draws a curve of indirect effect against the sensitivity
 #' parameter, allowing users to specify the name of x and y-axis variables using
 #' the x_var and y_var inputs.
-#' 
+#'
 #' @param sensitivity_curve The output of a call to sensitivity or
 #'   sensitivity_perturb. A data.frame whose columns are: outcome, {x_var},
 #'   {y_var}, and {y_var}_standard_error, where x_var and y_var are defined in

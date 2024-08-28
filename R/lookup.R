@@ -1,11 +1,11 @@
 #' Variables in a Multimedia Object
-#' 
+#'
 #' This returns all the variables modeled within a multimedia object. This can
-#' be helpful for overviewing an experiment and is called by the print methods 
+#' be helpful for overviewing an experiment and is called by the print methods
 #' in this package. Also supports filtering to specific node types, e.g.,
 #' mediators.
-#' 
-#' @param object An object of class multimedia 
+#'
+#' @param object An object of class multimedia
 #' @param nm A string specifying the node type to filter down to, e.g.,
 #'   'treatment' or 'mediator'.
 #' @importFrom rlang .data
@@ -47,10 +47,12 @@ setGeneric("treatments<-", \(object, value) standardGeneric("treatments<-"))
 #' multimedia(exper) |>
 #'   mediators()
 #' @export
-setMethod("mediators", "multimedia",
+setMethod(
+  "mediators", "multimedia",
   \(object) {
     retrieve_names(object, "mediator")
-})
+  }
+)
 
 #' Access to @mediators in Mediation Data
 #'
@@ -63,10 +65,12 @@ setMethod("mediators", "multimedia",
 #'   mediation_data("PHQ", "treatment", starts_with("ASV"))
 #' mediators(exper)
 #' @export
-setMethod("mediators", "mediation_data",
+setMethod(
+  "mediators", "mediation_data",
   \(object) {
     object@mediators
-})
+  }
+)
 
 #' Names of Outcomes in a Multimedia Object
 #'
@@ -87,18 +91,20 @@ setMethod("mediators", "mediation_data",
 #' multimedia(exper) |>
 #'   outcomes()
 #' @export
-setMethod("outcomes", "multimedia",
+setMethod(
+  "outcomes", "multimedia",
   \(object) {
     retrieve_names(object, "outcome")
-})
+  }
+)
 
 #' Outcomes Data in a Mediation Data Object
-#' 
+#'
 #' This is an accessor function to the @outcomes slot in a mediation data
 #' object. It returns the entire outcomes dataset, in contrast to outcomes()
 #' applied to a multimedia object, which only returns the names of the outcome
 #' variables.
-#' 
+#'
 #' @param object An object of class mediation_data.
 #' @return A data.frame whose rows are samples and columns different outcomes.
 #' @examples
@@ -106,18 +112,20 @@ setMethod("outcomes", "multimedia",
 #'   mediation_data("PHQ", "treatment", starts_with("ASV"))
 #' outcomes(exper)
 #' @export
-setMethod("outcomes", "mediation_data",
+setMethod(
+  "outcomes", "mediation_data",
   \(object) {
     object@outcomes
-})
+  }
+)
 
 #' Treatments in a Mediation Data Object
-#' 
+#'
 #' This is an accessor function to the @treatments slot in a mediation data
 #' object. It returns the entire set of observed treatments, in contrast to
 #' treatments() applied to a multimedia object, which only returns the names of
 #' the treatment variables.
-#' 
+#'
 #' @param object An object of class mediation_data.
 #' @return A data.frame whose rows are samples and columns different treatments.
 #' @examples
@@ -125,18 +133,20 @@ setMethod("outcomes", "mediation_data",
 #'   mediation_data("PHQ", "treatment", starts_with("ASV"))
 #' treatments(exper)
 #' @export
-setMethod("treatments", "mediation_data",
+setMethod(
+  "treatments", "mediation_data",
   \(object) {
     object@treatments
-})
+  }
+)
 
 #' Pretreatments in a Mediation Data Object
-#' 
+#'
 #' This is an accessor function to the @pretreatments slot in a mediation data
 #' object. It returns the entire set of observed pretreatments, in contrast to
 #' pretreatments() applied to a multimedia object, which only returns the names of
 #' the pretreatment variables.
-#' 
+#'
 #' @param object An object of class mediation_data.
 #' @return A data.frame whose rows are samples and columns different pretreatments.
 #' @examples
@@ -144,16 +154,18 @@ setMethod("treatments", "mediation_data",
 #'   mediation_data("PHQ", "treatment", starts_with("ASV"))
 #' pretreatments(exper)
 #' @export
-setMethod("pretreatments", "mediation_data",
+setMethod(
+  "pretreatments", "mediation_data",
   \(object) {
     object@pretreatments
-})
+  }
+)
 
 #' Set the Outcomes in a Mediation Data Object
-#' 
+#'
 #' This is an setter method for the outcomes slot in a mediation data object. It
 #' lets you supply a new outcomes data.frame for the object.
-#' 
+#'
 #' @param object An object of class mediation_data.
 #' @param values The new outcome values for the object.
 #' @return A version of `object` whose outcomes slot has been replaced.
@@ -163,17 +175,19 @@ setMethod("pretreatments", "mediation_data",
 #' outcomes(exper) <- data.frame(y = 1:10)
 #' exper
 #' @export
-setMethod("outcomes<-", "mediation_data",
+setMethod(
+  "outcomes<-", "mediation_data",
   \(object, value) {
     object@outcomes <- value
     object
-})
+  }
+)
 
 #' Set the Mediators in a Mediation Data Object
-#' 
+#'
 #' This is an setter method for the mediators slot in a mediation data object.
 #' It lets you supply a new mediators data.frame for the object.
-#' 
+#'
 #' @param object An object of class mediation_data.
 #' @param values The new mediators values for the object.
 #' @return A version of `object` whose mediators slot has been replaced.
@@ -183,17 +197,19 @@ setMethod("outcomes<-", "mediation_data",
 #' mediators(exper) <- data.frame(m = 1:10)
 #' exper
 #' @export
-setMethod("mediators<-", "mediation_data",
+setMethod(
+  "mediators<-", "mediation_data",
   \(object, value) {
     object@mediators <- value
     object
-})
+  }
+)
 
 #' Set the Treatments in a Mediation Data Object
-#' 
+#'
 #' This is an setter method for the treatments slot in a mediation data object. It
 #' lets you supply a new treatments data.frame for the object.
-#' 
+#'
 #' @param object An object of class mediation_data.
 #' @param values The new treatment values for the object.
 #' @return A version of `object` whose treatment slot has been replaced.
@@ -203,17 +219,19 @@ setMethod("mediators<-", "mediation_data",
 #' treatments(exper) <- data.frame(t = rep(0, 10))
 #' exper
 #' @export
-setMethod("treatments<-", "mediation_data",
+setMethod(
+  "treatments<-", "mediation_data",
   \(object, value) {
     object@treatments <- value
     object
-})
+  }
+)
 
 #' Set the Pretreatments in a Mediation Data Object
-#' 
+#'
 #' This is an setter method for the pretreatments slot in a mediation data object. It
 #' lets you supply a new pretreatments data.frame for the object.
-#' 
+#'
 #' @param object An object of class mediation_data.
 #' @param values The new pretreatment values for the object.
 #' @return A version of `object` whose pretreatments slot has been replaced.
@@ -223,18 +241,20 @@ setMethod("treatments<-", "mediation_data",
 #' pretreatments(exper) <- data.frame(x = 1:10)
 #' exper
 #' @export
-setMethod("pretreatments<-", "mediation_data",
+setMethod(
+  "pretreatments<-", "mediation_data",
   \(object, value) {
     object@pretreatments <- value
     object
-})
+  }
+)
 
 #' Access Mediation Model DAG
-#' 
+#'
 #' This is an accessor to the edges slot in a multimedia object. It is the
 #' internal representation of the variable conditional dependence graph encoded
 #' by the mediation model's DAG.
-#' 
+#'
 #' @param object An object of class multimedia.
 #' @return A data.frame whose rows give edges in the mediation analysis DAG.
 #' @examples
@@ -243,10 +263,12 @@ setMethod("pretreatments<-", "mediation_data",
 #' multimedia(exper) |>
 #'   edges()
 #' @export
-setMethod("edges", "multimedia",
+setMethod(
+  "edges", "multimedia",
   \(object) {
     object@edges
-  })
+  }
+)
 
 
 #' Names of Treatments in a Multimedia Object
@@ -263,10 +285,12 @@ setMethod("edges", "multimedia",
 #' multimedia(exper) |>
 #'   treatments()
 #' @export
-setMethod("treatments", "multimedia",
+setMethod(
+  "treatments", "multimedia",
   function(object) {
     retrieve_names(object, "treatment")
-})
+  }
+)
 
 #' Number of Mediators in a Multimedia Object
 #'
@@ -297,7 +321,7 @@ n_outcomes <- function(object) {
 }
 
 #' Access the Outcome Model in a Multimedia Object
-#' 
+#'
 #' This is an accessor to the outcome slot of a multimedia object.
 #' @param object An object of class multimedia.
 #' @return NULL, if not fitted, or the model learned from the training mediation

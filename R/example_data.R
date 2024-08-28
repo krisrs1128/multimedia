@@ -103,7 +103,7 @@ demo_spline <- function(n_samples = 5e3, tau = c(2, 2)) {
 }
 
 #' Mindfulness Dataset
-#' 
+#'
 #' Data from a study of the relationship between mindfulness and the microbiome,
 #' stored as a phyloseq object. Measurements are from 50 subjects before and
 #' after a real and active control mindfulness intervention. We are interested

@@ -121,7 +121,7 @@ graph_specification <- function(outcomes, treatments, mediators, pretreatments) 
         levels = c("intercept", "pretreatment", "treatment", "mediator", "outcome")
       )
     ) |>
-    arrange(across(c("node_type", "name")))|>
+    arrange(across(c("node_type", "name"))) |>
     mutate(id = row_number())
 }
 

@@ -343,7 +343,7 @@ glmnet_model <- function(...) {
 #'
 #' This assumes a continuous response, so that the out-of-sample MSE can be used
 #' to estimate the outcome variability sigma.
-#' 
+#'
 #' @importFrom stats deviance
 #' @examples
 #' m <- glmnet_model()
@@ -453,7 +453,7 @@ brms_model <- function(...) {
 #' @param object An object of class `model` whose estimator we would like to
 #'   call.
 #' @return A function that can be called with formula and data arguments, like
-#`   lm()`.
+# `   lm()`.
 #' @examples
 #' m <- lm_model()
 #' estimator(m)(mpg ~ hp + wt, data = mtcars)
@@ -468,10 +468,10 @@ estimator <- function(object) {
 #' @return A list containing all the fitted outcome models.
 #' @examples
 #' exper <- mediation_data(
-#'   mindfulness, 
-#'   phyloseq::taxa_names(mindfulness), 
-#'   "treatment", 
-#'   starts_with("mediator"),   
+#'   mindfulness,
+#'   phyloseq::taxa_names(mindfulness),
+#'   "treatment",
+#'   starts_with("mediator"),
 #'   "subject"
 #' )
 #'
@@ -488,13 +488,13 @@ outcome_models <- function(object) {
 #' @return A list containing all the fitted mediation models.
 #' @examples
 #' exper <- mediation_data(
-#'   mindfulness, 
-#'   phyloseq::taxa_names(mindfulness), 
-#'   "treatment", 
-#'   starts_with("mediator"),   
+#'   mindfulness,
+#'   phyloseq::taxa_names(mindfulness),
+#'   "treatment",
+#'   starts_with("mediator"),
 #'   "subject"
 #' )
-#' 
+#'
 #' m <- multimedia(exper)
 #' mediation_models(m)
 #' @export

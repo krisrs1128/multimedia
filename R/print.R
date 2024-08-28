@@ -59,7 +59,7 @@ setMethod("show", "multimedia", function(object) {
 #' Taken from the post at
 #'
 #' https://blog.djnavarro.net/posts/2021-04-18_pretty-little-clis/
-#' 
+#'
 #' @param x A character vector potentially including ANSI.
 #' @param options Unused placeholder argument.
 #' @return A string with HTML reformatted to ensure colors appear in printed

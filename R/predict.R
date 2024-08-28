@@ -102,9 +102,9 @@ setMethod("sample", "multimedia", function(
 #' @return A vector of predicted values for the outcome of interest.
 #' @noRd
 #' @examples
-#' exper <- demo_spline(tau = c(2, 1)) |>  
+#' exper <- demo_spline(tau = c(2, 1)) |>
 #'   mediation_data(starts_with("outcome"), "treatment", "mediator")
-#' fit <- multimedia(exper) |> 
+#' fit <- multimedia(exper) |>
 #'   estimate(exper)
 #' multimedia:::predict_across(outcomes(fit), NULL, "outcome_1")
 #' multimedia:::predict_across(outcome_model(fit), NULL, "outcome_2")
@@ -129,8 +129,8 @@ predict_across <- function(object, newdata, name) {
         name,
         ~ object@predictor(object@estimates[[.]], newdata),
       ) |>
-      set_names(name) |>
-      bind_cols()
+        set_names(name) |>
+        bind_cols()
       return(predictions)
     }
   }

@@ -62,8 +62,8 @@ contrast_predictions <- function(model, profile1, profile2, ...) {
 #' contrast_samples(model, profile1, profile2)
 #'
 #' samples <- purrr::map(seq_len(100), ~ contrast_samples(model, profile1, profile2))
-#' hist(sapply(samples, \(x) x[[1]]$ASV1) )
-#' hist(sapply(samples, \(x) x[[1]]$ASV2) )
+#' hist(sapply(samples, \(x) x[[1]]$ASV1))
+#' hist(sapply(samples, \(x) x[[1]]$ASV2))
 contrast_samples <- function(model, profile1, profile2, ...) {
   y1 <- sample(model, profile = profile1, ...)
   y2 <- sample(model, profile = profile2, ...)
@@ -275,13 +275,13 @@ indirect_pathwise <- function(model, exper = NULL, t1 = 1, t2 = 2) {
   result <- list()
   for (i in seq_len(nrow(t_))) {
     cli_text(glue("Indirect effects for direct setting {i}"))
-    profile2 <- setup_profile(model, t_[t2,, drop = FALSE], t_[i,, drop = FALSE])
+    profile2 <- setup_profile(model, t_[t2, , drop = FALSE], t_[i, , drop = FALSE])
     y_hat_2 <- predict(model, profile2, pretreatment = pretreatment)
 
     pb <- progress_bar$new(total = length(m), format = "[:bar] Mediator: :current/:total ETA: :eta")
     for (j in seq_along(m)) {
       profile1 <- profile2
-      profile1@t_mediator[[j]] <- t_[t1,, drop=FALSE]
+      profile1@t_mediator[[j]] <- t_[t1, , drop = FALSE]
       y_hat_1 <- predict(model, profile1, pretreatment = pretreatment)
       y_diff <- colMeans(path_difference(y_hat_1, y_hat_2)[["outcomes"]])
 
