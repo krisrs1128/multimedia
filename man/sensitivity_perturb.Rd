@@ -53,3 +53,24 @@ outcomes according to diag(sigma^2_mediator, sigma^2_outcome) + nu * perturb.
 The estimates sigma^2 are taken from the residuals in the original mediation
 and outcome models, and perturb and nu are provided by the user.
 }
+\examples{
+xy_data <- demo_spline()
+exper <- mediation_data(
+    xy_data, starts_with("outcome"), "treatment", "mediator"
+)
+model <- multimedia(
+    exper,
+    outcome_estimator = glmnet_model(lambda = 1e-2)
+) |>
+    estimate(exper)
+rho_seq <- c(-0.2, 0.2)
+perturb <- matrix(
+    c(
+        0, 3, 0,
+        3, 0, 0,
+        0, 0, 0
+    ),
+    nrow = 3, byrow = TRUE
+)
+sensitivity_perturb(model, exper, perturb, n_bootstrap = 2)
+}

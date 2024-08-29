@@ -276,6 +276,15 @@ ggplot(coords) +
     facet_wrap(~ type + reorder(outcome, -abundance))
 ```
 
+```{r}
+confound_ix <- data.frame(
+    outcome = vis_outcomes,
+    mediator = "gEnterocloster"
+)
+sensitivity_overall <- sensitivity(model, exper, confound_ix)
+saveRDS(sensitivity_overall, "~/Downloads/sensitivity_overall-IBD.rds")
+```
+
 Pathwise indirect effects are those that appear when modifying the treatment
 status for a single mediator. Unlike overall indirect effects, they give us
 effects for individual mediator-outcome pairs. Now, instead of averaging over
@@ -387,11 +396,13 @@ p1 | p2
 ```{r}
 confound_ix <- data.frame(
     mediator = c("gEnterocloster", "gEnterocloster", "gCAG103"),
-    outcome = c("m1129_chenodeoxycholate", "m1403_cholate", "m0900_ketodeoxycholate")
+    outcome = c(
+        "m1129_chenodeoxycholate", "m1403_cholate", "m0900_ketodeoxycholate"
+    )
 )
 
-rho_seq <- seq(-0.7, 0.7, length.out = 2)
-sensitivity_analysis <- sensitivity_pathwise(model, exper, confound_ix)#, rho_seq = rho_seq)
+sensitivity_pathwise <- sensitivity_pathwise(model, exper, confound_ix)
+saveRDS(sensitivity_pathwise, "~/Downloads/sensitivity_pathwise-IBD.rds")
 ```
 
 # Hurdle-Lognormal Approach

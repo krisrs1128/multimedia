@@ -393,6 +393,26 @@ covariance_matrix <- function(model, confound_ix = NULL, rho = 0.0) {
 #' @param progress A logical indicating whether to show a progress bar.
 #' @return A `date.frame` giving the outputs of `indirect_overall` across many
 #'   values of the correlation rho.
+#' @examples
+#' xy_data <- demo_spline()
+#' exper <- mediation_data(
+#'     xy_data, starts_with("outcome"), "treatment", "mediator"
+#' )
+#' model <- multimedia(
+#'     exper,
+#'     outcome_estimator = glmnet_model(lambda = 1e-2)
+#' ) |>
+#'     estimate(exper)
+#' rho_seq <- c(-0.2, 0.2)
+#' perturb <- matrix(
+#'     c(
+#'         0, 3, 0,
+#'         3, 0, 0,
+#'         0, 0, 0
+#'     ),
+#'     nrow = 3, byrow = TRUE
+#' )
+#' sensitivity_perturb(model, exper, perturb, n_bootstrap = 2)
 #' @export
 sensitivity_perturb <- function(
     model, exper, perturb, nu_seq = NULL, n_bootstrap = 100, progress = TRUE) {
