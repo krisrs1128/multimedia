@@ -31,7 +31,7 @@
 #'   so enforcing independence between mediators and outcomes)
 #' @param rho_seq We will evaluate correlations Cor(e', e) between mediation and
 #'   outcome model errors ranging along this grid. Defaults to NULL, which
-#'   internally sets the sequence to rho = [-0.9, -0.7 ..., 0.7, 0.9].
+#'   internally sets the sequence to rho = (-0.9, -0.7 ..., 0.7, 0.9).
 #' @param n_bootstrap The number of bootstrap resamples used to build confidence
 #'   bands around the sensitivity curves. Defaults to 100.
 #' @param progress A logical indicating whether to show a progress bar.
@@ -202,6 +202,10 @@ sensitivity <- function(model, exper, confound_ix = NULL, rho_seq = NULL,
 sensitivity_pathwise <- function(
     model, exper, confound_ix = NULL, rho_seq = NULL, n_bootstrap = 100,
     progress = TRUE) {
+    if (is.null(rho_seq)) {
+        rho_seq <- seq(-0.9, 0.9, by = 0.2)
+    }
+
     summarization <- \(x) {
         indirect_pathwise(x) |>
             effect_summary()
@@ -213,12 +217,6 @@ sensitivity_pathwise <- function(
         summarization, model, exper, sampler, rho_seq, n_bootstrap, progress
     ) |>
         rename(rho = "perturbation")
-}
-
-#' @importFrom dplyr arrange across everything
-sorted_treatments <- function(model) {
-    unique(model@treatments) |>
-        arrange(across(everything()))
 }
 
 #' Sample from an SEM with Correlated Errors
@@ -256,6 +254,29 @@ sensitivity_subset_sample <- function(
     sensitivity_sample(model, exper, epsilon)
 }
 
+#' Sample Mediators and Outcomes given Correlated Noise
+#'
+#' The overall approach to sensitivity analysis in this file relies on sampling
+#' error structures that violate different assumptions of mediation analysis.
+#' Given these errors, epsilon, this samples mediators and outcomes from a
+#' hypothetical experiments. We can compute the direct and indirect effects from
+#' this modified experiment to see how dramatically our conclusions would be
+#' altered in case there is in fact a violation of the original assumptions.
+#' 
+#' @param model A `multimedia` object containing the fitted models for
+#'   sensitivity analysis. Note that since our approach relies on correlating
+#'   simulated residual error, it is only applicable to models of class
+#'   `lm_model()`, `glmnet_model()` and `rf_model()`.
+#' @param exper The original `mediation_data` class object used to fit `model`.
+#'   These observations will be resampled to support bootstrap confidence
+#'   interval construction of the sensitivity curve.
+#' @param epsilon A matrix of dimension N samples x (n_mediators + n_outcomes)
+#'   that is sampled with potential departures from mediation analysis
+#'   identification conditions.
+#' @return A list whose length equals the number of unique treatments in the
+#'   model. Each element has elements for the outcome and mediation data under
+#'   that counterfactual configuration.
+#' @noRd
 sensitivity_sample <- function(model, exper, epsilon) {
     t_ <- model@treatments
     Nm <- n_mediators(model)
@@ -316,10 +337,13 @@ covariance_matrix <- function(model, confound_ix = NULL, rho = 0.0) {
     }
     if (!(all(c("mediator", "outcome") %in% colnames(confound_ix)))) {
         cli_abort(glue(
-            "Argument confound_ix seems incorrectly formatted. Are you sure
-            you have columns called 'mediator' and 'outcome'? We found
-            {colnames(confound_ix)}"
+            "Argument confound_ix seems incorrectly formatted. Make sure you
+            have columns called 'mediator' and 'outcome'. We found
+            {colnames(confound_ix)}."
         ))
+    }
+    if (any(!is.integer(confound_ix))) {
+        confound_ix <- confound_indices(model, confound_ix)
     }
 
     # Fill in covariances
@@ -337,15 +361,38 @@ covariance_matrix <- function(model, confound_ix = NULL, rho = 0.0) {
     ecov$vectors %*% diag(ecov$values) %*% t(ecov$vectors)
 }
 
-#' @noRd
-sensitivity_perturb_sample <- function(model, exper, perturb = NULL, nu = 0.0) {
-    Nm <- n_mediators(model)
-    Ny <- n_outcomes(model)
-    epsilon <- (covariance_matrix(model) + nu * perturb) |>
-        mvrnorm(nrow(exper), rep(0, Nm + Ny), Sigma = _)
-    sensitivity_sample(model, exper, epsilon)
-}
 
+#' Sensitivity to User-Specified Perturbations
+#' 
+#' The more standard sensitivity and sensitivity_pathwise functions support
+#' sensitivity analysis to violations in assumptions restricted to specific
+#' mediator-outcome pairs. For more general violations, this function allows
+#' arbitrary modification of the default, diagonal covariance matrix structure
+#' across both mediators and outcomes. This makes it possible to ask what
+#' happens when mediators are correlated with one another or when more some
+#' pairs of mediator-outcome pairs have much stronger correlation than others.
+#' 
+#' Specifically, it defines a new covariance matrix across mediators and
+#' outcomes according to diag(sigma^2_mediator, sigma^2_outcome) + nu * perturb.
+#' The estimates sigma^2 are taken from the residuals in the original mediation
+#' and outcome models, and perturb and nu are provided by the user.
+#' 
+#' @param model A `multimedia` object containing the fitted models for
+#'   sensitivity analysis. Note that since our approach relies on correlating
+#'   simulated residual error, it is only applicable to models of class
+#'   `lm_model()`, `glmnet_model()` and `rf_model()`.
+#' @param exper The original `mediation_data` class object used to fit `model`.
+#'   These observations will be resampled to support bootstrap confidence
+#'   interval construction of the sensitivity curve.
+#' @param perturb A matrix towards which the original mediator-outcome
+#'   covariance should be perturbed. Must have dimension (n_mediators +
+#'   n_outcomes) x (n_mediators + n_outcomes).
+#' @param nu_seq The strength of the perturbation towards the matrix perturb.
+#' @param n_bootstrap The number of bootstrap resamples used to build confidence
+#'   bands around the sensitivity curves. Defaults to 100.
+#' @param progress A logical indicating whether to show a progress bar.
+#' @return A `date.frame` giving the outputs of `indirect_overall` across many
+#'   values of the correlation rho.
 #' @export
 sensitivity_perturb <- function(
     model, exper, perturb, nu_seq = NULL, n_bootstrap = 100, progress = TRUE) {
@@ -367,6 +414,28 @@ sensitivity_perturb <- function(
         rename(nu = "perturbation")
 }
 
+#' Sample from a Perturbed Covariance Matrix
+#' 
+#' This builds the covariance matrix used by `sensitivity_perturb` to support
+#' sensitivity analysis to more general mediator-outcome covariances.
+#' @noRd
+sensitivity_perturb_sample <- function(model, exper, perturb = NULL, nu = 0.0) {
+    Nm <- n_mediators(model)
+    Ny <- n_outcomes(model)
+    epsilon <- (covariance_matrix(model) + nu * perturb) |>
+        mvrnorm(nrow(exper), rep(0, Nm + Ny), Sigma = _)
+    sensitivity_sample(model, exper, epsilon)
+}
+
+###############################################################################
+## Helpers used in this file
+###############################################################################
+
+#' Check that Sensitivity is Implemented for a Model
+#' 
+#' We only support sensitivity analysis for models with additive noise
+#' structure. brms and lnm models are not supported.
+#' @noRd
 check_supported <- function(model) {
     model_types <- c(model@mediation@model_type, model@outcome@model_type)
     supported_models <- c("rf_model()", "lm_model()", "glmnet_model()")
@@ -376,4 +445,42 @@ check_supported <- function(model) {
             lm_model(), glmnet_model(), and rf_model()."
         )
     }
+}
+
+#' Extract Treatments in Alphabetical Order
+#' @importFrom dplyr arrange across everything
+#' @noRd
+sorted_treatments <- function(model) {
+    unique(model@treatments) |>
+        arrange(across(everything()))
+}
+
+#' Match Mediator/Outcome Names with Index in Model Object
+#'
+#' We allow users to specify pairs of confounded mediator-outcome indices using
+#' the names of those mediators and outcomes. However, the internal covariance
+#' representation does not have row or column names. We use this function to
+#' match the original names with the index into the covariance matrix, using the
+#' ordering present in the learned multimedia model.
+#' 
+#' @param model A `multimedia` object containing the fitted models for
+#'   sensitivity analysis. Note that since our approach relies on correlating
+#'   simulated residual error, it is only applicable to models of class
+#'   `lm_model()`, `glmnet_model()` and `rf_model()`.
+#' @param confound_ix A data.frame specifying which mediator/outcome should
+#'   be allowed to be correlated. Should have two columns: 'mediator' and
+#'   'outcome' specifying which pairs of mediators and outcomes should be
+#'   correlated. Defaults to NULL, which creates a data.frame with no rows (and
+#'   so enforcing independence between mediators and outcomes)
+#' @return A data.frame with the same dimensions as confound_ix, but with
+#'   character names replaced by numerical indices into the original multimedia
+#'   object's mediator and outcome slots.
+#' @noRd
+confound_indices <- function(model, confound_ix) {
+    m_ix <- match(confound_ix$mediator, mediators(model))
+    o_ix <- match(confound_ix$outcome, outcomes(model))
+    data.frame(
+        mediator = m_ix,
+        outcome = o_ix
+    )
 }
