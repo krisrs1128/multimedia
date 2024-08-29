@@ -384,6 +384,16 @@ p2 <- filter(inference$direct, outcome %in% filter_outcomes) |>
 p1 | p2
 ```
 
+```{r}
+confound_ix <- data.frame(
+    mediator = c("gEnterocloster", "gEnterocloster", "gCAG103"),
+    outcome = c("m1129_chenodeoxycholate", "m1403_cholate", "m0900_ketodeoxycholate")
+)
+
+rho_seq <- seq(-0.7, 0.7, length.out = 2)
+sensitivity_analysis <- sensitivity_pathwise(model, exper, confound_ix)#, rho_seq = rho_seq)
+```
+
 # Hurdle-Lognormal Approach
 
 There are many zeros in the metabolites data, and sparse regression is not the
