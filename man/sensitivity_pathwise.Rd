@@ -10,7 +10,8 @@ sensitivity_pathwise(
   confound_ix = NULL,
   rho_seq = NULL,
   n_bootstrap = 100,
-  progress = TRUE
+  progress = TRUE,
+  ...
 )
 }
 \arguments{
@@ -37,6 +38,8 @@ internally sets the sequence to rho = (-0.9, -0.7 ..., 0.7, 0.9).}
 bands around the sensitivity curves. Defaults to 100.}
 
 \item{progress}{A logical indicating whether to show a progress bar.}
+
+\item{...}{Additional arguments passed to indirect_pathwise.}
 }
 \value{
 A \code{date.frame} giving the outputs of \code{indirect_overall} across many

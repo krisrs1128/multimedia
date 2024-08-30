@@ -10,7 +10,8 @@ sensitivity(
   confound_ix = NULL,
   rho_seq = NULL,
   n_bootstrap = 100,
-  progress = TRUE
+  progress = TRUE,
+  ...
 )
 }
 \arguments{
