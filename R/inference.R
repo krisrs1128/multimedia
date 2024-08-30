@@ -166,7 +166,8 @@ bootstrap <- function(model, exper, fs = NULL, B = 1000) {
             stats[[nf]][[b]] <- fs[[f]](model_b, exper_b)
             pb$tick()
         }
-        stats[[nf]] <- bind_rows(stats[[nf]], .id = "bootstrap")
+        stats[[nf]] <- bind_rows(stats[[nf]], .id = "bootstrap") |>
+            mutate(bootstrap = as.integer(bootstrap))
     }
     stats
 }
