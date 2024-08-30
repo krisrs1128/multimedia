@@ -56,16 +56,8 @@ sensitivity_factory <- function(
     for (i in seq_along(sensitivity_seq)) {
         for (b in seq_len(n_bootstrap)) {
             exper_ <- exper[sample(nrow(exper)), ]
-            samples <- sampler(model, exper, sensitivity_seq[i])
-
-            t_ <- model@treatments
-            for (j in seq_len(nrow(t_))) {
-                ix <- apply(exper_@treatments, 1, \(x) x == t_[j, ])
-                exper_@outcomes[ix, ] <- samples[[j]]$outcomes[ix, ]
-                exper_@mediators[ix, ] <- samples[[j]]$mediators[ix, ]
-            }
-
-            sensitivity_curve[[k]] <- estimate(model, exper_) |>
+            sensitivity_curve[[k]] <- sampler(model, exper_, sensitivity_seq[i]) |>
+                estimate(model, exper = _) |>
                 summarization() |>
                 mutate(perturbation = sensitivity_seq[i], bootstrap = b)
             k <- k + 1
@@ -76,6 +68,8 @@ sensitivity_factory <- function(
     bind_rows(sensitivity_curve) |>
         group_by(
             .data$outcome,
+            .data$direct_setting,
+            .data$contrast,
             !!sym(ifelse("mediator" %in% colnames(sensitivity_curve[[1]]),
                 "mediator", ""
             )),
@@ -84,7 +78,8 @@ sensitivity_factory <- function(
         summarise(
             across(ends_with("effect"), c(`_` = mean, standard_error = sd))
         ) |>
-        rename_with(~ gsub("__$", "", .))
+        rename_with(~ gsub("__$", "", .)) |>
+        select(perturbation, everything())
 }
 
 #' Sensitivity Analysis for Overall Indirect Effect
@@ -133,14 +128,13 @@ sensitivity_factory <- function(
 #' sensitivity(model, exper, confound_ix, rho_seq, n_bootstrap = 2)
 #' @export
 sensitivity <- function(model, exper, confound_ix = NULL, rho_seq = NULL,
-                        n_bootstrap = 100, progress = TRUE) {
+                        n_bootstrap = 100, progress = TRUE, ...) {
     if (is.null(rho_seq)) {
         rho_seq <- seq(-0.9, 0.9, by = 0.2)
     }
 
     summarization <- \(x) {
-        indirect_overall(x) |>
-            effect_summary()
+        indirect_overall(x, ...)
     }
 
     sampler <- \(model, exper, rho) {
@@ -181,6 +175,7 @@ sensitivity <- function(model, exper, confound_ix = NULL, rho_seq = NULL,
 #' @param n_bootstrap The number of bootstrap resamples used to build confidence
 #'   bands around the sensitivity curves. Defaults to 100.
 #' @param progress A logical indicating whether to show a progress bar.
+#' @param ... Additional arguments passed to indirect_pathwise.
 #' @return A `date.frame` giving the outputs of `indirect_overall` across many
 #'   values of the correlation rho.
 #' @examples
@@ -201,14 +196,13 @@ sensitivity <- function(model, exper, confound_ix = NULL, rho_seq = NULL,
 #' @export
 sensitivity_pathwise <- function(
     model, exper, confound_ix = NULL, rho_seq = NULL, n_bootstrap = 100,
-    progress = TRUE) {
+    progress = TRUE, ...) {
     if (is.null(rho_seq)) {
         rho_seq <- seq(-0.9, 0.9, by = 0.2)
     }
 
     summarization <- \(x) {
-        indirect_pathwise(x) |>
-            effect_summary()
+        indirect_pathwise(x, ...)
     }
     sampler <- \(model, exper, rho) {
         sensitivity_subset_sample(model, exper, confound_ix, rho)
@@ -274,33 +268,23 @@ sensitivity_subset_sample <- function(
 #'   that is sampled with potential departures from mediation analysis
 #'   identification conditions.
 #' @return A list whose length equals the number of unique treatments in the
-#'   model. Each element has elements for the outcome and mediation data under
-#'   that counterfactual configuration.
+#'   model. Each corresopnds to an outcome and mediation data term under that
+#'   counterfactual configuration.
+#' @importFrom dplyr tibble
 #' @noRd
 sensitivity_sample <- function(model, exper, epsilon) {
-    t_ <- model@treatments
     Nm <- n_mediators(model)
     Ny <- n_outcomes(model)
+    profile <- setup_profile(model, treatments(exper), treatments(exper))
+    exper_ <- sample(model, profile = profile, pretreatments = pretreatments(exper))
 
-    samples <- list()
-    for (i in seq_len(nrow(t_))) {
-        exper_ <- bind_mediation(exper)
-        exper_[, treatments(model)] <- t_[i, , drop = FALSE]
+    # add correlated noise
+    mediators(exper_) <- (mediators(exper) + epsilon[, seq_len(Nm)]) |>
+        tibble()
+    outcomes(exper_) <- (outcomes(exper) + epsilon[, seq(Nm + 1, Nm + Ny)]) |>
+        tibble()
 
-        # sample the mediators and outcomes
-        m <- predict_across(model@mediation, exper_, mediators(model)) +
-            epsilon[, seq_len(Nm), drop = FALSE]
-        exper_[, mediators(model)] <- m
-        y <- predict_across(model@outcome, exper_, outcomes(model)) +
-            epsilon[, seq(Nm + 1, Nm + Ny), drop = FALSE]
-
-        # rename and save
-        colnames(m) <- mediators(model)
-        colnames(y) <- outcomes(model)
-        samples[[i]] <- list(mediators = m, outcomes = y)
-    }
-
-    samples
+    exper_
 }
 
 #' Extract SDs from multimedia model objects
@@ -327,6 +311,24 @@ standard_deviations <- function(model) {
     )
 }
 
+#' Covariance Matrix for (e(M), e(Y))
+#' 
+#' For our sensitivity analysis, we need to sample correlated errors for
+#' mediators M and outcomes Y. This function looks into the fitted mediator and
+#' outcome models to estimate the diagonal of this covariance. It then allows
+#' users to specify correlation strengths' rho at particular indices,
+#' representing unmeasured confounding between mediators and outcomes.
+#' 
+#' @param model A `multimedia` object containing the fitted models for
+#'   sensitivity analysis. Note that since our approach relies on correlating
+#'   simulated residual error, it is only applicable to models of class
+#'   `lm_model()`, `glmnet_model()` and `rf_model()`.
+#' @param confound_ix A data.frame specifying which mediator/outcome should
+#'   be allowed to be correlated. Should have two columns: 'mediator' and
+#'   'outcome' specifying which pairs of mediators and outcomes should be
+#'   correlated. Defaults to NULL, which creates a data.frame with no rows (and
+#'   so enforcing independence between mediators and outcomes)
+#' @param rho The strength of the correlation to introduce on off diagonals.
 #' @noRd
 covariance_matrix <- function(model, confound_ix = NULL, rho = 0.0) {
     sigma_m <- standard_deviations(model@mediation)
@@ -421,8 +423,7 @@ sensitivity_perturb <- function(
     }
 
     summarization <- \(x) {
-        indirect_overall(x) |>
-            effect_summary()
+        indirect_overall(x)
     }
 
     sampler <- \(model, exper, nu) {
