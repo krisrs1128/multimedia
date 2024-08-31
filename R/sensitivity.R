@@ -79,7 +79,7 @@ sensitivity_factory <- function(
             across(ends_with("effect"), c(`_` = mean, standard_error = sd))
         ) |>
         rename_with(~ gsub("__$", "", .)) |>
-        select(perturbation, everything())
+        select("perturbation", everything())
 }
 
 #' Sensitivity Analysis for Overall Indirect Effect
@@ -111,7 +111,8 @@ sensitivity_factory <- function(
 #' @param n_bootstrap The number of bootstrap resamples used to build confidence
 #'   bands around the sensitivity curves. Defaults to 100.
 #' @param progress A logical indicating whether to show a progress bar.
-#' @return A `date.frame` giving the outputs of `indirect_overall` across many
+#' @param ... Additional keyword arguments passed to `indirect_overall`.
+#' @return A `data.frame` giving the outputs of `indirect_overall` across many
 #'   values of the correlation rho.
 #' @examples
 #' xy_data <- demo_spline()
