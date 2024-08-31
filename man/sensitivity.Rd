@@ -38,9 +38,11 @@ internally sets the sequence to rho = (-0.9, -0.7 ..., 0.7, 0.9).}
 bands around the sensitivity curves. Defaults to 100.}
 
 \item{progress}{A logical indicating whether to show a progress bar.}
+
+\item{...}{Additional keyword arguments passed to \code{indirect_overall}.}
 }
 \value{
-A \code{date.frame} giving the outputs of \code{indirect_overall} across many
+A \code{data.frame} giving the outputs of \code{indirect_overall} across many
 values of the correlation rho.
 }
 \description{

@@ -23,11 +23,34 @@ retrieve_names <- function(object, nm) {
         pull(.data$name)
 }
 
-# Define setter and getter generics for multimedia and mediation_data S4 classes
+#' Graphical Structure for Mediation Objects
+#'
+#' We often want to access the DAG for different mediation-related S4 objects.
+#' This generic helps us access these graphical model edges lists. See method
+#' instantiations for specific examples.
+#' @export
 setGeneric("edges", \(object) standardGeneric("edges"))
+
+#' @export
 setGeneric("mediators", \(object) standardGeneric("mediators"))
+
+#' Set Mediators
+#'
+#' This is an setter method for mediators in an S4 objet, usually of class
+#' mediation_data.
+#' @param object An object whose mediators slot to modify.
+#' @param values The new mediator values to set within object.
 setGeneric("mediators<-", \(object, value) standardGeneric("mediators<-"))
+
+#' Set Outcomes
+#'
+#' This is an setter method for outcomes in an S4 objet, usually of class
+#' mediation_data.
+#' @param object An object whose outcomes slot to modify.
+#' @param values The new outcome values to set within object.
 setGeneric("outcomes", \(object) standardGeneric("outcomes"))
+
+#' @export
 setGeneric("outcomes<-", \(object, value) standardGeneric("outcomes<-"))
 setGeneric("pretreatments", \(object) standardGeneric("pretreatments"))
 setGeneric("pretreatments<-", \(object, value) {
