@@ -492,7 +492,7 @@ estimator <- function(object) {
 #' outcome_models(m)
 #' @export
 outcome_models <- function(object) {
-    object@outcomes@estimates
+    object@outcome@estimates
 }
 
 #' Accessor for Outcome Models
@@ -513,7 +513,7 @@ outcome_models <- function(object) {
 #' mediation_models(m)
 #' @export
 mediation_models <- function(object) {
-    object@mediaton@estimates
+    object@mediation@estimates
 }
 
 
