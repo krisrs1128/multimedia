@@ -21,3 +21,8 @@ Set Outcomes
 This is an setter method for outcomes in an S4 object, usually of class
 mediation_data.
 }
+\examples{
+exper <- demo_joy() |>
+    mediation_data("PHQ", "treatment", starts_with("ASV"))
+outcomes(exper) <- data.frame(new_PHQ = rnorm(100))
+}

@@ -18,3 +18,9 @@ Modifies the mediators slot of the input object in place.
 This is an setter method for mediators in an S4 object, usually of class
 mediation_data.
 }
+\examples{
+exper <- demo_joy() |>
+    mediation_data("PHQ", "treatment", starts_with("ASV"))
+mediators(exper) <- data.frame(new_ASV = rnorm(100))
+mediators(exper)
+}

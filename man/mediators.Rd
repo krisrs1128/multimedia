@@ -19,3 +19,8 @@ mediation data objects, this returns the mediator mediator data.
 This is a shorthand for accessing mediator-related slots in classes exported
 by the multimedia package.
 }
+\examples{
+exper <- demo_joy() |>
+    mediation_data("PHQ", "treatment", starts_with("ASV"))
+mediators(exper)
+}

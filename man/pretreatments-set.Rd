@@ -21,3 +21,8 @@ Set Pretreatments
 This is an setter method for pretreatments in an S4 object, usually of class
 mediation_data.
 }
+\examples{
+exper <- demo_joy() |>
+    mediation_data("PHQ", "treatment", starts_with("ASV"))
+pretreatments(exper) <- data.frame(new_var = rnorm(100))
+}

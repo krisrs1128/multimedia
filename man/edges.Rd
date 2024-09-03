@@ -18,3 +18,9 @@ We often want to access the DAG for different mediation-related S4 objects.
 This generic helps us access these graphical model edges lists. See method
 instantiations for specific examples.
 }
+\examples{
+exper <- demo_joy() |>
+    mediation_data("PHQ", "treatment", starts_with("ASV"))
+multimedia(exper) |>
+  edges()
+}

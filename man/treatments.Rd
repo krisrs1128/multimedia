@@ -18,3 +18,8 @@ variable names. Otherwise it returns the outcome data.
 This is an getter method for treatments in an S4 object, usually of class
 mediation_data.
 }
+\examples{
+exper <- demo_joy() |>
+    mediation_data("PHQ", "treatment", starts_with("ASV"))
+treatments(exper)
+}
