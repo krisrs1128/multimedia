@@ -75,6 +75,7 @@ ways. The point of mediation analysis is to provide evidence for one or the
 other of these possibilities.
 
 ```{r libraries}
+library(cmdstanr)
 library(ggdist)
 library(ggrepel)
 library(phyloseq)
@@ -103,6 +104,12 @@ exper <- mediation_data(
 )
 
 exper
+```
+
+```{r check_install}
+if (is.null(cmdstan_version(error_on_NA = FALSE))) {
+    install_cmdstan()
+}
 ```
 
 This block applies a logistic-normal multinomial model to the microbiome
