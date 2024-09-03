@@ -58,6 +58,8 @@ Suggests:
     testthat (>= 3.0.0),
     tidyverse,
     vroom
+Remotes:
+    krisrs1128/miniLNM
 BugReports:
     https://github.com/krisrs1128/multimedia/issues
 URL: 
