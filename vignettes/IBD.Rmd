@@ -188,8 +188,8 @@ boxplots.
 
 ```{r, lasso_direct, fig.width = 6, fig.height = 5}
 direct <- list(
-    CD = direct_effect(model, exper, 1, 3),
-    UC = direct_effect(model, exper, 2, 3)
+    CD = direct_effect(model, exper),
+    UC = direct_effect(model, exper, 3, 2)
 ) |>
     map_dfr(effect_summary, .id = "treatment")
 
@@ -221,8 +221,8 @@ top direct and indirect effects in the object `top_effects`.
 
 ```{r}
 indirect_effect <- list(
-    CD = indirect_overall(model, exper, 1, 3),
-    UC = indirect_overall(model, exper, 2, 3)
+    CD = indirect_overall(model, exper),
+    UC = indirect_overall(model, exper, 3, 2)
 )
 
 top_direct <- dplyr::rename(direct, effect = direct_effect)
@@ -276,13 +276,57 @@ ggplot(coords) +
     facet_wrap(~ type + reorder(outcome, -abundance))
 ```
 
+Mediation analysis hinges on the assumption that mediators and outcomes don't
+share any unobserved confounding. This assumption can't be directly tested with
+data, but it is possible to see how sensitive conclusions are to violations of
+this assumption. Specifically, in sensitivity analysis, we deliberately imagine
+that model assumptions are violated, and examine the extent to which indirect
+effect estimates change. `multimedia` implements several types of experimental
+sensitivity analyses (functions starting `sensitivity_*`). However, here, we'll
+use a more standard approach that correlates the errors between subsets of
+mediators and outcomes, implemented in the `sensitivity()` function. 
+Specifically, we'll correlate the mediator model error for `gEnterocloster` and
+the outcomes visualized above (`m0181_hydrocinnamic_acid`, `m1303_lithocholate`,
+etc.) to see whether our estimated overall indirect effects are sensitivity to
+violations in assumptions for this selection of mediators and outcomes.
+
 ```{r}
 confound_ix <- data.frame(
     outcome = vis_outcomes,
     mediator = "gEnterocloster"
 )
-sensitivity_overall <- sensitivity(model, exper, confound_ix)
-saveRDS(sensitivity_overall, "~/Downloads/sensitivity_overall-IBD.rds")
+rho_seq <- seq(-0.5, 0.5, length.out = 10)
+# sensitivity_overall <- sensitivity(model, exper, confound_ix, n_boot = 100, rho_seq = rho_seq, t1 = 1, t2 = 2)
+sensitivity_overall <- readRDS(url("https://go.wisc.edu/331sq1"))
+```
+
+We visualize the results below. Across correlations strengths from -0.5 to 0.5,
+none of the overall indirect effects seem sensitive: Though magnitudes of the
+estimated effects may change slightly, the sign of the estimates remain
+unchanged for all the mediator-outcome pairs that we tested. Only the
+association between `gEnterocloster` and `m0295_arginine` seems at risk of
+switching, and this mainly seems to be related to the large variance in its
+estimate.
+
+```{r visualize_sensitivity_overall, fig.width = 5, fig.height = 4}
+sensitivity_overall |>
+    filter(outcome %in% vis_outcomes) |>
+    ggplot(aes(rho, indirect_effect)) +
+    geom_line(linewidth = 1.5) +
+    geom_ribbon(
+        aes(
+            ymin = indirect_effect - 2 * indirect_effect_standard_error, 
+            ymax = indirect_effect + 2 * indirect_effect_standard_error
+        ),
+        alpha = 0.2, linewidth = 1
+    ) +
+    scale_x_continuous(expand = c(0, 0)) +
+    facet_wrap(~ reorder(outcome, indirect_effect)) +
+    geom_hline(yintercept = 0, linetype = 3, linewidth = 1) +
+    labs(
+        x = expression("Confounder Correlation Strength" ~ rho),
+        y = "Estimated Overall Indirect Effect"
+    )
 ```
 
 Pathwise indirect effects are those that appear when modifying the treatment
@@ -294,12 +338,11 @@ you can just read in the pre-computed result in the next block.
 
 ```{r lasso_indirect}
 # indirect_sorted <- list(
-#   CD = indirect_pathwise(model, exper, 1, 3),
-#   UC = indirect_pathwise(model, exper, 2, 3)
+#     CD = indirect_pathwise(model, exper),
+#     UC = indirect_pathwise(model, exper, 3, 2)
 # ) |>
-#   map_dfr(effect_summary, .id = "treatment")
-
-indirect_sorted <- read_csv("https://go.wisc.edu/n04p94")
+#     map_dfr(effect_summary, .id = "treatment")
+indirect_sorted <- read_csv("https://go.wisc.edu/0c6qkt")
 ```
 
 We can look at the effects which have the strongest indirect effects. These make
@@ -356,7 +399,7 @@ again slow, so you can skip ahead and load a pre-computed version.
 ```{r lasso_bootstrap}
 fs <- list(direct = direct_effect, indirect = indirect_overall)
 # inference <- bootstrap(model, exper, fs, B = 1000)
-inference <- readRDS(url("https://go.wisc.edu/33ty1f"))
+inference <- readRDS(url("https://go.wisc.edu/08o4l0"))
 ```
 
 ```{r lasso_bootstrap_vis, fig.width = 9, fig.height = 3.5}
@@ -395,14 +438,23 @@ p1 | p2
 
 ```{r}
 confound_ix <- data.frame(
-    mediator = c("gEnterocloster", "gEnterocloster", "gCAG103"),
+    mediator = c("Choladousia", "Bilophila", "gCAG103"),
     outcome = c(
-        "m1129_chenodeoxycholate", "m1403_cholate", "m0900_ketodeoxycholate"
+        "m0066_taurine", "m0066_taurine", "m0900_ketodeoxycholate"
     )
 )
 
-sensitivity_pathwise <- sensitivity_pathwise(model, exper, confound_ix)
-saveRDS(sensitivity_pathwise, "~/Downloads/sensitivity_pathwise-IBD.rds")
+sensitivity_path <- sensitivity_pathwise(model, exper, confound_ix, rho_seq, 1)
+# sensitivity_path <- read_csv("https://go.wisc.edu/ph7ek4")
+```
+
+```{r}
+confound_ix |>
+    left_join(sensitivity_path) |>
+    ggplot(aes(rho, indirect_effect, group = contrast)) +
+    geom_hline(yintercept = 0, linetype = 3, linewidth = 1) +
+    geom_line() +
+    facet_wrap(outcome ~ mediator, scales = "free_y")
 ```
 
 # Hurdle-Lognormal Approach
@@ -428,11 +480,11 @@ mediators(exper2) <- mediators(exper2)[, 1:50]
 
 ```{r hurdle_estimate}
 # model <- multimedia(
-#   exper2,
-#   brms_model(family = hurdle_lognormal())
+#     exper2,
+#     brms_model(family = hurdle_lognormal())
 # ) |>
-#   estimate(exper2)
-model <- readRDS(url("https://go.wisc.edu/5e26op"))
+#     estimate(exper2)
+model <- readRDS(url("https://go.wisc.edu/7ge238"))
 ```
 
 With the updated model, we can again compute pathwise indirect effects. This
@@ -442,8 +494,8 @@ effect on microbe abundance. If this hadn't been present, and if the metabolite
 simply vanished, then that would be a direct effect.
 
 ```{r hurdle_indirect, fig.width = 12, fig.height = 9}
-# indirect_sorted <- indirect_pathwise(model, exper2) |>
-indirect_sorted <- read_csv("https://go.wisc.edu/j3z503") |>
+# indirect_sorted <- indirect_pathwise(model, exper2)
+indirect_sorted <- read_csv("https://go.wisc.edu/774tak") |>
     effect_summary()
 plot_mediators(indirect_sorted, exper2, treatment = "Study.Group")
 ```
@@ -470,8 +522,8 @@ hurdle model's effectiveness in accurately reflecting features that influence
 zero-inflation.
 
 ```{r hurdle_direct, fig.width = 6, height = 5}
-# direct <- direct_effect(model, exper) |>
-direct <- read_csv("https://go.wisc.edu/3ik252") |>
+# direct <- direct_effect(model, exper)
+direct <- read_csv("https://go.wisc.edu/28ft5e") |>
     effect_summary()
 
 combined |>
