@@ -28,35 +28,95 @@ retrieve_names <- function(object, nm) {
 #' We often want to access the DAG for different mediation-related S4 objects.
 #' This generic helps us access these graphical model edges lists. See method
 #' instantiations for specific examples.
+#' @param object An object whose DAG structure we want to access.
+#' @return The output depends on the S4 object that is passed. For multimedia
+#'   objects, this will return an edgelist as a two column data.frame.
 #' @export
 setGeneric("edges", \(object) standardGeneric("edges"))
 
+#' Access Class-Specific Mediators
+#' 
+#' This is a shorthand for accessing mediator-related slots in classes exported
+#' by the multimedia package.
+#' 
+#' @param object An object whose mediators we want to access (either their names
+#'   or values).
+#' @return The output will depend on the class of the object that is passed in.
+#'   For multimedia objects, this returns a character vector of mediators. For
+#'   mediation data objects, this returns the mediator mediator data.
 #' @export
 setGeneric("mediators", \(object) standardGeneric("mediators"))
 
 #' Set Mediators
 #'
-#' This is an setter method for mediators in an S4 objet, usually of class
+#' This is an setter method for mediators in an S4 object, usually of class
 #' mediation_data.
 #' @param object An object whose mediators slot to modify.
-#' @param values The new mediator values to set within object.
+#' @param value The new mediator values to set within object.
+#' @return Modifies the mediators slot of the input object in place.
+#' @export
 setGeneric("mediators<-", \(object, value) standardGeneric("mediators<-"))
 
-#' Set Outcomes
+#' Access Outcomes
 #'
-#' This is an setter method for outcomes in an S4 objet, usually of class
+#' This is an getter method for outcomes in an S4 object, usually of class
 #' mediation_data.
 #' @param object An object whose outcomes slot to modify.
-#' @param values The new outcome values to set within object.
+#' @return The output depends on the S4 class of the input object. If it is a
+#'   multimedia model object, it will return a character vector of the outcome
+#'   variable names. Otherwise it returns the outcome data.
+#' @export
 setGeneric("outcomes", \(object) standardGeneric("outcomes"))
 
+#' Set Outcomes
+#' This is an setter method for outcomes in an S4 object, usually of class
+#' mediation_data.
+#' @param object An object whose outcomes slot to modify.
+#' @param value The new outcome values to set within object.
+#' @return Modifies the outcomes slot of the input object in place.
 #' @export
 setGeneric("outcomes<-", \(object, value) standardGeneric("outcomes<-"))
+
+#' Access Pretreatments
+#'
+#' This is an getter method for pretreatments in an S4 object, usually of class
+#' mediation_data.
+#' @param object An object whose pretreatments slot to modify.
+#' @return The output depends on the S4 class of the input object. If it is a
+#'   multimedia model object, it will return a character vector of the outcome
+#'   variable names. Otherwise it returns the outcome data.
+#' @export
 setGeneric("pretreatments", \(object) standardGeneric("pretreatments"))
+
+#' Set Pretreatments
+#' This is an setter method for pretreatments in an S4 object, usually of class
+#' mediation_data.
+#' @param object An object whose pretreatments slot to modify.
+#' @param value The new pretreatment values to set within object.
+#' @return Modifies the pretreatments slot of the input object in place.
+#' @export
 setGeneric("pretreatments<-", \(object, value) {
     standardGeneric("pretreatments<-")
 })
+
+#' Access Treatments
+#'
+#' This is an getter method for treatments in an S4 object, usually of class
+#' mediation_data.
+#' @param object An object whose treatments slot to modify.
+#' @return The output depends on the S4 class of the input object. If it is a
+#'   multimedia model object, it will return a character vector of the outcome
+#'   variable names. Otherwise it returns the outcome data.
+#' @export
 setGeneric("treatments", \(object) standardGeneric("treatments"))
+
+#' Set Treatments
+#' This is an setter method for treatments in an S4 object, usually of class
+#' mediation_data.
+#' @param object An object whose treatments slot to modify.
+#' @param value The new treatment values to set within object.
+#' @return Modifies the treatments slot of the input object in place.
+#' @export
 setGeneric("treatments<-", \(object, value) standardGeneric("treatments<-"))
 
 #' Names of Mediators in a Multimedia Object
@@ -196,7 +256,7 @@ setMethod(
 #' lets you supply a new outcomes data.frame for the object.
 #'
 #' @param object An object of class mediation_data.
-#' @param values The new outcome values for the object.
+#' @param value The new outcome values for the object.
 #' @return A version of `object` whose outcomes slot has been replaced.
 #' @examples
 #' exper <- demo_joy() |>
@@ -218,7 +278,7 @@ setMethod(
 #' It lets you supply a new mediators data.frame for the object.
 #'
 #' @param object An object of class mediation_data.
-#' @param values The new mediators values for the object.
+#' @param value The new mediators values for the object.
 #' @return A version of `object` whose mediators slot has been replaced.
 #' @examples
 #' exper <- demo_joy() |>
@@ -240,7 +300,7 @@ setMethod(
 #' It lets you supply a new treatments data.frame for the object.
 #'
 #' @param object An object of class mediation_data.
-#' @param values The new treatment values for the object.
+#' @param value The new treatment values for the object.
 #' @return A version of `object` whose treatment slot has been replaced.
 #' @examples
 #' exper <- demo_joy() |>
@@ -262,7 +322,7 @@ setMethod(
 #' object. It lets you supply a new pretreatments data.frame for the object.
 #'
 #' @param object An object of class mediation_data.
-#' @param values The new pretreatment values for the object.
+#' @param value The new pretreatment values for the object.
 #' @return A version of `object` whose pretreatments slot has been replaced.
 #' @examples
 #' exper <- demo_joy() |>

@@ -708,9 +708,18 @@ rf_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
     bind_cols(y_hats)
 }
 
+#' Estimate a Multimedia Model
+#' 
+#' This defines a generic estimator function, which can be applied to different
+#' multimedia model objects. It creates a unified interface to estimating diverse
+#' mediation and outcome model families.
+#' @param object A model object that we want to estimate.
+#' @return A fitted version of the input model class.
+#' @export
 setGeneric("estimator", \(object) standardGeneric("estimator"))
 
 #' Accessor for Estimators
+#' @param object An object of class `model`, whose estimator function we want
+#'   access to.
 #' @export
-#' @noRd
 setMethod("estimator", "model", \(object) object@estimator)
