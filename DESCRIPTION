@@ -45,6 +45,7 @@ Suggests:
     BiocStyle,
     brms,
     compositions,
+    ggdist,
     ggraph,
     ggrepel,
     glmnet,
