@@ -4,12 +4,14 @@
 \alias{parallelize}
 \title{Parallelize Estimation across Responses}
 \usage{
-parallelize(f)
+parallelize(f, progress = TRUE)
 }
 \arguments{
 \item{f}{A function for estimating a single response model given a formula
 and input dataset. This is the model that we would like to parallelize
 across responses.}
+
+\item{progress}{A logical indicating whether to show a progress bar.}
 }
 \value{
 f_multi A function that takes a formula and dataset and applies f to

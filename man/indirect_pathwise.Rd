@@ -4,7 +4,7 @@
 \alias{indirect_pathwise}
 \title{Indirect Effects via Single Mediation Paths}
 \usage{
-indirect_pathwise(model, exper = NULL, t1 = 1, t2 = 2)
+indirect_pathwise(model, exper = NULL, t1 = 1, t2 = 2, progress = TRUE)
 }
 \arguments{
 \item{model}{An object of class multimedia containing the estimated mediation
@@ -19,6 +19,8 @@ outcome data from which the direct effects are to be estimated.}
 
 \item{t2}{The alternative level of the treatment to be used when computing
 the (pathwise) indirect effect.}
+
+\item{progress}{A logical indicating whether to show a progress bar.}
 }
 \value{
 A data.frame summarizing the pathwise (per-mediator) indirect effects

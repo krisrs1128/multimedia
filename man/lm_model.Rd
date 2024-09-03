@@ -4,7 +4,11 @@
 \alias{lm_model}
 \title{Linear Model across Responses}
 \usage{
-lm_model()
+lm_model(progress = TRUE)
+}
+\arguments{
+\item{progress}{A logical indicating whether to show a progress bar during
+estimation.}
 }
 \value{
 model An object of class \code{model} with estimator, predictor, and

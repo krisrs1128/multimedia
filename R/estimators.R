@@ -327,7 +327,7 @@ glmnet_model_params <- function(...) {
 #' multimedia(exper, glmnet_model(lambda = 0.1)) |>
 #'     estimate(exper)
 #' @export
-glmnet_model <- function(progress, ...) {
+glmnet_model <- function(progress = TRUE, ...) {
     check_if_installed(
         c("glmnet", "glmnetUtils"),
         "to use a glmnet regression model for multimedia estimation."

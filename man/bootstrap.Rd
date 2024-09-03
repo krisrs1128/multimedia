@@ -4,7 +4,7 @@
 \alias{bootstrap}
 \title{Bootstrap Distribution for Estimators}
 \usage{
-bootstrap(model, exper, fs = NULL, B = 1000)
+bootstrap(model, exper, fs = NULL, B = 1000, progress = TRUE)
 }
 \arguments{
 \item{model}{An object of class multimedia with specified mediation and
@@ -18,6 +18,8 @@ are assumed to be a vector of functions (for example, direct_effect or
 indirect_effect), and they will each be applied to each bootstrap resample.}
 
 \item{B}{The number of bootstrap samples. Defaults to 1000.}
+
+\item{progress}{A logical indicating whether to show a progress bar.}
 }
 \value{
 stats A list of length B containing the results of the fs applied on

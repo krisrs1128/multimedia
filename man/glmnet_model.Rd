@@ -4,9 +4,12 @@
 \alias{glmnet_model}
 \title{Regularized Glmnet Model across Responses}
 \usage{
-glmnet_model(...)
+glmnet_model(progress = TRUE, ...)
 }
 \arguments{
+\item{progress}{A logical indicating whether to show a progress bar during
+estimation.}
+
 \item{...}{Keyword parameters passed to glmnet.}
 }
 \value{

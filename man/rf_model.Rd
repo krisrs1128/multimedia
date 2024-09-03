@@ -4,9 +4,12 @@
 \alias{rf_model}
 \title{Random Forest Model}
 \usage{
-rf_model(...)
+rf_model(progress = TRUE, ...)
 }
 \arguments{
+\item{progress}{A logical indicating whether to show a progress bar during
+estimation.}
+
 \item{...}{Keyword parameters passed to ranger.}
 }
 \value{
