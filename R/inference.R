@@ -117,6 +117,7 @@ nullify <- function(multimedia, nulls = NULL) {
 #' @param exper An object of class multimedia_data containing the mediation and
 #'   outcome data from which the direct effects are to be estimated.
 #' @param B The number of bootstrap samples. Defaults to 1000.
+#' @param progress A logical indicating whether to show a progress bar.
 #' @return stats A list of length B containing the results of the fs applied on
 #'   each of the B bootstrap resamples.
 #' @importFrom progress progress_bar
@@ -139,7 +140,7 @@ nullify <- function(multimedia, nulls = NULL) {
 #'     ) +
 #'     ggplot2::facet_wrap(~outcome, scales = "free")
 #' @export
-bootstrap <- function(model, exper, fs = NULL, B = 1000) {
+bootstrap <- function(model, exper, fs = NULL, B = 1000, progress = TRUE) {
     if (is.null(fs)) {
         fs <- list(direct_effect = direct_effect)
     }
@@ -164,7 +165,7 @@ bootstrap <- function(model, exper, fs = NULL, B = 1000) {
             # estimate model and effects
             model_b <- estimate(model, exper_b)
             stats[[nf]][[b]] <- fs[[f]](model_b, exper_b)
-            pb$tick()
+            if (progress) pb$tick()
         }
         stats[[nf]] <- bind_rows(stats[[nf]], .id = "bootstrap") |>
             mutate(bootstrap = as.integer(bootstrap))

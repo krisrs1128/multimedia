@@ -261,6 +261,7 @@ indirect_overall <- function(model, exper = NULL, t1 = 1, t2 = 2) {
 #'  (pathwise) indirect effect.
 #' @param t2 The alternative level of the treatment to be used when computing
 #'  the (pathwise) indirect effect.
+#' @param progress A logical indicating whether to show a progress bar.
 #' @return A data.frame summarizing the pathwise (per-mediator) indirect effects
 #'   associated with different settings of the direct effect.
 #' @examples
@@ -279,7 +280,8 @@ indirect_overall <- function(model, exper = NULL, t1 = 1, t2 = 2) {
 #' indirect_pathwise(fit)
 #' @importFrom cli cli_text
 #' @export
-indirect_pathwise <- function(model, exper = NULL, t1 = 1, t2 = 2) {
+indirect_pathwise <- function(
+    model, exper = NULL, t1 = 1, t2 = 2, progress = TRUE) {
     pretreatment <- NULL
     if (!is.null(exper)) {
         pretreatment <- exper@pretreatments
@@ -314,7 +316,7 @@ indirect_pathwise <- function(model, exper = NULL, t1 = 1, t2 = 2) {
                 direct_setting = t_[[1]][i],
                 row.names = NULL
             )
-            pb$tick()
+            if (progress) pb$tick()
             k <- k + 1
         }
     }

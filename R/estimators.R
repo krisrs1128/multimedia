@@ -54,6 +54,7 @@ sub_formula <- function(formula, yj) {
 #' @param f A function for estimating a single response model given a formula
 #'  and input dataset. This is the model that we would like to parallelize
 #'  across responses.
+#' @param progress A logical indicating whether to show a progress bar.
 #' @return f_multi A function that takes a formula and dataset and applies f to
 #'  each response on the left hand side of the original formula.
 #' @importFrom formula.tools lhs.vars
@@ -66,7 +67,7 @@ sub_formula <- function(formula, yj) {
 #' prf <- parallelize(ranger::ranger)
 #' prf(mpg + hp ~ wt + disp + cyl, data = mtcars)
 #' @export
-parallelize <- function(f) {
+parallelize <- function(f, progress = TRUE) {
     function(formula, ...) {
         models <- list()
 
@@ -78,7 +79,7 @@ parallelize <- function(f) {
         for (j in seq_along(ys)) {
             fmla <- sub_formula(formula, ys[j])
             models[[ys[j]]] <- f(fmla, ...)
-            pb$tick()
+            if (progress) pb$tick()
         }
         models
     }
@@ -239,6 +240,8 @@ estimate <- function(model, exper) {
 #' pretreatment variables, since each input is low-dimensional, even when there
 #' are many responses.
 #'
+#' @param progress A logical indicating whether to show a progress bar during
+#'   estimation.
 #' @return model An object of class `model` with estimator, predictor, and
 #'  sampler functions associated wtih a linear model.
 #' @seealso model
@@ -247,7 +250,7 @@ estimate <- function(model, exper) {
 #' m <- lm_model()
 #' estimator(m)(mpg ~ hp + wt, data = mtcars)
 #' @export
-lm_model <- function() {
+lm_model <- function(progress = TRUE) {
     new(
         "model",
         estimator = parallelize(lm),
@@ -302,6 +305,8 @@ glmnet_model_params <- function(...) {
 #' have many mediators or pretreatment variables, making the input
 #' high-dimensional.
 #'
+#' @param progress A logical indicating whether to show a progress bar during
+#'   estimation.
 #' @param ... Keyword parameters passed to glmnet.
 #' @return model An object of class `model` with estimator, predictor, and
 #'  sampler functions associated wtih a lienar model.
@@ -322,7 +327,7 @@ glmnet_model_params <- function(...) {
 #' multimedia(exper, glmnet_model(lambda = 0.1)) |>
 #'     estimate(exper)
 #' @export
-glmnet_model <- function(...) {
+glmnet_model <- function(progress, ...) {
     check_if_installed(
         c("glmnet", "glmnetUtils"),
         "to use a glmnet regression model for multimedia estimation."
@@ -333,7 +338,8 @@ glmnet_model <- function(...) {
     new(
         "model",
         estimator = parallelize(
-            \(fmla, data) inject(glmnetUtils::glmnet(fmla, data, !!!params))
+            \(fmla, data) inject(glmnetUtils::glmnet(fmla, data, !!!params)),
+            progress = progress
         ),
         estimates = NULL,
         sampler = glmnet_sampler,
@@ -626,6 +632,8 @@ lnm_sampler <- function(fit, newdata = NULL, indices = NULL, ...) {
 #' Internally, each of the models across the response are estimated using
 #' ranger.
 #'
+#' @param progress A logical indicating whether to show a progress bar during
+#'   estimation.
 #' @param ... Keyword parameters passed to ranger.
 #' @return model An object of class `model` with estimator, predictor, and
 #'  sampler functions associated wtih a lienar model.
@@ -642,7 +650,7 @@ lnm_sampler <- function(fit, newdata = NULL, indices = NULL, ...) {
 #'     estimate(exper)
 #' @seealso model lm_model rf_model glmnet_model brms_model
 #' @export
-rf_model <- function(...) {
+rf_model <- function(progress = TRUE, ...) {
     check_if_installed(
         "ranger",
         "to use a random forest model for multimedia estimation."
@@ -651,7 +659,10 @@ rf_model <- function(...) {
 
     new(
         "model",
-        estimator = parallelize(\(fmla, data) ranger::ranger(fmla, data, ...)),
+        estimator = parallelize(
+            \(fmla, data) ranger::ranger(fmla, data, ...), 
+            progress
+        ),
         estimates = NULL,
         sampler = rf_sampler,
         model_type = "rf_model()",
