@@ -70,7 +70,7 @@ regression, random forests, and bayesian hierarchical models instead.
 
 ```{r}
 model <- multimedia(exper) |>
-  estimate(exper)
+    estimate(exper)
 model
 ```
 
@@ -95,10 +95,10 @@ boot <- bootstrap(model, exper, c(direct = direct_effect))
 
 library(ggplot2)
 ggplot(boot$direct) +
-  geom_histogram(aes(direct_effect), bins = 20) +
-  scale_y_continuous(expand = c(0, 0)) +
-  theme_classic() +
-  labs(x = "Direct Effect", y = "Frequency", title = "Bootstrap Distribution")
+    geom_histogram(aes(direct_effect), bins = 20) +
+    scale_y_continuous(expand = c(0, 0)) +
+    theme_classic() +
+    labs(x = "Direct Effect", y = "Frequency", title = "Bootstrap Distribution")
 ```
 
 If we want to use a different type of model, we can just modify the original
@@ -107,8 +107,8 @@ correctly recovers that the direct effects are 0.
 
 ```{r}
 multimedia(exper, glmnet_model(lambda = .1)) |>
-  estimate(exper) |>
-  direct_effect()
+    estimate(exper) |>
+    direct_effect()
 ```
 
 ## Help
