@@ -9,7 +9,7 @@
 \arguments{
 \item{object}{An object of class mediation_data.}
 
-\item{values}{The new pretreatment values for the object.}
+\item{value}{The new pretreatment values for the object.}
 }
 \value{
 A version of \code{object} whose pretreatments slot has been replaced.

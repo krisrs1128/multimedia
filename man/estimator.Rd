@@ -5,16 +5,21 @@
 \title{Accessor for Model Estimators}
 \usage{
 estimator(object)
+
+estimator(object)
 }
 \arguments{
-\item{object}{An object of class \code{model} whose estimator we would like to
-call.}
+\item{object}{A model object that we want to estimate.}
 }
 \value{
 A function that can be called with formula and data arguments, like
+
+A fitted version of the input model class.
 }
 \description{
-Accessor for Model Estimators
+This defines a generic estimator function, which can be applied to different
+multimedia model objects. It creates a unified interface to estimating diverse
+mediation and outcome model families.
 }
 \examples{
 m <- lm_model()

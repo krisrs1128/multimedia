@@ -6,6 +6,13 @@
 \usage{
 edges(object)
 }
+\arguments{
+\item{object}{An object whose DAG structure we want to access.}
+}
+\value{
+The output depends on the S4 object that is passed. For multimedia
+objects, this will return an edgelist as a two column data.frame.
+}
 \description{
 We often want to access the DAG for different mediation-related S4 objects.
 This generic helps us access these graphical model edges lists. See method

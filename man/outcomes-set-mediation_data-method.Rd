@@ -9,7 +9,7 @@
 \arguments{
 \item{object}{An object of class mediation_data.}
 
-\item{values}{The new outcome values for the object.}
+\item{value}{The new outcome values for the object.}
 }
 \value{
 A version of \code{object} whose outcomes slot has been replaced.

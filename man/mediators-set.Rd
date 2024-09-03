@@ -9,9 +9,12 @@ mediators(object) <- value
 \arguments{
 \item{object}{An object whose mediators slot to modify.}
 
-\item{values}{The new mediator values to set within object.}
+\item{value}{The new mediator values to set within object.}
+}
+\value{
+Modifies the mediators slot of the input object in place.
 }
 \description{
-This is an setter method for mediators in an S4 objet, usually of class
+This is an setter method for mediators in an S4 object, usually of class
 mediation_data.
 }
