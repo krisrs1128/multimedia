@@ -31,19 +31,28 @@ retrieve_names <- function(object, nm) {
 #' @param object An object whose DAG structure we want to access.
 #' @return The output depends on the S4 object that is passed. For multimedia
 #'   objects, this will return an edgelist as a two column data.frame.
+#' @examples
+#' exper <- demo_joy() |>
+#'     mediation_data("PHQ", "treatment", starts_with("ASV"))
+#' multimedia(exper) |>
+#'     edges()
 #' @export
 setGeneric("edges", \(object) standardGeneric("edges"))
 
 #' Access Class-Specific Mediators
-#' 
+#'
 #' This is a shorthand for accessing mediator-related slots in classes exported
 #' by the multimedia package.
-#' 
+#'
 #' @param object An object whose mediators we want to access (either their names
 #'   or values).
 #' @return The output will depend on the class of the object that is passed in.
 #'   For multimedia objects, this returns a character vector of mediators. For
 #'   mediation data objects, this returns the mediator mediator data.
+#' @examples
+#' exper <- demo_joy() |>
+#'     mediation_data("PHQ", "treatment", starts_with("ASV"))
+#' mediators(exper)
 #' @export
 setGeneric("mediators", \(object) standardGeneric("mediators"))
 
@@ -54,6 +63,11 @@ setGeneric("mediators", \(object) standardGeneric("mediators"))
 #' @param object An object whose mediators slot to modify.
 #' @param value The new mediator values to set within object.
 #' @return Modifies the mediators slot of the input object in place.
+#' @examples
+#' exper <- demo_joy() |>
+#'     mediation_data("PHQ", "treatment", starts_with("ASV"))
+#' mediators(exper) <- data.frame(new_ASV = rnorm(100))
+#' mediators(exper)
 #' @export
 setGeneric("mediators<-", \(object, value) standardGeneric("mediators<-"))
 
@@ -65,6 +79,10 @@ setGeneric("mediators<-", \(object, value) standardGeneric("mediators<-"))
 #' @return The output depends on the S4 class of the input object. If it is a
 #'   multimedia model object, it will return a character vector of the outcome
 #'   variable names. Otherwise it returns the outcome data.
+#' @examples
+#' exper <- demo_joy() |>
+#'     mediation_data("PHQ", "treatment", starts_with("ASV"))
+#' outcomes(exper)
 #' @export
 setGeneric("outcomes", \(object) standardGeneric("outcomes"))
 
@@ -74,6 +92,10 @@ setGeneric("outcomes", \(object) standardGeneric("outcomes"))
 #' @param object An object whose outcomes slot to modify.
 #' @param value The new outcome values to set within object.
 #' @return Modifies the outcomes slot of the input object in place.
+#' @examples
+#' exper <- demo_joy() |>
+#'     mediation_data("PHQ", "treatment", starts_with("ASV"))
+#' outcomes(exper) <- data.frame(new_PHQ = rnorm(100))
 #' @export
 setGeneric("outcomes<-", \(object, value) standardGeneric("outcomes<-"))
 
@@ -85,6 +107,10 @@ setGeneric("outcomes<-", \(object, value) standardGeneric("outcomes<-"))
 #' @return The output depends on the S4 class of the input object. If it is a
 #'   multimedia model object, it will return a character vector of the outcome
 #'   variable names. Otherwise it returns the outcome data.
+#' @examples
+#' exper <- demo_joy() |>
+#'     mediation_data("PHQ", "treatment", starts_with("ASV"))
+#' pretreatments(exper)
 #' @export
 setGeneric("pretreatments", \(object) standardGeneric("pretreatments"))
 
@@ -94,6 +120,10 @@ setGeneric("pretreatments", \(object) standardGeneric("pretreatments"))
 #' @param object An object whose pretreatments slot to modify.
 #' @param value The new pretreatment values to set within object.
 #' @return Modifies the pretreatments slot of the input object in place.
+#' @examples
+#' exper <- demo_joy() |>
+#'     mediation_data("PHQ", "treatment", starts_with("ASV"))
+#' pretreatments(exper) <- data.frame(new_var = rnorm(100))
 #' @export
 setGeneric("pretreatments<-", \(object, value) {
     standardGeneric("pretreatments<-")
@@ -107,6 +137,10 @@ setGeneric("pretreatments<-", \(object, value) {
 #' @return The output depends on the S4 class of the input object. If it is a
 #'   multimedia model object, it will return a character vector of the outcome
 #'   variable names. Otherwise it returns the outcome data.
+#' @examples
+#' exper <- demo_joy() |>
+#'     mediation_data("PHQ", "treatment", starts_with("ASV"))
+#' treatments(exper)
 #' @export
 setGeneric("treatments", \(object) standardGeneric("treatments"))
 
@@ -116,6 +150,10 @@ setGeneric("treatments", \(object) standardGeneric("treatments"))
 #' @param object An object whose treatments slot to modify.
 #' @param value The new treatment values to set within object.
 #' @return Modifies the treatments slot of the input object in place.
+#' @examples
+#' exper <- demo_joy() |>
+#'     mediation_data("PHQ", "treatment", starts_with("ASV"))
+#' treatments(exper) <- data.frame(new_treatment = rnorm(100))
 #' @export
 setGeneric("treatments<-", \(object, value) standardGeneric("treatments<-"))
 

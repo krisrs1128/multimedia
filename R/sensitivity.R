@@ -257,7 +257,7 @@ sensitivity_subset_sample <- function(
 #' hypothetical experiments. We can compute the direct and indirect effects from
 #' this modified experiment to see how dramatically our conclusions would be
 #' altered in case there is in fact a violation of the original assumptions.
-#' 
+#'
 #' @param model A `multimedia` object containing the fitted models for
 #'   sensitivity analysis. Note that since our approach relies on correlating
 #'   simulated residual error, it is only applicable to models of class
@@ -313,13 +313,13 @@ standard_deviations <- function(model) {
 }
 
 #' Covariance Matrix for (e(M), e(Y))
-#' 
+#'
 #' For our sensitivity analysis, we need to sample correlated errors for
 #' mediators M and outcomes Y. This function looks into the fitted mediator and
 #' outcome models to estimate the diagonal of this covariance. It then allows
 #' users to specify correlation strengths' rho at particular indices,
 #' representing unmeasured confounding between mediators and outcomes.
-#' 
+#'
 #' @param model A `multimedia` object containing the fitted models for
 #'   sensitivity analysis. Note that since our approach relies on correlating
 #'   simulated residual error, it is only applicable to models of class
@@ -366,7 +366,7 @@ covariance_matrix <- function(model, confound_ix = NULL, rho = 0.0) {
 
 
 #' Sensitivity to User-Specified Perturbations
-#' 
+#'
 #' The more standard sensitivity and sensitivity_pathwise functions support
 #' sensitivity analysis to violations in assumptions restricted to specific
 #' mediator-outcome pairs. For more general violations, this function allows
@@ -374,12 +374,12 @@ covariance_matrix <- function(model, confound_ix = NULL, rho = 0.0) {
 #' across both mediators and outcomes. This makes it possible to ask what
 #' happens when mediators are correlated with one another or when more some
 #' pairs of mediator-outcome pairs have much stronger correlation than others.
-#' 
+#'
 #' Specifically, it defines a new covariance matrix across mediators and
 #' outcomes according to diag(sigma^2_mediator, sigma^2_outcome) + nu * perturb.
 #' The estimates sigma^2 are taken from the residuals in the original mediation
 #' and outcome models, and perturb and nu are provided by the user.
-#' 
+#'
 #' @param model A `multimedia` object containing the fitted models for
 #'   sensitivity analysis. Note that since our approach relies on correlating
 #'   simulated residual error, it is only applicable to models of class
@@ -437,7 +437,7 @@ sensitivity_perturb <- function(
 }
 
 #' Sample from a Perturbed Covariance Matrix
-#' 
+#'
 #' This builds the covariance matrix used by `sensitivity_perturb` to support
 #' sensitivity analysis to more general mediator-outcome covariances.
 #' @noRd
@@ -454,7 +454,7 @@ sensitivity_perturb_sample <- function(model, exper, perturb = NULL, nu = 0.0) {
 ###############################################################################
 
 #' Check that Sensitivity is Implemented for a Model
-#' 
+#'
 #' We only support sensitivity analysis for models with additive noise
 #' structure. brms and lnm models are not supported.
 #' @noRd
@@ -484,7 +484,7 @@ sorted_treatments <- function(model) {
 #' representation does not have row or column names. We use this function to
 #' match the original names with the index into the covariance matrix, using the
 #' ordering present in the learned multimedia model.
-#' 
+#'
 #' @param model A `multimedia` object containing the fitted models for
 #'   sensitivity analysis. Note that since our approach relies on correlating
 #'   simulated residual error, it is only applicable to models of class

@@ -263,17 +263,23 @@ lm_model <- function(progress = TRUE) {
 
 #' Sample a Linear Model
 #'
-#' Draw samples
+#' Draw samples from a fitted linear model.
+#'
+#' @param fit The fitted linear model model from which to draw samples.
+#' @param newdata A data.frame containing new inputs from which to sample
+#'   responses. If NULL, defaults to the data used to estimate fit.
+#' @param indices The coordinates of the response from which to draw samples.
+#' @return y_star A data.frame of samples y associated with the new inputs.
 #' @examples
 #' fit <- lm(mpg ~ hp + wt, data = mtcars)
-#' multimedia:::lm_sampler(list(f = fit))
+#' lm_sampler(list(f = fit))
 #'
 #' plm <- parallelize(lm)
 #' fit <- plm(mpg + disp ~ hp + wt, data = mtcars)
-#' multimedia:::lm_sampler(fit)
+#' lm_sampler(fit)
 #' @importFrom dplyr bind_cols
 #' @importFrom stats lm
-#' @noRd
+#' @export
 lm_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
     if (is.null(indices)) {
         indices <- seq_along(fits)
@@ -355,16 +361,21 @@ glmnet_model <- function(progress = TRUE, ...) {
 #' This assumes a continuous response, so that the out-of-sample MSE can be used
 #' to estimate the outcome variability sigma.
 #'
+#' @param fit The fitted glmnet model model from which to draw samples.
+#' @param newdata A data.frame containing new inputs from which to sample
+#'   responses. If NULL, defaults to the data used to estimate fit.
+#' @param indices The coordinates of the response from which to draw samples.
+#' @return y_star A data.frame of samples y associated with the new inputs.
 #' @importFrom stats deviance
 #' @examples
 #' m <- glmnet_model()
 #' fit <- estimator(m)(mpg ~ hp + wt, data = mtcars)
-#' multimedia:::glmnet_sampler(fit, mtcars)
+#' glmnet_sampler(fit, mtcars)
 #'
 #' plm <- parallelize(glmnetUtils::glmnet)
 #' fit <- plm(mpg + disp ~ hp + wt, data = mtcars)
-#' multimedia:::glmnet_sampler(fit, mtcars)
-#' @noRd
+#' glmnet_sampler(fit, mtcars)
+#' @export
 glmnet_sampler <- function(
     fits, newdata = NULL, indices = NULL, lambda_ix = 1, ...) {
     if (is.null(indices)) {
@@ -611,10 +622,9 @@ lnm_model <- function(...) {
 #' m <- lnm_model()
 #' mat <- data.frame(matrix(rpois(250, 10), 25, 10))
 #' colnames(mat) <- paste0("y", 1:6)
-#' fit <- m@estimator(y1 + y2 + y3 + y4 ~ y5 + y6, mat)
+#' fit <- estimator(m)(y1 + y2 + y3 + y4 ~ y5 + y6, mat)
 #' lnm_sampler(fit, depth = 10)
 #' lnm_sampler(fit, depth = 100)
-#' @noRd
 lnm_sampler <- function(fit, newdata = NULL, indices = NULL, ...) {
     nm <- lhs.vars(fit@formula)
     if (is.null(indices)) {
@@ -660,7 +670,7 @@ rf_model <- function(progress = TRUE, ...) {
     new(
         "model",
         estimator = parallelize(
-            \(fmla, data) ranger::ranger(fmla, data, ...), 
+            \(fmla, data) ranger::ranger(fmla, data, ...),
             progress
         ),
         estimates = NULL,
@@ -675,22 +685,21 @@ rf_model <- function(progress = TRUE, ...) {
 #' This assumes a continuous response, so that the out-of-sample MSE can be used
 #' to estimate the outcome variability \eqn{\sigma}.
 #'
-#' @param fit The fitted LNM model from which to draw posterior predictive
-#'   samples.
+#' @param fit The fitted RF model from which to draw samples.
 #' @param newdata A data.frame containing new inputs from which to sample
 #'   responses. If NULL, defaults to the data used to estimate fit.
 #' @param indices The coordinates of the response from which to draw samples.
-#' @return y_star A data.frame of samples y associated wtih the new inputs.
+#' @return y_star A data.frame of samples y associated with the new inputs.
 #' @importFrom dplyr bind_cols
 #' @examples
 #' m <- rf_model()
 #' fit <- estimator(m)(mpg ~ hp + wt, data = mtcars)
-#' multimedia:::rf_sampler(fit, mtcars)
+#' rf_sampler(fit, mtcars)
 #'
 #' prf <- parallelize(ranger::ranger)
 #' fit <- prf(mpg + disp ~ hp + wt, data = mtcars)
-#' multimedia:::rf_sampler(fit, mtcars)
-#' @noRd
+#' rf_sampler(fit, mtcars)
+#' @export
 rf_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
     if (is.null(indices)) {
         indices <- seq_along(fits)
@@ -709,17 +718,28 @@ rf_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
 }
 
 #' Estimate a Multimedia Model
-#' 
+#'
 #' This defines a generic estimator function, which can be applied to different
 #' multimedia model objects. It creates a unified interface to estimating diverse
 #' mediation and outcome model families.
 #' @param object A model object that we want to estimate.
 #' @return A fitted version of the input model class.
+#' @examples
+#' m <- lnm_model()
+#' mat <- data.frame(matrix(rpois(250, 10), 25, 10))
+#' colnames(mat) <- paste0("y", 1:6)
+#' fit <- estimator(m)(y1 + y2 + y3 + y4 ~ y5 + y6, mat)
 #' @export
 setGeneric("estimator", \(object) standardGeneric("estimator"))
 
 #' Accessor for Estimators
 #' @param object An object of class `model`, whose estimator function we want
 #'   access to.
+#' @return A fitted version of the input model class.
+#' @examples
+#' m <- lnm_model()
+#' mat <- data.frame(matrix(rpois(250, 10), 25, 10))
+#' colnames(mat) <- paste0("y", 1:6)
+#' fit <- estimator(m)(y1 + y2 + y3 + y4 ~ y5 + y6, mat)
 #' @export
 setMethod("estimator", "model", \(object) object@estimator)
