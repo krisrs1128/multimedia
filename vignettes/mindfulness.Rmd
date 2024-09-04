@@ -108,10 +108,12 @@ exper
 
 ```{r check_install}
 if (is.null(cmdstan_version(error_on_NA = FALSE))) {
-    message("This vignette depends on your having installed cmdstanr locally.
-             This is because the LNM model is implemented using a cmdstan 
-             script. Please try installing this using `install_cmdstanr()`!")
-    opts_chunk$set(eval = FALSE)
+    message("Oh no! This vignette depends on having a version of cmdstanr 
+            available locally. This is because the LNM model is implemented with 
+            a cmdstan script. Please try setting this up using 
+            `install_cmdstanr()`! We'll skip the remaining code blocks until 
+            this is ready.")
+    knitr::opts_chunk$set(eval = FALSE)
 }
 ```
 
