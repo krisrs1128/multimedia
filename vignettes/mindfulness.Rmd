@@ -108,7 +108,10 @@ exper
 
 ```{r check_install}
 if (is.null(cmdstan_version(error_on_NA = FALSE))) {
-    install_cmdstan()
+    message("This vignette depends on your having installed cmdstanr locally.
+             This is because the LNM model is implemented using a cmdstan 
+             script. Please try installing this using `install_cmdstanr()`!")
+    opts_chunk$set(eval = FALSE)
 }
 ```
 
