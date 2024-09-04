@@ -12,6 +12,11 @@ responses. If NULL, defaults to the data used to estimate fit.}
 
 \item{indices}{The coordinates of the response from which to draw samples.}
 
+\item{lambda_ix}{A regularization strength parameter used to maintain
+consistency with estimation. Not used during sampling.}
+
+\item{...}{Additional parameters to pass to predict.glmnet}
+
 \item{fit}{The fitted glmnet model model from which to draw samples.}
 }
 \value{

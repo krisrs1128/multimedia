@@ -14,6 +14,8 @@ samples.}
 responses. If NULL, defaults to the data used to estimate fit.}
 
 \item{indices}{The coordinates of the response from which to draw samples.}
+
+\item{...}{Additional parameters passed to sample.}
 }
 \value{
 y_star A data.frame of samples y associated wtih the new inputs.
