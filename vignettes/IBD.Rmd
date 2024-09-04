@@ -446,8 +446,8 @@ confound_ix <- data.frame(
     )
 )
 
-sensitivity_path <- sensitivity_pathwise(model, exper, confound_ix, rho_seq, 1)
-# sensitivity_path <- read_csv("https://go.wisc.edu/ph7ek4")
+#sensitivity_path <- sensitivity_pathwise(model, exper, confound_ix, rho_seq, 1)
+sensitivity_path <- read_csv("https://go.wisc.edu/ph7ek4")
 ```
 
 ```{r}
@@ -455,7 +455,7 @@ confound_ix |>
     left_join(sensitivity_path) |>
     ggplot(aes(rho, indirect_effect, group = contrast)) +
     geom_hline(yintercept = 0, linetype = 3, linewidth = 1) +
-    geom_line() +
+    geom_line(linewidth = 2) +
     facet_wrap(outcome ~ mediator, scales = "free_y")
 ```
 
