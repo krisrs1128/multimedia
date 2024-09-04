@@ -22,5 +22,5 @@ instantiations for specific examples.
 exper <- demo_joy() |>
     mediation_data("PHQ", "treatment", starts_with("ASV"))
 multimedia(exper) |>
-  edges()
+    edges()
 }
