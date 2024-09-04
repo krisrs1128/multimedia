@@ -97,7 +97,7 @@ nullify <- function(multimedia, nulls = NULL) {
                 "inactive", .data$state
             )
         ) |>
-        select(-.data$new_null) |>
+        select(!any_of("new_null")) |>
         activate("nodes")
     multimedia
 }
