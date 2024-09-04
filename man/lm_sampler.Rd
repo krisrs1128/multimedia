@@ -7,14 +7,14 @@
 lm_sampler(fits, newdata = NULL, indices = NULL, ...)
 }
 \arguments{
+\item{fits}{The fitted linear model model from which to draw samples.}
+
 \item{newdata}{A data.frame containing new inputs from which to sample
 responses. If NULL, defaults to the data used to estimate fit.}
 
 \item{indices}{The coordinates of the response from which to draw samples.}
 
 \item{...}{Additional parameters passed to lm.predict}
-
-\item{fit}{The fitted linear model model from which to draw samples.}
 }
 \value{
 y_star A data.frame of samples y associated with the new inputs.

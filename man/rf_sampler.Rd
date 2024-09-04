@@ -7,12 +7,14 @@
 rf_sampler(fits, newdata = NULL, indices = NULL, ...)
 }
 \arguments{
+\item{fits}{The fitted RF model from which to draw samples.}
+
 \item{newdata}{A data.frame containing new inputs from which to sample
 responses. If NULL, defaults to the data used to estimate fit.}
 
 \item{indices}{The coordinates of the response from which to draw samples.}
 
-\item{fit}{The fitted RF model from which to draw samples.}
+\item{...}{Additional parameters passed to rf_model's predict method.}
 }
 \value{
 y_star A data.frame of samples y associated with the new inputs.

@@ -7,6 +7,8 @@
 glmnet_sampler(fits, newdata = NULL, indices = NULL, lambda_ix = 1, ...)
 }
 \arguments{
+\item{fits}{The fitted glmnet model model from which to draw samples.}
+
 \item{newdata}{A data.frame containing new inputs from which to sample
 responses. If NULL, defaults to the data used to estimate fit.}
 
@@ -16,8 +18,6 @@ responses. If NULL, defaults to the data used to estimate fit.}
 consistency with estimation. Not used during sampling.}
 
 \item{...}{Additional parameters to pass to predict.glmnet}
-
-\item{fit}{The fitted glmnet model model from which to draw samples.}
 }
 \value{
 y_star A data.frame of samples y associated with the new inputs.

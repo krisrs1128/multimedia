@@ -18,14 +18,12 @@ A fitted version of the input model class.
 }
 \description{
 This defines a generic estimator function, which can be applied to different
-multimedia model objects. It creates a unified interface to estimating diverse
-mediation and outcome model families.
+multimedia model objects. It creates a unified interface to estimating
+diverse mediation and outcome model families.
 }
 \examples{
 m <- lm_model()
 estimator(m)(mpg ~ hp + wt, data = mtcars)
-m <- lnm_model()
-mat <- data.frame(matrix(rpois(250, 10), 25, 10))
-colnames(mat) <- paste0("y", 1:6)
-fit <- estimator(m)(y1 + y2 + y3 + y4 ~ y5 + y6, mat)
+m <- rf_model()
+fit <- estimator(m)(mpg ~ hp + wt, data = mtcars)
 }

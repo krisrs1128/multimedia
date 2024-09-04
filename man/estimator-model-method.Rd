@@ -17,8 +17,6 @@ A fitted version of the input model class.
 Accessor for Estimators
 }
 \examples{
-m <- lnm_model()
-mat <- data.frame(matrix(rpois(250, 10), 25, 10))
-colnames(mat) <- paste0("y", 1:6)
-fit <- estimator(m)(y1 + y2 + y3 + y4 ~ y5 + y6, mat)
+m <- rf_model()
+fit <- estimator(m)(mpg ~ hp + wt, data = mtcars)
 }

@@ -5,7 +5,7 @@ Authors@R:
     c(person("Kris", "Sankaran", , "ksankaran@wisc.edu", role = c("aut", "cre"),
      comment = c(ORCID = "0000-0002-9415-1971")),
      person("Hanying", "Jiang", , "hjiang252@wisc.edu", role = "aut"))
-Description: multimedia is an R package for multimodal mediation analysis of microbiome data. It make advanced mediation analysis techniques easy to use, ensuring that all statistical components are transparent and adaptable to specific problem contexts. The package provides a uniform interface to direct and indirect effect estimation, synthetic null hypothesis testing, and bootstrap confidence interval construction.
+Description: Multimodal mediation analysis is an emerging problem in microbiome data analysis. Multimedia make advanced mediation analysis techniques easy to use, ensuring that all statistical components are transparent and adaptable to specific problem contexts. The package provides a uniform interface to direct and indirect effect estimation, synthetic null hypothesis testing, and bootstrap confidence interval construction.
 License: CC0
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -31,12 +31,16 @@ Imports:
     dplyr,
     fansi,
     formula.tools,
+    glmnet,
+    glmnetUtils,
     ggplot2,
     glue,
-    insight,
+    miniLNM,
+    patchwork,
     phyloseq,
     progress,
     purrr,
+    ranger,
     rlang,
     stats,
     tidygraph,
@@ -44,23 +48,15 @@ Imports:
 Suggests:
     BiocStyle,
     brms,
-    cmdstanr,
     compositions,
     ggdist,
     ggraph,
     ggrepel,
-    glmnet,
-    glmnetUtils,
     knitr,
-    miniLNM,
-    patchwork,
-    ranger,
     rmarkdown,
     testthat (>= 3.0.0),
     tidyverse,
     vroom
-Remotes:
-    krisrs1128/miniLNM
 BugReports:
     https://github.com/krisrs1128/multimedia/issues
 URL: 
