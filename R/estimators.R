@@ -269,6 +269,7 @@ lm_model <- function(progress = TRUE) {
 #' @param newdata A data.frame containing new inputs from which to sample
 #'   responses. If NULL, defaults to the data used to estimate fit.
 #' @param indices The coordinates of the response from which to draw samples.
+#' @param ... Additional parameters passed to lm.predict
 #' @return y_star A data.frame of samples y associated with the new inputs.
 #' @examples
 #' fit <- lm(mpg ~ hp + wt, data = mtcars)
@@ -365,6 +366,9 @@ glmnet_model <- function(progress = TRUE, ...) {
 #' @param newdata A data.frame containing new inputs from which to sample
 #'   responses. If NULL, defaults to the data used to estimate fit.
 #' @param indices The coordinates of the response from which to draw samples.
+#' @param lambda_ix A regularization strength parameter used to maintain
+#'   consistency with estimation. Not used during sampling.
+#' @param ... Additional parameters to pass to predict.glmnet
 #' @return y_star A data.frame of samples y associated with the new inputs.
 #' @importFrom stats deviance
 #' @examples
@@ -582,10 +586,12 @@ brms_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
 #'  sampler functions associated wtih a lienar model.
 #' @seealso model lm_model rf_model glmnet_model brms_model
 #' @examples
+#' \dontrun{
 #' m <- lnm_model()
 #' mat <- data.frame(matrix(rpois(250, 10), 25, 10))
 #' colnames(mat) <- paste0("y", seq_len(6))
 #' fit <- estimator(m)(y1 + y2 + y3 + y4 ~ y5 + y6, mat)
+#' }
 #' @export
 lnm_model <- function(...) {
     check_if_installed(
@@ -616,6 +622,7 @@ lnm_model <- function(...) {
 #' @param newdata A data.frame containing new inputs from which to sample
 #'   responses. If NULL, defaults to the data used to estimate fit.
 #' @param indices The coordinates of the response from which to draw samples.
+#' @param ... Additional parameters passed to sample.
 #' @return y_star A data.frame of samples y associated wtih the new inputs.
 #' @importFrom formula.tools lhs.vars
 #' @examples
@@ -625,6 +632,7 @@ lnm_model <- function(...) {
 #' fit <- estimator(m)(y1 + y2 + y3 + y4 ~ y5 + y6, mat)
 #' lnm_sampler(fit, depth = 10)
 #' lnm_sampler(fit, depth = 100)
+#' @export
 lnm_sampler <- function(fit, newdata = NULL, indices = NULL, ...) {
     nm <- lhs.vars(fit@formula)
     if (is.null(indices)) {

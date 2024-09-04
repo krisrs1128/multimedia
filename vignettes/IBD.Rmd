@@ -486,7 +486,7 @@ mediators(exper2) <- mediators(exper2)[, 1:50]
 #     brms_model(family = hurdle_lognormal())
 # ) |>
 #     estimate(exper2)
-model <- readRDS(url("https://go.wisc.edu/7ge238"))
+model <- readRDS(url("https://go.wisc.edu/wj197j"))
 ```
 
 With the updated model, we can again compute pathwise indirect effects. This
@@ -497,7 +497,7 @@ simply vanished, then that would be a direct effect.
 
 ```{r hurdle_indirect, fig.width = 12, fig.height = 9}
 # indirect_sorted <- indirect_pathwise(model, exper2)
-indirect_sorted <- read_csv("https://go.wisc.edu/774tak") |>
+indirect_sorted <- read_csv("https://go.wisc.edu/r269qh") |>
     effect_summary()
 plot_mediators(indirect_sorted, exper2, treatment = "Study.Group")
 ```
