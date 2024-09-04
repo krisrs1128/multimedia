@@ -23,3 +23,25 @@ test_that("Can nullify the mediator to outcome path.", {
   expect_contains(edges$state, c("active", "inactive"))
   expect_equal(as.integer(table(edges$state)), c(16, 1))
 })
+
+
+test_that("Can contrast data simulated from real and synthetic.", {
+  contrast_data <- fit |>
+    null_contrast(exper)
+  expect_named(
+    contrast_data, 
+    c("source", "outcome", "indirect_setting", "contrast", "direct_effect")
+  )
+  expect_equal(unique(contrast_data$source), c("real", "synthetic"))
+})
+
+test_that("Can compute false discovery rates given contrast data.", {
+  fdr_data <- fit |>
+    null_contrast(exper) |>
+    fdr_summary("direct_effect")
+  expect_named(
+    fdr_data, 
+    c("source", "outcome", "direct_effect", "rank", "fdr_hat", "keep")
+  ) 
+  expect_equal(fdr_data$source, c("real", "synthetic"))
+})
