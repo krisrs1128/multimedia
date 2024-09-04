@@ -265,7 +265,7 @@ lm_model <- function(progress = TRUE) {
 #'
 #' Draw samples from a fitted linear model.
 #'
-#' @param fit The fitted linear model model from which to draw samples.
+#' @param fits The fitted linear model model from which to draw samples.
 #' @param newdata A data.frame containing new inputs from which to sample
 #'   responses. If NULL, defaults to the data used to estimate fit.
 #' @param indices The coordinates of the response from which to draw samples.
@@ -362,7 +362,7 @@ glmnet_model <- function(progress = TRUE, ...) {
 #' This assumes a continuous response, so that the out-of-sample MSE can be used
 #' to estimate the outcome variability sigma.
 #'
-#' @param fit The fitted glmnet model model from which to draw samples.
+#' @param fits The fitted glmnet model model from which to draw samples.
 #' @param newdata A data.frame containing new inputs from which to sample
 #'   responses. If NULL, defaults to the data used to estimate fit.
 #' @param indices The coordinates of the response from which to draw samples.
@@ -542,6 +542,7 @@ mediation_models <- function(object) {
 #'
 #' This samples from the posterior predictive for each component in
 #' a multiresponse Bayesian Regression model.
+#' @param fits The fitted brms model model from which to draw samples.
 #' @param newdata A data.frame containing new inputs from which to sample
 #'   responses. If NULL, defaults to the data used to estimate fit.
 #' @param indices The coordinates of the response from which we want to sample.
@@ -586,12 +587,10 @@ brms_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
 #'  sampler functions associated wtih a lienar model.
 #' @seealso model lm_model rf_model glmnet_model brms_model
 #' @examples
-#' \dontrun{
 #' m <- lnm_model()
 #' mat <- data.frame(matrix(rpois(250, 10), 25, 10))
 #' colnames(mat) <- paste0("y", seq_len(6))
 #' fit <- estimator(m)(y1 + y2 + y3 + y4 ~ y5 + y6, mat)
-#' }
 #' @export
 lnm_model <- function(...) {
     check_if_installed(
@@ -693,10 +692,11 @@ rf_model <- function(progress = TRUE, ...) {
 #' This assumes a continuous response, so that the out-of-sample MSE can be used
 #' to estimate the outcome variability \eqn{\sigma}.
 #'
-#' @param fit The fitted RF model from which to draw samples.
+#' @param fits The fitted RF model from which to draw samples.
 #' @param newdata A data.frame containing new inputs from which to sample
 #'   responses. If NULL, defaults to the data used to estimate fit.
 #' @param indices The coordinates of the response from which to draw samples.
+#' @param ... Additional parameters passed to rf_model's predict method.
 #' @return y_star A data.frame of samples y associated with the new inputs.
 #' @importFrom dplyr bind_cols
 #' @examples
@@ -728,15 +728,13 @@ rf_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
 #' Estimate a Multimedia Model
 #'
 #' This defines a generic estimator function, which can be applied to different
-#' multimedia model objects. It creates a unified interface to estimating diverse
-#' mediation and outcome model families.
+#' multimedia model objects. It creates a unified interface to estimating
+#' diverse mediation and outcome model families.
 #' @param object A model object that we want to estimate.
 #' @return A fitted version of the input model class.
 #' @examples
-#' m <- lnm_model()
-#' mat <- data.frame(matrix(rpois(250, 10), 25, 10))
-#' colnames(mat) <- paste0("y", 1:6)
-#' fit <- estimator(m)(y1 + y2 + y3 + y4 ~ y5 + y6, mat)
+#' m <- rf_model()
+#' fit <- estimator(m)(mpg ~ hp + wt, data = mtcars)
 #' @export
 setGeneric("estimator", \(object) standardGeneric("estimator"))
 
@@ -745,9 +743,7 @@ setGeneric("estimator", \(object) standardGeneric("estimator"))
 #'   access to.
 #' @return A fitted version of the input model class.
 #' @examples
-#' m <- lnm_model()
-#' mat <- data.frame(matrix(rpois(250, 10), 25, 10))
-#' colnames(mat) <- paste0("y", 1:6)
-#' fit <- estimator(m)(y1 + y2 + y3 + y4 ~ y5 + y6, mat)
+#' m <- rf_model()
+#' fit <- estimator(m)(mpg ~ hp + wt, data = mtcars)
 #' @export
 setMethod("estimator", "model", \(object) object@estimator)

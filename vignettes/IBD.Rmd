@@ -16,12 +16,10 @@ knitr::opts_chunk$set(
     comment = "#>",
     warning = FALSE,
     message = FALSE,
-    eval = TRUE,
     cache = FALSE,
     dev.args = list(bg = "transparent"),
     out.width = 600,
-    crop = NULL,
-    eval = FALSE
+    crop = NULL
 )
 
 knitr::knit_hooks$set(output = multimedia::ansi_aware_handler)
@@ -298,7 +296,9 @@ confound_ix <- data.frame(
     mediator = "gEnterocloster"
 )
 rho_seq <- seq(-0.5, 0.5, length.out = 10)
-# sensitivity_overall <- sensitivity(model, exper, confound_ix, n_boot = 100, rho_seq = rho_seq, t1 = 1, t2 = 2)
+# sensitivity_overall <- sensitivity(
+#     model, exper, confound_ix, n_boot = 100, rho_seq = rho_seq, t1 = 1, t2 = 2
+# )
 sensitivity_overall <- read_csv("https://go.wisc.edu/aj4vg9")
 ```
 

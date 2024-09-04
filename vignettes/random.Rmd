@@ -16,7 +16,6 @@ knitr::opts_chunk$set(
     comment = "#>",
     warning = FALSE,
     message = FALSE,
-    eval = TRUE,
     cache = FALSE,
     dev.args = list(bg = "transparent"),
     out.width = 600,

@@ -56,7 +56,9 @@ sensitivity_factory <- function(
     for (i in seq_along(sensitivity_seq)) {
         for (b in seq_len(n_bootstrap)) {
             exper_ <- exper[sample(nrow(exper)), ]
-            sensitivity_curve[[k]] <- sampler(model, exper_, sensitivity_seq[i]) |>
+            sensitivity_curve[[k]] <- sampler(
+                model, exper_, sensitivity_seq[i]
+            ) |>
                 estimate(model, exper = _) |>
                 summarization() |>
                 mutate(perturbation = sensitivity_seq[i], bootstrap = b)
@@ -277,7 +279,10 @@ sensitivity_sample <- function(model, exper, epsilon) {
     Nm <- n_mediators(model)
     Ny <- n_outcomes(model)
     profile <- setup_profile(model, treatments(exper), treatments(exper))
-    exper_ <- sample(model, profile = profile, pretreatments = pretreatments(exper))
+    exper_ <- sample(
+        model,
+        profile = profile, pretreatments = pretreatments(exper)
+    )
 
     # add correlated noise
     mediators(exper_) <- (mediators(exper) + epsilon[, seq_len(Nm)]) |>
