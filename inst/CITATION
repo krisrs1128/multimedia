@@ -7,7 +7,7 @@ pkgVer <- function(pkg) {
 c(
     bibentry(bibtype="article",
         title = "multimedia: Multimodal Mediation Analysis of Microbiome Data",
-        author = personList(
+        author = c(
             as.person("Hanying Jiang"),
             as.person("Xinran Miao"),
             as.person("Margaret W. Thairu"),

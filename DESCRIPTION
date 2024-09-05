@@ -57,9 +57,9 @@ Suggests:
     tidyverse,
     vroom
 BugReports:
-    https://github.com/krisrs1128/multimedia/issues
+    https://github.com/krisrs1128/multimedia/issues/
 URL: 
-    https://krisrs1128.github.io/multimedia,
-    https://github.com/krisrs1128/multimedia
+    https://krisrs1128.github.io/multimedia/,
+    https://github.com/krisrs1128/multimedia/
 LazyData: false
 Config/testthat/edition: 3
