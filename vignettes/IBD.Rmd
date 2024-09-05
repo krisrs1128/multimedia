@@ -438,6 +438,19 @@ p2 <- filter(inference$direct, outcome %in% filter_outcomes) |>
 p1 | p2
 ```
 
+Finally, let's revisit the indirect effects that seem to be traveling through
+specific microbe-metabolite pairs, which we recovered using
+`indirect_pathwise()`. As with the overall indirect effects, we can carry out a
+sensitvity analysis, asking how conclusions would have changed if there had in
+fact been a confounder between specific mediators and metabolites. In this
+example, we will look at the strongest pathwise indirect effects that were
+related to Crohns Disease. The block below correlates the pairs in each row of
+the `confound_ix` data.frame. We use the same range of correlation strengths
+`rho_seq` as before. Since estimating pathwise indirect effects is more
+consuming than computing overall effects, we will settle with `n_boot = 1`,
+which unfortunately means we won't have confidence bands around our sensitivity
+curve.
+
 ```{r}
 confound_ix <- data.frame(
     mediator = c("gCholadousia", "gBilophila", "gCAG103"),
@@ -450,6 +463,19 @@ confound_ix <- data.frame(
 sensitivity_path <- read_csv("https://go.wisc.edu/ph7ek4")
 ```
 
+The results are given below. It seems that the estimated taurine $\iff$ Biophila
+effect is quite robust: even if there had been an unobserved confounder that
+correlates the mediator and outcome with strength $\rho = 0.5$, we still see a
+clear indirect effect. The other two estimates require a bit more
+interpretation. The taurine $\iff$ Choladousia effect seems highly variable for
+small levels of $\rho$, and for larger values, the estimate completely vanishes.
+We should not have too much confidence in this result, even for low levels of
+confounding. On the other hand, the ketodeoxycholate $\iff$ CAG103 seems quite
+robust for smaller values of $\rho$, but weakens under very strong confounding.
+This situation is more ambiguous. It's possible that a confounder could be
+responsible for the indirect effect; however, it would have to be quite strong,
+perhaps stronger than is plausible.
+
 ```{r}
 confound_ix |>
     left_join(sensitivity_path) |>
@@ -458,6 +484,7 @@ confound_ix |>
     geom_line(linewidth = 2) +
     facet_wrap(outcome ~ mediator, scales = "free_y")
 ```
+
 
 # Hurdle-Lognormal Approach
 
@@ -486,6 +513,7 @@ mediators(exper2) <- mediators(exper2)[, 1:50]
 #     brms_model(family = hurdle_lognormal())
 # ) |>
 #     estimate(exper2)
+#saveRDS(model, "~/Downloads/hurdle-model-IBD.rds")
 model <- readRDS(url("https://go.wisc.edu/wj197j"))
 ```
 
@@ -496,7 +524,7 @@ effect on microbe abundance. If this hadn't been present, and if the metabolite
 simply vanished, then that would be a direct effect.
 
 ```{r hurdle_indirect, fig.width = 12, fig.height = 9}
-# indirect_sorted <- indirect_pathwise(model, exper2)
+#indirect_sorted <- indirect_pathwise(model, exper2) |>
 indirect_sorted <- read_csv("https://go.wisc.edu/r269qh") |>
     effect_summary()
 plot_mediators(indirect_sorted, exper2, treatment = "Study.Group")
@@ -524,9 +552,10 @@ hurdle model's effectiveness in accurately reflecting features that influence
 zero-inflation.
 
 ```{r hurdle_direct, fig.width = 6, height = 5}
-# direct <- direct_effect(model, exper)
+#direct <- direct_effect(model, exper) |>
 direct <- read_csv("https://go.wisc.edu/28ft5e") |>
-    effect_summary()
+    effect_summary() |>
+    slice_max(abs(direct_effect), n = 6)
 
 combined |>
     select(any_of(direct$outcome), Study.Group) |>
