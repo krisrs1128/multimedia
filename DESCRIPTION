@@ -20,19 +20,20 @@ biocViews:
     StatisticalMethod, 
     StructuralEquationModels
 Depends: 
-    SummarizedExperiment,
     R (>= 4.4.0),
+    brms,
+    glmnetUtils,
     methods,
+    ranger,
     tidyselect
 Imports:
     MASS,
     S4Vectors,
+    SummarizedExperiment,
     cli,
     dplyr,
     fansi,
     formula.tools,
-    glmnet,
-    glmnetUtils,
     ggplot2,
     glue,
     miniLNM,
@@ -40,14 +41,12 @@ Imports:
     phyloseq,
     progress,
     purrr,
-    ranger,
     rlang,
     stats,
     tidygraph,
     tidyr
 Suggests:
     BiocStyle,
-    brms,
     compositions,
     ggdist,
     ggraph,

@@ -318,7 +318,6 @@ glmnet_model_params <- function(...) {
 #' @return model An object of class `model` with estimator, predictor, and
 #'  sampler functions associated wtih a lienar model.
 #' @seealso model lm_model rf_model
-#' @importFrom insight check_if_installed
 #' @examples
 #' exper <- demo_joy() |>
 #'     mediation_data("PHQ", "treatment", starts_with("ASV"))
@@ -333,19 +332,14 @@ glmnet_model_params <- function(...) {
 #'     mediation_data(starts_with("outcome"), "treatment", "mediator")
 #' multimedia(exper, glmnet_model(lambda = 0.1)) |>
 #'     estimate(exper)
+#' @importFrom glmnetUtils glmnet
 #' @export
 glmnet_model <- function(progress = TRUE, ...) {
-    check_if_installed(
-        c("glmnet", "glmnetUtils"),
-        "to use a glmnet regression model for multimedia estimation."
-    )
-    requireNamespace("glmnetUtils", quietly = TRUE)
-
     params <- glmnet_model_params(...)
     new(
         "model",
         estimator = parallelize(
-            \(fmla, data) inject(glmnetUtils::glmnet(fmla, data, !!!params)),
+            \(fmla, data) inject(glmnet(fmla, data, !!!params)),
             progress = progress
         ),
         estimates = NULL,
@@ -385,7 +379,6 @@ glmnet_sampler <- function(
     if (is.null(indices)) {
         indices <- seq_along(fits)
     }
-    requireNamespace("glmnetUtils", quietly = TRUE)
 
     nm <- names(fits)
     y_hats <- list()
@@ -423,12 +416,13 @@ brms_model_params <- function(...) {
 #' @return models A list of estimated BRMS models. The j^th element contains
 #'  y[j] ~ x1 + x2 + ...
 #' @importFrom stats update
+#' @importFrom brms brm
 #' @noRd
 brm_cache <- function(formula, data, ...) {
     models <- list()
 
     ys <- lhs.vars(formula)
-    models[[ys[1]]] <- brms::brm(sub_formula(formula, ys[1]), data, ...)
+    models[[ys[1]]] <- brm(sub_formula(formula, ys[1]), data, ...)
     if (length(ys) == 1) {
         return(models)
     }
@@ -467,9 +461,7 @@ brm_cache <- function(formula, data, ...) {
 #' fit
 #' @export
 brms_model <- function(...) {
-    check_if_installed("brms", "to use a BRMS model for multimedia estimation.")
     params <- brms_model_params(...)
-    requireNamespace("brms", quietly = TRUE)
     new(
         "model",
         estimator = \(fmla, data) inject(brm_cache(fmla, data, !!!params)),
@@ -546,24 +538,23 @@ mediation_models <- function(object) {
 #' @param newdata A data.frame containing new inputs from which to sample
 #'   responses. If NULL, defaults to the data used to estimate fit.
 #' @param indices The coordinates of the response from which we want to sample.
-#' @importFrom insight check_if_installed
 #' @examples
 #' exper <- demo_joy() |>
 #'     mediation_data("PHQ", "treatment", starts_with("ASV"))
 #' fit <- multimedia(exper, brms_model()) |>
 #'     estimate(exper)
 #' brms_sampler(outcome_models(fit))
+#' @importFrom brms posterior_predict
 #' @noRd
 brms_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
     if (is.null(indices)) {
         indices <- seq_along(fits)
     }
-    check_if_installed("brms", "to use a BRMS model for multimedia estimation.")
 
     nm <- names(fits)
     y_hats <- list()
     for (i in indices) {
-        y_hats[[nm[i]]] <- brms::posterior_predict(
+        y_hats[[nm[i]]] <- posterior_predict(
             fits[[i]],
             newdata,
             resp = nm[i],
@@ -591,19 +582,12 @@ brms_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
 #' mat <- data.frame(matrix(rpois(250, 10), 25, 10))
 #' colnames(mat) <- paste0("y", seq_len(6))
 #' fit <- estimator(m)(y1 + y2 + y3 + y4 ~ y5 + y6, mat)
+#' @importFrom miniLNM lnm predict
 #' @export
 lnm_model <- function(...) {
-    check_if_installed(
-        "miniLNM",
-        "to use a LNM model for multimedia estimation. Please run,
-        devtools::install_github('krisrs1128/miniLNM')",
-        prompt = FALSE
-    )
-    requireNamespace("miniLNM", quietly = TRUE)
-
     new(
         "model",
-        estimator = \(fmla, data) inject(miniLNM::lnm(fmla, data, ...)),
+        estimator = \(fmla, data) inject(lnm(fmla, data, ...)),
         estimates = NULL,
         sampler = lnm_sampler,
         predictor = predict,
@@ -624,6 +608,7 @@ lnm_model <- function(...) {
 #' @param ... Additional parameters passed to sample.
 #' @return y_star A data.frame of samples y associated wtih the new inputs.
 #' @importFrom formula.tools lhs.vars
+#' @importFrom miniLNM sample
 #' @examples
 #' m <- lnm_model()
 #' mat <- data.frame(matrix(rpois(250, 10), 25, 10))
@@ -637,7 +622,6 @@ lnm_sampler <- function(fit, newdata = NULL, indices = NULL, ...) {
     if (is.null(indices)) {
         indices <- seq_along(nm)
     }
-    requireNamespace("miniLNM", quietly = TRUE)
     sample(fit, newdata = newdata, ...)[, nm[indices], drop = FALSE]
 }
 
@@ -666,18 +650,13 @@ lnm_sampler <- function(fit, newdata = NULL, indices = NULL, ...) {
 #' multimedia(exper, rf_model(num.trees = 20, max.depth = 2)) |>
 #'     estimate(exper)
 #' @seealso model lm_model rf_model glmnet_model brms_model
+#' @importFrom ranger ranger
 #' @export
 rf_model <- function(progress = TRUE, ...) {
-    check_if_installed(
-        "ranger",
-        "to use a random forest model for multimedia estimation."
-    )
-    requireNamespace("ranger", quietly = TRUE)
-
     new(
         "model",
         estimator = parallelize(
-            \(fmla, data) ranger::ranger(fmla, data, ...),
+            \(fmla, data) ranger(fmla, data, ...),
             progress
         ),
         estimates = NULL,
@@ -712,7 +691,6 @@ rf_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
     if (is.null(indices)) {
         indices <- seq_along(fits)
     }
-    requireNamespace("ranger", quietly = TRUE)
 
     nm <- names(fits)
     y_hats <- list()

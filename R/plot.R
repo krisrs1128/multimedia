@@ -39,14 +39,11 @@
 #'
 #' @importFrom ggplot2 ggplot aes .data geom_point labs
 #' @importFrom glue glue
+#' @importFrom patchwork wrap_plots plot_layout
 #' @export
 plot_mediators <- function(
     indirect_effects, exper, n_digit = 3, n_panels = NULL,
     treatment = "treatment", ...) {
-    check_if_installed(
-        "patchwork",
-        "to visualize indirect effects as a multipanel plot."
-    )
     if (is.null(n_panels)) {
         n_panels <- min(nrow(indirect_effects), 12)
     }
@@ -62,8 +59,7 @@ plot_mediators <- function(
             labs(title = glue("IE: {round(effect, n_digit)}"))
     }
 
-    patchwork::wrap_plots(p, ...) +
-        patchwork::plot_layout(guides = "collect")
+    wrap_plots(p, ...) + plot_layout(guides = "collect")
 }
 
 #' Generic Sensitivity Plot
