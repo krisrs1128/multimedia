@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>The Mindfulness Study • multimedia</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
@@ -12,92 +12,63 @@
 <link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
 <link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
-<script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="The Mindfulness Study">
-<!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
+<script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="The Mindfulness Study">
 </head>
-<body data-spy="scroll" data-target="#toc">
+<body>
+    <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
-    <div class="container template-article">
-      <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">multimedia</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0</span>
-      </span>
-    </div>
+    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
 
-    <div id="navbar" class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
-<li>
-  <a href="../reference/index.html">Reference</a>
-</li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    Articles
+    <a class="navbar-brand me-2" href="../index.html">multimedia</a>
 
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-<li>
-      <a href="../articles/IBD.html">Microbiome - Metabolome Mediation Analysis</a>
-    </li>
-    <li>
-      <a href="../articles/illustration.html">Illustration with Nonlinear Effects</a>
-    </li>
-    <li>
-      <a href="../articles/mindfulness.html">The Mindfulness Study</a>
-    </li>
-    <li>
-      <a href="../articles/random.html">Quick Start with Random Data</a>
-    </li>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div id="navbar" class="collapse navbar-collapse ms-3">
+      <ul class="navbar-nav me-auto">
+<li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="active nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="../articles/IBD.html">Microbiome - Metabolome Mediation Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/illustration.html">Illustration with Nonlinear Effects</a></li>
+    <li><a class="dropdown-item" href="../articles/mindfulness.html">The Mindfulness Study</a></li>
+    <li><a class="dropdown-item" href="../articles/random.html">Quick Start with Random Data</a></li>
   </ul>
 </li>
-<li>
-  <a href="../news/index.html">Changelog</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
-<ul class="nav navbar-nav navbar-right">
-<li>
-  <a href="https://github.com/krisrs1128/multimedia/" class="external-link">
-    <span class="fab fa-github fa-lg"></span>
-
-  </a>
-</li>
+<ul class="navbar-nav">
+<li class="nav-item"><form class="form-inline" role="search">
+ <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
+</form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/krisrs1128/multimedia/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
-<!--/.nav-collapse -->
+
+
   </div>
-<!--/.container -->
-</div>
-<!--/.navbar -->
+</nav><div class="container template-article">
 
 
 
-      </header><div class="row">
-  <div class="col-md-9 contents">
-    <div class="page-header toc-ignore">
-      <h1 data-toc-skip>The Mindfulness Study</h1>
+
+<div class="row">
+  <main id="main" class="col-md-9"><div class="page-header">
+      <img src="../logo.png" class="logo" alt=""><h1>The Mindfulness Study</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/krisrs1128/multimedia/blob/HEAD/vignettes/mindfulness.Rmd" class="external-link"><code>vignettes/mindfulness.Rmd</code></a></small>
-      <div class="hidden name"><code>mindfulness.Rmd</code></div>
-
+      <div class="d-none name"><code>mindfulness.Rmd</code></div>
     </div>
 
     
@@ -118,7 +89,7 @@ possibilities.</p>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggrepel.slowkow.com/" class="external-link">ggrepel</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://dx.plos.org/10.1371/journal.pone.0061217" class="external-link">phyloseq</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://krisrs1128.github.io/multimedia" class="external-link">multimedia</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://krisrs1128.github.io/multimedia/">multimedia</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">mindfulness</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20231228</span><span class="op">)</span></span></code></pre></div>
 <p>This package needs a <code>mediation_data</code> object to organize
@@ -154,7 +125,7 @@ we have to estimate many subject-level parameters, and our sample size
 is not that large.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># use Flavonifractor as the reference for the log-ratio transform</span></span>
-<span><span class="fu">outcomes</span><span class="op">(</span><span class="va">exper</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu">outcomes</span><span class="op">(</span><span class="va">exper</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span><span class="fu"><a href="../reference/outcomes.html">outcomes</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/outcomes.html">outcomes</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">Flavonifractor</span>, <span class="fu"><a href="https://tidyselect.r-lib.org/reference/everything.html" class="external-link">everything</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/multimedia.html">multimedia</a></span><span class="op">(</span></span>
@@ -163,39 +134,43 @@ is not that large.</p>
 <span>    <span class="fu"><a href="../reference/glmnet_model.html">glmnet_model</a></span><span class="op">(</span>lambda <span class="op">=</span> <span class="fl">0.5</span>, alpha <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../reference/estimate.html">estimate</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span></span></code></pre></div>
-<pre class="r-output"><code><span><span class="co">#&gt; ------------------------------------------------------------ </span></span>
-<span><span class="co">#&gt; EXPERIMENTAL ALGORITHM: </span></span>
-<span><span class="co">#&gt;   This procedure has not been thoroughly tested and may be unstable </span></span>
-<span><span class="co">#&gt;   or buggy. The interface is subject to change. </span></span>
-<span><span class="co">#&gt; ------------------------------------------------------------ </span></span>
-<span><span class="co">#&gt; Gradient evaluation took 0.011177 seconds </span></span>
-<span><span class="co">#&gt; 1000 transitions using 10 leapfrog steps per transition would take 111.77 seconds. </span></span>
-<span><span class="co">#&gt; Adjust your expectations accordingly! </span></span>
-<span><span class="co">#&gt; Begin eta adaptation. </span></span>
-<span><span class="co">#&gt; Iteration:   1 / 250 [  0%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Iteration:  50 / 250 [ 20%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Iteration: 100 / 250 [ 40%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Iteration: 150 / 250 [ 60%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Iteration: 200 / 250 [ 80%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Success! Found best value [eta = 1] earlier than expected. </span></span>
-<span><span class="co">#&gt; Begin stochastic gradient ascent. </span></span>
-<span><span class="co">#&gt;   iter             ELBO   delta_ELBO_mean   delta_ELBO_med   notes  </span></span>
-<span><span class="co">#&gt;    100      -656903.865             1.000            1.000 </span></span>
-<span><span class="co">#&gt;    200      -140546.338             2.337            3.674 </span></span>
-<span><span class="co">#&gt;    300       -98221.623             1.702            1.000 </span></span>
-<span><span class="co">#&gt;    400       -91080.743             1.296            1.000 </span></span>
-<span><span class="co">#&gt;    500       -88112.539             1.043            0.431 </span></span>
-<span><span class="co">#&gt;    600       -86742.642             0.872            0.431 </span></span>
-<span><span class="co">#&gt;    700       -85796.558             0.749            0.078 </span></span>
-<span><span class="co">#&gt;    800       -85155.217             0.656            0.078 </span></span>
-<span><span class="co">#&gt;    900       -84703.407             0.584            0.034 </span></span>
-<span><span class="co">#&gt;   1000       -84309.916             0.526            0.034 </span></span>
-<span><span class="co">#&gt;   1100       -84023.600             0.426            0.016 </span></span>
-<span><span class="co">#&gt;   1200       -83816.188             0.059            0.011 </span></span>
-<span><span class="co">#&gt;   1300       -83647.463             0.016            0.008   MEDIAN ELBO CONVERGED </span></span>
-<span><span class="co">#&gt; Drawing a sample of size 1000 from the approximate posterior...  </span></span>
-<span><span class="co">#&gt; COMPLETED. </span></span>
-<span><span class="co">#&gt; Finished in  15.1 seconds.</span></span></code></pre>
+<pre class="r-output"><code><span><span class="co">#&gt; Chain 1: ------------------------------------------------------------</span></span>
+<span><span class="co">#&gt; Chain 1: EXPERIMENTAL ALGORITHM:</span></span>
+<span><span class="co">#&gt; Chain 1:   This procedure has not been thoroughly tested and may be unstable</span></span>
+<span><span class="co">#&gt; Chain 1:   or buggy. The interface is subject to change.</span></span>
+<span><span class="co">#&gt; Chain 1: ------------------------------------------------------------</span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: Gradient evaluation took 0.007721 seconds</span></span>
+<span><span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 77.21 seconds.</span></span>
+<span><span class="co">#&gt; Chain 1: Adjust your expectations accordingly!</span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: Begin eta adaptation.</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration:   1 / 250 [  0%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration:  50 / 250 [ 20%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration: 100 / 250 [ 40%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration: 150 / 250 [ 60%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration: 200 / 250 [ 80%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Success! Found best value [eta = 1] earlier than expected.</span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: Begin stochastic gradient ascent.</span></span>
+<span><span class="co">#&gt; Chain 1:   iter             ELBO   delta_ELBO_mean   delta_ELBO_med   notes </span></span>
+<span><span class="co">#&gt; Chain 1:    100      -243307.612             1.000            1.000</span></span>
+<span><span class="co">#&gt; Chain 1:    200       -99580.409             1.222            1.443</span></span>
+<span><span class="co">#&gt; Chain 1:    300       -90008.408             0.850            1.000</span></span>
+<span><span class="co">#&gt; Chain 1:    400       -87376.289             0.645            1.000</span></span>
+<span><span class="co">#&gt; Chain 1:    500       -85962.756             0.519            0.106</span></span>
+<span><span class="co">#&gt; Chain 1:    600       -85132.538             0.434            0.106</span></span>
+<span><span class="co">#&gt; Chain 1:    700       -84674.011             0.373            0.030</span></span>
+<span><span class="co">#&gt; Chain 1:    800       -84249.244             0.327            0.030</span></span>
+<span><span class="co">#&gt; Chain 1:    900       -84035.521             0.291            0.016</span></span>
+<span><span class="co">#&gt; Chain 1:   1000       -83782.160             0.262            0.016</span></span>
+<span><span class="co">#&gt; Chain 1:   1100       -83487.854             0.163            0.010   MEDIAN ELBO CONVERGED</span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: Drawing a sample of size 1000 from the approximate posterior... </span></span>
+<span><span class="co">#&gt; Chain 1: COMPLETED.</span></span></code></pre>
 <div class="section level2">
 <h2 id="evaluating-effects">Evaluating Effects<a class="anchor" aria-label="anchor" href="#evaluating-effects"></a>
 </h2>
@@ -212,16 +187,16 @@ estimated effects should be interpreted on a probability scale.</p>
 <pre class="r-output"><code><span><span class="co">#&gt; # A tibble: 55 × 2</span></span>
 <span><span class="co">#&gt;    outcome          direct_effect</span></span>
 <span><span class="co">#&gt;                        </span></span>
-<span><span class="co">#&gt;  1 Blautia               -0.0499 </span></span>
-<span><span class="co">#&gt;  2 Faecalibacterium      -0.0287 </span></span>
-<span><span class="co">#&gt;  3 Bacteroides           -0.0166 </span></span>
-<span><span class="co">#&gt;  4 Bifidobacterium        0.0131 </span></span>
-<span><span class="co">#&gt;  5 Prevotella             0.00997</span></span>
-<span><span class="co">#&gt;  6 Dorea                  0.00765</span></span>
-<span><span class="co">#&gt;  7 Clostridium_XlVa       0.00599</span></span>
-<span><span class="co">#&gt;  8 Clostridium_IV        -0.00574</span></span>
-<span><span class="co">#&gt;  9 Ruminococcus2          0.00522</span></span>
-<span><span class="co">#&gt; 10 Ruminococcus           0.00502</span></span>
+<span><span class="co">#&gt;  1 Blautia               -0.0597 </span></span>
+<span><span class="co">#&gt;  2 Faecalibacterium      -0.0315 </span></span>
+<span><span class="co">#&gt;  3 Bifidobacterium        0.0146 </span></span>
+<span><span class="co">#&gt;  4 Prevotella             0.00965</span></span>
+<span><span class="co">#&gt;  5 Clostridium_XlVa       0.00711</span></span>
+<span><span class="co">#&gt;  6 Ruminococcus           0.00695</span></span>
+<span><span class="co">#&gt;  7 Dorea                  0.00677</span></span>
+<span><span class="co">#&gt;  8 Clostridium_IV        -0.00613</span></span>
+<span><span class="co">#&gt;  9 Roseburia             -0.00488</span></span>
+<span><span class="co">#&gt; 10 Oscillibacter          0.00480</span></span>
 <span><span class="co">#&gt; # ℹ 45 more rows</span></span></code></pre>
 <p>These are the indirect effects when we set mediators to the treatment
 setting one at a time.</p>
@@ -235,16 +210,16 @@ setting one at a time.</p>
 <span><span class="co">#&gt; # Groups:   mediator [4]</span></span>
 <span><span class="co">#&gt;    mediator                    outcome          indirect_effect</span></span>
 <span><span class="co">#&gt;                                                 </span></span>
-<span><span class="co">#&gt;  1 mediator.fatigueRaw         Blautia                 -0.00856</span></span>
-<span><span class="co">#&gt;  2 mediator.sleepDistRaw       Roseburia               -0.00675</span></span>
-<span><span class="co">#&gt;  3 mediator.Fruit..not.juices. Faecalibacterium         0.00610</span></span>
-<span><span class="co">#&gt;  4 mediator.sleepDistRaw       Faecalibacterium        -0.00603</span></span>
-<span><span class="co">#&gt;  5 mediator.fatigueRaw         Faecalibacterium         0.00601</span></span>
-<span><span class="co">#&gt;  6 mediator.fatigueRaw         Roseburia                0.00487</span></span>
-<span><span class="co">#&gt;  7 mediator.Fruit..not.juices. Ruminococcus             0.00404</span></span>
-<span><span class="co">#&gt;  8 mediator.Cold.cereal        Blautia                  0.00349</span></span>
-<span><span class="co">#&gt;  9 mediator.Fruit..not.juices. Roseburia                0.00200</span></span>
-<span><span class="co">#&gt; 10 mediator.Cold.cereal        Ruminococcus            -0.00193</span></span>
+<span><span class="co">#&gt;  1 mediator.Fruit..not.juices. Faecalibacterium         0.00813</span></span>
+<span><span class="co">#&gt;  2 mediator.sleepDistRaw       Faecalibacterium        -0.00810</span></span>
+<span><span class="co">#&gt;  3 mediator.sleepDistRaw       Roseburia               -0.00710</span></span>
+<span><span class="co">#&gt;  4 mediator.fatigueRaw         Blautia                 -0.00683</span></span>
+<span><span class="co">#&gt;  5 mediator.fatigueRaw         Faecalibacterium         0.00547</span></span>
+<span><span class="co">#&gt;  6 mediator.fatigueRaw         Roseburia                0.00467</span></span>
+<span><span class="co">#&gt;  7 mediator.Fruit..not.juices. Ruminococcus             0.00354</span></span>
+<span><span class="co">#&gt;  8 mediator.sleepDistRaw       Blautia                  0.00301</span></span>
+<span><span class="co">#&gt;  9 mediator.Cold.cereal        Blautia                  0.00216</span></span>
+<span><span class="co">#&gt; 10 mediator.Fruit..not.juices. Blautia                  0.00210</span></span>
 <span><span class="co">#&gt; # ℹ 210 more rows</span></span></code></pre>
 <p><code>plot_mediators</code> visualizes the relationship between
 mediator and outcome variables. The title for each subplot is the
@@ -259,7 +234,7 @@ and includes direct effects of treatment – so these figures should be
 interpreted within the larger model context.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">exper_rela</span> <span class="op">&lt;-</span> <span class="va">exper</span></span>
-<span><span class="fu">outcomes</span><span class="op">(</span><span class="va">exper_rela</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/compositions/man/normalize.html" class="external-link">normalize</a></span><span class="op">(</span><span class="fu">outcomes</span><span class="op">(</span><span class="va">exper</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/outcomes.html">outcomes</a></span><span class="op">(</span><span class="va">exper_rela</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/compositions/man/normalize.html" class="external-link">normalize</a></span><span class="op">(</span><span class="fu"><a href="../reference/outcomes.html">outcomes</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/plot_mediators.html">plot_mediators</a></span><span class="op">(</span><span class="va">indirect</span>, <span class="va">exper_rela</span><span class="op">)</span></span></code></pre></div>
 <p><img src="mindfulness_files/figure-html/mediator_plot-1.png" width="600" style="display: block; margin: auto;"></p>
 </div>
@@ -275,39 +250,43 @@ relationship between the treatment and the mediators.</p>
 <code class="sourceCode R"><span><span class="va">altered</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../reference/nullify.html">nullify</a></span><span class="op">(</span><span class="st">"T-&gt;M"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../reference/estimate.html">estimate</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span></span></code></pre></div>
-<pre class="r-output"><code><span><span class="co">#&gt; ------------------------------------------------------------ </span></span>
-<span><span class="co">#&gt; EXPERIMENTAL ALGORITHM: </span></span>
-<span><span class="co">#&gt;   This procedure has not been thoroughly tested and may be unstable </span></span>
-<span><span class="co">#&gt;   or buggy. The interface is subject to change. </span></span>
-<span><span class="co">#&gt; ------------------------------------------------------------ </span></span>
-<span><span class="co">#&gt; Gradient evaluation took 0.010854 seconds </span></span>
-<span><span class="co">#&gt; 1000 transitions using 10 leapfrog steps per transition would take 108.54 seconds. </span></span>
-<span><span class="co">#&gt; Adjust your expectations accordingly! </span></span>
-<span><span class="co">#&gt; Begin eta adaptation. </span></span>
-<span><span class="co">#&gt; Iteration:   1 / 250 [  0%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Iteration:  50 / 250 [ 20%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Iteration: 100 / 250 [ 40%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Iteration: 150 / 250 [ 60%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Iteration: 200 / 250 [ 80%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Success! Found best value [eta = 1] earlier than expected. </span></span>
-<span><span class="co">#&gt; Begin stochastic gradient ascent. </span></span>
-<span><span class="co">#&gt;   iter             ELBO   delta_ELBO_mean   delta_ELBO_med   notes  </span></span>
-<span><span class="co">#&gt;    100      -656903.865             1.000            1.000 </span></span>
-<span><span class="co">#&gt;    200      -140546.338             2.337            3.674 </span></span>
-<span><span class="co">#&gt;    300       -98221.623             1.702            1.000 </span></span>
-<span><span class="co">#&gt;    400       -91080.743             1.296            1.000 </span></span>
-<span><span class="co">#&gt;    500       -88112.539             1.043            0.431 </span></span>
-<span><span class="co">#&gt;    600       -86742.642             0.872            0.431 </span></span>
-<span><span class="co">#&gt;    700       -85796.558             0.749            0.078 </span></span>
-<span><span class="co">#&gt;    800       -85155.217             0.656            0.078 </span></span>
-<span><span class="co">#&gt;    900       -84703.407             0.584            0.034 </span></span>
-<span><span class="co">#&gt;   1000       -84309.916             0.526            0.034 </span></span>
-<span><span class="co">#&gt;   1100       -84023.600             0.426            0.016 </span></span>
-<span><span class="co">#&gt;   1200       -83816.188             0.059            0.011 </span></span>
-<span><span class="co">#&gt;   1300       -83647.463             0.016            0.008   MEDIAN ELBO CONVERGED </span></span>
-<span><span class="co">#&gt; Drawing a sample of size 1000 from the approximate posterior...  </span></span>
-<span><span class="co">#&gt; COMPLETED. </span></span>
-<span><span class="co">#&gt; Finished in  16.8 seconds.</span></span></code></pre>
+<pre class="r-output"><code><span><span class="co">#&gt; Chain 1: ------------------------------------------------------------</span></span>
+<span><span class="co">#&gt; Chain 1: EXPERIMENTAL ALGORITHM:</span></span>
+<span><span class="co">#&gt; Chain 1:   This procedure has not been thoroughly tested and may be unstable</span></span>
+<span><span class="co">#&gt; Chain 1:   or buggy. The interface is subject to change.</span></span>
+<span><span class="co">#&gt; Chain 1: ------------------------------------------------------------</span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: Gradient evaluation took 0.01156 seconds</span></span>
+<span><span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 115.6 seconds.</span></span>
+<span><span class="co">#&gt; Chain 1: Adjust your expectations accordingly!</span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: Begin eta adaptation.</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration:   1 / 250 [  0%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration:  50 / 250 [ 20%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration: 100 / 250 [ 40%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration: 150 / 250 [ 60%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration: 200 / 250 [ 80%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Success! Found best value [eta = 1] earlier than expected.</span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: Begin stochastic gradient ascent.</span></span>
+<span><span class="co">#&gt; Chain 1:   iter             ELBO   delta_ELBO_mean   delta_ELBO_med   notes </span></span>
+<span><span class="co">#&gt; Chain 1:    100      -243307.612             1.000            1.000</span></span>
+<span><span class="co">#&gt; Chain 1:    200       -99580.409             1.222            1.443</span></span>
+<span><span class="co">#&gt; Chain 1:    300       -90008.408             0.850            1.000</span></span>
+<span><span class="co">#&gt; Chain 1:    400       -87376.289             0.645            1.000</span></span>
+<span><span class="co">#&gt; Chain 1:    500       -85962.756             0.519            0.106</span></span>
+<span><span class="co">#&gt; Chain 1:    600       -85132.538             0.434            0.106</span></span>
+<span><span class="co">#&gt; Chain 1:    700       -84674.011             0.373            0.030</span></span>
+<span><span class="co">#&gt; Chain 1:    800       -84249.244             0.327            0.030</span></span>
+<span><span class="co">#&gt; Chain 1:    900       -84035.521             0.291            0.016</span></span>
+<span><span class="co">#&gt; Chain 1:   1000       -83782.160             0.262            0.016</span></span>
+<span><span class="co">#&gt; Chain 1:   1100       -83487.854             0.163            0.010   MEDIAN ELBO CONVERGED</span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: Drawing a sample of size 1000 from the approximate posterior... </span></span>
+<span><span class="co">#&gt; Chain 1: COMPLETED.</span></span></code></pre>
 <p>These modified models can be used to simulate synthetic null data
 that help contextualize the effects seen in real data. For example, we
 can compare imaginary cohort drawn from the original and the altered
@@ -317,10 +296,10 @@ this effect doesn’t exist on average across the population because the
 study was randomized, but we want to remove any associations present in
 our finite sample.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">new_assign</span> <span class="op">&lt;-</span> <span class="fu">treatments</span><span class="op">(</span><span class="va">exper</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="fu">treatments</span><span class="op">(</span><span class="va">exper</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, , drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span></span>
+<code class="sourceCode R"><span><span class="va">new_assign</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/treatments.html">treatments</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="fu"><a href="../reference/treatments.html">treatments</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, , drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span></span>
 <span><span class="va">profile</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/setup_profile.html">setup_profile</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">new_assign</span>, <span class="va">new_assign</span><span class="op">)</span></span>
-<span><span class="va">m1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">model</span>, profile <span class="op">=</span> <span class="va">profile</span>, pretreatment <span class="op">=</span> <span class="fu">pretreatments</span><span class="op">(</span><span class="va">exper</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">m2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">altered</span>, profile <span class="op">=</span> <span class="va">profile</span>, pretreatment <span class="op">=</span> <span class="fu">pretreatments</span><span class="op">(</span><span class="va">exper</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">m1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">model</span>, profile <span class="op">=</span> <span class="va">profile</span>, pretreatment <span class="op">=</span> <span class="fu"><a href="../reference/pretreatments.html">pretreatments</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">m2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">altered</span>, profile <span class="op">=</span> <span class="va">profile</span>, pretreatment <span class="op">=</span> <span class="fu"><a href="../reference/pretreatments.html">pretreatments</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>The sampled objects above have the same class as <code>exper</code>.
 We can extract the real and simulated mediator data to see the treatment
 effects along those edges. As expected, the altered model has no
@@ -329,9 +308,9 @@ to the conclusion that mindfulness does influence the mediators, which
 was implicit in our discussion of indirect effects above.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    real <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_cols.html" class="external-link">bind_cols</a></span><span class="op">(</span><span class="fu">treatments</span><span class="op">(</span><span class="va">exper</span><span class="op">)</span>, <span class="fu">mediators</span><span class="op">(</span><span class="va">exper</span><span class="op">)</span>, <span class="fu">pretreatments</span><span class="op">(</span><span class="va">exper</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>    original <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_cols.html" class="external-link">bind_cols</a></span><span class="op">(</span><span class="va">new_assign</span>, <span class="fu">mediators</span><span class="op">(</span><span class="va">m1</span><span class="op">)</span>, <span class="fu">pretreatments</span><span class="op">(</span><span class="va">exper</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>    altered <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_cols.html" class="external-link">bind_cols</a></span><span class="op">(</span><span class="va">new_assign</span>, <span class="fu">mediators</span><span class="op">(</span><span class="va">m2</span><span class="op">)</span>, <span class="fu">pretreatments</span><span class="op">(</span><span class="va">exper</span><span class="op">)</span><span class="op">)</span></span>
+<span>    real <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_cols.html" class="external-link">bind_cols</a></span><span class="op">(</span><span class="fu"><a href="../reference/treatments.html">treatments</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span>, <span class="fu"><a href="../reference/mediators.html">mediators</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span>, <span class="fu"><a href="../reference/pretreatments.html">pretreatments</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    original <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_cols.html" class="external-link">bind_cols</a></span><span class="op">(</span><span class="va">new_assign</span>, <span class="fu"><a href="../reference/mediators.html">mediators</a></span><span class="op">(</span><span class="va">m1</span><span class="op">)</span>, <span class="fu"><a href="../reference/pretreatments.html">pretreatments</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    altered <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_cols.html" class="external-link">bind_cols</a></span><span class="op">(</span><span class="va">new_assign</span>, <span class="fu"><a href="../reference/mediators.html">mediators</a></span><span class="op">(</span><span class="va">m2</span><span class="op">)</span>, <span class="fu"><a href="../reference/pretreatments.html">pretreatments</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span>.id <span class="op">=</span> <span class="st">"source"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">"mediator"</span><span class="op">)</span>, names_to <span class="op">=</span> <span class="st">"mediator"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -355,89 +334,101 @@ heterogeneity.</p>
 <code class="sourceCode R"><span><span class="va">altered_direct</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../reference/nullify.html">nullify</a></span><span class="op">(</span><span class="st">"T-&gt;Y"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../reference/estimate.html">estimate</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span></span></code></pre></div>
-<pre class="r-output"><code><span><span class="co">#&gt; ------------------------------------------------------------ </span></span>
-<span><span class="co">#&gt; EXPERIMENTAL ALGORITHM: </span></span>
-<span><span class="co">#&gt;   This procedure has not been thoroughly tested and may be unstable </span></span>
-<span><span class="co">#&gt;   or buggy. The interface is subject to change. </span></span>
-<span><span class="co">#&gt; ------------------------------------------------------------ </span></span>
-<span><span class="co">#&gt; Gradient evaluation took 0.016047 seconds </span></span>
-<span><span class="co">#&gt; 1000 transitions using 10 leapfrog steps per transition would take 160.47 seconds. </span></span>
-<span><span class="co">#&gt; Adjust your expectations accordingly! </span></span>
-<span><span class="co">#&gt; Begin eta adaptation. </span></span>
-<span><span class="co">#&gt; Iteration:   1 / 250 [  0%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Iteration:  50 / 250 [ 20%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Iteration: 100 / 250 [ 40%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Iteration: 150 / 250 [ 60%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Iteration: 200 / 250 [ 80%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Success! Found best value [eta = 1] earlier than expected. </span></span>
-<span><span class="co">#&gt; Begin stochastic gradient ascent. </span></span>
-<span><span class="co">#&gt;   iter             ELBO   delta_ELBO_mean   delta_ELBO_med   notes  </span></span>
-<span><span class="co">#&gt;    100      -473863.593             1.000            1.000 </span></span>
-<span><span class="co">#&gt;    200      -121339.767             1.953            2.905 </span></span>
-<span><span class="co">#&gt;    300       -94861.820             1.395            1.000 </span></span>
-<span><span class="co">#&gt;    400       -89307.130             1.062            1.000 </span></span>
-<span><span class="co">#&gt;    500       -87330.682             0.854            0.279 </span></span>
-<span><span class="co">#&gt;    600       -86321.936             0.713            0.279 </span></span>
-<span><span class="co">#&gt;    700       -85504.412             0.613            0.062 </span></span>
-<span><span class="co">#&gt;    800       -85000.741             0.537            0.062 </span></span>
-<span><span class="co">#&gt;    900       -84570.791             0.478            0.023 </span></span>
-<span><span class="co">#&gt;   1000       -84263.124             0.431            0.023 </span></span>
-<span><span class="co">#&gt;   1100       -83992.750             0.331            0.012 </span></span>
-<span><span class="co">#&gt;   1200       -83870.635             0.040            0.010   MEDIAN ELBO CONVERGED </span></span>
-<span><span class="co">#&gt; Drawing a sample of size 1000 from the approximate posterior...  </span></span>
-<span><span class="co">#&gt; COMPLETED. </span></span>
-<span><span class="co">#&gt; Finished in  15.9 seconds.</span></span></code></pre>
+<pre class="r-output"><code><span><span class="co">#&gt; Chain 1: ------------------------------------------------------------</span></span>
+<span><span class="co">#&gt; Chain 1: EXPERIMENTAL ALGORITHM:</span></span>
+<span><span class="co">#&gt; Chain 1:   This procedure has not been thoroughly tested and may be unstable</span></span>
+<span><span class="co">#&gt; Chain 1:   or buggy. The interface is subject to change.</span></span>
+<span><span class="co">#&gt; Chain 1: ------------------------------------------------------------</span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: Gradient evaluation took 0.014887 seconds</span></span>
+<span><span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 148.87 seconds.</span></span>
+<span><span class="co">#&gt; Chain 1: Adjust your expectations accordingly!</span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: Begin eta adaptation.</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration:   1 / 250 [  0%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration:  50 / 250 [ 20%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration: 100 / 250 [ 40%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration: 150 / 250 [ 60%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration: 200 / 250 [ 80%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Success! Found best value [eta = 1] earlier than expected.</span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: Begin stochastic gradient ascent.</span></span>
+<span><span class="co">#&gt; Chain 1:   iter             ELBO   delta_ELBO_mean   delta_ELBO_med   notes </span></span>
+<span><span class="co">#&gt; Chain 1:    100      -286918.019             1.000            1.000</span></span>
+<span><span class="co">#&gt; Chain 1:    200      -104917.320             1.367            1.735</span></span>
+<span><span class="co">#&gt; Chain 1:    300       -92595.460             0.956            1.000</span></span>
+<span><span class="co">#&gt; Chain 1:    400       -88954.112             0.727            1.000</span></span>
+<span><span class="co">#&gt; Chain 1:    500       -87383.372             0.585            0.133</span></span>
+<span><span class="co">#&gt; Chain 1:    600       -86258.965             0.490            0.133</span></span>
+<span><span class="co">#&gt; Chain 1:    700       -85569.685             0.421            0.041</span></span>
+<span><span class="co">#&gt; Chain 1:    800       -84971.656             0.369            0.041</span></span>
+<span><span class="co">#&gt; Chain 1:    900       -84708.412             0.329            0.018</span></span>
+<span><span class="co">#&gt; Chain 1:   1000       -84309.170             0.296            0.018</span></span>
+<span><span class="co">#&gt; Chain 1:   1100       -84071.410             0.197            0.013</span></span>
+<span><span class="co">#&gt; Chain 1:   1200       -83880.348             0.023            0.008   MEDIAN ELBO CONVERGED</span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: Drawing a sample of size 1000 from the approximate posterior... </span></span>
+<span><span class="co">#&gt; Chain 1: COMPLETED.</span></span></code></pre>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">altered_indirect</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../reference/nullify.html">nullify</a></span><span class="op">(</span><span class="st">"M-&gt;Y"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../reference/estimate.html">estimate</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span></span></code></pre></div>
-<pre class="r-output"><code><span><span class="co">#&gt; ------------------------------------------------------------ </span></span>
-<span><span class="co">#&gt; EXPERIMENTAL ALGORITHM: </span></span>
-<span><span class="co">#&gt;   This procedure has not been thoroughly tested and may be unstable </span></span>
-<span><span class="co">#&gt;   or buggy. The interface is subject to change. </span></span>
-<span><span class="co">#&gt; ------------------------------------------------------------ </span></span>
-<span><span class="co">#&gt; Gradient evaluation took 0.010268 seconds </span></span>
-<span><span class="co">#&gt; 1000 transitions using 10 leapfrog steps per transition would take 102.68 seconds. </span></span>
-<span><span class="co">#&gt; Adjust your expectations accordingly! </span></span>
-<span><span class="co">#&gt; Begin eta adaptation. </span></span>
-<span><span class="co">#&gt; Iteration:   1 / 250 [  0%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Iteration:  50 / 250 [ 20%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Iteration: 100 / 250 [ 40%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Iteration: 150 / 250 [ 60%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Iteration: 200 / 250 [ 80%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Success! Found best value [eta = 1] earlier than expected. </span></span>
-<span><span class="co">#&gt; Begin stochastic gradient ascent. </span></span>
-<span><span class="co">#&gt;   iter             ELBO   delta_ELBO_mean   delta_ELBO_med   notes  </span></span>
-<span><span class="co">#&gt;    100      -213883.306             1.000            1.000 </span></span>
-<span><span class="co">#&gt;    200       -98850.630             1.082            1.164 </span></span>
-<span><span class="co">#&gt;    300       -89780.278             0.755            1.000 </span></span>
-<span><span class="co">#&gt;    400       -87480.330             0.573            1.000 </span></span>
-<span><span class="co">#&gt;    500       -86119.617             0.461            0.101 </span></span>
-<span><span class="co">#&gt;    600       -85095.624             0.386            0.101 </span></span>
-<span><span class="co">#&gt;    700       -84504.489             0.332            0.026 </span></span>
-<span><span class="co">#&gt;    800       -83949.759             0.292            0.026 </span></span>
-<span><span class="co">#&gt;    900       -83681.943             0.260            0.016 </span></span>
-<span><span class="co">#&gt;   1000       -83556.409             0.234            0.016 </span></span>
-<span><span class="co">#&gt;   1100       -83186.123             0.134            0.012 </span></span>
-<span><span class="co">#&gt;   1200       -83009.099             0.018            0.007   MEDIAN ELBO CONVERGED </span></span>
-<span><span class="co">#&gt; Drawing a sample of size 1000 from the approximate posterior...  </span></span>
-<span><span class="co">#&gt; COMPLETED. </span></span>
-<span><span class="co">#&gt; Finished in  15.6 seconds.</span></span></code></pre>
+<pre class="r-output"><code><span><span class="co">#&gt; Chain 1: ------------------------------------------------------------</span></span>
+<span><span class="co">#&gt; Chain 1: EXPERIMENTAL ALGORITHM:</span></span>
+<span><span class="co">#&gt; Chain 1:   This procedure has not been thoroughly tested and may be unstable</span></span>
+<span><span class="co">#&gt; Chain 1:   or buggy. The interface is subject to change.</span></span>
+<span><span class="co">#&gt; Chain 1: ------------------------------------------------------------</span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: Gradient evaluation took 0.011622 seconds</span></span>
+<span><span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 116.22 seconds.</span></span>
+<span><span class="co">#&gt; Chain 1: Adjust your expectations accordingly!</span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: Begin eta adaptation.</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration:   1 / 250 [  0%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration:  50 / 250 [ 20%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration: 100 / 250 [ 40%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration: 150 / 250 [ 60%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration: 200 / 250 [ 80%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Success! Found best value [eta = 1] earlier than expected.</span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: Begin stochastic gradient ascent.</span></span>
+<span><span class="co">#&gt; Chain 1:   iter             ELBO   delta_ELBO_mean   delta_ELBO_med   notes </span></span>
+<span><span class="co">#&gt; Chain 1:    100      -266185.924             1.000            1.000</span></span>
+<span><span class="co">#&gt; Chain 1:    200      -103322.121             1.288            1.576</span></span>
+<span><span class="co">#&gt; Chain 1:    300       -90720.935             0.905            1.000</span></span>
+<span><span class="co">#&gt; Chain 1:    400       -87659.862             0.688            1.000</span></span>
+<span><span class="co">#&gt; Chain 1:    500       -86393.749             0.553            0.139</span></span>
+<span><span class="co">#&gt; Chain 1:    600       -85556.774             0.462            0.139</span></span>
+<span><span class="co">#&gt; Chain 1:    700       -84583.951             0.398            0.035</span></span>
+<span><span class="co">#&gt; Chain 1:    800       -84086.834             0.349            0.035</span></span>
+<span><span class="co">#&gt; Chain 1:    900       -83825.808             0.311            0.015</span></span>
+<span><span class="co">#&gt; Chain 1:   1000       -83560.389             0.280            0.015</span></span>
+<span><span class="co">#&gt; Chain 1:   1100       -83420.529             0.180            0.012</span></span>
+<span><span class="co">#&gt; Chain 1:   1200       -83137.414             0.023            0.010   MEDIAN ELBO CONVERGED</span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: Drawing a sample of size 1000 from the approximate posterior... </span></span>
+<span><span class="co">#&gt; Chain 1: COMPLETED.</span></span></code></pre>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="va">profile</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/setup_profile.html">setup_profile</a></span><span class="op">(</span><span class="va">model</span>, <span class="fu">treatments</span><span class="op">(</span><span class="va">exper</span><span class="op">)</span>, <span class="fu">treatments</span><span class="op">(</span><span class="va">exper</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">y1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">model</span>, profile <span class="op">=</span> <span class="va">profile</span>, pretreatment <span class="op">=</span> <span class="fu">pretreatments</span><span class="op">(</span><span class="va">exper</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">profile</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/setup_profile.html">setup_profile</a></span><span class="op">(</span><span class="va">model</span>, <span class="fu"><a href="../reference/treatments.html">treatments</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span>, <span class="fu"><a href="../reference/treatments.html">treatments</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">y1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">model</span>, profile <span class="op">=</span> <span class="va">profile</span>, pretreatment <span class="op">=</span> <span class="fu"><a href="../reference/pretreatments.html">pretreatments</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">y2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span></span>
 <span>    <span class="va">altered_direct</span>,</span>
-<span>    profile <span class="op">=</span> <span class="va">profile</span>, pretreatment <span class="op">=</span> <span class="fu">pretreatments</span><span class="op">(</span><span class="va">exper</span><span class="op">)</span></span>
+<span>    profile <span class="op">=</span> <span class="va">profile</span>, pretreatment <span class="op">=</span> <span class="fu"><a href="../reference/pretreatments.html">pretreatments</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">y3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span></span>
 <span>    <span class="va">altered_indirect</span>,</span>
-<span>    profile <span class="op">=</span> <span class="va">profile</span>, pretreatment <span class="op">=</span> <span class="fu">pretreatments</span><span class="op">(</span><span class="va">exper</span><span class="op">)</span></span>
+<span>    profile <span class="op">=</span> <span class="va">profile</span>, pretreatment <span class="op">=</span> <span class="fu"><a href="../reference/pretreatments.html">pretreatments</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">taxa_order</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/compositions/man/normalize.html" class="external-link">normalize</a></span><span class="op">(</span><span class="fu">outcomes</span><span class="op">(</span><span class="va">exper</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<code class="sourceCode R"><span><span class="va">taxa_order</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/compositions/man/normalize.html" class="external-link">normalize</a></span><span class="op">(</span><span class="fu"><a href="../reference/outcomes.html">outcomes</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="fl">2</span>, \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
 <span>        <span class="va">x</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/is.finite.html" class="external-link">is.infinite</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span>
@@ -446,15 +437,15 @@ heterogeneity.</p>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">combined_samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    <span class="st">"Original Data"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/compositions/man/normalize.html" class="external-link">normalize</a></span><span class="op">(</span><span class="fu">outcomes</span><span class="op">(</span><span class="va">exper</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>    <span class="st">"Full Model"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/compositions/man/normalize.html" class="external-link">normalize</a></span><span class="op">(</span><span class="fu">outcomes</span><span class="op">(</span><span class="va">y1</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>    <span class="st">"No Direct Effect"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/compositions/man/normalize.html" class="external-link">normalize</a></span><span class="op">(</span><span class="fu">outcomes</span><span class="op">(</span><span class="va">y2</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>    <span class="st">"No Indirect Effect"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/compositions/man/normalize.html" class="external-link">normalize</a></span><span class="op">(</span><span class="fu">outcomes</span><span class="op">(</span><span class="va">y3</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="st">"Original Data"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/compositions/man/normalize.html" class="external-link">normalize</a></span><span class="op">(</span><span class="fu"><a href="../reference/outcomes.html">outcomes</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    <span class="st">"Full Model"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/compositions/man/normalize.html" class="external-link">normalize</a></span><span class="op">(</span><span class="fu"><a href="../reference/outcomes.html">outcomes</a></span><span class="op">(</span><span class="va">y1</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    <span class="st">"No Direct Effect"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/compositions/man/normalize.html" class="external-link">normalize</a></span><span class="op">(</span><span class="fu"><a href="../reference/outcomes.html">outcomes</a></span><span class="op">(</span><span class="va">y2</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    <span class="st">"No Indirect Effect"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/compositions/man/normalize.html" class="external-link">normalize</a></span><span class="op">(</span><span class="fu"><a href="../reference/outcomes.html">outcomes</a></span><span class="op">(</span><span class="va">y3</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span>.id <span class="op">=</span> <span class="st">"source"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>treatment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu">treatments</span><span class="op">(</span><span class="va">exper</span><span class="op">)</span><span class="op">$</span><span class="va">treatment</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="fu">outcomes</span><span class="op">(</span><span class="va">exper</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">name</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="fu">outcomes</span><span class="op">(</span><span class="va">exper</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="va">taxa_order</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>treatment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="../reference/treatments.html">treatments</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span><span class="op">$</span><span class="va">treatment</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="fu"><a href="../reference/outcomes.html">outcomes</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">name</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="fu"><a href="../reference/outcomes.html">outcomes</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="va">taxa_order</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">combined_samples</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_boxplot.html" class="external-link">geom_boxplot</a></span><span class="op">(</span></span>
@@ -509,70 +500,82 @@ negative control features enter, we begin increasing the estimated false
 discovery rate for the rule that selects features up to that point.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">contrast</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/null_contrast.html">null_contrast</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">exper</span>, <span class="st">"T-&gt;Y"</span>, <span class="va">direct_effect</span><span class="op">)</span></span></code></pre></div>
-<pre class="r-output"><code><span><span class="co">#&gt; ------------------------------------------------------------ </span></span>
-<span><span class="co">#&gt; EXPERIMENTAL ALGORITHM: </span></span>
-<span><span class="co">#&gt;   This procedure has not been thoroughly tested and may be unstable </span></span>
-<span><span class="co">#&gt;   or buggy. The interface is subject to change. </span></span>
-<span><span class="co">#&gt; ------------------------------------------------------------ </span></span>
-<span><span class="co">#&gt; Gradient evaluation took 0.008489 seconds </span></span>
-<span><span class="co">#&gt; 1000 transitions using 10 leapfrog steps per transition would take 84.89 seconds. </span></span>
-<span><span class="co">#&gt; Adjust your expectations accordingly! </span></span>
-<span><span class="co">#&gt; Begin eta adaptation. </span></span>
-<span><span class="co">#&gt; Iteration:   1 / 250 [  0%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Iteration:  50 / 250 [ 20%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Iteration: 100 / 250 [ 40%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Iteration: 150 / 250 [ 60%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Iteration: 200 / 250 [ 80%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Success! Found best value [eta = 1] earlier than expected. </span></span>
-<span><span class="co">#&gt; Begin stochastic gradient ascent. </span></span>
-<span><span class="co">#&gt;   iter             ELBO   delta_ELBO_mean   delta_ELBO_med   notes  </span></span>
-<span><span class="co">#&gt;    100      -473863.593             1.000            1.000 </span></span>
-<span><span class="co">#&gt;    200      -121339.767             1.953            2.905 </span></span>
-<span><span class="co">#&gt;    300       -94861.820             1.395            1.000 </span></span>
-<span><span class="co">#&gt;    400       -89307.130             1.062            1.000 </span></span>
-<span><span class="co">#&gt;    500       -87330.682             0.854            0.279 </span></span>
-<span><span class="co">#&gt;    600       -86321.936             0.713            0.279 </span></span>
-<span><span class="co">#&gt;    700       -85504.412             0.613            0.062 </span></span>
-<span><span class="co">#&gt;    800       -85000.741             0.537            0.062 </span></span>
-<span><span class="co">#&gt;    900       -84570.791             0.478            0.023 </span></span>
-<span><span class="co">#&gt;   1000       -84263.124             0.431            0.023 </span></span>
-<span><span class="co">#&gt;   1100       -83992.750             0.331            0.012 </span></span>
-<span><span class="co">#&gt;   1200       -83870.635             0.040            0.010   MEDIAN ELBO CONVERGED </span></span>
-<span><span class="co">#&gt; Drawing a sample of size 1000 from the approximate posterior...  </span></span>
-<span><span class="co">#&gt; COMPLETED. </span></span>
-<span><span class="co">#&gt; Finished in  15.1 seconds.</span></span>
-<span><span class="co">#&gt; ------------------------------------------------------------ </span></span>
-<span><span class="co">#&gt; EXPERIMENTAL ALGORITHM: </span></span>
-<span><span class="co">#&gt;   This procedure has not been thoroughly tested and may be unstable </span></span>
-<span><span class="co">#&gt;   or buggy. The interface is subject to change. </span></span>
-<span><span class="co">#&gt; ------------------------------------------------------------ </span></span>
-<span><span class="co">#&gt; Gradient evaluation took 0.00817 seconds </span></span>
-<span><span class="co">#&gt; 1000 transitions using 10 leapfrog steps per transition would take 81.7 seconds. </span></span>
-<span><span class="co">#&gt; Adjust your expectations accordingly! </span></span>
-<span><span class="co">#&gt; Begin eta adaptation. </span></span>
-<span><span class="co">#&gt; Iteration:   1 / 250 [  0%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Iteration:  50 / 250 [ 20%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Iteration: 100 / 250 [ 40%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Iteration: 150 / 250 [ 60%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Iteration: 200 / 250 [ 80%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Success! Found best value [eta = 1] earlier than expected. </span></span>
-<span><span class="co">#&gt; Begin stochastic gradient ascent. </span></span>
-<span><span class="co">#&gt;   iter             ELBO   delta_ELBO_mean   delta_ELBO_med   notes  </span></span>
-<span><span class="co">#&gt;    100      -493873.822             1.000            1.000 </span></span>
-<span><span class="co">#&gt;    200      -147754.034             1.671            2.343 </span></span>
-<span><span class="co">#&gt;    300      -107868.831             1.237            1.000 </span></span>
-<span><span class="co">#&gt;    400      -100657.065             0.946            1.000 </span></span>
-<span><span class="co">#&gt;    500       -97910.678             0.762            0.370 </span></span>
-<span><span class="co">#&gt;    600       -96896.153             0.637            0.370 </span></span>
-<span><span class="co">#&gt;    700       -96109.192             0.547            0.072 </span></span>
-<span><span class="co">#&gt;    800       -95161.905             0.480            0.072 </span></span>
-<span><span class="co">#&gt;    900       -94911.302             0.427            0.028 </span></span>
-<span><span class="co">#&gt;   1000       -94611.729             0.385            0.028 </span></span>
-<span><span class="co">#&gt;   1100       -94200.132             0.285            0.010 </span></span>
-<span><span class="co">#&gt;   1200       -93959.448             0.051            0.010   MEDIAN ELBO CONVERGED </span></span>
-<span><span class="co">#&gt; Drawing a sample of size 1000 from the approximate posterior...  </span></span>
-<span><span class="co">#&gt; COMPLETED. </span></span>
-<span><span class="co">#&gt; Finished in  14.5 seconds.</span></span></code></pre>
+<pre class="r-output"><code><span><span class="co">#&gt; Chain 1: ------------------------------------------------------------</span></span>
+<span><span class="co">#&gt; Chain 1: EXPERIMENTAL ALGORITHM:</span></span>
+<span><span class="co">#&gt; Chain 1:   This procedure has not been thoroughly tested and may be unstable</span></span>
+<span><span class="co">#&gt; Chain 1:   or buggy. The interface is subject to change.</span></span>
+<span><span class="co">#&gt; Chain 1: ------------------------------------------------------------</span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: Gradient evaluation took 0.032195 seconds</span></span>
+<span><span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 321.95 seconds.</span></span>
+<span><span class="co">#&gt; Chain 1: Adjust your expectations accordingly!</span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: Begin eta adaptation.</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration:   1 / 250 [  0%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration:  50 / 250 [ 20%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration: 100 / 250 [ 40%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration: 150 / 250 [ 60%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration: 200 / 250 [ 80%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Success! Found best value [eta = 1] earlier than expected.</span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: Begin stochastic gradient ascent.</span></span>
+<span><span class="co">#&gt; Chain 1:   iter             ELBO   delta_ELBO_mean   delta_ELBO_med   notes </span></span>
+<span><span class="co">#&gt; Chain 1:    100      -286918.019             1.000            1.000</span></span>
+<span><span class="co">#&gt; Chain 1:    200      -104917.320             1.367            1.735</span></span>
+<span><span class="co">#&gt; Chain 1:    300       -92595.460             0.956            1.000</span></span>
+<span><span class="co">#&gt; Chain 1:    400       -88954.112             0.727            1.000</span></span>
+<span><span class="co">#&gt; Chain 1:    500       -87383.372             0.585            0.133</span></span>
+<span><span class="co">#&gt; Chain 1:    600       -86258.965             0.490            0.133</span></span>
+<span><span class="co">#&gt; Chain 1:    700       -85569.685             0.421            0.041</span></span>
+<span><span class="co">#&gt; Chain 1:    800       -84971.656             0.369            0.041</span></span>
+<span><span class="co">#&gt; Chain 1:    900       -84708.412             0.329            0.018</span></span>
+<span><span class="co">#&gt; Chain 1:   1000       -84309.170             0.296            0.018</span></span>
+<span><span class="co">#&gt; Chain 1:   1100       -84071.410             0.197            0.013</span></span>
+<span><span class="co">#&gt; Chain 1:   1200       -83880.348             0.023            0.008   MEDIAN ELBO CONVERGED</span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: Drawing a sample of size 1000 from the approximate posterior... </span></span>
+<span><span class="co">#&gt; Chain 1: COMPLETED.</span></span>
+<span><span class="co">#&gt; Chain 1: ------------------------------------------------------------</span></span>
+<span><span class="co">#&gt; Chain 1: EXPERIMENTAL ALGORITHM:</span></span>
+<span><span class="co">#&gt; Chain 1:   This procedure has not been thoroughly tested and may be unstable</span></span>
+<span><span class="co">#&gt; Chain 1:   or buggy. The interface is subject to change.</span></span>
+<span><span class="co">#&gt; Chain 1: ------------------------------------------------------------</span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: Gradient evaluation took 0.011105 seconds</span></span>
+<span><span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 111.05 seconds.</span></span>
+<span><span class="co">#&gt; Chain 1: Adjust your expectations accordingly!</span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: Begin eta adaptation.</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration:   1 / 250 [  0%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration:  50 / 250 [ 20%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration: 100 / 250 [ 40%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration: 150 / 250 [ 60%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration: 200 / 250 [ 80%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Success! Found best value [eta = 1] earlier than expected.</span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: Begin stochastic gradient ascent.</span></span>
+<span><span class="co">#&gt; Chain 1:   iter             ELBO   delta_ELBO_mean   delta_ELBO_med   notes </span></span>
+<span><span class="co">#&gt; Chain 1:    100      -391735.619             1.000            1.000</span></span>
+<span><span class="co">#&gt; Chain 1:    200      -123084.368             1.591            2.183</span></span>
+<span><span class="co">#&gt; Chain 1:    300      -103754.600             1.123            1.000</span></span>
+<span><span class="co">#&gt; Chain 1:    400       -99814.204             0.852            1.000</span></span>
+<span><span class="co">#&gt; Chain 1:    500       -98004.299             0.685            0.186</span></span>
+<span><span class="co">#&gt; Chain 1:    600       -97186.482             0.573            0.186</span></span>
+<span><span class="co">#&gt; Chain 1:    700       -95876.610             0.493            0.039</span></span>
+<span><span class="co">#&gt; Chain 1:    800       -95453.577             0.432            0.039</span></span>
+<span><span class="co">#&gt; Chain 1:    900       -95047.459             0.384            0.018</span></span>
+<span><span class="co">#&gt; Chain 1:   1000       -94765.977             0.346            0.018</span></span>
+<span><span class="co">#&gt; Chain 1:   1100       -94364.239             0.246            0.014</span></span>
+<span><span class="co">#&gt; Chain 1:   1200       -94015.018             0.029            0.008   MEDIAN ELBO CONVERGED</span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: Drawing a sample of size 1000 from the approximate posterior... </span></span>
+<span><span class="co">#&gt; Chain 1: COMPLETED.</span></span></code></pre>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fdr_direct</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fdr_summary.html">fdr_summary</a></span><span class="op">(</span><span class="va">contrast</span>, <span class="st">"direct_effect"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>effect <span class="op">=</span> <span class="va">direct_effect</span><span class="op">)</span></span></code></pre></div>
@@ -582,72 +585,83 @@ literature on the difficulty of estimating indirect effects in mediation
 analysis.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">contrast</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/null_contrast.html">null_contrast</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">exper</span>, <span class="st">"M-&gt;Y"</span>, <span class="va">indirect_overall</span><span class="op">)</span></span></code></pre></div>
-<pre class="r-output"><code><span><span class="co">#&gt; ------------------------------------------------------------ </span></span>
-<span><span class="co">#&gt; EXPERIMENTAL ALGORITHM: </span></span>
-<span><span class="co">#&gt;   This procedure has not been thoroughly tested and may be unstable </span></span>
-<span><span class="co">#&gt;   or buggy. The interface is subject to change. </span></span>
-<span><span class="co">#&gt; ------------------------------------------------------------ </span></span>
-<span><span class="co">#&gt; Gradient evaluation took 0.007982 seconds </span></span>
-<span><span class="co">#&gt; 1000 transitions using 10 leapfrog steps per transition would take 79.82 seconds. </span></span>
-<span><span class="co">#&gt; Adjust your expectations accordingly! </span></span>
-<span><span class="co">#&gt; Begin eta adaptation. </span></span>
-<span><span class="co">#&gt; Iteration:   1 / 250 [  0%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Iteration:  50 / 250 [ 20%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Iteration: 100 / 250 [ 40%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Iteration: 150 / 250 [ 60%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Iteration: 200 / 250 [ 80%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Success! Found best value [eta = 1] earlier than expected. </span></span>
-<span><span class="co">#&gt; Begin stochastic gradient ascent. </span></span>
-<span><span class="co">#&gt;   iter             ELBO   delta_ELBO_mean   delta_ELBO_med   notes  </span></span>
-<span><span class="co">#&gt;    100      -213883.306             1.000            1.000 </span></span>
-<span><span class="co">#&gt;    200       -98850.630             1.082            1.164 </span></span>
-<span><span class="co">#&gt;    300       -89780.278             0.755            1.000 </span></span>
-<span><span class="co">#&gt;    400       -87480.330             0.573            1.000 </span></span>
-<span><span class="co">#&gt;    500       -86119.617             0.461            0.101 </span></span>
-<span><span class="co">#&gt;    600       -85095.624             0.386            0.101 </span></span>
-<span><span class="co">#&gt;    700       -84504.489             0.332            0.026 </span></span>
-<span><span class="co">#&gt;    800       -83949.759             0.292            0.026 </span></span>
-<span><span class="co">#&gt;    900       -83681.943             0.260            0.016 </span></span>
-<span><span class="co">#&gt;   1000       -83556.409             0.234            0.016 </span></span>
-<span><span class="co">#&gt;   1100       -83186.123             0.134            0.012 </span></span>
-<span><span class="co">#&gt;   1200       -83009.099             0.018            0.007   MEDIAN ELBO CONVERGED </span></span>
-<span><span class="co">#&gt; Drawing a sample of size 1000 from the approximate posterior...  </span></span>
-<span><span class="co">#&gt; COMPLETED. </span></span>
-<span><span class="co">#&gt; Finished in  14.3 seconds.</span></span>
-<span><span class="co">#&gt; ------------------------------------------------------------ </span></span>
-<span><span class="co">#&gt; EXPERIMENTAL ALGORITHM: </span></span>
-<span><span class="co">#&gt;   This procedure has not been thoroughly tested and may be unstable </span></span>
-<span><span class="co">#&gt;   or buggy. The interface is subject to change. </span></span>
-<span><span class="co">#&gt; ------------------------------------------------------------ </span></span>
-<span><span class="co">#&gt; Gradient evaluation took 0.008389 seconds </span></span>
-<span><span class="co">#&gt; 1000 transitions using 10 leapfrog steps per transition would take 83.89 seconds. </span></span>
-<span><span class="co">#&gt; Adjust your expectations accordingly! </span></span>
-<span><span class="co">#&gt; Begin eta adaptation. </span></span>
-<span><span class="co">#&gt; Iteration:   1 / 250 [  0%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Iteration:  50 / 250 [ 20%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Iteration: 100 / 250 [ 40%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Iteration: 150 / 250 [ 60%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Iteration: 200 / 250 [ 80%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Success! Found best value [eta = 1] earlier than expected. </span></span>
-<span><span class="co">#&gt; Begin stochastic gradient ascent. </span></span>
-<span><span class="co">#&gt;   iter             ELBO   delta_ELBO_mean   delta_ELBO_med   notes  </span></span>
-<span><span class="co">#&gt;    100      -812406.498             1.000            1.000 </span></span>
-<span><span class="co">#&gt;    200      -298748.542             1.360            1.719 </span></span>
-<span><span class="co">#&gt;    300      -168625.824             1.164            1.000 </span></span>
-<span><span class="co">#&gt;    400      -111362.381             1.001            1.000 </span></span>
-<span><span class="co">#&gt;    500      -103019.716             0.817            0.772 </span></span>
-<span><span class="co">#&gt;    600       -98701.868             0.688            0.772 </span></span>
-<span><span class="co">#&gt;    700       -96505.936             0.593            0.514 </span></span>
-<span><span class="co">#&gt;    800       -94726.963             0.521            0.514 </span></span>
-<span><span class="co">#&gt;    900       -94128.570             0.464            0.081 </span></span>
-<span><span class="co">#&gt;   1000       -93622.715             0.418            0.081 </span></span>
-<span><span class="co">#&gt;   1100       -93020.651             0.319            0.044 </span></span>
-<span><span class="co">#&gt;   1200       -92736.105             0.147            0.023 </span></span>
-<span><span class="co">#&gt;   1300       -92567.941             0.070            0.019 </span></span>
-<span><span class="co">#&gt;   1400       -92232.072             0.019            0.006   MEDIAN ELBO CONVERGED </span></span>
-<span><span class="co">#&gt; Drawing a sample of size 1000 from the approximate posterior...  </span></span>
-<span><span class="co">#&gt; COMPLETED. </span></span>
-<span><span class="co">#&gt; Finished in  16.2 seconds.</span></span></code></pre>
+<pre class="r-output"><code><span><span class="co">#&gt; Chain 1: ------------------------------------------------------------</span></span>
+<span><span class="co">#&gt; Chain 1: EXPERIMENTAL ALGORITHM:</span></span>
+<span><span class="co">#&gt; Chain 1:   This procedure has not been thoroughly tested and may be unstable</span></span>
+<span><span class="co">#&gt; Chain 1:   or buggy. The interface is subject to change.</span></span>
+<span><span class="co">#&gt; Chain 1: ------------------------------------------------------------</span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: Gradient evaluation took 0.008906 seconds</span></span>
+<span><span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 89.06 seconds.</span></span>
+<span><span class="co">#&gt; Chain 1: Adjust your expectations accordingly!</span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: Begin eta adaptation.</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration:   1 / 250 [  0%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration:  50 / 250 [ 20%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration: 100 / 250 [ 40%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration: 150 / 250 [ 60%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration: 200 / 250 [ 80%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Success! Found best value [eta = 1] earlier than expected.</span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: Begin stochastic gradient ascent.</span></span>
+<span><span class="co">#&gt; Chain 1:   iter             ELBO   delta_ELBO_mean   delta_ELBO_med   notes </span></span>
+<span><span class="co">#&gt; Chain 1:    100      -266185.924             1.000            1.000</span></span>
+<span><span class="co">#&gt; Chain 1:    200      -103322.121             1.288            1.576</span></span>
+<span><span class="co">#&gt; Chain 1:    300       -90720.935             0.905            1.000</span></span>
+<span><span class="co">#&gt; Chain 1:    400       -87659.862             0.688            1.000</span></span>
+<span><span class="co">#&gt; Chain 1:    500       -86393.749             0.553            0.139</span></span>
+<span><span class="co">#&gt; Chain 1:    600       -85556.774             0.462            0.139</span></span>
+<span><span class="co">#&gt; Chain 1:    700       -84583.951             0.398            0.035</span></span>
+<span><span class="co">#&gt; Chain 1:    800       -84086.834             0.349            0.035</span></span>
+<span><span class="co">#&gt; Chain 1:    900       -83825.808             0.311            0.015</span></span>
+<span><span class="co">#&gt; Chain 1:   1000       -83560.389             0.280            0.015</span></span>
+<span><span class="co">#&gt; Chain 1:   1100       -83420.529             0.180            0.012</span></span>
+<span><span class="co">#&gt; Chain 1:   1200       -83137.414             0.023            0.010   MEDIAN ELBO CONVERGED</span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: Drawing a sample of size 1000 from the approximate posterior... </span></span>
+<span><span class="co">#&gt; Chain 1: COMPLETED.</span></span>
+<span><span class="co">#&gt; Chain 1: ------------------------------------------------------------</span></span>
+<span><span class="co">#&gt; Chain 1: EXPERIMENTAL ALGORITHM:</span></span>
+<span><span class="co">#&gt; Chain 1:   This procedure has not been thoroughly tested and may be unstable</span></span>
+<span><span class="co">#&gt; Chain 1:   or buggy. The interface is subject to change.</span></span>
+<span><span class="co">#&gt; Chain 1: ------------------------------------------------------------</span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: Gradient evaluation took 0.005714 seconds</span></span>
+<span><span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 57.14 seconds.</span></span>
+<span><span class="co">#&gt; Chain 1: Adjust your expectations accordingly!</span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: Begin eta adaptation.</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration:   1 / 250 [  0%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration:  50 / 250 [ 20%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration: 100 / 250 [ 40%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration: 150 / 250 [ 60%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration: 200 / 250 [ 80%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Success! Found best value [eta = 1] earlier than expected.</span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: Begin stochastic gradient ascent.</span></span>
+<span><span class="co">#&gt; Chain 1:   iter             ELBO   delta_ELBO_mean   delta_ELBO_med   notes </span></span>
+<span><span class="co">#&gt; Chain 1:    100      -536911.514             1.000            1.000</span></span>
+<span><span class="co">#&gt; Chain 1:    200      -150652.982             1.782            2.564</span></span>
+<span><span class="co">#&gt; Chain 1:    300      -108404.395             1.318            1.000</span></span>
+<span><span class="co">#&gt; Chain 1:    400       -99598.698             1.011            1.000</span></span>
+<span><span class="co">#&gt; Chain 1:    500       -97233.667             0.813            0.390</span></span>
+<span><span class="co">#&gt; Chain 1:    600       -96170.474             0.680            0.390</span></span>
+<span><span class="co">#&gt; Chain 1:    700       -95057.572             0.584            0.088</span></span>
+<span><span class="co">#&gt; Chain 1:    800       -94459.759             0.512            0.088</span></span>
+<span><span class="co">#&gt; Chain 1:    900       -94129.598             0.455            0.024</span></span>
+<span><span class="co">#&gt; Chain 1:   1000       -93808.753             0.410            0.024</span></span>
+<span><span class="co">#&gt; Chain 1:   1100       -93521.922             0.311            0.012</span></span>
+<span><span class="co">#&gt; Chain 1:   1200       -93119.189             0.055            0.011</span></span>
+<span><span class="co">#&gt; Chain 1:   1300       -92965.159             0.016            0.006   MEDIAN ELBO CONVERGED</span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: Drawing a sample of size 1000 from the approximate posterior... </span></span>
+<span><span class="co">#&gt; Chain 1: COMPLETED.</span></span></code></pre>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fdr_indirect</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fdr_summary.html">fdr_summary</a></span><span class="op">(</span><span class="va">contrast</span>, <span class="st">"indirect_overall"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>effect <span class="op">=</span> <span class="va">indirect_effect</span><span class="op">)</span></span></code></pre></div>
@@ -702,71 +716,82 @@ distinguish between individual mediators, we can facet by these
 variables.</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">contrast</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/null_contrast.html">null_contrast</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">exper</span>, <span class="st">"M-&gt;Y"</span>, <span class="va">indirect_pathwise</span><span class="op">)</span></span></code></pre></div>
-<pre class="r-output"><code><span><span class="co">#&gt; ------------------------------------------------------------ </span></span>
-<span><span class="co">#&gt; EXPERIMENTAL ALGORITHM: </span></span>
-<span><span class="co">#&gt;   This procedure has not been thoroughly tested and may be unstable </span></span>
-<span><span class="co">#&gt;   or buggy. The interface is subject to change. </span></span>
-<span><span class="co">#&gt; ------------------------------------------------------------ </span></span>
-<span><span class="co">#&gt; Gradient evaluation took 0.00768 seconds </span></span>
-<span><span class="co">#&gt; 1000 transitions using 10 leapfrog steps per transition would take 76.8 seconds. </span></span>
-<span><span class="co">#&gt; Adjust your expectations accordingly! </span></span>
-<span><span class="co">#&gt; Begin eta adaptation. </span></span>
-<span><span class="co">#&gt; Iteration:   1 / 250 [  0%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Iteration:  50 / 250 [ 20%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Iteration: 100 / 250 [ 40%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Iteration: 150 / 250 [ 60%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Iteration: 200 / 250 [ 80%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Success! Found best value [eta = 1] earlier than expected. </span></span>
-<span><span class="co">#&gt; Begin stochastic gradient ascent. </span></span>
-<span><span class="co">#&gt;   iter             ELBO   delta_ELBO_mean   delta_ELBO_med   notes  </span></span>
-<span><span class="co">#&gt;    100      -213883.306             1.000            1.000 </span></span>
-<span><span class="co">#&gt;    200       -98850.630             1.082            1.164 </span></span>
-<span><span class="co">#&gt;    300       -89780.278             0.755            1.000 </span></span>
-<span><span class="co">#&gt;    400       -87480.330             0.573            1.000 </span></span>
-<span><span class="co">#&gt;    500       -86119.617             0.461            0.101 </span></span>
-<span><span class="co">#&gt;    600       -85095.624             0.386            0.101 </span></span>
-<span><span class="co">#&gt;    700       -84504.489             0.332            0.026 </span></span>
-<span><span class="co">#&gt;    800       -83949.759             0.292            0.026 </span></span>
-<span><span class="co">#&gt;    900       -83681.943             0.260            0.016 </span></span>
-<span><span class="co">#&gt;   1000       -83556.409             0.234            0.016 </span></span>
-<span><span class="co">#&gt;   1100       -83186.123             0.134            0.012 </span></span>
-<span><span class="co">#&gt;   1200       -83009.099             0.018            0.007   MEDIAN ELBO CONVERGED </span></span>
-<span><span class="co">#&gt; Drawing a sample of size 1000 from the approximate posterior...  </span></span>
-<span><span class="co">#&gt; COMPLETED. </span></span>
-<span><span class="co">#&gt; Finished in  13.9 seconds.</span></span>
-<span><span class="co">#&gt; ------------------------------------------------------------ </span></span>
-<span><span class="co">#&gt; EXPERIMENTAL ALGORITHM: </span></span>
-<span><span class="co">#&gt;   This procedure has not been thoroughly tested and may be unstable </span></span>
-<span><span class="co">#&gt;   or buggy. The interface is subject to change. </span></span>
-<span><span class="co">#&gt; ------------------------------------------------------------ </span></span>
-<span><span class="co">#&gt; Gradient evaluation took 0.008923 seconds </span></span>
-<span><span class="co">#&gt; 1000 transitions using 10 leapfrog steps per transition would take 89.23 seconds. </span></span>
-<span><span class="co">#&gt; Adjust your expectations accordingly! </span></span>
-<span><span class="co">#&gt; Begin eta adaptation. </span></span>
-<span><span class="co">#&gt; Iteration:   1 / 250 [  0%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Iteration:  50 / 250 [ 20%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Iteration: 100 / 250 [ 40%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Iteration: 150 / 250 [ 60%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Iteration: 200 / 250 [ 80%]  (Adaptation) </span></span>
-<span><span class="co">#&gt; Success! Found best value [eta = 1] earlier than expected. </span></span>
-<span><span class="co">#&gt; Begin stochastic gradient ascent. </span></span>
-<span><span class="co">#&gt;   iter             ELBO   delta_ELBO_mean   delta_ELBO_med   notes  </span></span>
-<span><span class="co">#&gt;    100      -526765.392             1.000            1.000 </span></span>
-<span><span class="co">#&gt;    200      -149938.173             1.757            2.513 </span></span>
-<span><span class="co">#&gt;    300      -107814.789             1.301            1.000 </span></span>
-<span><span class="co">#&gt;    400       -99945.862             0.996            1.000 </span></span>
-<span><span class="co">#&gt;    500       -97290.440             0.802            0.391 </span></span>
-<span><span class="co">#&gt;    600       -95922.424             0.671            0.391 </span></span>
-<span><span class="co">#&gt;    700       -95192.683             0.576            0.079 </span></span>
-<span><span class="co">#&gt;    800       -94211.703             0.505            0.079 </span></span>
-<span><span class="co">#&gt;    900       -93951.998             0.449            0.027 </span></span>
-<span><span class="co">#&gt;   1000       -93773.995             0.405            0.027 </span></span>
-<span><span class="co">#&gt;   1100       -93228.923             0.305            0.014 </span></span>
-<span><span class="co">#&gt;   1200       -93013.651             0.054            0.010 </span></span>
-<span><span class="co">#&gt;   1300       -92870.784             0.015            0.008   MEDIAN ELBO CONVERGED </span></span>
-<span><span class="co">#&gt; Drawing a sample of size 1000 from the approximate posterior...  </span></span>
-<span><span class="co">#&gt; COMPLETED. </span></span>
-<span><span class="co">#&gt; Finished in  15.1 seconds.</span></span></code></pre>
+<pre class="r-output"><code><span><span class="co">#&gt; Chain 1: ------------------------------------------------------------</span></span>
+<span><span class="co">#&gt; Chain 1: EXPERIMENTAL ALGORITHM:</span></span>
+<span><span class="co">#&gt; Chain 1:   This procedure has not been thoroughly tested and may be unstable</span></span>
+<span><span class="co">#&gt; Chain 1:   or buggy. The interface is subject to change.</span></span>
+<span><span class="co">#&gt; Chain 1: ------------------------------------------------------------</span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: Gradient evaluation took 0.00525 seconds</span></span>
+<span><span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 52.5 seconds.</span></span>
+<span><span class="co">#&gt; Chain 1: Adjust your expectations accordingly!</span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: Begin eta adaptation.</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration:   1 / 250 [  0%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration:  50 / 250 [ 20%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration: 100 / 250 [ 40%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration: 150 / 250 [ 60%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration: 200 / 250 [ 80%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Success! Found best value [eta = 1] earlier than expected.</span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: Begin stochastic gradient ascent.</span></span>
+<span><span class="co">#&gt; Chain 1:   iter             ELBO   delta_ELBO_mean   delta_ELBO_med   notes </span></span>
+<span><span class="co">#&gt; Chain 1:    100      -266185.924             1.000            1.000</span></span>
+<span><span class="co">#&gt; Chain 1:    200      -103322.121             1.288            1.576</span></span>
+<span><span class="co">#&gt; Chain 1:    300       -90720.935             0.905            1.000</span></span>
+<span><span class="co">#&gt; Chain 1:    400       -87659.862             0.688            1.000</span></span>
+<span><span class="co">#&gt; Chain 1:    500       -86393.749             0.553            0.139</span></span>
+<span><span class="co">#&gt; Chain 1:    600       -85556.774             0.462            0.139</span></span>
+<span><span class="co">#&gt; Chain 1:    700       -84583.951             0.398            0.035</span></span>
+<span><span class="co">#&gt; Chain 1:    800       -84086.834             0.349            0.035</span></span>
+<span><span class="co">#&gt; Chain 1:    900       -83825.808             0.311            0.015</span></span>
+<span><span class="co">#&gt; Chain 1:   1000       -83560.389             0.280            0.015</span></span>
+<span><span class="co">#&gt; Chain 1:   1100       -83420.529             0.180            0.012</span></span>
+<span><span class="co">#&gt; Chain 1:   1200       -83137.414             0.023            0.010   MEDIAN ELBO CONVERGED</span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: Drawing a sample of size 1000 from the approximate posterior... </span></span>
+<span><span class="co">#&gt; Chain 1: COMPLETED.</span></span>
+<span><span class="co">#&gt; Chain 1: ------------------------------------------------------------</span></span>
+<span><span class="co">#&gt; Chain 1: EXPERIMENTAL ALGORITHM:</span></span>
+<span><span class="co">#&gt; Chain 1:   This procedure has not been thoroughly tested and may be unstable</span></span>
+<span><span class="co">#&gt; Chain 1:   or buggy. The interface is subject to change.</span></span>
+<span><span class="co">#&gt; Chain 1: ------------------------------------------------------------</span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: Gradient evaluation took 0.005258 seconds</span></span>
+<span><span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 52.58 seconds.</span></span>
+<span><span class="co">#&gt; Chain 1: Adjust your expectations accordingly!</span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: Begin eta adaptation.</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration:   1 / 250 [  0%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration:  50 / 250 [ 20%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration: 100 / 250 [ 40%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration: 150 / 250 [ 60%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration: 200 / 250 [ 80%]  (Adaptation)</span></span>
+<span><span class="co">#&gt; Chain 1: Success! Found best value [eta = 1] earlier than expected.</span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: Begin stochastic gradient ascent.</span></span>
+<span><span class="co">#&gt; Chain 1:   iter             ELBO   delta_ELBO_mean   delta_ELBO_med   notes </span></span>
+<span><span class="co">#&gt; Chain 1:    100      -353418.243             1.000            1.000</span></span>
+<span><span class="co">#&gt; Chain 1:    200      -121672.514             1.452            1.905</span></span>
+<span><span class="co">#&gt; Chain 1:    300      -103404.304             1.027            1.000</span></span>
+<span><span class="co">#&gt; Chain 1:    400       -99247.533             0.781            1.000</span></span>
+<span><span class="co">#&gt; Chain 1:    500       -96998.099             0.629            0.177</span></span>
+<span><span class="co">#&gt; Chain 1:    600       -95897.177             0.526            0.177</span></span>
+<span><span class="co">#&gt; Chain 1:    700       -95178.567             0.452            0.042</span></span>
+<span><span class="co">#&gt; Chain 1:    800       -94560.159             0.396            0.042</span></span>
+<span><span class="co">#&gt; Chain 1:    900       -93995.043             0.353            0.023</span></span>
+<span><span class="co">#&gt; Chain 1:   1000       -93539.235             0.318            0.023</span></span>
+<span><span class="co">#&gt; Chain 1:   1100       -93316.396             0.219            0.011</span></span>
+<span><span class="co">#&gt; Chain 1:   1200       -93181.743             0.028            0.008   MEDIAN ELBO CONVERGED</span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: Drawing a sample of size 1000 from the approximate posterior... </span></span>
+<span><span class="co">#&gt; Chain 1: COMPLETED.</span></span></code></pre>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fdr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fdr_summary.html">fdr_summary</a></span><span class="op">(</span><span class="va">contrast</span>, <span class="st">"indirect_pathwise"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">fdr</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">indirect_effect</span>, <span class="va">fdr_hat</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -815,16 +840,16 @@ model.</p>
 <span><span class="co">#&gt; # Groups:   outcome [55]</span></span>
 <span><span class="co">#&gt;    outcome               contrast            direct_effect</span></span>
 <span><span class="co">#&gt;                                            </span></span>
-<span><span class="co">#&gt;  1 Faecalibacterium      Control - Treatment      0.00584 </span></span>
-<span><span class="co">#&gt;  2 Ruminococcus          Control - Treatment      0.00473 </span></span>
-<span><span class="co">#&gt;  3 Coprococcus           Control - Treatment      0.00220 </span></span>
-<span><span class="co">#&gt;  4 Roseburia             Control - Treatment      0.00184 </span></span>
-<span><span class="co">#&gt;  5 Parabacteroides       Control - Treatment      0.00128 </span></span>
-<span><span class="co">#&gt;  6 Ruminococcus2         Control - Treatment      0.000503</span></span>
-<span><span class="co">#&gt;  7 Clostridium_XVIII     Control - Treatment      0.000409</span></span>
-<span><span class="co">#&gt;  8 Phascolarctobacterium Control - Treatment      0.000295</span></span>
-<span><span class="co">#&gt;  9 Butyricicoccus        Control - Treatment      0.000227</span></span>
-<span><span class="co">#&gt; 10 Streptococcus         Control - Treatment      0.000220</span></span>
+<span><span class="co">#&gt;  1 Ruminococcus          Control - Treatment      0.00476 </span></span>
+<span><span class="co">#&gt;  2 Faecalibacterium      Control - Treatment      0.00309 </span></span>
+<span><span class="co">#&gt;  3 Coprococcus           Control - Treatment      0.00251 </span></span>
+<span><span class="co">#&gt;  4 Roseburia             Control - Treatment      0.00243 </span></span>
+<span><span class="co">#&gt;  5 Gemmiger              Control - Treatment      0.00109 </span></span>
+<span><span class="co">#&gt;  6 Parabacteroides       Control - Treatment      0.00108 </span></span>
+<span><span class="co">#&gt;  7 Dorea                 Control - Treatment      0.000857</span></span>
+<span><span class="co">#&gt;  8 Streptococcus         Control - Treatment      0.000842</span></span>
+<span><span class="co">#&gt;  9 Bacteroides           Control - Treatment      0.000295</span></span>
+<span><span class="co">#&gt; 10 Phascolarctobacterium Control - Treatment      0.000210</span></span>
 <span><span class="co">#&gt; # ℹ 45 more rows</span></span></code></pre>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">indirect_sorted</span></span></code></pre></div>
@@ -832,16 +857,16 @@ model.</p>
 <span><span class="co">#&gt; # Groups:   outcome, mediator [220]</span></span>
 <span><span class="co">#&gt;    outcome          mediator                    contrast         indirect_effect</span></span>
 <span><span class="co">#&gt;                                                             </span></span>
-<span><span class="co">#&gt;  1 Ruminococcus     mediator.Cold.cereal        Control - Treat…        -0.0106 </span></span>
-<span><span class="co">#&gt;  2 Blautia          mediator.sleepDistRaw       Control - Treat…         0.00813</span></span>
-<span><span class="co">#&gt;  3 Clostridium_IV   mediator.Cold.cereal        Control - Treat…        -0.00738</span></span>
-<span><span class="co">#&gt;  4 Prevotella       mediator.Fruit..not.juices. Control - Treat…        -0.00489</span></span>
-<span><span class="co">#&gt;  5 Faecalibacterium mediator.Fruit..not.juices. Control - Treat…         0.00487</span></span>
-<span><span class="co">#&gt;  6 Bacteroides      mediator.fatigueRaw         Control - Treat…        -0.00422</span></span>
-<span><span class="co">#&gt;  7 Blautia          mediator.Cold.cereal        Control - Treat…         0.00404</span></span>
-<span><span class="co">#&gt;  8 Bacteroides      mediator.Cold.cereal        Control - Treat…         0.00347</span></span>
-<span><span class="co">#&gt;  9 Prevotella       mediator.Cold.cereal        Control - Treat…         0.00306</span></span>
-<span><span class="co">#&gt; 10 Coprococcus      mediator.Cold.cereal        Control - Treat…         0.00300</span></span>
+<span><span class="co">#&gt;  1 Ruminococcus     mediator.Cold.cereal        Control - Treat…        -0.0104 </span></span>
+<span><span class="co">#&gt;  2 Blautia          mediator.sleepDistRaw       Control - Treat…         0.00762</span></span>
+<span><span class="co">#&gt;  3 Blautia          mediator.Cold.cereal        Control - Treat…         0.00670</span></span>
+<span><span class="co">#&gt;  4 Clostridium_IV   mediator.Cold.cereal        Control - Treat…        -0.00627</span></span>
+<span><span class="co">#&gt;  5 Prevotella       mediator.Fruit..not.juices. Control - Treat…        -0.00527</span></span>
+<span><span class="co">#&gt;  6 Prevotella       mediator.Cold.cereal        Control - Treat…         0.00504</span></span>
+<span><span class="co">#&gt;  7 Faecalibacterium mediator.Fruit..not.juices. Control - Treat…         0.00497</span></span>
+<span><span class="co">#&gt;  8 Bacteroides      mediator.Cold.cereal        Control - Treat…         0.00453</span></span>
+<span><span class="co">#&gt;  9 Ruminococcus     mediator.Fruit..not.juices. Control - Treat…         0.00406</span></span>
+<span><span class="co">#&gt; 10 Faecalibacterium mediator.sleepDistRaw       Control - Treat…        -0.00367</span></span>
 <span><span class="co">#&gt; # ℹ 210 more rows</span></span></code></pre>
 <p>We can visualize some of the features with the largest direct and
 indirect effects. Nonlinearity seems to have helped uncover a few
@@ -899,7 +924,7 @@ direct effects.</p>
 <p><img src="mindfulness_files/figure-html/rf_bootstrap_figures-1.png" width="600" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre class="r-output"><code><span><span class="co">#&gt; R version 4.4.1 (2024-06-14)</span></span>
+<pre class="r-output"><code><span><span class="co">#&gt; R version 4.4.1 Patched (2024-08-21 r87049)</span></span>
 <span><span class="co">#&gt; Platform: aarch64-apple-darwin20</span></span>
 <span><span class="co">#&gt; Running under: macOS Sonoma 14.5</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -914,85 +939,99 @@ direct effects.</p>
 <span><span class="co">#&gt; tzcode source: internal</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attached base packages:</span></span>
-<span><span class="co">#&gt; [1] stats4    stats     graphics  grDevices utils     datasets  methods  </span></span>
-<span><span class="co">#&gt; [8] base     </span></span>
+<span><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
-<span><span class="co">#&gt;  [1] multimedia_0.1.0            tidyselect_1.2.1           </span></span>
-<span><span class="co">#&gt;  [3] SummarizedExperiment_1.35.1 Biobase_2.65.0             </span></span>
-<span><span class="co">#&gt;  [5] GenomicRanges_1.57.1        GenomeInfoDb_1.41.1        </span></span>
-<span><span class="co">#&gt;  [7] IRanges_2.39.2              S4Vectors_0.43.2           </span></span>
-<span><span class="co">#&gt;  [9] BiocGenerics_0.51.0         MatrixGenerics_1.17.0      </span></span>
-<span><span class="co">#&gt; [11] matrixStats_1.3.0           lubridate_1.9.3            </span></span>
-<span><span class="co">#&gt; [13] forcats_1.0.0               stringr_1.5.1              </span></span>
-<span><span class="co">#&gt; [15] dplyr_1.1.4                 purrr_1.0.2                </span></span>
-<span><span class="co">#&gt; [17] readr_2.1.5                 tidyr_1.3.1                </span></span>
-<span><span class="co">#&gt; [19] tibble_3.2.1                tidyverse_2.0.0            </span></span>
-<span><span class="co">#&gt; [21] phyloseq_1.49.0             ggrepel_0.9.5              </span></span>
-<span><span class="co">#&gt; [23] ggdist_3.3.2                ggplot2_3.5.1              </span></span>
-<span><span class="co">#&gt; [25] BiocStyle_2.33.1           </span></span>
+<span><span class="co">#&gt;  [1] multimedia_0.1.0  tidyselect_1.2.1  ranger_0.16.0     glmnetUtils_1.1.9</span></span>
+<span><span class="co">#&gt;  [5] brms_2.21.0       Rcpp_1.0.13       lubridate_1.9.3   forcats_1.0.0    </span></span>
+<span><span class="co">#&gt;  [9] stringr_1.5.1     dplyr_1.1.4       purrr_1.0.2       readr_2.1.5      </span></span>
+<span><span class="co">#&gt; [13] tidyr_1.3.1       tibble_3.2.1      tidyverse_2.0.0   phyloseq_1.49.0  </span></span>
+<span><span class="co">#&gt; [17] ggrepel_0.9.5     ggdist_3.3.2      ggplot2_3.5.1     BiocStyle_2.33.1 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
-<span><span class="co">#&gt;   [1] permute_0.9-7           rlang_1.1.4             magrittr_2.0.3         </span></span>
-<span><span class="co">#&gt;   [4] ade4_1.7-22             compiler_4.4.1          mgcv_1.9-1             </span></span>
-<span><span class="co">#&gt;   [7] systemfonts_1.1.0       vctrs_0.6.5             reshape2_1.4.4         </span></span>
-<span><span class="co">#&gt;  [10] shape_1.4.6.1           pkgconfig_2.0.3         crayon_1.5.3           </span></span>
-<span><span class="co">#&gt;  [13] fastmap_1.2.0           backports_1.5.0         XVector_0.45.0         </span></span>
-<span><span class="co">#&gt;  [16] labeling_0.4.3          utf8_1.2.4              cmdstanr_0.8.1         </span></span>
-<span><span class="co">#&gt;  [19] rmarkdown_2.28          tzdb_0.4.0              ps_1.7.7               </span></span>
-<span><span class="co">#&gt;  [22] UCSC.utils_1.1.0        glmnetUtils_1.1.9       ragg_1.3.2             </span></span>
-<span><span class="co">#&gt;  [25] glmnet_4.1-8            xfun_0.47               zlibbioc_1.51.1        </span></span>
-<span><span class="co">#&gt;  [28] cachem_1.1.0            jsonlite_1.8.8          biomformat_1.33.0      </span></span>
-<span><span class="co">#&gt;  [31] progress_1.2.3          highr_0.11              rhdf5filters_1.17.0    </span></span>
-<span><span class="co">#&gt;  [34] DelayedArray_0.31.11    Rhdf5lib_1.27.0         parallel_4.4.1         </span></span>
-<span><span class="co">#&gt;  [37] prettyunits_1.2.0       cluster_2.1.6           R6_2.5.1               </span></span>
-<span><span class="co">#&gt;  [40] bslib_0.8.0             stringi_1.8.4           ranger_0.16.0          </span></span>
-<span><span class="co">#&gt;  [43] jquerylib_0.1.4         Rcpp_1.0.13             bookdown_0.40          </span></span>
-<span><span class="co">#&gt;  [46] iterators_1.0.14        knitr_1.48              timechange_0.3.0       </span></span>
-<span><span class="co">#&gt;  [49] Matrix_1.7-0            splines_4.4.1           igraph_2.0.3           </span></span>
-<span><span class="co">#&gt;  [52] abind_1.4-5             yaml_2.3.10             vegan_2.6-8            </span></span>
-<span><span class="co">#&gt;  [55] codetools_0.2-20        processx_3.8.4          lattice_0.22-6         </span></span>
-<span><span class="co">#&gt;  [58] plyr_1.8.9              withr_3.0.1             posterior_1.6.0        </span></span>
-<span><span class="co">#&gt;  [61] evaluate_0.24.0         desc_1.4.3              survival_3.7-0         </span></span>
-<span><span class="co">#&gt;  [64] Biostrings_2.73.1       pillar_1.9.0            BiocManager_1.30.24    </span></span>
-<span><span class="co">#&gt;  [67] tensorA_0.36.2.1        checkmate_2.3.2         foreach_1.5.2          </span></span>
-<span><span class="co">#&gt;  [70] insight_0.20.3          distributional_0.4.0    generics_0.1.3         </span></span>
-<span><span class="co">#&gt;  [73] hms_1.1.3               munsell_0.5.1           scales_1.3.0           </span></span>
-<span><span class="co">#&gt;  [76] glue_1.7.0              tools_4.4.1             data.table_1.16.0      </span></span>
-<span><span class="co">#&gt;  [79] fs_1.6.4                tidygraph_1.3.1         rhdf5_2.49.0           </span></span>
-<span><span class="co">#&gt;  [82] grid_4.4.1              ape_5.8                 miniLNM_0.1.0          </span></span>
-<span><span class="co">#&gt;  [85] colorspace_2.1-1        patchwork_1.2.0         nlme_3.1-166           </span></span>
-<span><span class="co">#&gt;  [88] formula.tools_1.7.1     GenomeInfoDbData_1.2.12 cli_3.6.3              </span></span>
-<span><span class="co">#&gt;  [91] textshaping_0.4.0       fansi_1.0.6             S4Arrays_1.5.7         </span></span>
-<span><span class="co">#&gt;  [94] gtable_0.3.5            sass_0.4.9              digest_0.6.37          </span></span>
-<span><span class="co">#&gt;  [97] operator.tools_1.6.3    SparseArray_1.5.31      farver_2.1.2           </span></span>
-<span><span class="co">#&gt; [100] htmlwidgets_1.6.4       htmltools_0.5.8.1       pkgdown_2.1.0          </span></span>
-<span><span class="co">#&gt; [103] multtest_2.61.0         lifecycle_1.0.4         httr_1.4.7             </span></span>
-<span><span class="co">#&gt; [106] MASS_7.3-61</span></span></code></pre>
+<span><span class="co">#&gt;   [1] tensorA_0.36.2.1            jsonlite_1.8.8             </span></span>
+<span><span class="co">#&gt;   [3] shape_1.4.6.1               magrittr_2.0.3             </span></span>
+<span><span class="co">#&gt;   [5] TH.data_1.1-2               estimability_1.5.1         </span></span>
+<span><span class="co">#&gt;   [7] farver_2.1.2                rmarkdown_2.28             </span></span>
+<span><span class="co">#&gt;   [9] fs_1.6.4                    zlibbioc_1.51.1            </span></span>
+<span><span class="co">#&gt;  [11] ragg_1.3.2                  vctrs_0.6.5                </span></span>
+<span><span class="co">#&gt;  [13] multtest_2.61.0             progress_1.2.3             </span></span>
+<span><span class="co">#&gt;  [15] htmltools_0.5.8.1           S4Arrays_1.5.7             </span></span>
+<span><span class="co">#&gt;  [17] distributional_0.4.0        curl_5.2.2                 </span></span>
+<span><span class="co">#&gt;  [19] Rhdf5lib_1.27.0             SparseArray_1.5.31         </span></span>
+<span><span class="co">#&gt;  [21] rhdf5_2.49.0                sass_0.4.9                 </span></span>
+<span><span class="co">#&gt;  [23] StanHeaders_2.32.10         bslib_0.8.0                </span></span>
+<span><span class="co">#&gt;  [25] htmlwidgets_1.6.4           desc_1.4.3                 </span></span>
+<span><span class="co">#&gt;  [27] plyr_1.8.9                  sandwich_3.1-0             </span></span>
+<span><span class="co">#&gt;  [29] emmeans_1.10.4              zoo_1.8-12                 </span></span>
+<span><span class="co">#&gt;  [31] cachem_1.1.0                igraph_2.0.3               </span></span>
+<span><span class="co">#&gt;  [33] lifecycle_1.0.4             iterators_1.0.14           </span></span>
+<span><span class="co">#&gt;  [35] pkgconfig_2.0.3             Matrix_1.7-0               </span></span>
+<span><span class="co">#&gt;  [37] R6_2.5.1                    fastmap_1.2.0              </span></span>
+<span><span class="co">#&gt;  [39] GenomeInfoDbData_1.2.12     MatrixGenerics_1.17.0      </span></span>
+<span><span class="co">#&gt;  [41] digest_0.6.37               colorspace_2.1-1           </span></span>
+<span><span class="co">#&gt;  [43] patchwork_1.2.0             S4Vectors_0.43.2           </span></span>
+<span><span class="co">#&gt;  [45] textshaping_0.4.0           miniLNM_0.1.0              </span></span>
+<span><span class="co">#&gt;  [47] GenomicRanges_1.57.1        vegan_2.6-8                </span></span>
+<span><span class="co">#&gt;  [49] labeling_0.4.3              timechange_0.3.0           </span></span>
+<span><span class="co">#&gt;  [51] fansi_1.0.6                 mgcv_1.9-1                 </span></span>
+<span><span class="co">#&gt;  [53] httr_1.4.7                  abind_1.4-5                </span></span>
+<span><span class="co">#&gt;  [55] compiler_4.4.1              withr_3.0.1                </span></span>
+<span><span class="co">#&gt;  [57] backports_1.5.0             inline_0.3.19              </span></span>
+<span><span class="co">#&gt;  [59] highr_0.11                  QuickJSR_1.3.1             </span></span>
+<span><span class="co">#&gt;  [61] pkgbuild_1.4.4              MASS_7.3-61                </span></span>
+<span><span class="co">#&gt;  [63] DelayedArray_0.31.11        biomformat_1.33.0          </span></span>
+<span><span class="co">#&gt;  [65] permute_0.9-7               loo_2.8.0                  </span></span>
+<span><span class="co">#&gt;  [67] tools_4.4.1                 ape_5.8                    </span></span>
+<span><span class="co">#&gt;  [69] glue_1.7.0                  nlme_3.1-166               </span></span>
+<span><span class="co">#&gt;  [71] rhdf5filters_1.17.0         grid_4.4.1                 </span></span>
+<span><span class="co">#&gt;  [73] checkmate_2.3.2             cluster_2.1.6              </span></span>
+<span><span class="co">#&gt;  [75] reshape2_1.4.4              ade4_1.7-22                </span></span>
+<span><span class="co">#&gt;  [77] generics_0.1.3              operator.tools_1.6.3       </span></span>
+<span><span class="co">#&gt;  [79] gtable_0.3.5                tzdb_0.4.0                 </span></span>
+<span><span class="co">#&gt;  [81] formula.tools_1.7.1         hms_1.1.3                  </span></span>
+<span><span class="co">#&gt;  [83] data.table_1.16.0           tidygraph_1.3.1            </span></span>
+<span><span class="co">#&gt;  [85] utf8_1.2.4                  XVector_0.45.0             </span></span>
+<span><span class="co">#&gt;  [87] BiocGenerics_0.51.0         foreach_1.5.2              </span></span>
+<span><span class="co">#&gt;  [89] pillar_1.9.0                posterior_1.6.0            </span></span>
+<span><span class="co">#&gt;  [91] splines_4.4.1               lattice_0.22-6             </span></span>
+<span><span class="co">#&gt;  [93] survival_3.7-0              Biostrings_2.73.1          </span></span>
+<span><span class="co">#&gt;  [95] knitr_1.48                  gridExtra_2.3              </span></span>
+<span><span class="co">#&gt;  [97] V8_5.0.0                    bookdown_0.40              </span></span>
+<span><span class="co">#&gt;  [99] IRanges_2.39.2              SummarizedExperiment_1.35.1</span></span>
+<span><span class="co">#&gt; [101] stats4_4.4.1                xfun_0.47                  </span></span>
+<span><span class="co">#&gt; [103] bridgesampling_1.1-2        Biobase_2.65.1             </span></span>
+<span><span class="co">#&gt; [105] matrixStats_1.4.0           rstan_2.32.6               </span></span>
+<span><span class="co">#&gt; [107] stringi_1.8.4               UCSC.utils_1.1.0           </span></span>
+<span><span class="co">#&gt; [109] yaml_2.3.10                 evaluate_0.24.0            </span></span>
+<span><span class="co">#&gt; [111] codetools_0.2-20            BiocManager_1.30.25        </span></span>
+<span><span class="co">#&gt; [113] cli_3.6.3                   RcppParallel_5.1.9         </span></span>
+<span><span class="co">#&gt; [115] xtable_1.8-4                systemfonts_1.1.0          </span></span>
+<span><span class="co">#&gt; [117] munsell_0.5.1               jquerylib_0.1.4            </span></span>
+<span><span class="co">#&gt; [119] GenomeInfoDb_1.41.1         coda_0.19-4.1              </span></span>
+<span><span class="co">#&gt; [121] parallel_4.4.1              rstantools_2.4.0           </span></span>
+<span><span class="co">#&gt; [123] pkgdown_2.1.0               prettyunits_1.2.0          </span></span>
+<span><span class="co">#&gt; [125] bayesplot_1.11.1            Brobdingnag_1.2-9          </span></span>
+<span><span class="co">#&gt; [127] glmnet_4.1-8                mvtnorm_1.3-1              </span></span>
+<span><span class="co">#&gt; [129] scales_1.3.0                crayon_1.5.3               </span></span>
+<span><span class="co">#&gt; [131] rlang_1.1.4                 multcomp_1.4-26</span></span></code></pre>
 </div>
-  </div>
-
-  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-
-      </div>
-
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside>
 </div>
 
 
 
-      <footer><div class="copyright">
-  <p></p>
-<p>Developed by Kris Sankaran, Hanying Jiang.</p>
+    <footer><div class="pkgdown-footer-left">
+  <p>Developed by Kris Sankaran, Hanying Jiang.</p>
 </div>
 
-<div class="pkgdown">
-  <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+<div class="pkgdown-footer-right">
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
 </div>
 
-      </footer>
+    </footer>
 </div>
-
 
 
 

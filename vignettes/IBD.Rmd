@@ -368,7 +368,7 @@ be used for synthetic null testing. Here are simulated samples from a
 the original samples. To the extent that the altered and fitted models differ,
 the direct treatment edge is needed to improve model fit.
 
-```{r lasso_synthetic, fig.width = 12, fig.heigth = 7}
+```{r lasso_synthetic, fig.width = 12, fig.height = 7}
 altered <- model |>
     nullify("T->Y") |>
     estimate(exper)
@@ -404,7 +404,7 @@ fs <- list(direct = direct_effect, indirect = indirect_overall)
 inference <- readRDS(url("https://go.wisc.edu/08o4l0"))
 ```
 
-```{r lasso_bootstrap_vis, fig.width = 9, fig.height = 3.5}
+```{r lasso_bootstrap_vis, fig.width = 9, fig.height = 5}
 filter_outcomes <- inference$indirect |>
     effect_summary() |>
     group_by(outcome) |>
@@ -513,7 +513,6 @@ mediators(exper2) <- mediators(exper2)[, 1:50]
 #     brms_model(family = hurdle_lognormal())
 # ) |>
 #     estimate(exper2)
-#saveRDS(model, "~/Downloads/hurdle-model-IBD.rds")
 model <- readRDS(url("https://go.wisc.edu/wj197j"))
 ```
 
