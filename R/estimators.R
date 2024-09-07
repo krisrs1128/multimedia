@@ -452,13 +452,6 @@ brm_cache <- function(formula, data, ...) {
 #'     mediation_data("PHQ", "treatment", starts_with("ASV"))
 #' multimedia(exper, brms_model()) |>
 #'     estimate(exper)
-#'
-#' # example with another dataset
-#' exper <- demo_spline(tau = c(2, 1)) |>
-#'     mediation_data(starts_with("outcome"), "treatment", "mediator")
-#' fit <- multimedia(exper, brms_model()) |>
-#'     estimate(exper)
-#' fit
 #' @export
 brms_model <- function(...) {
     params <- brms_model_params(...)
