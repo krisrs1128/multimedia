@@ -476,15 +476,20 @@ This situation is more ambiguous. It's possible that a confounder could be
 responsible for the indirect effect; however, it would have to be quite strong,
 perhaps stronger than is plausible.
 
-```{r}
+```{r, fig.width = 9, fig.height = 2.8}
 confound_ix |>
     left_join(sensitivity_path) |>
     ggplot(aes(rho, indirect_effect, group = contrast)) +
     geom_hline(yintercept = 0, linetype = 3, linewidth = 1) +
+    geom_vline(xintercept = 0, linetype = 3, linewidth = 1) +
     geom_line(linewidth = 2) +
-    facet_wrap(outcome ~ mediator, scales = "free_y")
+    labs(x = expression("Confounding parameter"~ rho), y = "Estimated Indirect Effect") +
+    theme(
+        axis.title = element_text(size = 16),
+        strip.text = element_text(size = 14)
+        ) +
+    facet_wrap(reorder(outcome, indirect_effect) ~ reorder(mediator, indirect_effect), scales = "free_y")
 ```
-
 
 # Hurdle-Lognormal Approach
 
