@@ -483,12 +483,18 @@ confound_ix |>
     geom_hline(yintercept = 0, linetype = 3, linewidth = 1) +
     geom_vline(xintercept = 0, linetype = 3, linewidth = 1) +
     geom_line(linewidth = 2) +
-    labs(x = expression("Confounding parameter"~ rho), y = "Estimated Indirect Effect") +
+    labs(
+        x = expression("Confounding parameter"~ rho),
+        y = "Estimated Indirect Effect"
+    ) +
     theme(
         axis.title = element_text(size = 16),
         strip.text = element_text(size = 14)
-        ) +
-    facet_wrap(reorder(outcome, indirect_effect) ~ reorder(mediator, indirect_effect), scales = "free_y")
+    ) +
+    facet_wrap(
+        reorder(outcome, indirect_effect) ~ reorder(mediator, indirect_effect),
+        scales = "free_y"
+    )
 ```
 
 # Hurdle-Lognormal Approach
