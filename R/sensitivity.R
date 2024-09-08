@@ -369,7 +369,6 @@ covariance_matrix <- function(model, confound_ix = NULL, rho = 0.0) {
     ecov$vectors %*% diag(ecov$values) %*% t(ecov$vectors)
 }
 
-
 #' Sensitivity to User-Specified Perturbations
 #'
 #' The more standard sensitivity and sensitivity_pathwise functions support
