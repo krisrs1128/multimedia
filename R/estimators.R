@@ -450,8 +450,7 @@ brm_cache <- function(formula, data, ...) {
 #' @examples
 #' exper <- demo_joy() |>
 #'     mediation_data("PHQ", "treatment", starts_with("ASV"))
-#' multimedia(exper, brms_model()) |>
-#'     estimate(exper)
+#' multimedia(exper, brms_model()) # call estimate() on this to fit
 #' @export
 brms_model <- function(...) {
     params <- brms_model_params(...)
