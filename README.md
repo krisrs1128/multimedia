@@ -4,6 +4,8 @@
 
 [![R-CMD-check](https://github.com/krisrs1128/multimedia/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/krisrs1128/multimedia/actions/workflows/R-CMD-check.yaml)
 [![codecov](https://codecov.io/github/krisrs1128/multimedia/graph/badge.svg?token=XB865GLQ8B)](https://codecov.io/github/krisrs1128/multimedia)
+[![Launch
+binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/krisrs1128/multimedia/main)
 <!-- badges: end -->
 
 `multimedia` is an R package for **multi**modal **media**tion analysis
@@ -49,28 +51,6 @@ The original data here are a `SummarizedExperiment`. The package can
 also take phyloseq objects and data.frames.
 
     library(multimedia)
-
-    ## Loading required package: brms
-
-    ## Loading required package: Rcpp
-
-    ## Loading 'brms' package (version 2.21.0). Useful instructions
-    ## can be found by typing help('brms'). A more detailed introduction
-    ## to the package is available through vignette('brms_overview').
-
-    ## 
-    ## Attaching package: 'brms'
-
-    ## The following object is masked from 'package:stats':
-    ## 
-    ##     ar
-
-    ## Loading required package: glmnetUtils
-
-    ## Loading required package: ranger
-
-    ## Loading required package: tidyselect
-
     demo_joy()
 
 <pre class="r-output"><code>## class: SummarizedExperiment 
@@ -170,3 +150,91 @@ model, which correctly recovers that the direct effects are 0.
 We welcome questions and comments about the package either through
 [github](https://github.com/krisrs1128/multimedia/issues) or
 [email](mailto:ksankaran@wisc.edu).
+
+    sessionInfo()
+
+<pre class="r-output"><code>## R version 4.4.1 Patched (2024-08-21 r87049)
+## Platform: aarch64-apple-darwin20
+## Running under: macOS Sonoma 14.5
+## 
+## Matrix products: default
+## BLAS:   /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRblas.0.dylib 
+## LAPACK: /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.0
+## 
+## locale:
+## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+## 
+## time zone: America/Chicago
+## tzcode source: internal
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## other attached packages:
+## [1] ggplot2_3.5.1     multimedia_0.2.0  tidyselect_1.2.1  ranger_0.16.0    
+## [5] glmnetUtils_1.1.9 brms_2.21.0       Rcpp_1.0.13      
+## 
+## loaded via a namespace (and not attached):
+##   [1] gridExtra_2.3               inline_0.3.19              
+##   [3] permute_0.9-7               sandwich_3.1-0             
+##   [5] rlang_1.1.4                 magrittr_2.0.3             
+##   [7] multcomp_1.4-26             ade4_1.7-22                
+##   [9] matrixStats_1.4.0           compiler_4.4.1             
+##  [11] mgcv_1.9-1                  loo_2.8.0                  
+##  [13] vctrs_0.6.5                 reshape2_1.4.4             
+##  [15] stringr_1.5.1               pkgconfig_2.0.3            
+##  [17] shape_1.4.6.1               crayon_1.5.3               
+##  [19] fastmap_1.2.0               backports_1.5.0            
+##  [21] XVector_0.45.0              labeling_0.4.3             
+##  [23] utf8_1.2.4                  rmarkdown_2.28             
+##  [25] UCSC.utils_1.1.0            purrr_1.0.2                
+##  [27] xfun_0.47                   glmnet_4.1-8               
+##  [29] zlibbioc_1.51.1             GenomeInfoDb_1.41.1        
+##  [31] jsonlite_1.8.8              progress_1.2.3             
+##  [33] biomformat_1.33.0           highr_0.11                 
+##  [35] rhdf5filters_1.17.0         DelayedArray_0.31.11       
+##  [37] Rhdf5lib_1.27.0             prettyunits_1.2.0          
+##  [39] cluster_2.1.6               parallel_4.4.1             
+##  [41] R6_2.5.1                    stringi_1.8.4              
+##  [43] StanHeaders_2.32.10         GenomicRanges_1.57.1       
+##  [45] estimability_1.5.1          rstan_2.32.6               
+##  [47] SummarizedExperiment_1.35.1 iterators_1.0.14           
+##  [49] knitr_1.48                  zoo_1.8-12                 
+##  [51] IRanges_2.39.2              bayesplot_1.11.1           
+##  [53] igraph_2.0.3                Matrix_1.7-0               
+##  [55] splines_4.4.1               abind_1.4-5                
+##  [57] yaml_2.3.10                 vegan_2.6-8                
+##  [59] codetools_0.2-20            curl_5.2.2                 
+##  [61] pkgbuild_1.4.4              lattice_0.22-6             
+##  [63] tibble_3.2.1                plyr_1.8.9                 
+##  [65] withr_3.0.1                 Biobase_2.65.1             
+##  [67] bridgesampling_1.1-2        posterior_1.6.0            
+##  [69] coda_0.19-4.1               evaluate_0.24.0            
+##  [71] survival_3.7-0              RcppParallel_5.1.9         
+##  [73] Biostrings_2.73.1           pillar_1.9.0               
+##  [75] phyloseq_1.49.0             MatrixGenerics_1.17.0      
+##  [77] tensorA_0.36.2.1            checkmate_2.3.2            
+##  [79] foreach_1.5.2               stats4_4.4.1               
+##  [81] distributional_0.4.0        generics_0.1.3             
+##  [83] hms_1.1.3                   S4Vectors_0.43.2           
+##  [85] rstantools_2.4.0            munsell_0.5.1              
+##  [87] scales_1.3.0                xtable_1.8-4               
+##  [89] glue_1.7.0                  emmeans_1.10.4             
+##  [91] tools_4.4.1                 data.table_1.16.0          
+##  [93] mvtnorm_1.3-1               tidygraph_1.3.1            
+##  [95] rhdf5_2.49.0                grid_4.4.1                 
+##  [97] tidyr_1.3.1                 ape_5.8                    
+##  [99] QuickJSR_1.3.1              miniLNM_0.1.0              
+## [101] colorspace_2.1-1            nlme_3.1-166               
+## [103] formula.tools_1.7.1         GenomeInfoDbData_1.2.12    
+## [105] patchwork_1.2.0             cli_3.6.3                  
+## [107] fansi_1.0.6                 S4Arrays_1.5.7             
+## [109] Brobdingnag_1.2-9           dplyr_1.1.4                
+## [111] V8_5.0.0                    gtable_0.3.5               
+## [113] digest_0.6.37               operator.tools_1.6.3       
+## [115] BiocGenerics_0.51.1         SparseArray_1.5.31         
+## [117] TH.data_1.1-2               farver_2.1.2               
+## [119] multtest_2.61.0             htmltools_0.5.8.1          
+## [121] lifecycle_1.0.4             httr_1.4.7                 
+## [123] MASS_7.3-61
+</code></pre>

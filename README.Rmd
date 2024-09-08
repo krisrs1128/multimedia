@@ -15,6 +15,7 @@ set.seed(20240313)
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/krisrs1128/multimedia/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/krisrs1128/multimedia/actions/workflows/R-CMD-check.yaml)
 [![codecov](https://codecov.io/github/krisrs1128/multimedia/graph/badge.svg?token=XB865GLQ8B)](https://codecov.io/github/krisrs1128/multimedia)
+[![Launch binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/krisrs1128/multimedia/main)
 <!-- badges: end -->
 
 `multimedia` is an R package for **multi**modal **media**tion analysis of
@@ -56,7 +57,7 @@ Health Questionnaire). You can find more details in the `random.Rmd` vignette.
 The original data here are a `SummarizedExperiment`. The package can also take
 phyloseq objects and data.frames.
 
-```{r}
+```{r, message = FALSE}
 library(multimedia)
 demo_joy()
 ```
@@ -128,4 +129,8 @@ img <- "~/Downloads/source.jpeg"
 font_add_google("Dosis", "dosis")
 sticker(img, package = "multimedia", h_color = "#a92645", h_fill = "#f7f7f7", p_size = 35, p_y = 1.4, s_x = 1, s_y = .75, s_width = .47, p_color = "#0c0c0c", dpi = 500, p_family = "dosis")
 usethis::use_logo("multimedia.png")
+```
+
+```{r}
+sessionInfo()
 ```

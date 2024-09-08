@@ -289,24 +289,21 @@ fdr_summary <- function(contrast, effect = "indirect_overall", q_value = 0.15) {
         fdr <- contrast |>
             group_by(.data$source, .data$outcome) |>
             summarise(
-                indirect_effect = mean(.data$indirect_effect),
-                .group = "drop_last"
+                indirect_effect = mean(.data$indirect_effect)
             ) |>
             arrange(-abs(.data$indirect_effect))
     } else if (effect == "indirect_pathwise") {
         fdr <- contrast |>
             group_by(.data$source, .data$outcome, .data$mediator) |>
             summarise(
-                indirect_effect = mean(.data$indirect_effect),
-                .group = "drop_last"
+                indirect_effect = mean(.data$indirect_effect)
             ) |>
             arrange(-abs(.data$indirect_effect))
     } else if (effect == "direct_effect") {
         fdr <- contrast |>
             group_by(.data$source, .data$outcome) |>
             summarise(
-                direct_effect = mean(.data$direct_effect),
-                .groups = "drop_last"
+                direct_effect = mean(.data$direct_effect)
             ) |>
             arrange(-abs(.data$direct_effect))
     }
