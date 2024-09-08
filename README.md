@@ -1,5 +1,11 @@
 # multimedia <img src="man/figures/logo.png" align="right" width="200" alt=""/>
 
+<!-- badges: start -->
+
+[![R-CMD-check](https://github.com/krisrs1128/multimedia/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/krisrs1128/multimedia/actions/workflows/R-CMD-check.yaml)
+[![codecov](https://codecov.io/github/krisrs1128/multimedia/graph/badge.svg?token=XB865GLQ8B)](https://codecov.io/github/krisrs1128/multimedia)
+<!-- badges: end -->
+
 `multimedia` is an R package for **multi**modal **media**tion analysis
 of microbiome data. It streamlines data curation, mediation and outcome
 model specification, and statistical inference for direct and indirect
@@ -9,7 +15,8 @@ in our preprint:
 
 [H. Jiang, X. Miao, M. W. Thairu, M. Beebe, D. W. Grupe, R. J. Davidson,
 J. Handelsman, and K. Sankaran (2024). multimedia: Multimodal Mediation
-Analysis of Microbiome Data.](https://www.biorxiv.org/content/10.1101/2024.03.27.587024v1)
+Analysis of Microbiome
+Data.](https://www.biorxiv.org/content/10.1101/2024.03.27.587024v1)
 
 The preprint describes the scientific context and interpretation for two
 of the vignettes in this package. One gives a multi-omics analysis of
@@ -30,19 +37,40 @@ You can install the development version from
 
 ## Example
 
-Here is a simple example of estimating direct and indirect effects. 
-The data are randomly generated (no real effects), but we
-imagine that the ASV columns mediate the relationship between
-`treatment` and `PHQ`. This is mimics the possibility that the
-microbiome (ASV = Amplicon Sequence Variant) mediates the relationship
-between a treatment and depression (PHQ = Patient Health Questionnaire).
-You can find more details in the `random.Rmd` vignette.
+Here is a simple example of estimating direct and indirect effects. The
+data are randomly generated (no real effects), but we imagine that the
+ASV columns mediate the relationship between `treatment` and `PHQ`. This
+is mimics the possibility that the microbiome (ASV = Amplicon Sequence
+Variant) mediates the relationship between a treatment and depression
+(PHQ = Patient Health Questionnaire). You can find more details in the
+`random.Rmd` vignette.
 
 The original data here are a `SummarizedExperiment`. The package can
 also take phyloseq objects and data.frames.
 
     library(multimedia)
-    library(ggplot2)
+
+    ## Loading required package: brms
+
+    ## Loading required package: Rcpp
+
+    ## Loading 'brms' package (version 2.21.0). Useful instructions
+    ## can be found by typing help('brms'). A more detailed introduction
+    ## to the package is available through vignette('brms_overview').
+
+    ## 
+    ## Attaching package: 'brms'
+
+    ## The following object is masked from 'package:stats':
+    ## 
+    ##     ar
+
+    ## Loading required package: glmnetUtils
+
+    ## Loading required package: ranger
+
+    ## Loading required package: tidyselect
+
     demo_joy()
 
 <pre class="r-output"><code>## class: SummarizedExperiment 
@@ -75,7 +103,7 @@ using sparse regression, random forests, and bayesian hierarchical
 models instead.
 
     model <- multimedia(exper) |>
-      estimate(exper)
+        estimate(exper)
     model
 
 <pre class="r-output"><code>## <span style='color: #BB00BB;'>[Multimedia Analysis]</span> 
@@ -98,31 +126,29 @@ are identical for the two indirect settings.
 
     direct_effect(model, exper)
 
-<pre class="r-output"><code>## <span style='color: #555555;'># A tibble: 2 × 4</span>
-##   outcome indirect_setting contrast            direct_effect
-##   <span style='color: #555555; font-style: italic;'><chr></span>   <span style='color: #555555; font-style: italic;'><fct></span>            <span style='color: #555555; font-style: italic;'><glue></span>                      <span style='color: #555555; font-style: italic;'><dbl></span>
-## <span style='color: #555555;'>1</span> PHQ     Control          Control - Treatment        0.093<span style='text-decoration: underline;'>1</span>
-## <span style='color: #555555;'>2</span> PHQ     Treatment        Control - Treatment        0.093<span style='text-decoration: underline;'>1</span>
+<pre class="r-output"><code>##   outcome indirect_setting            contrast direct_effect
+## 1     PHQ          Control Control - Treatment    0.09314376
+## 2     PHQ        Treatment Control - Treatment    0.09314376
 </code></pre>
 
     indirect_overall(model, exper)
 
-<pre class="r-output"><code>## <span style='color: #555555;'># A tibble: 2 × 4</span>
-##   outcome direct_setting contrast            indirect_effect
-##   <span style='color: #555555; font-style: italic;'><chr></span>   <span style='color: #555555; font-style: italic;'><fct></span>          <span style='color: #555555; font-style: italic;'><glue></span>                        <span style='color: #555555; font-style: italic;'><dbl></span>
-## <span style='color: #555555;'>1</span> PHQ     Control        Control - Treatment          0.022<span style='text-decoration: underline;'>6</span>
-## <span style='color: #555555;'>2</span> PHQ     Treatment      Control - Treatment          0.022<span style='text-decoration: underline;'>6</span>
+<pre class="r-output"><code>##   outcome direct_setting            contrast indirect_effect
+## 1     PHQ        Control Control - Treatment      0.02256029
+## 2     PHQ      Treatment Control - Treatment      0.02256029
 </code></pre>
 
 The package also includes helpers to visualize and perform inference on
 these effects. For example,
 
     boot <- bootstrap(model, exper, c(direct = direct_effect))
+
+    library(ggplot2)
     ggplot(boot$direct) +
-      geom_histogram(aes(direct_effect), bins = 20) +
-      scale_y_continuous(expand = c(0, 0)) +
-      theme_classic() +
-      labs(x = "Direct Effect", y = "Frequency", title = "Bootstrap Distribution")
+        geom_histogram(aes(direct_effect), bins = 20) +
+        scale_y_continuous(expand = c(0, 0)) +
+        theme_classic() +
+        labs(x = "Direct Effect", y = "Frequency", title = "Bootstrap Distribution")
 
 <img src="man/figures/README-unnamed-chunk-6-1.png" width="500" style="display: block; margin: auto;" />
 
@@ -131,14 +157,12 @@ original `multimedia` specification. Below we use a sparse regression
 model, which correctly recovers that the direct effects are 0.
 
     multimedia(exper, glmnet_model(lambda = .1)) |>
-      estimate(exper) |>
-      direct_effect()
+        estimate(exper) |>
+        direct_effect()
 
-<pre class="r-output"><code>## <span style='color: #555555;'># A tibble: 2 × 4</span>
-##   outcome indirect_setting contrast            direct_effect
-##   <span style='color: #555555; font-style: italic;'><chr></span>   <span style='color: #555555; font-style: italic;'><fct></span>            <span style='color: #555555; font-style: italic;'><glue></span>                      <span style='color: #555555; font-style: italic;'><dbl></span>
-## <span style='color: #555555;'>1</span> PHQ     Control          Control - Treatment             0
-## <span style='color: #555555;'>2</span> PHQ     Treatment        Control - Treatment             0
+<pre class="r-output"><code>##   outcome indirect_setting            contrast direct_effect
+## 1     PHQ          Control Control - Treatment             0
+## 2     PHQ        Treatment Control - Treatment             0
 </code></pre>
 
 ## Help
