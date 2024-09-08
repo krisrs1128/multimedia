@@ -2,7 +2,7 @@
 title: "Quick Start with Random Data"
 package: multimedia
 output: 
-  BiocStyle::html_document
+  rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Quick Start with Random Data}
   %\VignetteEngine{knitr::rmarkdown}

@@ -2,9 +2,9 @@
 title: "The Mindfulness Study"
 package: multimedia
 output: 
-  BiocStyle::html_document
+  rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Mindfulness}
+  %\VignetteIndexEntry{The Mindfulness Study}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

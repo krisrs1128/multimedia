@@ -2,7 +2,7 @@
 title: "Illustration with Nonlinear Effects"
 package: multimedia
 output: 
-  BiocStyle::html_document
+  rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Illustration with Nonlinear Effects}
   %\VignetteEngine{knitr::rmarkdown}

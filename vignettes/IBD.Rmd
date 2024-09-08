@@ -2,9 +2,9 @@
 title: "Microbiome - Metabolome Mediation Analysis"
 package: multimedia
 output: 
-  BiocStyle::html_document
+  rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{IBD}
+  %\VignetteIndexEntry{Microbiome - Metabolome Mediation Analysis}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}  
 ---
