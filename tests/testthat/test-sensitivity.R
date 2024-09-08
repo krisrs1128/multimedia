@@ -28,3 +28,11 @@ test_that("Sensitivity at rho = 0 agrees with original indirect effect", {
         mutate(difference = abs(indirect_effect.x - 2 * indirect_effect.y))
     expect_true(all(indirect_diff$difference < 0.05))
 })
+
+test_that("Raises error on inappropriate model input.", {
+    model <- multimedia(exper, lnm_model())
+    expect_error(check_supported(model))
+
+    model <- multimedia(exper, brms_model())
+    expect_error(check_supported(model))
+})

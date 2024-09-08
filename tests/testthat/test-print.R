@@ -1,4 +1,3 @@
-
 test_that("ANSI handler converts R code to HTML tagged version", {
     output <- ansi_aware_handler("test")
     expect_equal(output, "<pre class=\"r-output\"><code>test</code></pre>")
