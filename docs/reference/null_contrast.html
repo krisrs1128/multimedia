@@ -13,7 +13,7 @@ removes a set of edges according to the nullfication argument."><meta property="
 
     <a class="navbar-brand me-2" href="../index.html">multimedia</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -108,10 +108,10 @@ the estimate was calculated using real or synthetic null data.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Fitting the full model on synthetic data...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Estimating effects on real and synthetic data...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      source outcome indirect_setting            contrast direct_effect</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1      real     PHQ          Control Control - Treatment    0.07083672</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2      real     PHQ        Treatment Control - Treatment    0.07083672</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 synthetic     PHQ          Control Control - Treatment   -0.38209863</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 synthetic     PHQ        Treatment Control - Treatment   -0.38209863</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1      real     PHQ          Control Control - Treatment    -0.1176435</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2      real     PHQ        Treatment Control - Treatment    -0.1176435</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 synthetic     PHQ          Control Control - Treatment     0.1831406</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 synthetic     PHQ        Treatment Control - Treatment     0.1831406</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># example with another dataset - synthetic effect is smaller.</span></span></span>
 <span class="r-in"><span><span class="va">exper</span> <span class="op">&lt;-</span> <span class="fu"><a href="demo_spline.html">demo_spline</a></span><span class="op">(</span>tau <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
@@ -124,14 +124,14 @@ the estimate was calculated using real or synthetic null data.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Fitting the full model on synthetic data...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Estimating effects on real and synthetic data...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      source   outcome indirect_setting contrast direct_effect</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1      real outcome_1                0    0 - 1  -2.140553444</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2      real outcome_2                0    0 - 1  -1.137899357</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3      real outcome_1                1    0 - 1  -2.140553444</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4      real outcome_2                1    0 - 1  -1.137899357</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5 synthetic outcome_1                0    0 - 1  -0.014281094</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6 synthetic outcome_2                0    0 - 1  -0.000228756</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7 synthetic outcome_1                1    0 - 1  -0.014281094</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8 synthetic outcome_2                1    0 - 1  -0.000228756</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1      real outcome_1                0    0 - 1  -2.293366748</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2      real outcome_2                0    0 - 1  -0.840715276</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3      real outcome_1                1    0 - 1  -2.293366748</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4      real outcome_2                1    0 - 1  -0.840715276</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 synthetic outcome_1                0    0 - 1   0.023245820</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6 synthetic outcome_2                0    0 - 1   0.003039313</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7 synthetic outcome_1                1    0 - 1   0.023245820</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8 synthetic outcome_2                1    0 - 1   0.003039313</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
