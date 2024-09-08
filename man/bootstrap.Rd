@@ -32,17 +32,18 @@ exper and apply each estimator in fs to construct bootstrap distributions
 associated wtih those estimators.
 }
 \examples{
-# example with null data
+# example with null data. We set B to 5 just to execute quickly -- it's not
+# actually a practical choice of B
 exper <- demo_joy() |>
     mediation_data("PHQ", "treatment", starts_with("ASV"))
 multimedia(exper) |>
-    bootstrap(exper, B = 100)
+    bootstrap(exper, B = 5)
 
 # example with another dataset
 exper <- demo_spline(n_samples = 100, tau = c(2, 1)) |>
     mediation_data(starts_with("outcome"), "treatment", "mediator")
 samples <- multimedia(exper, rf_model(num.trees = 1e3)) |>
-    bootstrap(exper, B = 100)
+    bootstrap(exper, B = 5)
 ggplot2::ggplot(samples$direct_effect) +
     ggplot2::geom_histogram(
         ggplot2::aes(direct_effect, fill = indirect_setting),
