@@ -389,19 +389,19 @@ effects (if any).</p>
 <code class="sourceCode R"><span><span class="va">contrast</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/null_contrast.html">null_contrast</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">exper</span>, <span class="st">"M-&gt;Y"</span>, <span class="va">indirect_pathwise</span><span class="op">)</span></span>
 <span><span class="va">fdr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fdr_summary.html">fdr_summary</a></span><span class="op">(</span><span class="va">contrast</span>, <span class="st">"indirect_pathwise"</span>, <span class="fl">0.05</span><span class="op">)</span></span>
 <span><span class="va">fdr</span></span></code></pre></div>
-<pre class="r-output"><code><span><span class="co">#&gt; # A tibble: 10 × 8</span></span>
-<span><span class="co">#&gt;    source    outcome mediator indirect_effect .group     rank fdr_hat keep </span></span>
-<span><span class="co">#&gt;                                    </span></span>
-<span><span class="co">#&gt;  1 real      PHQ     ASV3             0.0229  drop_last     1   0     FALSE</span></span>
-<span><span class="co">#&gt;  2 synthetic PHQ     ASV4             0.0226  drop_last     2   0.5   FALSE</span></span>
-<span><span class="co">#&gt;  3 synthetic PHQ     ASV3             0.0128  drop_last     3   0.667 FALSE</span></span>
-<span><span class="co">#&gt;  4 real      PHQ     ASV5            -0.00909 drop_last     4   0.5   FALSE</span></span>
-<span><span class="co">#&gt;  5 real      PHQ     ASV1             0       drop_last     5   0.4   FALSE</span></span>
-<span><span class="co">#&gt;  6 real      PHQ     ASV2             0       drop_last     6   0.333 FALSE</span></span>
-<span><span class="co">#&gt;  7 real      PHQ     ASV4             0       drop_last     7   0.286 FALSE</span></span>
-<span><span class="co">#&gt;  8 synthetic PHQ     ASV1             0       drop_last     8   0.375 FALSE</span></span>
-<span><span class="co">#&gt;  9 synthetic PHQ     ASV2             0       drop_last     9   0.444 FALSE</span></span>
-<span><span class="co">#&gt; 10 synthetic PHQ     ASV5             0       drop_last    10   0.5   FALSE</span></span></code></pre>
+<pre class="r-output"><code><span><span class="co">#&gt; # A tibble: 10 × 7</span></span>
+<span><span class="co">#&gt;    source    outcome mediator indirect_effect  rank fdr_hat keep </span></span>
+<span><span class="co">#&gt;                               </span></span>
+<span><span class="co">#&gt;  1 real      PHQ     ASV3             0.0229      1   0     FALSE</span></span>
+<span><span class="co">#&gt;  2 synthetic PHQ     ASV4             0.0226      2   0.5   FALSE</span></span>
+<span><span class="co">#&gt;  3 synthetic PHQ     ASV3             0.0128      3   0.667 FALSE</span></span>
+<span><span class="co">#&gt;  4 real      PHQ     ASV5            -0.00909     4   0.5   FALSE</span></span>
+<span><span class="co">#&gt;  5 real      PHQ     ASV1             0           5   0.4   FALSE</span></span>
+<span><span class="co">#&gt;  6 real      PHQ     ASV2             0           6   0.333 FALSE</span></span>
+<span><span class="co">#&gt;  7 real      PHQ     ASV4             0           7   0.286 FALSE</span></span>
+<span><span class="co">#&gt;  8 synthetic PHQ     ASV1             0           8   0.375 FALSE</span></span>
+<span><span class="co">#&gt;  9 synthetic PHQ     ASV2             0           9   0.444 FALSE</span></span>
+<span><span class="co">#&gt; 10 synthetic PHQ     ASV5             0          10   0.5   FALSE</span></span></code></pre>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre class="r-output"><code><span><span class="co">#&gt; R version 4.4.1 Patched (2024-08-21 r87049)</span></span>
