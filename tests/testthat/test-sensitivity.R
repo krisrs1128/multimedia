@@ -36,3 +36,45 @@ test_that("Raises error on inappropriate model input.", {
     model <- multimedia(exper, brms_model())
     expect_error(check_supported(model))
 })
+
+pathwise <- sensitivity_pathwise(model, exper, subset_indices, rho_seq, n_bootstrap = 2)
+
+test_that("Pathwise sensitivity curve has correct column names.", {
+    expect_named(
+        pathwise,
+        c("rho", "outcome", "direct_setting", "contrast", "mediator",
+          "indirect_effect", "indirect_effect_standard_error")
+    )
+})
+
+test_that("Pathwise sensitivity covers all mediators", {
+    expect_equal(nrow(pathwise), 4 * length(rho_seq))
+    expect_true(all(mediators(model) %in% pathwise$mediator))
+    expect_true(all(outcomes(model) %in% pathwise$outcome))
+})
+
+perturb <- matrix(
+    c(
+        0, 3, 0,
+        3, 0, 0,
+        0, 0, 0
+    ),
+    nrow = 3, byrow = TRUE
+)
+nu_seq <- c(-0.2, 0, 0.2)
+curve <- sensitivity_perturb(model, exper, perturb, nu_seq, n_bootstrap = 2)
+
+test_that("Perturbation sensitivity has the correct column names", {
+    expect_named(
+        curve,
+        c("nu", colnames(overall), "indirect_effect_standard_error")
+    )
+})
+
+test_that("All perturbation values appear in the sensitivity curve.", {
+    expect_equal(unique(curve$nu), nu_seq)
+})
+
+test_that("All outcomes appear in the sensitivity curve.", {
+    expect_equal(unique(curve$outcome), outcomes(model))
+})

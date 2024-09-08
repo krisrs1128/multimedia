@@ -410,7 +410,7 @@ covariance_matrix <- function(model, confound_ix = NULL, rho = 0.0) {
 #'     outcome_estimator = glmnet_model(lambda = 1e-2)
 #' ) |>
 #'     estimate(exper)
-#' rho_seq <- c(-0.2, 0.2)
+#' nu_seq <- c(-0.2, 0.2)
 #' perturb <- matrix(
 #'     c(
 #'         0, 3, 0,
@@ -419,7 +419,7 @@ covariance_matrix <- function(model, confound_ix = NULL, rho = 0.0) {
 #'     ),
 #'     nrow = 3, byrow = TRUE
 #' )
-#' sensitivity_perturb(model, exper, perturb, n_bootstrap = 2)
+#' sensitivity_perturb(model, exper, perturb, nu_seq, n_bootstrap = 2)
 #' @export
 sensitivity_perturb <- function(
     model, exper, perturb, nu_seq = NULL, n_bootstrap = 100, progress = TRUE) {
