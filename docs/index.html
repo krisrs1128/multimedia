@@ -29,7 +29,7 @@
 
     <a class="navbar-brand me-2" href="index.html">multimedia</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,6 +67,8 @@
 <img src="logo.png" class="logo" alt=""><h1 id="multimedia-">multimedia <a class="anchor" aria-label="anchor" href="#multimedia-"></a>
 </h1>
 </div>
+<!-- badges: start -->
+
 <p><code>multimedia</code> is an R package for <strong>multi</strong>modal <strong>media</strong>tion analysis of microbiome data. It streamlines data curation, mediation and outcome model specification, and statistical inference for direct and indirect effects. By defining causal relationships across data modalities, it can support principled data integration. You can read more about the package in our preprint:</p>
 <p><a href="https://www.biorxiv.org/content/10.1101/2024.03.27.587024v1" class="external-link">H. Jiang, X. Miao, M. W. Thairu, M. Beebe, D. W. Grupe, R. J. Davidson, J. Handelsman, and K. Sankaran (2024). multimedia: Multimodal Mediation Analysis of Microbiome Data.</a></p>
 <p>The preprint describes the scientific context and interpretation for two of the vignettes in this package. One gives a multi-omics analysis of IBD, and the other describes how to simultaneously model 16S profiles and survey responses in a mindfulness intervention study.</p>
@@ -86,8 +88,29 @@
 <p>Here is a simple example of estimating direct and indirect effects. The data are randomly generated (no real effects), but we imagine that the ASV columns mediate the relationship between <code>treatment</code> and <code>PHQ</code>. This is mimics the possibility that the microbiome (ASV = Amplicon Sequence Variant) mediates the relationship between a treatment and depression (PHQ = Patient Health Questionnaire). You can find more details in the <code>random.Rmd</code> vignette.</p>
 <p>The original data here are a <code>SummarizedExperiment</code>. The package can also take phyloseq objects and data.frames.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">library</span>(multimedia)</span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="fu">demo_joy</span>()</span></code></pre></div>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="do">## Loading required package: brms</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="do">## Loading required package: Rcpp</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="do">## Loading 'brms' package (version 2.21.0). Useful instructions</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="do">## can be found by typing help('brms'). A more detailed introduction</span></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a><span class="do">## to the package is available through vignette('brms_overview').</span></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a><span class="do">## Attaching package: 'brms'</span></span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a><span class="do">## The following object is masked from 'package:stats':</span></span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a><span class="do">##     ar</span></span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a></span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a><span class="do">## Loading required package: glmnetUtils</span></span>
+<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a></span>
+<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a><span class="do">## Loading required package: ranger</span></span>
+<span id="cb2-21"><a href="#cb2-21" tabindex="-1"></a></span>
+<span id="cb2-22"><a href="#cb2-22" tabindex="-1"></a><span class="do">## Loading required package: tidyselect</span></span>
+<span id="cb2-23"><a href="#cb2-23" tabindex="-1"></a></span>
+<span id="cb2-24"><a href="#cb2-24" tabindex="-1"></a><span class="fu">demo_joy</span>()</span></code></pre></div>
 <pre class="r-output"><code><span><span class="co">## class: SummarizedExperiment</span></span>
 <span><span class="co">## dim: 5 100</span></span>
 <span><span class="co">## metadata(0):</span></span>
@@ -106,7 +129,7 @@
 <span><span class="co">## 1 outcome: PHQ</span></span></code></pre>
 <p>Next, we fit all mediation analysis components and estimate effects. By default, the package uses linear models – see the vignettes for examples using sparse regression, random forests, and bayesian hierarchical models instead.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">multimedia</span>(exper) <span class="sc">|&gt;</span></span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  <span class="fu">estimate</span>(exper)</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>    <span class="fu">estimate</span>(exper)</span>
 <span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>model</span></code></pre></div>
 <pre class="r-output"><code><span><span class="co">## [Multimedia Analysis]</span></span>
 <span><span class="co">## Treatments: treatment</span></span>
@@ -118,34 +141,30 @@
 <span><span class="co">## outcome: A fitted lm_model().</span></span></code></pre>
 <p>In any mediation analysis, there are several types of effects that could be interesting, each corresponding to different ways of traveling from the treatment to the outcome in the mediation analysis causal graph. In the block below, <code>direct_effect</code> captures treatment effects that bypass the microbiome; <code>indirect_effect</code> are effects that are mediated by ASV relative abundances. Since this example uses a linear model, the effects are identical for the two indirect settings.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">direct_effect</span>(model, exper)</span></code></pre></div>
-<pre class="r-output"><code><span><span class="co">## # A tibble: 2 × 4</span></span>
-<span><span class="co">##   outcome indirect_setting contrast            direct_effect</span></span>
-<span><span class="co">##                                        </span></span>
-<span><span class="co">## 1 PHQ     Control          Control - Treatment        0.0931</span></span>
-<span><span class="co">## 2 PHQ     Treatment        Control - Treatment        0.0931</span></span></code></pre>
+<pre class="r-output"><code><span><span class="co">##   outcome indirect_setting            contrast direct_effect</span></span>
+<span><span class="co">## 1     PHQ          Control Control - Treatment    0.09314376</span></span>
+<span><span class="co">## 2     PHQ        Treatment Control - Treatment    0.09314376</span></span></code></pre>
 <div class="sourceCode" id="cb6"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">indirect_overall</span>(model, exper)</span></code></pre></div>
-<pre class="r-output"><code><span><span class="co">## # A tibble: 2 × 4</span></span>
-<span><span class="co">##   outcome direct_setting contrast            indirect_effect</span></span>
-<span><span class="co">##                                        </span></span>
-<span><span class="co">## 1 PHQ     Control        Control - Treatment          0.0226</span></span>
-<span><span class="co">## 2 PHQ     Treatment      Control - Treatment          0.0226</span></span></code></pre>
+<pre class="r-output"><code><span><span class="co">##   outcome direct_setting            contrast indirect_effect</span></span>
+<span><span class="co">## 1     PHQ        Control Control - Treatment      0.02256029</span></span>
+<span><span class="co">## 2     PHQ      Treatment Control - Treatment      0.02256029</span></span></code></pre>
 <p>The package also includes helpers to visualize and perform inference on these effects. For example,</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>boot <span class="ot">&lt;-</span> <span class="fu">bootstrap</span>(model, exper, <span class="fu">c</span>(<span class="at">direct =</span> direct_effect))</span>
-<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="fu">ggplot</span>(boot<span class="sc">$</span>direct) <span class="sc">+</span></span>
-<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(direct_effect), <span class="at">bins =</span> <span class="dv">20</span>) <span class="sc">+</span></span>
-<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)) <span class="sc">+</span></span>
-<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
-<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Direct Effect"</span>, <span class="at">y =</span> <span class="st">"Frequency"</span>, <span class="at">title =</span> <span class="st">"Bootstrap Distribution"</span>)</span></code></pre></div>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="fu">ggplot</span>(boot<span class="sc">$</span>direct) <span class="sc">+</span></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>    <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(direct_effect), <span class="at">bins =</span> <span class="dv">20</span>) <span class="sc">+</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>    <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)) <span class="sc">+</span></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>    <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Direct Effect"</span>, <span class="at">y =</span> <span class="st">"Frequency"</span>, <span class="at">title =</span> <span class="st">"Bootstrap Distribution"</span>)</span></code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-6-1.png" width="500" style="display: block; margin: auto;"></p>
 <p>If we want to use a different type of model, we can just modify the original <code>multimedia</code> specification. Below we use a sparse regression model, which correctly recovers that the direct effects are 0.</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">multimedia</span>(exper, <span class="fu">glmnet_model</span>(<span class="at">lambda =</span> .<span class="dv">1</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  <span class="fu">estimate</span>(exper) <span class="sc">|&gt;</span></span>
-<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="fu">direct_effect</span>()</span></code></pre></div>
-<pre class="r-output"><code><span><span class="co">## # A tibble: 2 × 4</span></span>
-<span><span class="co">##   outcome indirect_setting contrast            direct_effect</span></span>
-<span><span class="co">##                                        </span></span>
-<span><span class="co">## 1 PHQ     Control          Control - Treatment             0</span></span>
-<span><span class="co">## 2 PHQ     Treatment        Control - Treatment             0</span></span></code></pre>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>    <span class="fu">estimate</span>(exper) <span class="sc">|&gt;</span></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>    <span class="fu">direct_effect</span>()</span></code></pre></div>
+<pre class="r-output"><code><span><span class="co">##   outcome indirect_setting            contrast direct_effect</span></span>
+<span><span class="co">## 1     PHQ          Control Control - Treatment             0</span></span>
+<span><span class="co">## 2     PHQ        Treatment Control - Treatment             0</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="help">Help<a class="anchor" aria-label="anchor" href="#help"></a>
@@ -185,7 +204,13 @@
 </ul>
 </div>
 
-
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://github.com/krisrs1128/multimedia/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/krisrs1128/multimedia/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://codecov.io/github/krisrs1128/multimedia" class="external-link"><img src="https://codecov.io/github/krisrs1128/multimedia/graph/badge.svg?token=XB865GLQ8B" alt="codecov"></a></li>
+</ul>
+</div>
 
   </aside>
 </div>

@@ -13,7 +13,7 @@ associated wtih those estimators."><meta property="og:image" content="https://kr
 
     <a class="navbar-brand me-2" href="../index.html">multimedia</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -93,221 +93,32 @@ each of the B bootstrap resamples.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># example with null data</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># example with null data. We set B to 5 just to execute quickly -- it's not</span></span></span>
+<span class="r-in"><span><span class="co"># actually a practical choice of B</span></span></span>
 <span class="r-in"><span><span class="va">exper</span> <span class="op">&lt;-</span> <span class="fu"><a href="demo_joy.html">demo_joy</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="mediation_data.html">mediation_data</a></span><span class="op">(</span><span class="st">"PHQ"</span>, <span class="st">"treatment"</span>, <span class="fu">starts_with</span><span class="op">(</span><span class="st">"ASV"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="multimedia.html">multimedia</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>    <span class="fu">bootstrap</span><span class="op">(</span><span class="va">exper</span>, B <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="fu">bootstrap</span><span class="op">(</span><span class="va">exper</span>, B <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Bootstrapping direct_effect</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $direct_effect</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     bootstrap outcome indirect_setting            contrast direct_effect</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1           1     PHQ          Control Control - Treatment   -0.21578831</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2           1     PHQ        Treatment Control - Treatment   -0.21578831</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3           2     PHQ          Control Control - Treatment   -0.45569386</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4           2     PHQ        Treatment Control - Treatment   -0.45569386</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5           3     PHQ          Control Control - Treatment   -0.43009474</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6           3     PHQ        Treatment Control - Treatment   -0.43009474</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7           4     PHQ          Control Control - Treatment   -0.94551502</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8           4     PHQ        Treatment Control - Treatment   -0.94551502</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9           5     PHQ          Control Control - Treatment   -0.46295579</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10          5     PHQ        Treatment Control - Treatment   -0.46295579</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11          6     PHQ          Control Control - Treatment   -0.72412912</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12          6     PHQ        Treatment Control - Treatment   -0.72412912</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13          7     PHQ          Control Control - Treatment   -1.15909937</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14          7     PHQ        Treatment Control - Treatment   -1.15909937</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15          8     PHQ          Control Control - Treatment   -0.31227151</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16          8     PHQ        Treatment Control - Treatment   -0.31227151</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 17          9     PHQ          Control Control - Treatment   -0.57968746</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18          9     PHQ        Treatment Control - Treatment   -0.57968746</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 19         10     PHQ          Control Control - Treatment   -0.53099832</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20         10     PHQ        Treatment Control - Treatment   -0.53099832</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 21         11     PHQ          Control Control - Treatment   -0.24582187</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 22         11     PHQ        Treatment Control - Treatment   -0.24582187</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 23         12     PHQ          Control Control - Treatment   -0.60986953</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 24         12     PHQ        Treatment Control - Treatment   -0.60986953</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 25         13     PHQ          Control Control - Treatment   -0.65256309</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 26         13     PHQ        Treatment Control - Treatment   -0.65256309</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 27         14     PHQ          Control Control - Treatment   -0.80196312</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 28         14     PHQ        Treatment Control - Treatment   -0.80196312</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 29         15     PHQ          Control Control - Treatment   -0.64356322</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 30         15     PHQ        Treatment Control - Treatment   -0.64356322</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 31         16     PHQ          Control Control - Treatment   -0.61463680</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 32         16     PHQ        Treatment Control - Treatment   -0.61463680</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 33         17     PHQ          Control Control - Treatment   -0.39948472</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 34         17     PHQ        Treatment Control - Treatment   -0.39948472</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 35         18     PHQ          Control Control - Treatment   -0.65169926</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 36         18     PHQ        Treatment Control - Treatment   -0.65169926</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 37         19     PHQ          Control Control - Treatment   -0.59680073</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 38         19     PHQ        Treatment Control - Treatment   -0.59680073</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 39         20     PHQ          Control Control - Treatment   -0.52675174</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 40         20     PHQ        Treatment Control - Treatment   -0.52675174</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 41         21     PHQ          Control Control - Treatment   -0.15166398</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 42         21     PHQ        Treatment Control - Treatment   -0.15166398</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 43         22     PHQ          Control Control - Treatment   -0.51870949</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 44         22     PHQ        Treatment Control - Treatment   -0.51870949</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 45         23     PHQ          Control Control - Treatment   -0.59970321</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 46         23     PHQ        Treatment Control - Treatment   -0.59970321</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 47         24     PHQ          Control Control - Treatment   -1.02794556</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 48         24     PHQ        Treatment Control - Treatment   -1.02794556</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 49         25     PHQ          Control Control - Treatment   -0.50278599</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 50         25     PHQ        Treatment Control - Treatment   -0.50278599</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 51         26     PHQ          Control Control - Treatment   -0.68347886</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 52         26     PHQ        Treatment Control - Treatment   -0.68347886</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 53         27     PHQ          Control Control - Treatment   -0.44427585</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 54         27     PHQ        Treatment Control - Treatment   -0.44427585</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 55         28     PHQ          Control Control - Treatment   -0.65715041</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 56         28     PHQ        Treatment Control - Treatment   -0.65715041</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 57         29     PHQ          Control Control - Treatment   -0.75458624</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 58         29     PHQ        Treatment Control - Treatment   -0.75458624</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 59         30     PHQ          Control Control - Treatment   -0.81462882</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 60         30     PHQ        Treatment Control - Treatment   -0.81462882</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 61         31     PHQ          Control Control - Treatment   -0.32868316</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 62         31     PHQ        Treatment Control - Treatment   -0.32868316</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 63         32     PHQ          Control Control - Treatment   -0.33899962</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 64         32     PHQ        Treatment Control - Treatment   -0.33899962</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 65         33     PHQ          Control Control - Treatment   -0.72371458</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 66         33     PHQ        Treatment Control - Treatment   -0.72371458</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 67         34     PHQ          Control Control - Treatment   -0.45111301</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 68         34     PHQ        Treatment Control - Treatment   -0.45111301</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 69         35     PHQ          Control Control - Treatment   -0.47111958</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 70         35     PHQ        Treatment Control - Treatment   -0.47111958</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 71         36     PHQ          Control Control - Treatment   -0.11218408</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 72         36     PHQ        Treatment Control - Treatment   -0.11218408</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 73         37     PHQ          Control Control - Treatment   -0.78961589</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 74         37     PHQ        Treatment Control - Treatment   -0.78961589</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 75         38     PHQ          Control Control - Treatment   -0.84428666</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 76         38     PHQ        Treatment Control - Treatment   -0.84428666</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 77         39     PHQ          Control Control - Treatment   -0.63857403</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 78         39     PHQ        Treatment Control - Treatment   -0.63857403</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 79         40     PHQ          Control Control - Treatment   -0.66504624</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 80         40     PHQ        Treatment Control - Treatment   -0.66504624</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 81         41     PHQ          Control Control - Treatment   -0.77294090</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 82         41     PHQ        Treatment Control - Treatment   -0.77294090</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 83         42     PHQ          Control Control - Treatment   -0.48476715</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 84         42     PHQ        Treatment Control - Treatment   -0.48476715</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 85         43     PHQ          Control Control - Treatment   -0.62945171</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 86         43     PHQ        Treatment Control - Treatment   -0.62945171</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 87         44     PHQ          Control Control - Treatment   -0.68039625</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 88         44     PHQ        Treatment Control - Treatment   -0.68039625</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 89         45     PHQ          Control Control - Treatment   -0.69046365</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 90         45     PHQ        Treatment Control - Treatment   -0.69046365</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 91         46     PHQ          Control Control - Treatment   -0.97920293</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 92         46     PHQ        Treatment Control - Treatment   -0.97920293</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 93         47     PHQ          Control Control - Treatment   -0.49717173</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 94         47     PHQ        Treatment Control - Treatment   -0.49717173</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 95         48     PHQ          Control Control - Treatment   -0.50454446</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 96         48     PHQ        Treatment Control - Treatment   -0.50454446</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 97         49     PHQ          Control Control - Treatment   -0.75373472</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 98         49     PHQ        Treatment Control - Treatment   -0.75373472</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 99         50     PHQ          Control Control - Treatment   -0.67477957</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 100        50     PHQ        Treatment Control - Treatment   -0.67477957</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 101        51     PHQ          Control Control - Treatment   -0.81385560</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 102        51     PHQ        Treatment Control - Treatment   -0.81385560</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 103        52     PHQ          Control Control - Treatment   -0.55631419</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 104        52     PHQ        Treatment Control - Treatment   -0.55631419</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 105        53     PHQ          Control Control - Treatment   -1.05629159</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 106        53     PHQ        Treatment Control - Treatment   -1.05629159</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 107        54     PHQ          Control Control - Treatment   -0.70322696</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 108        54     PHQ        Treatment Control - Treatment   -0.70322696</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 109        55     PHQ          Control Control - Treatment   -0.81480796</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 110        55     PHQ        Treatment Control - Treatment   -0.81480796</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 111        56     PHQ          Control Control - Treatment   -0.70529737</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 112        56     PHQ        Treatment Control - Treatment   -0.70529737</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 113        57     PHQ          Control Control - Treatment   -0.47755189</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 114        57     PHQ        Treatment Control - Treatment   -0.47755189</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 115        58     PHQ          Control Control - Treatment   -0.49123704</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 116        58     PHQ        Treatment Control - Treatment   -0.49123704</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 117        59     PHQ          Control Control - Treatment   -0.14358206</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 118        59     PHQ        Treatment Control - Treatment   -0.14358206</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 119        60     PHQ          Control Control - Treatment   -0.75215538</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 120        60     PHQ        Treatment Control - Treatment   -0.75215538</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 121        61     PHQ          Control Control - Treatment   -0.91427886</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 122        61     PHQ        Treatment Control - Treatment   -0.91427886</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 123        62     PHQ          Control Control - Treatment   -0.37084566</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 124        62     PHQ        Treatment Control - Treatment   -0.37084566</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 125        63     PHQ          Control Control - Treatment   -0.60377085</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 126        63     PHQ        Treatment Control - Treatment   -0.60377085</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 127        64     PHQ          Control Control - Treatment   -0.52021360</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 128        64     PHQ        Treatment Control - Treatment   -0.52021360</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 129        65     PHQ          Control Control - Treatment   -0.75161959</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 130        65     PHQ        Treatment Control - Treatment   -0.75161959</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 131        66     PHQ          Control Control - Treatment   -0.19762743</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 132        66     PHQ        Treatment Control - Treatment   -0.19762743</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 133        67     PHQ          Control Control - Treatment   -0.67029852</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 134        67     PHQ        Treatment Control - Treatment   -0.67029852</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 135        68     PHQ          Control Control - Treatment   -0.84639628</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 136        68     PHQ        Treatment Control - Treatment   -0.84639628</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 137        69     PHQ          Control Control - Treatment   -0.54672883</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 138        69     PHQ        Treatment Control - Treatment   -0.54672883</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 139        70     PHQ          Control Control - Treatment   -0.08804328</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 140        70     PHQ        Treatment Control - Treatment   -0.08804328</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 141        71     PHQ          Control Control - Treatment   -0.67375666</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 142        71     PHQ        Treatment Control - Treatment   -0.67375666</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 143        72     PHQ          Control Control - Treatment   -0.66409896</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 144        72     PHQ        Treatment Control - Treatment   -0.66409896</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 145        73     PHQ          Control Control - Treatment   -0.79877074</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 146        73     PHQ        Treatment Control - Treatment   -0.79877074</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 147        74     PHQ          Control Control - Treatment   -0.53734469</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 148        74     PHQ        Treatment Control - Treatment   -0.53734469</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 149        75     PHQ          Control Control - Treatment   -0.39999439</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 150        75     PHQ        Treatment Control - Treatment   -0.39999439</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 151        76     PHQ          Control Control - Treatment   -0.53641192</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 152        76     PHQ        Treatment Control - Treatment   -0.53641192</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 153        77     PHQ          Control Control - Treatment   -0.20492079</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 154        77     PHQ        Treatment Control - Treatment   -0.20492079</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 155        78     PHQ          Control Control - Treatment   -0.74265055</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 156        78     PHQ        Treatment Control - Treatment   -0.74265055</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 157        79     PHQ          Control Control - Treatment   -0.59104569</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 158        79     PHQ        Treatment Control - Treatment   -0.59104569</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 159        80     PHQ          Control Control - Treatment   -0.45696514</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 160        80     PHQ        Treatment Control - Treatment   -0.45696514</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 161        81     PHQ          Control Control - Treatment   -0.47698709</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 162        81     PHQ        Treatment Control - Treatment   -0.47698709</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 163        82     PHQ          Control Control - Treatment   -0.55550302</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 164        82     PHQ        Treatment Control - Treatment   -0.55550302</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 165        83     PHQ          Control Control - Treatment   -0.49257514</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 166        83     PHQ        Treatment Control - Treatment   -0.49257514</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 167        84     PHQ          Control Control - Treatment   -0.59510997</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 168        84     PHQ        Treatment Control - Treatment   -0.59510997</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 169        85     PHQ          Control Control - Treatment   -0.42018009</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 170        85     PHQ        Treatment Control - Treatment   -0.42018009</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 171        86     PHQ          Control Control - Treatment   -0.53312001</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 172        86     PHQ        Treatment Control - Treatment   -0.53312001</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 173        87     PHQ          Control Control - Treatment   -0.29319952</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 174        87     PHQ        Treatment Control - Treatment   -0.29319952</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 175        88     PHQ          Control Control - Treatment   -0.43628843</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 176        88     PHQ        Treatment Control - Treatment   -0.43628843</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 177        89     PHQ          Control Control - Treatment   -0.65364980</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 178        89     PHQ        Treatment Control - Treatment   -0.65364980</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 179        90     PHQ          Control Control - Treatment   -0.02957693</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 180        90     PHQ        Treatment Control - Treatment   -0.02957693</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 181        91     PHQ          Control Control - Treatment   -0.67078649</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 182        91     PHQ        Treatment Control - Treatment   -0.67078649</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 183        92     PHQ          Control Control - Treatment    0.02552664</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 184        92     PHQ        Treatment Control - Treatment    0.02552664</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 185        93     PHQ          Control Control - Treatment   -0.50547413</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 186        93     PHQ        Treatment Control - Treatment   -0.50547413</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 187        94     PHQ          Control Control - Treatment   -0.42039731</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 188        94     PHQ        Treatment Control - Treatment   -0.42039731</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 189        95     PHQ          Control Control - Treatment   -0.64087219</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 190        95     PHQ        Treatment Control - Treatment   -0.64087219</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 191        96     PHQ          Control Control - Treatment   -0.31613799</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 192        96     PHQ        Treatment Control - Treatment   -0.31613799</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 193        97     PHQ          Control Control - Treatment   -0.03289686</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 194        97     PHQ        Treatment Control - Treatment   -0.03289686</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 195        98     PHQ          Control Control - Treatment   -0.57186692</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 196        98     PHQ        Treatment Control - Treatment   -0.57186692</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 197        99     PHQ          Control Control - Treatment   -0.92268323</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 198        99     PHQ        Treatment Control - Treatment   -0.92268323</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 199       100     PHQ          Control Control - Treatment   -0.04681124</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 200       100     PHQ        Treatment Control - Treatment   -0.04681124</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    bootstrap outcome indirect_setting            contrast direct_effect</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1          1     PHQ          Control Control - Treatment    -0.2157883</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2          1     PHQ        Treatment Control - Treatment    -0.2157883</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3          2     PHQ          Control Control - Treatment    -0.4556939</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4          2     PHQ        Treatment Control - Treatment    -0.4556939</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5          3     PHQ          Control Control - Treatment    -0.4300947</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6          3     PHQ        Treatment Control - Treatment    -0.4300947</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7          4     PHQ          Control Control - Treatment    -0.9455150</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8          4     PHQ        Treatment Control - Treatment    -0.9455150</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9          5     PHQ          Control Control - Treatment    -0.4629558</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10         5     PHQ        Treatment Control - Treatment    -0.4629558</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># example with another dataset</span></span></span>
 <span class="r-in"><span><span class="va">exper</span> <span class="op">&lt;-</span> <span class="fu"><a href="demo_spline.html">demo_spline</a></span><span class="op">(</span>n_samples <span class="op">=</span> <span class="fl">100</span>, tau <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="mediation_data.html">mediation_data</a></span><span class="op">(</span><span class="fu">starts_with</span><span class="op">(</span><span class="st">"outcome"</span><span class="op">)</span>, <span class="st">"treatment"</span>, <span class="st">"mediator"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="multimedia.html">multimedia</a></span><span class="op">(</span><span class="va">exper</span>, <span class="fu"><a href="rf_model.html">rf_model</a></span><span class="op">(</span>num.trees <span class="op">=</span> <span class="fl">1e3</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>    <span class="fu">bootstrap</span><span class="op">(</span><span class="va">exper</span>, B <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="fu">bootstrap</span><span class="op">(</span><span class="va">exper</span>, B <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Bootstrapping direct_effect</span>
 <span class="r-in"><span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">samples</span><span class="op">$</span><span class="va">direct_effect</span><span class="op">)</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>    <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_histogram.html" class="external-link">geom_histogram</a></span><span class="op">(</span></span></span>
