@@ -63,7 +63,7 @@ model <- multimedia(
     outcome_estimator = glmnet_model(lambda = 1e-2)
 ) |>
     estimate(exper)
-rho_seq <- c(-0.2, 0.2)
+nu_seq <- c(-0.2, 0.2)
 perturb <- matrix(
     c(
         0, 3, 0,
@@ -72,5 +72,5 @@ perturb <- matrix(
     ),
     nrow = 3, byrow = TRUE
 )
-sensitivity_perturb(model, exper, perturb, n_bootstrap = 2)
+sensitivity_perturb(model, exper, perturb, nu_seq, n_bootstrap = 2)
 }
