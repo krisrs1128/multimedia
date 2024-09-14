@@ -15,8 +15,8 @@ for any specific implementation.
 \describe{
 \item{\code{estimator}}{A function that takes a formula, input data frame X, and an
 response data.frame $Y$ and returns a model. For example, for the random
-forest model, this is created by wrapping \code{parallelize()} on the ranger
-function random forest estimation function.}
+forest model, this is created by wrapping \code{parallelize()} on the ranger()
+function for random forest estimation function using the 'ranger' package.}
 
 \item{\code{estimates}}{A list containing the estimated model.}
 

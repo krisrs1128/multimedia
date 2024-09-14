@@ -2,12 +2,13 @@
 % Please edit documentation in R/estimators.R
 \name{glmnet_sampler}
 \alias{glmnet_sampler}
-\title{Sample from a Glmnet Model}
+\title{Sample from a 'Glmnet' Package Model}
 \usage{
 glmnet_sampler(fits, newdata = NULL, indices = NULL, lambda_ix = 1, ...)
 }
 \arguments{
-\item{fits}{The fitted glmnet model model from which to draw samples.}
+\item{fits}{The fitted 'glmnet' package model model from which to draw
+samples.}
 
 \item{newdata}{A data.frame containing new inputs from which to sample
 responses. If NULL, defaults to the data used to estimate fit.}

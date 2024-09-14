@@ -2,7 +2,7 @@
 % Please edit documentation in R/estimators.R
 \name{glmnet_model}
 \alias{glmnet_model}
-\title{Regularized Glmnet Model across Responses}
+\title{Regularized 'Glmnet' Model across Responses}
 \usage{
 glmnet_model(progress = TRUE, ...)
 }
@@ -10,7 +10,7 @@ glmnet_model(progress = TRUE, ...)
 \item{progress}{A logical indicating whether to show a progress bar during
 estimation.}
 
-\item{...}{Keyword parameters passed to glmnet.}
+\item{...}{Keyword parameters passed to package 'glmnet'.}
 }
 \value{
 model An object of class \code{model} with estimator, predictor, and

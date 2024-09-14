@@ -10,7 +10,7 @@ rf_model(progress = TRUE, ...)
 \item{progress}{A logical indicating whether to show a progress bar during
 estimation.}
 
-\item{...}{Keyword parameters passed to ranger.}
+\item{...}{Keyword parameters passed to ranger() in the 'ranger' package.}
 }
 \value{
 model An object of class \code{model} with estimator, predictor, and
@@ -21,7 +21,7 @@ Apply a random forest model in parallel across a vector of responses $y$ in
 either an outcome or mediation model. This is a natural choice when the
 relationship between inputs and outputs is thought to be nonlinear.
 Internally, each of the models across the response are estimated using
-ranger.
+the 'ranger' package.
 }
 \examples{
 exper <- demo_joy() |>

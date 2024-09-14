@@ -20,7 +20,7 @@ each response on the left hand side of the original formula.
 \description{
 For many mediation and outcome models, we simply want to apply a univariate
 model across all response variable. Parallelize enables this conversion. For
-example, applying parallelize to ranger returns a function that estimates
+example, applying parallelize to ranger() returns a function that estimates
 separate random forest models for each response on the left hand side of a
 formula.
 }
