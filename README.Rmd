@@ -14,8 +14,8 @@ set.seed(20240313)
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/krisrs1128/multimedia/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/krisrs1128/multimedia/actions/workflows/R-CMD-check.yaml)
-[![codecov](https://codecov.io/github/krisrs1128/multimedia/graph/badge.svg?token=XB865GLQ8B)](https://codecov.io/github/krisrs1128/multimedia)
-[![Launch binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/krisrs1128/multimedia/main)
+[![codecov](https://codecov.io/github/krisrs1128/multimedia/graph/badge.svg?token=XB865GLQ8B)](https://app.codecov.io/github/krisrs1128/multimedia/)
+[![Launch binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/krisrs1128/multimedia/main/)
 <!-- badges: end -->
 
 `multimedia` is an R package for **multi**modal **media**tion analysis of
