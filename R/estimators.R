@@ -7,8 +7,8 @@
 #'
 #' @slot estimator A function that takes a formula, input data frame X, and an
 #'   response data.frame $Y$ and returns a model. For example, for the random
-#'   forest model, this is created by wrapping `parallelize()` on the ranger
-#'   function random forest estimation function.
+#'   forest model, this is created by wrapping `parallelize()` on the ranger()
+#'   function for random forest estimation function using the 'ranger' package.
 #' @slot estimates A list containing the estimated model.
 #' @slot sampler A function that supports sampling new responses from the
 #'   estimated model.
@@ -48,7 +48,7 @@ sub_formula <- function(formula, yj) {
 #'
 #' For many mediation and outcome models, we simply want to apply a univariate
 #' model across all response variable. Parallelize enables this conversion. For
-#' example, applying parallelize to ranger returns a function that estimates
+#' example, applying parallelize to ranger() returns a function that estimates
 #' separate random forest models for each response on the left hand side of a
 #' formula.
 #' @param f A function for estimating a single response model given a formula
@@ -305,7 +305,7 @@ glmnet_model_params <- function(...) {
     modifyList(defaults, list(...))
 }
 
-#' Regularized Glmnet Model across Responses
+#' Regularized 'Glmnet' Model across Responses
 #'
 #' Apply a regularized (generalized) linear model in parallel across each
 #' response $y$ in an outcome or mediation model. This can be helpful when we
@@ -314,7 +314,7 @@ glmnet_model_params <- function(...) {
 #'
 #' @param progress A logical indicating whether to show a progress bar during
 #'   estimation.
-#' @param ... Keyword parameters passed to glmnet.
+#' @param ... Keyword parameters passed to package 'glmnet'.
 #' @return model An object of class `model` with estimator, predictor, and
 #'  sampler functions associated wtih a lienar model.
 #' @seealso model lm_model rf_model
@@ -351,12 +351,13 @@ glmnet_model <- function(progress = TRUE, ...) {
     )
 }
 
-#' Sample from a Glmnet Model
+#' Sample from a 'Glmnet' Package Model
 #'
 #' This assumes a continuous response, so that the out-of-sample MSE can be used
 #' to estimate the outcome variability sigma.
 #'
-#' @param fits The fitted glmnet model model from which to draw samples.
+#' @param fits The fitted 'glmnet' package model model from which to draw
+#'   samples.
 #' @param newdata A data.frame containing new inputs from which to sample
 #'   responses. If NULL, defaults to the data used to estimate fit.
 #' @param indices The coordinates of the response from which to draw samples.
@@ -391,29 +392,29 @@ glmnet_sampler <- function(
     bind_cols(y_hats)
 }
 
-#' Default parameters for brms model
+#' Default parameters for 'BRMS' package models
 #' @noRd
 brms_model_params <- function(...) {
     defaults <- list(chains = 1, refresh = 0, silent = 0)
     modifyList(defaults, list(...))
 }
 
-#' Refit BRMS Models without Recompilation
+#' Refit 'BRMS' Models without Recompilation
 #'
-#' The most time-consuming part of using BRMS in parallel across many responses
-#' is waiting for compilation to complete. It is more efficient instead to
-#' compile the model once and estimate many models using different datasets.
-#' That is the approach adopted in this function, which speeds up over a naive
-#' loop.
+#' The most time-consuming part of using 'BRMS' in parallel across many
+#' responses is waiting for compilation to complete. It is more efficient
+#' instead to compile the model once and estimate many models using different
+#' datasets. That is the approach adopted in this function, which speeds up over
+#' a naive loop.
 #'
 #' @param formula A multiresponse/multi-input formula of the form
 #'  \deqn{
 #'  y1 + y2 + ... ~ x1 + x2 + ..
 #'  }
-#'  with which to estimate a BRMS model
+#'  with which to estimate a 'BRMS' model
 #' @param data A data.frame containing all the variables in the formula and used
 #'  as the basis for estimation.
-#' @return models A list of estimated BRMS models. The j^th element contains
+#' @return models A list of estimated 'BRMS' models. The j^th element contains
 #'  y[j] ~ x1 + x2 + ...
 #' @importFrom stats update
 #' @importFrom brms brm
@@ -526,7 +527,7 @@ mediation_models <- function(object) {
 #'
 #' This samples from the posterior predictive for each component in
 #' a multiresponse Bayesian Regression model.
-#' @param fits The fitted brms model model from which to draw samples.
+#' @param fits The fitted 'BRMS' model model from which to draw samples.
 #' @param newdata A data.frame containing new inputs from which to sample
 #'   responses. If NULL, defaults to the data used to estimate fit.
 #' @param indices The coordinates of the response from which we want to sample.
@@ -623,11 +624,11 @@ lnm_sampler <- function(fit, newdata = NULL, indices = NULL, ...) {
 #' either an outcome or mediation model. This is a natural choice when the
 #' relationship between inputs and outputs is thought to be nonlinear.
 #' Internally, each of the models across the response are estimated using
-#' ranger.
+#' the 'ranger' package.
 #'
 #' @param progress A logical indicating whether to show a progress bar during
 #'   estimation.
-#' @param ... Keyword parameters passed to ranger.
+#' @param ... Keyword parameters passed to ranger() in the 'ranger' package.
 #' @return model An object of class `model` with estimator, predictor, and
 #'  sampler functions associated wtih a lienar model.
 #' @examples
