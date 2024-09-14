@@ -5,7 +5,7 @@ Authors@R:
     c(person("Kris", "Sankaran", , "ksankaran@wisc.edu", role = c("aut", "cre"),
      comment = c(ORCID = "0000-0002-9415-1971")),
      person("Hanying", "Jiang", , "hjiang252@wisc.edu", role = "aut"))
-Description: Multimodal mediation analysis is an emerging problem in microbiome data analysis. Multimedia make advanced mediation analysis techniques easy to use, ensuring that all statistical components are transparent and adaptable to specific problem contexts. The package provides a uniform interface to direct and indirect effect estimation, synthetic null hypothesis testing, and bootstrap confidence interval construction. More details are available in Jiang et al. (2024) <doi:10.1101/2024.03.27.587024>.
+Description: Multimodal mediation analysis is an emerging problem in microbiome data analysis. Multimedia make advanced mediation analysis techniques easy to use, ensuring that all statistical components are transparent and adaptable to specific problem contexts. The package provides a uniform interface to direct and indirect effect estimation, synthetic null hypothesis testing, bootstrap confidence interval construction, and sensitivity analysis. More details are available in Jiang et al. (2024) "multimedia: Multimodal Mediation Analysis of Microbiome Data" <doi:10.1101/2024.03.27.587024>.
 License: CC0
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -20,7 +20,7 @@ biocViews:
     StatisticalMethod, 
     StructuralEquationModels
 Depends: 
-    R (>= 4.4.0),
+    R (>= 4.1.0),
     brms,
     glmnetUtils,
     ranger,
@@ -55,7 +55,6 @@ Suggests:
     testthat (>= 3.0.0),
     tidyverse,
     vroom
-Remotes: krisrs1128/miniLNM
 BugReports:
     https://github.com/krisrs1128/multimedia/issues/
 URL: 
