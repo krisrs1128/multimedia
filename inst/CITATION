@@ -1,5 +1,5 @@
 pkgVer <- function(pkg) {
-    if (!exists("meta") || is.null(meta)) meta <- packageDescription(pkg)
+    if (!exists("meta") || is.null(meta)) meta <- 'Multimodal mediation analysis is an emerging problem in microbiome data analysis. Multimedia make advanced mediation analysis techniques easy to use, ensuring that all statistical components are transparent and adaptable to specific problem contexts. The package provides a uniform interface to direct and indirect effect estimation, synthetic null hypothesis testing, bootstrap confidence interval construction, and sensitivity analysis. More details are available in Jiang et al. (2024) "multimedia: Multimodal Mediation Analysis of Microbiome Data" <doi:10.1101/2024.03.27.587024>.'
     ver <- meta$Version
     paste0('https://github.com/krisrs1128/multimedia/', pkg, ' - R package version ', ver)
 }
