@@ -212,7 +212,7 @@ outcome_formula <- function(edges) {
 #' # example with another model
 #' exper <- demo_spline(tau = c(2, 1)) |>
 #'     mediation_data(starts_with("outcome"), "treatment", "mediator")
-#' multimedia(exper, rf_model()) |>
+#' multimedia(exper, glmnet_model()) |>
 #'     estimate(exper)
 #' @export
 estimate <- function(model, exper) {
