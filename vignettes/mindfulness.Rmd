@@ -7,6 +7,8 @@ vignette: >
   %\VignetteIndexEntry{The Mindfulness Study}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+params:
+  subset: true
 ---
 
 ```{r setup, include = FALSE}
@@ -23,8 +25,6 @@ knitr::opts_chunk$set(
 )
 
 knitr::knit_hooks$set(output = multimedia::ansi_aware_handler)
-options(crayon.enabled = TRUE)
-
 suppressPackageStartupMessages(library(ggplot2))
 options(
     ggplot2.discrete.colour = c(
@@ -38,7 +38,8 @@ options(
     },
     ggplot2.continuous.fill = function(...) {
         scale_fill_distiller(palette = "Spectral", ...)
-    }
+    },
+    crayon.enabled = TRUE
 )
 
 th <- theme_classic() +
@@ -81,6 +82,10 @@ library(tidyverse)
 library(multimedia)
 data(mindfulness)
 set.seed(20231228)
+
+if (params$subset) {
+    mindfulness <- prune_samples(c("sa1", "sa10", "sa20"), mindfulness)
+}
 ```
 
 This package needs a `mediation_data` object to organize the pretreatment,
@@ -131,8 +136,7 @@ outputs relative abundance profiles, all the estimated effects should be
 interpreted on a probability scale.
 
 ```{r lnm_direct}
-direct <- direct_effect(model, exper)
-direct |>
+direct <- direct_effect(model, exper) |>
     group_by(outcome) |>
     summarise(direct_effect = mean(direct_effect)) |>
     arrange(-abs(direct_effect))
@@ -238,11 +242,13 @@ profile <- setup_profile(model, treatments(exper), treatments(exper))
 y1 <- sample(model, profile = profile, pretreatment = pretreatments(exper))
 y2 <- sample(
     altered_direct,
-    profile = profile, pretreatment = pretreatments(exper)
+    profile = profile,
+    pretreatment = pretreatments(exper)
 )
 y3 <- sample(
     altered_indirect,
-    profile = profile, pretreatment = pretreatments(exper)
+    profile = profile,
+    pretreatment = pretreatments(exper)
 )
 ```
 

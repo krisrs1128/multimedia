@@ -36,6 +36,7 @@ retrieve_names <- function(object, nm) {
 #'     mediation_data("PHQ", "treatment", starts_with("ASV"))
 #' multimedia(exper) |>
 #'     edges()
+#' @importFrom methods setGeneric
 #' @export
 setGeneric("edges", \(object) standardGeneric("edges"))
 
@@ -171,6 +172,7 @@ setGeneric("treatments<-", \(object, value) standardGeneric("treatments<-"))
 #'     mediation_data("PHQ", "treatment", starts_with("ASV"))
 #' multimedia(exper) |>
 #'     mediators()
+#' @importFrom methods setMethod
 #' @export
 setMethod(
     "mediators", "multimedia",
