@@ -7,7 +7,7 @@
 brms_model(...)
 }
 \arguments{
-\item{...}{Keyword parameters passed to brm..}
+\item{...}{Keyword parameters passed to brm.}
 }
 \value{
 model An object of class \code{model} with estimator, predictor, and

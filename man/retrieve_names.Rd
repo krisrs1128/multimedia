@@ -26,5 +26,5 @@ mediators.
 exper <- demo_joy() |>
     mediation_data("PHQ", "treatment", starts_with("ASV"))
 multimedia(exper) |>
-    multimedia:::retrieve_names("mediator")
+    retrieve_names("mediator")
 }

@@ -7,11 +7,11 @@
 lnm_model(...)
 }
 \arguments{
-\item{...}{Keyword parameters passed to lnm.}
+\item{...}{Keyword parameters passed to lnm in the 'miniLNM' package.}
 }
 \value{
 model An object of class \code{model} with estimator, predictor, and
-sampler functions associated wtih a lienar model.
+sampler functions associated wtih a linear model.
 }
 \description{
 Apply a logistic normal multinomial model to jointly model a vector of count
