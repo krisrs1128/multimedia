@@ -1,8 +1,5 @@
 #' data.frame with samples from p
 #' @importFrom stats rnorm
-#' @examples
-#' random_numeric(10, 2)
-#' random_numeric(10, 2, runif)
 #' @noRd
 random_numeric <- function(nrow, ncol, p = rnorm) {
     matrix(p(nrow * ncol), nrow = nrow, ncol = ncol) |>
@@ -53,14 +50,18 @@ matnorm <- \(n, m, ...) matrix(rnorm(n * m, ...), n, m)
 #' dataset created in `demo_spline()`. This is not necessary for the essential
 #' multimedia workflow, it is only exported for potential independent interest.
 #'
+#' @param D The number random spline functions to generate internally.
+#' @param knots The location of knots to use in the spline functions. Defaults
+#'   to -4, -2, 0, 2, 4.
+#' @param h_ix The locations along which to generate the underlying spline
+#'   function.
+#' @param ... Additional arguments to pass to `rnorm` during the random noise
+#'   generation for each call of the returned function.
+#' @return A function that can be used to sample points along the random spline
+#'   functions. Takes argument 'x' giving the input to the spline and returns a
+#'   D-dimensional response y giving random samples for each of the D splines..
 #' @importFrom stats rnorm
 #' @seealso demo_spline
-#' @examples
-#' x <- seq(-5, 5, length.out = 100)
-#' f <- multimedia:::spline_fun(sd = 0.3)
-#' fx <- f(x)
-#' plot(x, fx[, 1])
-#' @noRd
 spline_fun <- function(D = 2, knots = NULL, h_ix = seq_len(10), ...) {
     if (is.null(knots)) {
         knots <- seq(-4, 4, length.out = 5)

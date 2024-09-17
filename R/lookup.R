@@ -16,7 +16,8 @@
 #' exper <- demo_joy() |>
 #'     mediation_data("PHQ", "treatment", starts_with("ASV"))
 #' multimedia(exper) |>
-#'     multimedia:::retrieve_names("mediator")
+#'     retrieve_names("mediator")
+#' @export
 retrieve_names <- function(object, nm) {
     object@edges |>
         filter(.data$node_type == nm) |>

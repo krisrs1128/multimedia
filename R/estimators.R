@@ -24,6 +24,7 @@
 #'
 #' m <- rf_model()
 #' estimator(m)(mpg ~ hp + wt, data = mtcars)
+#' @export
 setClass(
     "model",
     representation(
@@ -443,7 +444,7 @@ brm_cache <- function(formula, data, ...) {
 #' Apply a Bayesian regression model in parallel across each response $y$ in an
 #' outcome or mediation model. This can be helpful when we want to share
 #' information across related
-#' @param ... Keyword parameters passed to brm..
+#' @param ... Keyword parameters passed to brm.
 #' @return model An object of class `model` with estimator, predictor, and
 #'  sampler functions associated wtih a Bayesian regression model.
 #' @importFrom rlang inject !!!
@@ -531,14 +532,14 @@ mediation_models <- function(object) {
 #' @param newdata A data.frame containing new inputs from which to sample
 #'   responses. If NULL, defaults to the data used to estimate fit.
 #' @param indices The coordinates of the response from which we want to sample.
-#' @examples
-#' exper <- demo_joy() |>
-#'     mediation_data("PHQ", "treatment", starts_with("ASV"))
-#' fit <- multimedia(exper, brms_model()) |>
-#'     estimate(exper)
-#' brms_sampler(outcome_models(fit))
+#' @param ... Additional arguments to pass to `posterior_predict` in the 'brms'
+#'   package.
+#' @return A data.frame containing a single posterior predictive sample at each
+#'   of the newdata rows passed into a fitted BRMS model. Each column
+#'   corresponds to one outcome variable, each row to the associated row in the
+#'   newdata input..
 #' @importFrom brms posterior_predict
-#' @noRd
+#' @export
 brms_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
     if (is.null(indices)) {
         indices <- seq_along(fits)
@@ -566,9 +567,9 @@ brms_sampler <- function(fits, newdata = NULL, indices = NULL, ...) {
 #' data where the parameter of interest is the composition across responses
 #' (e.g., microbiome).
 #'
-#' @param ... Keyword parameters passed to lnm.
+#' @param ... Keyword parameters passed to lnm in the 'miniLNM' package.
 #' @return model An object of class `model` with estimator, predictor, and
-#'  sampler functions associated wtih a lienar model.
+#'  sampler functions associated wtih a linear model.
 #' @seealso model lm_model rf_model glmnet_model brms_model
 #' @examples
 #' m <- lnm_model()

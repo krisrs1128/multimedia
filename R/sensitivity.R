@@ -233,14 +233,6 @@ sensitivity_pathwise <- function(
 #' @param rho The value of the correlation between all pairs of mediators and
 #'   outcomes.
 #' @importFrom MASS mvrnorm
-#' @examples
-#' xy_data <- demo_spline()
-#' exper <- mediation_data(
-#'     xy_data, starts_with("outcome"), "treatment", "mediator"
-#' )
-#' model <- multimedia(exper, outcome_estimator = rf_model(num.trees = 1e3)) |>
-#'     estimate(exper)
-#' multimedia:::sensitivity_sample(model, exper)
 #' @noRd
 sensitivity_subset_sample <- function(
     model, exper, confound_ix = NULL, rho = 0.0) {
