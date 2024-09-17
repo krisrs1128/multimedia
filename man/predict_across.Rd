@@ -2,7 +2,7 @@
 % Please edit documentation in R/predict.R
 \name{predict_across}
 \alias{predict_across}
-\title{Predictions from a Single Outcome}
+\title{Predict a Subset of Responses}
 \usage{
 predict_across(object, newdata, name)
 }
@@ -19,12 +19,12 @@ multiresponse prediction to extract.}
 A vector of predicted values for the outcome of interest.
 }
 \description{
-Predict across selected outcomes in a mediation model object. This is a
+Predict across selected responses in a mediation model object. This is a
 lower-level version of the predict method that applies to objets of class
 mediation_model. Rather than giving predictions across all outcomes, it
-supports predictions across a subset specified using tidyselect syntax. This
-can be convenient when we want to analyze how a specific subset of outcomes
-changes and do not need to run predictions across all possible.
+supports predictions across a subset specified as a vector. This can be
+convenient when we want to analyze how a specific subset of outcomes changes
+and do not need to run predictions across all possible.
 }
 \examples{
 exper <- demo_spline(tau = c(2, 1)) |>
