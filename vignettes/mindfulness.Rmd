@@ -7,8 +7,6 @@ vignette: >
   %\VignetteIndexEntry{The Mindfulness Study}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-params:
-  subset: true
 ---
 
 ```{r setup, include = FALSE}
@@ -82,10 +80,6 @@ library(tidyverse)
 library(multimedia)
 data(mindfulness)
 set.seed(20231228)
-
-if (params$subset) {
-    mindfulness <- prune_samples(c("sa1", "sa10", "sa20"), mindfulness)
-}
 ```
 
 This package needs a `mediation_data` object to organize the pretreatment,
