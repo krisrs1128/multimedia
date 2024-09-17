@@ -94,8 +94,8 @@ are formed using Equation (10) of our preprint.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">indirect_overall</span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   outcome direct_setting            contrast indirect_effect</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1     PHQ        Control Control - Treatment     0.002109237</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2     PHQ      Treatment Control - Treatment     0.002109237</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1     PHQ        Control Control - Treatment     -0.01115625</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2     PHQ      Treatment Control - Treatment     -0.01115625</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># example with another dataset</span></span></span>
 <span class="r-in"><span><span class="va">exper</span> <span class="op">&lt;-</span> <span class="fu"><a href="demo_spline.html">demo_spline</a></span><span class="op">(</span>tau <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
@@ -104,10 +104,10 @@ are formed using Equation (10) of our preprint.</p>
 <span class="r-in"><span>    <span class="fu"><a href="estimate.html">estimate</a></span><span class="op">(</span><span class="va">exper</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">indirect_overall</span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     outcome direct_setting contrast indirect_effect</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 outcome_1              0    0 - 1      -0.7035617</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 outcome_2              0    0 - 1       0.5138687</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 outcome_1              1    0 - 1      -0.7035617</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 outcome_2              1    0 - 1       0.5138687</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 outcome_1              0    0 - 1       0.5150703</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 outcome_2              0    0 - 1      -0.7037543</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 outcome_1              1    0 - 1       0.5150703</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 outcome_2              1    0 - 1      -0.7037543</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

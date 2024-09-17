@@ -92,8 +92,8 @@ responses. If NULL, defaults to the data used to estimate fit.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Gradient evaluation took 3.7e-05 seconds</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.37 seconds.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Gradient evaluation took 3.9e-05 seconds</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.39 seconds.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Adjust your expectations accordingly!</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
@@ -107,135 +107,88 @@ responses. If NULL, defaults to the data used to estimate fit.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Begin stochastic gradient ascent.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   iter             ELBO   delta_ELBO_mean   delta_ELBO_med   notes </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:    100         -672.628             1.000            1.000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:    200         -357.867             0.940            1.000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:    300         -278.000             0.722            0.880</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:    400         -282.092             0.545            0.880</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:    500         -247.561             0.464            0.287</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:    600         -244.180             0.389            0.287</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:    700         -254.496             0.339            0.139</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:    800         -258.655             0.299            0.139</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:    900         -241.240             0.274            0.072</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   1000         -262.832             0.255            0.082</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   1100         -237.801             0.165            0.082</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   1200         -238.561             0.077            0.072</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   1300         -241.693             0.050            0.041</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   1400         -248.713             0.051            0.041</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   1500         -237.794             0.042            0.041</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   1600         -239.514             0.041            0.041</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   1700         -250.291             0.042            0.043</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   1800         -244.762             0.042            0.043</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   1900         -245.106             0.035            0.028</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   2000         -235.177             0.031            0.028</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   2100         -234.199             0.021            0.023</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   2200         -261.718             0.031            0.028</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   2300         -235.067             0.041            0.042</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   2400         -240.934             0.041            0.042</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   2500         -245.344             0.038            0.024</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   2600         -239.744             0.040            0.024</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   2700         -254.683             0.041            0.024</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   2800         -235.857             0.047            0.042</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   2900         -241.149             0.049            0.042</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   3000         -240.618             0.045            0.024</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   3100         -238.796             0.045            0.024</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   3200         -236.966             0.036            0.023</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   3300         -237.363             0.025            0.022</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   3400         -243.889             0.025            0.022</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   3500         -236.034             0.026            0.023</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   3600         -244.793             0.028            0.027</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   3700         -234.609             0.026            0.027</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   3800         -237.532             0.019            0.022</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   3900         -239.183             0.018            0.012</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   4000         -234.616             0.019            0.019</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   4100         -233.724             0.019            0.019</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   4200         -257.134             0.027            0.027</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   4300         -244.431             0.032            0.033</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   4400         -239.703             0.032            0.033</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   4500         -234.516             0.031            0.022</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   4600         -236.810             0.028            0.020</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   4700         -233.685             0.025            0.019</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   4800         -243.284             0.028            0.020</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   4900         -236.466             0.030            0.022</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   5000         -231.955             0.030            0.022</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   5100         -239.545             0.033            0.029</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   5200         -237.763             0.024            0.022</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   5300         -236.857             0.020            0.020</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   5400         -244.383             0.021            0.022</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   5500         -232.096             0.024            0.029</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   5600         -235.487             0.024            0.029</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   5700         -236.033             0.023            0.029</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   5800         -233.662             0.020            0.019</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   5900         -234.619             0.018            0.014</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   6000         -232.669             0.017            0.010</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   6100         -236.114             0.015            0.010</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   6200         -236.309             0.014            0.010</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   6300         -232.760             0.015            0.014</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   6400         -238.086             0.015            0.014</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   6500         -233.141             0.011            0.014</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   6600         -233.988             0.010            0.010</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   6700         -233.603             0.010            0.010</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   6800         -236.009             0.010            0.010</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   6900         -234.154             0.011            0.010</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   7000         -236.225             0.011            0.010</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   7100         -234.511             0.010            0.009   MEAN ELBO CONVERGED   MEDIAN ELBO CONVERGED</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:    100         -511.480             1.000            1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:    200         -340.013             0.752            1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:    300         -263.320             0.599            0.504</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:    400         -280.601             0.464            0.504</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:    500         -266.805             0.382            0.291</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:    600         -248.127             0.331            0.291</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:    700         -250.466             0.285            0.075</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:    800         -251.766             0.250            0.075</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:    900         -248.461             0.224            0.062</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   1000         -240.720             0.204            0.062</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   1100         -239.577             0.105            0.052</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   1200         -248.111             0.058            0.034</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   1300         -244.463             0.030            0.032</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   1400         -252.400             0.027            0.031</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   1500         -245.420             0.025            0.028</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   1600         -251.093             0.020            0.023</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   1700         -248.919             0.020            0.023</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   1800         -248.266             0.019            0.023</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   1900         -247.179             0.018            0.023</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   2000         -248.216             0.016            0.015</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   2100         -244.814             0.017            0.015</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   2200         -245.288             0.013            0.014</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   2300         -236.743             0.015            0.014</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:   2400         -238.289             0.013            0.009   MEDIAN ELBO CONVERGED</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Drawing a sample of size 1000 from the approximate posterior... </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: COMPLETED.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Pareto k diagnostic value is 1.4. Resampling is disabled. Decreasing tol_rel_obj may help if variational algorithm has terminated prematurely. Otherwise consider using sampling instead.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Pareto k diagnostic value is 2.02. Resampling is disabled. Decreasing tol_rel_obj may help if variational algorithm has terminated prematurely. Otherwise consider using sampling instead.</span>
 <span class="r-in"><span><span class="fu">lnm_sampler</span><span class="op">(</span><span class="va">fit</span>, depth <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       y1 y2 y3 y4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1,]  4  1  4  1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [2,]  4  1  2  3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [3,]  1  4  5  0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [4,]  2  1  2  5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [5,]  3  2  3  2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [6,]  3  3  1  3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [7,]  2  3  4  1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [8,]  3  4  1  2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [9,]  2  6  2  0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [10,]  3  3  2  2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [11,]  3  2  1  4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [12,]  2  4  2  2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [13,]  3  2  2  3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [14,]  0  3  3  4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [15,]  5  2  3  0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [16,]  1  3  4  2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [17,]  1  6  3  0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [18,]  4  3  2  1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [19,]  3  2  4  1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [20,]  1  4  0  5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [21,]  1  4  0  5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [22,]  3  3  2  2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [23,]  1  3  3  3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [24,]  1  4  3  2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [25,]  2  1  2  5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1,]  2  3  2  3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [2,]  3  1  1  5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3,]  3  1  3  3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [4,]  1  3  5  1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5,]  2  1  2  5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6,]  3  3  2  2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7,]  2  2  4  2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8,]  2  3  1  4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9,]  3  4  2  1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10,]  2  7  1  0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11,]  3  3  1  3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [12,]  3  2  4  1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13,]  2  4  1  3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [14,]  2  1  4  3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [15,]  0  4  4  2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [16,]  3  2  1  4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [17,]  0  5  1  4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [18,]  1  5  0  4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [19,]  4  3  0  3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [20,]  2  3  1  4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [21,]  1  4  5  0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [22,]  0  5  5  0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [23,]  3  3  1  3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [24,]  1  3  3  3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [25,]  1  4  1  4</span>
 <span class="r-in"><span><span class="fu">lnm_sampler</span><span class="op">(</span><span class="va">fit</span>, depth <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       y1 y2 y3 y4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1,] 26 20 36 18</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [2,] 29 31 26 14</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [3,] 27 25 26 22</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [4,] 37 21 23 19</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [5,] 26 24 25 25</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [6,] 26 28 21 25</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [7,] 28 29 25 18</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [8,] 40 21 24 15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [9,] 27 25 19 29</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [10,] 23 23 26 28</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [11,] 33 23 22 22</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [12,] 20 28 27 25</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [13,] 33 25 12 30</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [14,] 21 23 41 15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [15,] 24 32 20 24</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [16,] 28 29 24 19</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [17,] 22 21 31 26</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [18,] 29 32 26 13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [19,] 26 34 24 16</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [20,] 24 24 18 34</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [21,] 25 26 22 27</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [22,] 28 32 21 19</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [23,] 28 31 30 11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [24,] 36 24 28 12</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [25,] 30 28 28 14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1,] 33 25 17 25</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [2,] 23 33 17 27</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3,] 36 29 12 23</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [4,] 24 29 17 30</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5,] 27 27 13 33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6,] 26 29 19 26</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7,] 21 17 17 45</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8,] 27 24 27 22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9,] 24 39 17 20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10,] 26 29 17 28</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11,] 22 24 18 36</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [12,] 35 27 14 24</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13,] 24 24 20 32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [14,] 27 33 11 29</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [15,] 15 32 26 27</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [16,] 24 37 19 20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [17,] 22 33  7 38</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [18,] 27 36 19 18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [19,] 23 28 24 25</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [20,] 25 27 15 33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [21,] 24 34 21 21</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [22,] 30 23 22 25</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [23,] 31 18 29 22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [24,] 22 22 29 27</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [25,] 33 19 18 30</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

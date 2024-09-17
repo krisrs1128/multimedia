@@ -17,8 +17,8 @@
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Multimodal Mediation Analysis">
-<meta name="description" content="Multimodal mediation analysis is an emerging problem in microbiome data analysis. Multimedia make advanced mediation analysis techniques easy to use, ensuring that all statistical components are transparent and adaptable to specific problem contexts. The package provides a uniform interface to direct and indirect effect estimation, synthetic null hypothesis testing, and bootstrap confidence interval construction. More details are available in Jiang et al. (2024) &lt;doi:10.1101/2024.03.27.587024&gt;.">
-<meta property="og:description" content="Multimodal mediation analysis is an emerging problem in microbiome data analysis. Multimedia make advanced mediation analysis techniques easy to use, ensuring that all statistical components are transparent and adaptable to specific problem contexts. The package provides a uniform interface to direct and indirect effect estimation, synthetic null hypothesis testing, and bootstrap confidence interval construction. More details are available in Jiang et al. (2024) &lt;doi:10.1101/2024.03.27.587024&gt;.">
+<meta name="description" content='Multimodal mediation analysis is an emerging problem in microbiome data analysis. Multimedia make advanced mediation analysis techniques easy to use, ensuring that all statistical components are transparent and adaptable to specific problem contexts. The package provides a uniform interface to direct and indirect effect estimation, synthetic null hypothesis testing, bootstrap confidence interval construction, and sensitivity analysis. More details are available in Jiang et al. (2024) "multimedia: Multimodal Mediation Analysis of Microbiome Data" &lt;doi:10.1101/2024.03.27.587024&gt;.'>
+<meta property="og:description" content='Multimodal mediation analysis is an emerging problem in microbiome data analysis. Multimedia make advanced mediation analysis techniques easy to use, ensuring that all statistical components are transparent and adaptable to specific problem contexts. The package provides a uniform interface to direct and indirect effect estimation, synthetic null hypothesis testing, bootstrap confidence interval construction, and sensitivity analysis. More details are available in Jiang et al. (2024) "multimedia: Multimodal Mediation Analysis of Microbiome Data" &lt;doi:10.1101/2024.03.27.587024&gt;.'>
 <meta property="og:image" content="https://krisrs1128.github.io/multimedia/logo.png">
 </head>
 <body>
@@ -119,13 +119,19 @@
 <span><span class="co">## outcome: A fitted lm_model().</span></span></code></pre>
 <p>In any mediation analysis, there are several types of effects that could be interesting, each corresponding to different ways of traveling from the treatment to the outcome in the mediation analysis causal graph. In the block below, <code>direct_effect</code> captures treatment effects that bypass the microbiome; <code>indirect_effect</code> are effects that are mediated by ASV relative abundances. Since this example uses a linear model, the effects are identical for the two indirect settings.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">direct_effect</span>(model, exper)</span></code></pre></div>
-<pre class="r-output"><code><span><span class="co">##   outcome indirect_setting            contrast direct_effect</span></span>
-<span><span class="co">## 1     PHQ          Control Control - Treatment    0.09314376</span></span>
-<span><span class="co">## 2     PHQ        Treatment Control - Treatment    0.09314376</span></span></code></pre>
+<pre class="r-output"><code><span><span class="co">##   outcome indirect_setting</span></span>
+<span><span class="co">## 1     PHQ          Control</span></span>
+<span><span class="co">## 2     PHQ        Treatment</span></span>
+<span><span class="co">##              contrast direct_effect</span></span>
+<span><span class="co">## 1 Control - Treatment    0.09314376</span></span>
+<span><span class="co">## 2 Control - Treatment    0.09314376</span></span></code></pre>
 <div class="sourceCode" id="cb6"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">indirect_overall</span>(model, exper)</span></code></pre></div>
-<pre class="r-output"><code><span><span class="co">##   outcome direct_setting            contrast indirect_effect</span></span>
-<span><span class="co">## 1     PHQ        Control Control - Treatment      0.02256029</span></span>
-<span><span class="co">## 2     PHQ      Treatment Control - Treatment      0.02256029</span></span></code></pre>
+<pre class="r-output"><code><span><span class="co">##   outcome direct_setting            contrast</span></span>
+<span><span class="co">## 1     PHQ        Control Control - Treatment</span></span>
+<span><span class="co">## 2     PHQ      Treatment Control - Treatment</span></span>
+<span><span class="co">##   indirect_effect</span></span>
+<span><span class="co">## 1      0.02256029</span></span>
+<span><span class="co">## 2      0.02256029</span></span></code></pre>
 <p>The package also includes helpers to visualize and perform inference on these effects. For example,</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>boot <span class="ot">&lt;-</span> <span class="fu">bootstrap</span>(model, exper, <span class="fu">c</span>(<span class="at">direct =</span> direct_effect))</span>
 <span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a></span>
@@ -140,9 +146,12 @@
 <div class="sourceCode" id="cb8"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">multimedia</span>(exper, <span class="fu">glmnet_model</span>(<span class="at">lambda =</span> .<span class="dv">1</span>)) <span class="sc">|&gt;</span></span>
 <span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>    <span class="fu">estimate</span>(exper) <span class="sc">|&gt;</span></span>
 <span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>    <span class="fu">direct_effect</span>()</span></code></pre></div>
-<pre class="r-output"><code><span><span class="co">##   outcome indirect_setting            contrast direct_effect</span></span>
-<span><span class="co">## 1     PHQ          Control Control - Treatment             0</span></span>
-<span><span class="co">## 2     PHQ        Treatment Control - Treatment             0</span></span></code></pre>
+<pre class="r-output"><code><span><span class="co">##   outcome indirect_setting</span></span>
+<span><span class="co">## 1     PHQ          Control</span></span>
+<span><span class="co">## 2     PHQ        Treatment</span></span>
+<span><span class="co">##              contrast direct_effect</span></span>
+<span><span class="co">## 1 Control - Treatment             0</span></span>
+<span><span class="co">## 2 Control - Treatment             0</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="help">Help<a class="anchor" aria-label="anchor" href="#help"></a>
@@ -164,74 +173,138 @@
 <span><span class="co">## tzcode source: internal</span></span>
 <span><span class="co">##</span></span>
 <span><span class="co">## attached base packages:</span></span>
-<span><span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base</span></span>
+<span><span class="co">## [1] stats     graphics  grDevices utils</span></span>
+<span><span class="co">## [5] datasets  methods   base</span></span>
 <span><span class="co">##</span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] ggplot2_3.5.1     multimedia_0.2.0  tidyselect_1.2.1  ranger_0.16.0</span></span>
-<span><span class="co">## [5] glmnetUtils_1.1.9 brms_2.21.0       Rcpp_1.0.13</span></span>
+<span><span class="co">## [1] ggplot2_3.5.1     multimedia_0.2.0</span></span>
+<span><span class="co">## [3] tidyselect_1.2.1  ranger_0.16.0</span></span>
+<span><span class="co">## [5] glmnetUtils_1.1.9 brms_2.21.0</span></span>
+<span><span class="co">## [7] Rcpp_1.0.13</span></span>
 <span><span class="co">##</span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
-<span><span class="co">##   [1] gridExtra_2.3               inline_0.3.19</span></span>
-<span><span class="co">##   [3] permute_0.9-7               sandwich_3.1-0</span></span>
-<span><span class="co">##   [5] rlang_1.1.4                 magrittr_2.0.3</span></span>
-<span><span class="co">##   [7] multcomp_1.4-26             ade4_1.7-22</span></span>
-<span><span class="co">##   [9] matrixStats_1.4.0           compiler_4.4.1</span></span>
-<span><span class="co">##  [11] mgcv_1.9-1                  loo_2.8.0</span></span>
-<span><span class="co">##  [13] vctrs_0.6.5                 reshape2_1.4.4</span></span>
-<span><span class="co">##  [15] stringr_1.5.1               pkgconfig_2.0.3</span></span>
-<span><span class="co">##  [17] shape_1.4.6.1               crayon_1.5.3</span></span>
-<span><span class="co">##  [19] fastmap_1.2.0               backports_1.5.0</span></span>
-<span><span class="co">##  [21] XVector_0.45.0              labeling_0.4.3</span></span>
-<span><span class="co">##  [23] utf8_1.2.4                  rmarkdown_2.28</span></span>
-<span><span class="co">##  [25] UCSC.utils_1.1.0            purrr_1.0.2</span></span>
-<span><span class="co">##  [27] xfun_0.47                   glmnet_4.1-8</span></span>
-<span><span class="co">##  [29] zlibbioc_1.51.1             GenomeInfoDb_1.41.1</span></span>
-<span><span class="co">##  [31] jsonlite_1.8.8              progress_1.2.3</span></span>
-<span><span class="co">##  [33] biomformat_1.33.0           highr_0.11</span></span>
-<span><span class="co">##  [35] rhdf5filters_1.17.0         DelayedArray_0.31.11</span></span>
-<span><span class="co">##  [37] Rhdf5lib_1.27.0             prettyunits_1.2.0</span></span>
-<span><span class="co">##  [39] cluster_2.1.6               parallel_4.4.1</span></span>
-<span><span class="co">##  [41] R6_2.5.1                    stringi_1.8.4</span></span>
-<span><span class="co">##  [43] StanHeaders_2.32.10         GenomicRanges_1.57.1</span></span>
-<span><span class="co">##  [45] estimability_1.5.1          rstan_2.32.6</span></span>
-<span><span class="co">##  [47] SummarizedExperiment_1.35.1 iterators_1.0.14</span></span>
-<span><span class="co">##  [49] knitr_1.48                  zoo_1.8-12</span></span>
-<span><span class="co">##  [51] IRanges_2.39.2              bayesplot_1.11.1</span></span>
-<span><span class="co">##  [53] igraph_2.0.3                Matrix_1.7-0</span></span>
-<span><span class="co">##  [55] splines_4.4.1               abind_1.4-5</span></span>
-<span><span class="co">##  [57] yaml_2.3.10                 vegan_2.6-8</span></span>
-<span><span class="co">##  [59] codetools_0.2-20            curl_5.2.2</span></span>
-<span><span class="co">##  [61] pkgbuild_1.4.4              lattice_0.22-6</span></span>
-<span><span class="co">##  [63] tibble_3.2.1                plyr_1.8.9</span></span>
-<span><span class="co">##  [65] withr_3.0.1                 Biobase_2.65.1</span></span>
-<span><span class="co">##  [67] bridgesampling_1.1-2        posterior_1.6.0</span></span>
-<span><span class="co">##  [69] coda_0.19-4.1               evaluate_0.24.0</span></span>
-<span><span class="co">##  [71] survival_3.7-0              RcppParallel_5.1.9</span></span>
-<span><span class="co">##  [73] Biostrings_2.73.1           pillar_1.9.0</span></span>
-<span><span class="co">##  [75] phyloseq_1.49.0             MatrixGenerics_1.17.0</span></span>
-<span><span class="co">##  [77] tensorA_0.36.2.1            checkmate_2.3.2</span></span>
-<span><span class="co">##  [79] foreach_1.5.2               stats4_4.4.1</span></span>
-<span><span class="co">##  [81] distributional_0.4.0        generics_0.1.3</span></span>
-<span><span class="co">##  [83] hms_1.1.3                   S4Vectors_0.43.2</span></span>
-<span><span class="co">##  [85] rstantools_2.4.0            munsell_0.5.1</span></span>
-<span><span class="co">##  [87] scales_1.3.0                xtable_1.8-4</span></span>
-<span><span class="co">##  [89] glue_1.7.0                  emmeans_1.10.4</span></span>
-<span><span class="co">##  [91] tools_4.4.1                 data.table_1.16.0</span></span>
-<span><span class="co">##  [93] mvtnorm_1.3-1               tidygraph_1.3.1</span></span>
-<span><span class="co">##  [95] rhdf5_2.49.0                grid_4.4.1</span></span>
-<span><span class="co">##  [97] tidyr_1.3.1                 ape_5.8</span></span>
-<span><span class="co">##  [99] QuickJSR_1.3.1              miniLNM_0.1.0</span></span>
-<span><span class="co">## [101] colorspace_2.1-1            nlme_3.1-166</span></span>
-<span><span class="co">## [103] formula.tools_1.7.1         GenomeInfoDbData_1.2.12</span></span>
-<span><span class="co">## [105] patchwork_1.2.0             cli_3.6.3</span></span>
-<span><span class="co">## [107] fansi_1.0.6                 S4Arrays_1.5.7</span></span>
-<span><span class="co">## [109] Brobdingnag_1.2-9           dplyr_1.1.4</span></span>
-<span><span class="co">## [111] V8_5.0.0                    gtable_0.3.5</span></span>
-<span><span class="co">## [113] digest_0.6.37               operator.tools_1.6.3</span></span>
-<span><span class="co">## [115] BiocGenerics_0.51.1         SparseArray_1.5.31</span></span>
-<span><span class="co">## [117] TH.data_1.1-2               farver_2.1.2</span></span>
-<span><span class="co">## [119] multtest_2.61.0             htmltools_0.5.8.1</span></span>
-<span><span class="co">## [121] lifecycle_1.0.4             httr_1.4.7</span></span>
+<span><span class="co">##   [1] gridExtra_2.3</span></span>
+<span><span class="co">##   [2] inline_0.3.19</span></span>
+<span><span class="co">##   [3] permute_0.9-7</span></span>
+<span><span class="co">##   [4] sandwich_3.1-0</span></span>
+<span><span class="co">##   [5] rlang_1.1.4</span></span>
+<span><span class="co">##   [6] magrittr_2.0.3</span></span>
+<span><span class="co">##   [7] multcomp_1.4-26</span></span>
+<span><span class="co">##   [8] ade4_1.7-22</span></span>
+<span><span class="co">##   [9] matrixStats_1.4.1</span></span>
+<span><span class="co">##  [10] compiler_4.4.1</span></span>
+<span><span class="co">##  [11] mgcv_1.9-1</span></span>
+<span><span class="co">##  [12] loo_2.8.0</span></span>
+<span><span class="co">##  [13] vctrs_0.6.5</span></span>
+<span><span class="co">##  [14] reshape2_1.4.4</span></span>
+<span><span class="co">##  [15] stringr_1.5.1</span></span>
+<span><span class="co">##  [16] pkgconfig_2.0.3</span></span>
+<span><span class="co">##  [17] shape_1.4.6.1</span></span>
+<span><span class="co">##  [18] crayon_1.5.3</span></span>
+<span><span class="co">##  [19] fastmap_1.2.0</span></span>
+<span><span class="co">##  [20] backports_1.5.0</span></span>
+<span><span class="co">##  [21] XVector_0.45.0</span></span>
+<span><span class="co">##  [22] labeling_0.4.3</span></span>
+<span><span class="co">##  [23] utf8_1.2.4</span></span>
+<span><span class="co">##  [24] rmarkdown_2.28</span></span>
+<span><span class="co">##  [25] UCSC.utils_1.1.0</span></span>
+<span><span class="co">##  [26] purrr_1.0.2</span></span>
+<span><span class="co">##  [27] xfun_0.47</span></span>
+<span><span class="co">##  [28] glmnet_4.1-8</span></span>
+<span><span class="co">##  [29] zlibbioc_1.51.1</span></span>
+<span><span class="co">##  [30] GenomeInfoDb_1.41.1</span></span>
+<span><span class="co">##  [31] jsonlite_1.8.8</span></span>
+<span><span class="co">##  [32] progress_1.2.3</span></span>
+<span><span class="co">##  [33] biomformat_1.33.0</span></span>
+<span><span class="co">##  [34] highr_0.11</span></span>
+<span><span class="co">##  [35] rhdf5filters_1.17.0</span></span>
+<span><span class="co">##  [36] DelayedArray_0.31.11</span></span>
+<span><span class="co">##  [37] Rhdf5lib_1.27.0</span></span>
+<span><span class="co">##  [38] prettyunits_1.2.0</span></span>
+<span><span class="co">##  [39] cluster_2.1.6</span></span>
+<span><span class="co">##  [40] parallel_4.4.1</span></span>
+<span><span class="co">##  [41] R6_2.5.1</span></span>
+<span><span class="co">##  [42] stringi_1.8.4</span></span>
+<span><span class="co">##  [43] StanHeaders_2.32.10</span></span>
+<span><span class="co">##  [44] GenomicRanges_1.57.1</span></span>
+<span><span class="co">##  [45] estimability_1.5.1</span></span>
+<span><span class="co">##  [46] rstan_2.32.6</span></span>
+<span><span class="co">##  [47] SummarizedExperiment_1.35.1</span></span>
+<span><span class="co">##  [48] iterators_1.0.14</span></span>
+<span><span class="co">##  [49] knitr_1.48</span></span>
+<span><span class="co">##  [50] zoo_1.8-12</span></span>
+<span><span class="co">##  [51] IRanges_2.39.2</span></span>
+<span><span class="co">##  [52] bayesplot_1.11.1</span></span>
+<span><span class="co">##  [53] igraph_2.0.3</span></span>
+<span><span class="co">##  [54] Matrix_1.7-0</span></span>
+<span><span class="co">##  [55] splines_4.4.1</span></span>
+<span><span class="co">##  [56] abind_1.4-5</span></span>
+<span><span class="co">##  [57] yaml_2.3.10</span></span>
+<span><span class="co">##  [58] vegan_2.6-8</span></span>
+<span><span class="co">##  [59] codetools_0.2-20</span></span>
+<span><span class="co">##  [60] curl_5.2.2</span></span>
+<span><span class="co">##  [61] pkgbuild_1.4.4</span></span>
+<span><span class="co">##  [62] lattice_0.22-6</span></span>
+<span><span class="co">##  [63] tibble_3.2.1</span></span>
+<span><span class="co">##  [64] plyr_1.8.9</span></span>
+<span><span class="co">##  [65] withr_3.0.1</span></span>
+<span><span class="co">##  [66] Biobase_2.65.1</span></span>
+<span><span class="co">##  [67] bridgesampling_1.1-2</span></span>
+<span><span class="co">##  [68] posterior_1.6.0</span></span>
+<span><span class="co">##  [69] coda_0.19-4.1</span></span>
+<span><span class="co">##  [70] evaluate_0.24.0</span></span>
+<span><span class="co">##  [71] survival_3.7-0</span></span>
+<span><span class="co">##  [72] RcppParallel_5.1.9</span></span>
+<span><span class="co">##  [73] Biostrings_2.73.1</span></span>
+<span><span class="co">##  [74] pillar_1.9.0</span></span>
+<span><span class="co">##  [75] phyloseq_1.49.0</span></span>
+<span><span class="co">##  [76] MatrixGenerics_1.17.0</span></span>
+<span><span class="co">##  [77] tensorA_0.36.2.1</span></span>
+<span><span class="co">##  [78] checkmate_2.3.2</span></span>
+<span><span class="co">##  [79] foreach_1.5.2</span></span>
+<span><span class="co">##  [80] stats4_4.4.1</span></span>
+<span><span class="co">##  [81] distributional_0.4.0</span></span>
+<span><span class="co">##  [82] generics_0.1.3</span></span>
+<span><span class="co">##  [83] hms_1.1.3</span></span>
+<span><span class="co">##  [84] S4Vectors_0.43.2</span></span>
+<span><span class="co">##  [85] rstantools_2.4.0</span></span>
+<span><span class="co">##  [86] munsell_0.5.1</span></span>
+<span><span class="co">##  [87] scales_1.3.0</span></span>
+<span><span class="co">##  [88] xtable_1.8-4</span></span>
+<span><span class="co">##  [89] glue_1.7.0</span></span>
+<span><span class="co">##  [90] emmeans_1.10.4</span></span>
+<span><span class="co">##  [91] tools_4.4.1</span></span>
+<span><span class="co">##  [92] data.table_1.16.0</span></span>
+<span><span class="co">##  [93] mvtnorm_1.3-1</span></span>
+<span><span class="co">##  [94] tidygraph_1.3.1</span></span>
+<span><span class="co">##  [95] rhdf5_2.49.0</span></span>
+<span><span class="co">##  [96] grid_4.4.1</span></span>
+<span><span class="co">##  [97] tidyr_1.3.1</span></span>
+<span><span class="co">##  [98] ape_5.8</span></span>
+<span><span class="co">##  [99] QuickJSR_1.3.1</span></span>
+<span><span class="co">## [100] miniLNM_0.1.0</span></span>
+<span><span class="co">## [101] colorspace_2.1-1</span></span>
+<span><span class="co">## [102] nlme_3.1-166</span></span>
+<span><span class="co">## [103] formula.tools_1.7.1</span></span>
+<span><span class="co">## [104] GenomeInfoDbData_1.2.12</span></span>
+<span><span class="co">## [105] patchwork_1.2.0</span></span>
+<span><span class="co">## [106] cli_3.6.3</span></span>
+<span><span class="co">## [107] fansi_1.0.6</span></span>
+<span><span class="co">## [108] S4Arrays_1.5.7</span></span>
+<span><span class="co">## [109] Brobdingnag_1.2-9</span></span>
+<span><span class="co">## [110] dplyr_1.1.4</span></span>
+<span><span class="co">## [111] V8_5.0.0</span></span>
+<span><span class="co">## [112] gtable_0.3.5</span></span>
+<span><span class="co">## [113] digest_0.6.37</span></span>
+<span><span class="co">## [114] operator.tools_1.6.3</span></span>
+<span><span class="co">## [115] BiocGenerics_0.51.1</span></span>
+<span><span class="co">## [116] SparseArray_1.5.31</span></span>
+<span><span class="co">## [117] TH.data_1.1-2</span></span>
+<span><span class="co">## [118] farver_2.1.2</span></span>
+<span><span class="co">## [119] multtest_2.61.0</span></span>
+<span><span class="co">## [120] htmltools_0.5.8.1</span></span>
+<span><span class="co">## [121] lifecycle_1.0.4</span></span>
+<span><span class="co">## [122] httr_1.4.7</span></span>
 <span><span class="co">## [123] MASS_7.3-61</span></span></code></pre>
 </div>
 </div>
@@ -271,8 +344,8 @@
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://github.com/krisrs1128/multimedia/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/krisrs1128/multimedia/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
-<li><a href="https://codecov.io/github/krisrs1128/multimedia" class="external-link"><img src="https://codecov.io/github/krisrs1128/multimedia/graph/badge.svg?token=XB865GLQ8B" alt="codecov"></a></li>
-<li><a href="https://mybinder.org/v2/gh/krisrs1128/multimedia/main" class="external-link"><img src="https://mybinder.org/badge_logo.svg" alt="Launch binder"></a></li>
+<li><a href="https://app.codecov.io/github/krisrs1128/multimedia/" class="external-link"><img src="https://codecov.io/github/krisrs1128/multimedia/graph/badge.svg?token=XB865GLQ8B" alt="codecov"></a></li>
+<li><a href="https://mybinder.org/v2/gh/krisrs1128/multimedia/main/" class="external-link"><img src="https://mybinder.org/badge_logo.svg" alt="Launch binder"></a></li>
 </ul>
 </div>
 
