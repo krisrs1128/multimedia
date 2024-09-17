@@ -20,5 +20,5 @@ independent interest.
 }
 \examples{
 demo_joy() |>
-    multimedia:::exper_df()
+    exper_df()
 }
