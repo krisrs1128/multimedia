@@ -172,7 +172,8 @@ expand_edges <- function(input, output, input_name, output_name) {
 #' @return A data.frame combining all slots of a multimedia object.
 #' @examples
 #' demo_joy() |>
-#'     multimedia:::exper_df()
+#'     exper_df()
+#' @export
 exper_df <- function(exper) {
     bind_cols(
         t(assay(exper)), data.frame(colData(exper)),

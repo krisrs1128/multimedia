@@ -101,7 +101,14 @@ setMethod("sample", "multimedia", function(
     )
 })
 
-#' Predictions from a Single Outcome
+#' Predict a Subset of Responses
+#'
+#' Predict across selected responses in a mediation model object. This is a
+#' lower-level version of the predict method that applies to objets of class
+#' mediation_model. Rather than giving predictions across all outcomes, it
+#' supports predictions across a subset specified as a vector. This can be
+#' convenient when we want to analyze how a specific subset of outcomes changes
+#' and do not need to run predictions across all possible.
 #'
 #' @param object An object of class `model` containing an estimated model.
 #' @param newdata A data.frame containing new inputs from which to sample
@@ -109,27 +116,27 @@ setMethod("sample", "multimedia", function(
 #' @param name A string or index specifying which of the dimensions of a
 #'   multiresponse prediction to extract.
 #' @return A vector of predicted values for the outcome of interest.
-#' @noRd
 #' @examples
 #' exper <- demo_spline(tau = c(2, 1)) |>
 #'     mediation_data(starts_with("outcome"), "treatment", "mediator")
 #' fit <- multimedia(exper) |>
 #'     estimate(exper)
-#' multimedia:::predict_across(outcomes(fit), NULL, "outcome_1")
-#' multimedia:::predict_across(outcome_model(fit), NULL, "outcome_2")
+#' predict_across(outcome_model(fit), NULL, "outcome_1")
+#' predict_across(outcome_model(fit), NULL, "outcome_2")
 #'
 #' # predict at newdata
 #' newdata <- bind_mediation(exper)
-#' multimedia:::predict_across(
+#' predict_across(
 #'     outcome_model(fit), newdata[seq_len(5), ], "outcome_2"
 #' )
-#' multimedia:::predict_across(
-#'     fit@outcome,
+#' predict_across(
+#'     outcome_model(fit),
 #'     newdata[seq_len(5), ],
 #'     c("outcome_1", "outcome_2")
 #' )
 #' @importFrom purrr map set_names
 #' @importFrom dplyr bind_cols
+#' @export
 predict_across <- function(object, newdata, name) {
     # many univariate models
     if (is(object@estimates, "list")) {
