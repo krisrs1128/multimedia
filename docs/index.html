@@ -78,17 +78,19 @@
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
+<p>You can install the stable <a href="https://cran.r-project.org/package=multimedia" class="external-link">CRAN version</a> with:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"multimedia"</span>)</span></code></pre></div>
 <p>You can install the development version from <a href="https://github.com/krisrs1128/multimedia" class="external-link">GitHub</a> with:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># install.packages("devtools")</span></span>
-<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"krisrs1128/multimedia"</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># install.packages("devtools")</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"krisrs1128/multimedia"</span>)</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
 </h2>
 <p>Here is a simple example of estimating direct and indirect effects. The data are randomly generated (no real effects), but we imagine that the ASV columns mediate the relationship between <code>treatment</code> and <code>PHQ</code>. This is mimics the possibility that the microbiome (ASV = Amplicon Sequence Variant) mediates the relationship between a treatment and depression (PHQ = Patient Health Questionnaire). You can find more details in the <code>random.Rmd</code> vignette.</p>
 <p>The original data here are a <code>SummarizedExperiment</code>. The package can also take phyloseq objects and data.frames.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">library</span>(multimedia)</span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">demo_joy</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">library</span>(multimedia)</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="fu">demo_joy</span>()</span></code></pre></div>
 <pre class="r-output"><code><span><span class="co">## class: SummarizedExperiment</span></span>
 <span><span class="co">## dim: 5 100</span></span>
 <span><span class="co">## metadata(0):</span></span>
@@ -98,17 +100,17 @@
 <span><span class="co">## colnames: NULL</span></span>
 <span><span class="co">## colData names(2): treatment PHQ</span></span></code></pre>
 <p>Next, we specify which columns are the treatment, mediators, and outcomes. Notice that we can use <code>tidyselect</code> syntax to match multiple columns.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>exper <span class="ot">&lt;-</span> <span class="fu">mediation_data</span>(<span class="fu">demo_joy</span>(), <span class="st">"PHQ"</span>, <span class="st">"treatment"</span>, <span class="fu">starts_with</span>(<span class="st">"ASV"</span>))</span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>exper</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>exper <span class="ot">&lt;-</span> <span class="fu">mediation_data</span>(<span class="fu">demo_joy</span>(), <span class="st">"PHQ"</span>, <span class="st">"treatment"</span>, <span class="fu">starts_with</span>(<span class="st">"ASV"</span>))</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>exper</span></code></pre></div>
 <pre class="r-output"><code><span><span class="co">## [Mediation Data]</span></span>
 <span><span class="co">## 100 samples with measurements for,</span></span>
 <span><span class="co">## 1 treatment: treatment</span></span>
 <span><span class="co">## 5 mediators: ASV1, ASV2, ...</span></span>
 <span><span class="co">## 1 outcome: PHQ</span></span></code></pre>
 <p>Next, we fit all mediation analysis components and estimate effects. By default, the package uses linear models – see the vignettes for examples using sparse regression, random forests, and bayesian hierarchical models instead.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">multimedia</span>(exper) <span class="sc">|&gt;</span></span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>    <span class="fu">estimate</span>(exper)</span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>model</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">multimedia</span>(exper) <span class="sc">|&gt;</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>    <span class="fu">estimate</span>(exper)</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>model</span></code></pre></div>
 <pre class="r-output"><code><span><span class="co">## [Multimedia Analysis]</span></span>
 <span><span class="co">## Treatments: treatment</span></span>
 <span><span class="co">## Outcomes: PHQ</span></span>
@@ -118,46 +120,37 @@
 <span><span class="co">## mediation: A fitted lm_model().</span></span>
 <span><span class="co">## outcome: A fitted lm_model().</span></span></code></pre>
 <p>In any mediation analysis, there are several types of effects that could be interesting, each corresponding to different ways of traveling from the treatment to the outcome in the mediation analysis causal graph. In the block below, <code>direct_effect</code> captures treatment effects that bypass the microbiome; <code>indirect_effect</code> are effects that are mediated by ASV relative abundances. Since this example uses a linear model, the effects are identical for the two indirect settings.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">direct_effect</span>(model, exper)</span></code></pre></div>
-<pre class="r-output"><code><span><span class="co">##   outcome indirect_setting</span></span>
-<span><span class="co">## 1     PHQ          Control</span></span>
-<span><span class="co">## 2     PHQ        Treatment</span></span>
-<span><span class="co">##              contrast direct_effect</span></span>
-<span><span class="co">## 1 Control - Treatment    0.09314376</span></span>
-<span><span class="co">## 2 Control - Treatment    0.09314376</span></span></code></pre>
-<div class="sourceCode" id="cb6"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">indirect_overall</span>(model, exper)</span></code></pre></div>
-<pre class="r-output"><code><span><span class="co">##   outcome direct_setting            contrast</span></span>
-<span><span class="co">## 1     PHQ        Control Control - Treatment</span></span>
-<span><span class="co">## 2     PHQ      Treatment Control - Treatment</span></span>
-<span><span class="co">##   indirect_effect</span></span>
-<span><span class="co">## 1      0.02256029</span></span>
-<span><span class="co">## 2      0.02256029</span></span></code></pre>
+<div class="sourceCode" id="cb6"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">direct_effect</span>(model, exper)</span></code></pre></div>
+<pre class="r-output"><code><span><span class="co">##   outcome indirect_setting            contrast direct_effect</span></span>
+<span><span class="co">## 1     PHQ          Control Control - Treatment    0.09314376</span></span>
+<span><span class="co">## 2     PHQ        Treatment Control - Treatment    0.09314376</span></span></code></pre>
+<div class="sourceCode" id="cb7"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">indirect_overall</span>(model, exper)</span></code></pre></div>
+<pre class="r-output"><code><span><span class="co">##   outcome direct_setting            contrast indirect_effect</span></span>
+<span><span class="co">## 1     PHQ        Control Control - Treatment      0.02256029</span></span>
+<span><span class="co">## 2     PHQ      Treatment Control - Treatment      0.02256029</span></span></code></pre>
 <p>The package also includes helpers to visualize and perform inference on these effects. For example,</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>boot <span class="ot">&lt;-</span> <span class="fu">bootstrap</span>(model, exper, <span class="fu">c</span>(<span class="at">direct =</span> direct_effect))</span>
-<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a></span>
-<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="fu">ggplot</span>(boot<span class="sc">$</span>direct) <span class="sc">+</span></span>
-<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>    <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(direct_effect), <span class="at">bins =</span> <span class="dv">20</span>) <span class="sc">+</span></span>
-<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>    <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)) <span class="sc">+</span></span>
-<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>    <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
-<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Direct Effect"</span>, <span class="at">y =</span> <span class="st">"Frequency"</span>, <span class="at">title =</span> <span class="st">"Bootstrap Distribution"</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>boot <span class="ot">&lt;-</span> <span class="fu">bootstrap</span>(model, exper, <span class="fu">c</span>(<span class="at">direct =</span> direct_effect))</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="fu">ggplot</span>(boot<span class="sc">$</span>direct) <span class="sc">+</span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>    <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(direct_effect), <span class="at">bins =</span> <span class="dv">20</span>) <span class="sc">+</span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>    <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)) <span class="sc">+</span></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>    <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Direct Effect"</span>, <span class="at">y =</span> <span class="st">"Frequency"</span>, <span class="at">title =</span> <span class="st">"Bootstrap Distribution"</span>)</span></code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-6-1.png" width="500" style="display: block; margin: auto;"></p>
 <p>If we want to use a different type of model, we can just modify the original <code>multimedia</code> specification. Below we use a sparse regression model, which correctly recovers that the direct effects are 0.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">multimedia</span>(exper, <span class="fu">glmnet_model</span>(<span class="at">lambda =</span> .<span class="dv">1</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>    <span class="fu">estimate</span>(exper) <span class="sc">|&gt;</span></span>
-<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>    <span class="fu">direct_effect</span>()</span></code></pre></div>
-<pre class="r-output"><code><span><span class="co">##   outcome indirect_setting</span></span>
-<span><span class="co">## 1     PHQ          Control</span></span>
-<span><span class="co">## 2     PHQ        Treatment</span></span>
-<span><span class="co">##              contrast direct_effect</span></span>
-<span><span class="co">## 1 Control - Treatment             0</span></span>
-<span><span class="co">## 2 Control - Treatment             0</span></span></code></pre>
+<div class="sourceCode" id="cb9"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">multimedia</span>(exper, <span class="fu">glmnet_model</span>(<span class="at">lambda =</span> .<span class="dv">1</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>    <span class="fu">estimate</span>(exper) <span class="sc">|&gt;</span></span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>    <span class="fu">direct_effect</span>()</span></code></pre></div>
+<pre class="r-output"><code><span><span class="co">##   outcome indirect_setting            contrast direct_effect</span></span>
+<span><span class="co">## 1     PHQ          Control Control - Treatment             0</span></span>
+<span><span class="co">## 2     PHQ        Treatment Control - Treatment             0</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="help">Help<a class="anchor" aria-label="anchor" href="#help"></a>
 </h2>
 <p>We welcome questions and comments about the package either through <a href="https://github.com/krisrs1128/multimedia/issues" class="external-link">github</a> or <a href="mailto:ksankaran@wisc.edu">email</a>.</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code></pre></div>
 <pre class="r-output"><code><span><span class="co">## R version 4.4.1 Patched (2024-08-21 r87049)</span></span>
 <span><span class="co">## Platform: aarch64-apple-darwin20</span></span>
 <span><span class="co">## Running under: macOS Sonoma 14.5</span></span>
@@ -173,144 +166,36 @@
 <span><span class="co">## tzcode source: internal</span></span>
 <span><span class="co">##</span></span>
 <span><span class="co">## attached base packages:</span></span>
-<span><span class="co">## [1] stats     graphics  grDevices utils</span></span>
-<span><span class="co">## [5] datasets  methods   base</span></span>
+<span><span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base</span></span>
 <span><span class="co">##</span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] ggplot2_3.5.1     multimedia_0.2.0</span></span>
-<span><span class="co">## [3] tidyselect_1.2.1  ranger_0.16.0</span></span>
-<span><span class="co">## [5] glmnetUtils_1.1.9 brms_2.21.0</span></span>
-<span><span class="co">## [7] Rcpp_1.0.13</span></span>
+<span><span class="co">## [1] ggplot2_3.5.1     multimedia_0.2.0  tidyselect_1.2.1  ranger_0.16.0     glmnetUtils_1.1.9 brms_2.21.0       Rcpp_1.0.13</span></span>
 <span><span class="co">##</span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
-<span><span class="co">##   [1] gridExtra_2.3</span></span>
-<span><span class="co">##   [2] inline_0.3.19</span></span>
-<span><span class="co">##   [3] permute_0.9-7</span></span>
-<span><span class="co">##   [4] sandwich_3.1-0</span></span>
-<span><span class="co">##   [5] rlang_1.1.4</span></span>
-<span><span class="co">##   [6] magrittr_2.0.3</span></span>
-<span><span class="co">##   [7] multcomp_1.4-26</span></span>
-<span><span class="co">##   [8] ade4_1.7-22</span></span>
-<span><span class="co">##   [9] matrixStats_1.4.1</span></span>
-<span><span class="co">##  [10] compiler_4.4.1</span></span>
-<span><span class="co">##  [11] mgcv_1.9-1</span></span>
-<span><span class="co">##  [12] loo_2.8.0</span></span>
-<span><span class="co">##  [13] vctrs_0.6.5</span></span>
-<span><span class="co">##  [14] reshape2_1.4.4</span></span>
-<span><span class="co">##  [15] stringr_1.5.1</span></span>
-<span><span class="co">##  [16] pkgconfig_2.0.3</span></span>
-<span><span class="co">##  [17] shape_1.4.6.1</span></span>
-<span><span class="co">##  [18] crayon_1.5.3</span></span>
-<span><span class="co">##  [19] fastmap_1.2.0</span></span>
-<span><span class="co">##  [20] backports_1.5.0</span></span>
-<span><span class="co">##  [21] XVector_0.45.0</span></span>
-<span><span class="co">##  [22] labeling_0.4.3</span></span>
-<span><span class="co">##  [23] utf8_1.2.4</span></span>
-<span><span class="co">##  [24] rmarkdown_2.28</span></span>
-<span><span class="co">##  [25] UCSC.utils_1.1.0</span></span>
-<span><span class="co">##  [26] purrr_1.0.2</span></span>
-<span><span class="co">##  [27] xfun_0.47</span></span>
-<span><span class="co">##  [28] glmnet_4.1-8</span></span>
-<span><span class="co">##  [29] zlibbioc_1.51.1</span></span>
-<span><span class="co">##  [30] GenomeInfoDb_1.41.1</span></span>
-<span><span class="co">##  [31] jsonlite_1.8.8</span></span>
-<span><span class="co">##  [32] progress_1.2.3</span></span>
-<span><span class="co">##  [33] biomformat_1.33.0</span></span>
-<span><span class="co">##  [34] highr_0.11</span></span>
-<span><span class="co">##  [35] rhdf5filters_1.17.0</span></span>
-<span><span class="co">##  [36] DelayedArray_0.31.11</span></span>
-<span><span class="co">##  [37] Rhdf5lib_1.27.0</span></span>
-<span><span class="co">##  [38] prettyunits_1.2.0</span></span>
-<span><span class="co">##  [39] cluster_2.1.6</span></span>
-<span><span class="co">##  [40] parallel_4.4.1</span></span>
-<span><span class="co">##  [41] R6_2.5.1</span></span>
-<span><span class="co">##  [42] stringi_1.8.4</span></span>
-<span><span class="co">##  [43] StanHeaders_2.32.10</span></span>
-<span><span class="co">##  [44] GenomicRanges_1.57.1</span></span>
-<span><span class="co">##  [45] estimability_1.5.1</span></span>
-<span><span class="co">##  [46] rstan_2.32.6</span></span>
-<span><span class="co">##  [47] SummarizedExperiment_1.35.1</span></span>
-<span><span class="co">##  [48] iterators_1.0.14</span></span>
-<span><span class="co">##  [49] knitr_1.48</span></span>
-<span><span class="co">##  [50] zoo_1.8-12</span></span>
-<span><span class="co">##  [51] IRanges_2.39.2</span></span>
-<span><span class="co">##  [52] bayesplot_1.11.1</span></span>
-<span><span class="co">##  [53] igraph_2.0.3</span></span>
-<span><span class="co">##  [54] Matrix_1.7-0</span></span>
-<span><span class="co">##  [55] splines_4.4.1</span></span>
-<span><span class="co">##  [56] abind_1.4-5</span></span>
-<span><span class="co">##  [57] yaml_2.3.10</span></span>
-<span><span class="co">##  [58] vegan_2.6-8</span></span>
-<span><span class="co">##  [59] codetools_0.2-20</span></span>
-<span><span class="co">##  [60] curl_5.2.2</span></span>
-<span><span class="co">##  [61] pkgbuild_1.4.4</span></span>
-<span><span class="co">##  [62] lattice_0.22-6</span></span>
-<span><span class="co">##  [63] tibble_3.2.1</span></span>
-<span><span class="co">##  [64] plyr_1.8.9</span></span>
-<span><span class="co">##  [65] withr_3.0.1</span></span>
-<span><span class="co">##  [66] Biobase_2.65.1</span></span>
-<span><span class="co">##  [67] bridgesampling_1.1-2</span></span>
-<span><span class="co">##  [68] posterior_1.6.0</span></span>
-<span><span class="co">##  [69] coda_0.19-4.1</span></span>
-<span><span class="co">##  [70] evaluate_0.24.0</span></span>
-<span><span class="co">##  [71] survival_3.7-0</span></span>
-<span><span class="co">##  [72] RcppParallel_5.1.9</span></span>
-<span><span class="co">##  [73] Biostrings_2.73.1</span></span>
-<span><span class="co">##  [74] pillar_1.9.0</span></span>
-<span><span class="co">##  [75] phyloseq_1.49.0</span></span>
-<span><span class="co">##  [76] MatrixGenerics_1.17.0</span></span>
-<span><span class="co">##  [77] tensorA_0.36.2.1</span></span>
-<span><span class="co">##  [78] checkmate_2.3.2</span></span>
-<span><span class="co">##  [79] foreach_1.5.2</span></span>
-<span><span class="co">##  [80] stats4_4.4.1</span></span>
-<span><span class="co">##  [81] distributional_0.4.0</span></span>
-<span><span class="co">##  [82] generics_0.1.3</span></span>
-<span><span class="co">##  [83] hms_1.1.3</span></span>
-<span><span class="co">##  [84] S4Vectors_0.43.2</span></span>
-<span><span class="co">##  [85] rstantools_2.4.0</span></span>
-<span><span class="co">##  [86] munsell_0.5.1</span></span>
-<span><span class="co">##  [87] scales_1.3.0</span></span>
-<span><span class="co">##  [88] xtable_1.8-4</span></span>
-<span><span class="co">##  [89] glue_1.7.0</span></span>
-<span><span class="co">##  [90] emmeans_1.10.4</span></span>
-<span><span class="co">##  [91] tools_4.4.1</span></span>
-<span><span class="co">##  [92] data.table_1.16.0</span></span>
-<span><span class="co">##  [93] mvtnorm_1.3-1</span></span>
-<span><span class="co">##  [94] tidygraph_1.3.1</span></span>
-<span><span class="co">##  [95] rhdf5_2.49.0</span></span>
-<span><span class="co">##  [96] grid_4.4.1</span></span>
-<span><span class="co">##  [97] tidyr_1.3.1</span></span>
-<span><span class="co">##  [98] ape_5.8</span></span>
-<span><span class="co">##  [99] QuickJSR_1.3.1</span></span>
-<span><span class="co">## [100] miniLNM_0.1.0</span></span>
-<span><span class="co">## [101] colorspace_2.1-1</span></span>
-<span><span class="co">## [102] nlme_3.1-166</span></span>
-<span><span class="co">## [103] formula.tools_1.7.1</span></span>
-<span><span class="co">## [104] GenomeInfoDbData_1.2.12</span></span>
-<span><span class="co">## [105] patchwork_1.2.0</span></span>
-<span><span class="co">## [106] cli_3.6.3</span></span>
-<span><span class="co">## [107] fansi_1.0.6</span></span>
-<span><span class="co">## [108] S4Arrays_1.5.7</span></span>
-<span><span class="co">## [109] Brobdingnag_1.2-9</span></span>
-<span><span class="co">## [110] dplyr_1.1.4</span></span>
-<span><span class="co">## [111] V8_5.0.0</span></span>
-<span><span class="co">## [112] gtable_0.3.5</span></span>
-<span><span class="co">## [113] digest_0.6.37</span></span>
-<span><span class="co">## [114] operator.tools_1.6.3</span></span>
-<span><span class="co">## [115] BiocGenerics_0.51.1</span></span>
-<span><span class="co">## [116] SparseArray_1.5.31</span></span>
-<span><span class="co">## [117] TH.data_1.1-2</span></span>
-<span><span class="co">## [118] farver_2.1.2</span></span>
-<span><span class="co">## [119] multtest_2.61.0</span></span>
-<span><span class="co">## [120] htmltools_0.5.8.1</span></span>
-<span><span class="co">## [121] lifecycle_1.0.4</span></span>
-<span><span class="co">## [122] httr_1.4.7</span></span>
-<span><span class="co">## [123] MASS_7.3-61</span></span></code></pre>
+<span><span class="co">##   [1] tensorA_0.36.2.1            jsonlite_1.8.8              shape_1.4.6.1               magrittr_2.0.3              TH.data_1.1-2               estimability_1.5.1          farver_2.1.2                rmarkdown_2.28</span></span>
+<span><span class="co">##   [9] fs_1.6.4                    zlibbioc_1.51.1             vctrs_0.6.5                 multtest_2.61.0             memoise_2.0.1               progress_1.2.3              htmltools_0.5.8.1           S4Arrays_1.5.7</span></span>
+<span><span class="co">##  [17] usethis_3.0.0               distributional_0.5.0        curl_5.2.2                  Rhdf5lib_1.27.0             SparseArray_1.5.31          rhdf5_2.49.0                StanHeaders_2.32.10         htmlwidgets_1.6.4</span></span>
+<span><span class="co">##  [25] plyr_1.8.9                  sandwich_3.1-0              emmeans_1.10.4              zoo_1.8-12                  cachem_1.1.0                igraph_2.0.3                mime_0.12                   lifecycle_1.0.4</span></span>
+<span><span class="co">##  [33] iterators_1.0.14            pkgconfig_2.0.3             Matrix_1.7-0                R6_2.5.1                    fastmap_1.2.0               GenomeInfoDbData_1.2.12     MatrixGenerics_1.17.0       shiny_1.9.1</span></span>
+<span><span class="co">##  [41] digest_0.6.37               colorspace_2.1-1            patchwork_1.3.0             S4Vectors_0.43.2            pkgload_1.4.0               miniLNM_0.1.0               GenomicRanges_1.57.1        vegan_2.6-8</span></span>
+<span><span class="co">##  [49] labeling_0.4.3              fansi_1.0.6                 mgcv_1.9-1                  httr_1.4.7                  abind_1.4-8                 compiler_4.4.1              remotes_2.5.0               withr_3.0.1</span></span>
+<span><span class="co">##  [57] backports_1.5.0             inline_0.3.19               highr_0.11                  QuickJSR_1.3.1              pkgbuild_1.4.4              MASS_7.3-61                 DelayedArray_0.31.11        sessioninfo_1.2.2</span></span>
+<span><span class="co">##  [65] biomformat_1.33.0           permute_0.9-7               loo_2.8.0                   tools_4.4.1                 ape_5.8                     httpuv_1.6.15               glue_1.7.0                  rhdf5filters_1.17.0</span></span>
+<span><span class="co">##  [73] nlme_3.1-166                promises_1.3.0              grid_4.4.1                  checkmate_2.3.2             cluster_2.1.6               reshape2_1.4.4              ade4_1.7-22                 generics_0.1.3</span></span>
+<span><span class="co">##  [81] operator.tools_1.6.3        gtable_0.3.5                formula.tools_1.7.1         tidyr_1.3.1                 hms_1.1.3                   data.table_1.16.0           tidygraph_1.3.1             utf8_1.2.4</span></span>
+<span><span class="co">##  [89] XVector_0.45.0              BiocGenerics_0.51.1         foreach_1.5.2               pillar_1.9.0                stringr_1.5.1               posterior_1.6.0             later_1.3.2                 splines_4.4.1</span></span>
+<span><span class="co">##  [97] dplyr_1.1.4                 lattice_0.22-6              survival_3.7-0              Biostrings_2.73.1           miniUI_0.1.1.1              knitr_1.48                  gridExtra_2.3               V8_5.0.0</span></span>
+<span><span class="co">## [105] phyloseq_1.49.0             IRanges_2.39.2              SummarizedExperiment_1.35.1 stats4_4.4.1                xfun_0.47                   bridgesampling_1.1-2        Biobase_2.65.1              devtools_2.4.5</span></span>
+<span><span class="co">## [113] matrixStats_1.4.1           rstan_2.32.6                stringi_1.8.4               UCSC.utils_1.1.0            yaml_2.3.10                 evaluate_0.24.0             codetools_0.2-20            tibble_3.2.1</span></span>
+<span><span class="co">## [121] cli_3.6.3                   RcppParallel_5.1.9          xtable_1.8-4                munsell_0.5.1               GenomeInfoDb_1.41.1         coda_0.19-4.1               parallel_4.4.1              rstantools_2.4.0</span></span>
+<span><span class="co">## [129] ellipsis_0.3.2              prettyunits_1.2.0           profvis_0.3.8               urlchecker_1.0.1            bayesplot_1.11.1            Brobdingnag_1.2-9           glmnet_4.1-8                mvtnorm_1.3-1</span></span>
+<span><span class="co">## [137] scales_1.3.0                purrr_1.0.2                 crayon_1.5.3                rlang_1.1.4                 multcomp_1.4-26</span></span></code></pre>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
+<li><a href="https://cloud.r-project.org/package=multimedia" class="external-link">View on CRAN</a></li>
 <li><a href="https://github.com/krisrs1128/multimedia/" class="external-link">Browse source code</a></li>
 <li><a href="https://github.com/krisrs1128/multimedia/issues/" class="external-link">Report a bug</a></li>
 </ul>

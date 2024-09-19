@@ -1,3 +1,5 @@
+set.seed(20240927)
+
 exper <- demo_joy() |>
     mediation_data("PHQ", "treatment", starts_with("ASV"))
 fit <- multimedia(exper) |>
