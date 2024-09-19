@@ -32,13 +32,9 @@ exper <- demo_spline(tau = c(2, 1)) |>
 fit <- multimedia(exper) |>
     estimate(exper)
 predict_across(outcome_model(fit), NULL, "outcome_1")
-predict_across(outcome_model(fit), NULL, "outcome_2")
 
 # predict at newdata
 newdata <- bind_mediation(exper)
-predict_across(
-    outcome_model(fit), newdata[seq_len(5), ], "outcome_2"
-)
 predict_across(
     outcome_model(fit),
     newdata[seq_len(5), ],
