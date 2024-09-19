@@ -27,6 +27,7 @@ jobs:
         with:
           extra-packages: |
             any::BH
+            any::RcppEigen
             any::rcmdcheck
           needs: check
 
