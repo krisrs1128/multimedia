@@ -18,7 +18,7 @@ in our preprint:
 [H. Jiang, X. Miao, M. W. Thairu, M. Beebe, D. W. Grupe, R. J. Davidson,
 J. Handelsman, and K. Sankaran (2024). multimedia: Multimodal Mediation
 Analysis of Microbiome
-Data.](https://www.biorxiv.org/content/10.1101/2024.03.27.587024v1)
+Data.](https://www.biorxiv.org/content/10.1101/2024.03.27.587024v2)
 
 The preprint describes the scientific context and interpretation for two
 of the vignettes in this package. One gives a multi-omics analysis of
