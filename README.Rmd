@@ -24,7 +24,7 @@ specification, and statistical inference for direct and indirect effects. By
 defining causal relationships across data modalities, it can support principled
 data integration. You can read more about the package in our preprint:
 
-[H. Jiang, X. Miao, M. W. Thairu, M. Beebe, D. W. Grupe, R. J. Davidson, J. Handelsman, and K. Sankaran (2024). multimedia: Multimodal Mediation Analysis of Microbiome Data.](https://www.biorxiv.org/content/10.1101/2024.03.27.587024v1)
+[Jiang H, Miao X, Thairu MW, Beebe M, Grupe DW, Davidson RJ, Handelsman J, Sankaran K. Multimedia: multimodal mediation analysis of microbiome data. Microbiol Spectr 0:e01131-24.](https://doi.org/10.1128/spectrum.01131-24)
 
 The preprint describes the scientific context and interpretation for two of the
 vignettes in this package. One gives a multi-omics analysis of IBD, and the
