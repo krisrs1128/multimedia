@@ -136,8 +136,8 @@ sensitivity <- function(model, exper, confound_ix = NULL, rho_seq = NULL,
         rho_seq <- seq(-0.9, 0.9, by = 0.2)
     }
 
-    summarization <- \(x) {
-        indirect_overall(x, ...)
+    summarization <- \(x, ...) {
+        indirect_overall(x, exper, ...)
     }
 
     sampler <- \(model, exper, rho) {
@@ -204,8 +204,8 @@ sensitivity_pathwise <- function(
         rho_seq <- seq(-0.9, 0.9, by = 0.2)
     }
 
-    summarization <- \(x) {
-        indirect_pathwise(x, ...)
+    summarization <- \(x, ...) {
+        indirect_pathwise(x, exper, ...)
     }
     sampler <- \(model, exper, rho) {
         sensitivity_subset_sample(model, exper, confound_ix, rho)
@@ -273,7 +273,7 @@ sensitivity_sample <- function(model, exper, epsilon) {
     profile <- setup_profile(model, treatments(exper), treatments(exper))
     exper_ <- sample(
         model,
-        profile = profile, pretreatments = pretreatments(exper)
+        profile = profile, pretreatment = pretreatments(exper)
     )
 
     # add correlated noise
@@ -419,8 +419,8 @@ sensitivity_perturb <- function(
         nu_seq <- seq(-0.1, 0.1, by = 0.04)
     }
 
-    summarization <- \(x) {
-        indirect_overall(x)
+    summarization <- \(x, ...) {
+        indirect_overall(x, exper, ...)
     }
 
     sampler <- \(model, exper, nu) {
