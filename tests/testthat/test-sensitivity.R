@@ -78,3 +78,14 @@ test_that("All perturbation values appear in the sensitivity curve.", {
 test_that("All outcomes appear in the sensitivity curve.", {
     expect_equal(unique(curve$outcome), outcomes(model))
 })
+
+test_that("Sensitivity analysis correctly uses pretreatment variables", {
+    # This test was motivated by this issue:
+    # https://github.com/krisrs1128/multimedia/issues/2
+
+    pretreatments(exper) <- data.frame("Pretreatment1" = sample(c("A", "B"), 5000, replace = TRUE))
+    model <- multimedia(exper, outcome_estimator = glmnet_model(lambda = 1e-2)) |>
+        estimate(exper)
+    sens <- sensitivity(model, exper, subset_indices, rho_seq, n_bootstrap = 5)
+    expect_equal(dim(sens), c(12, 6))
+})
