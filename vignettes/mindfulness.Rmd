@@ -199,17 +199,22 @@ groups. This lends some evidence to the conclusion that mindfulness does
 influence the mediators, which was implicit in our discussion of indirect
 effects above.
 
-```{r synthetic_mediation_plot, fig.width = 10, fig.height = 4}
+```{r synthetic_mediation_plot, fig.width = 6, fig.height = 3}
 list(
-    real = bind_cols(treatments(exper), mediators(exper), pretreatments(exper)),
-    original = bind_cols(new_assign, mediators(m1), pretreatments(exper)),
-    altered = bind_cols(new_assign, mediators(m2), pretreatments(exper))
+    `Real` = bind_cols(treatments(exper), mediators(exper), pretreatments(exper)),
+    `Full Model` = bind_cols(new_assign, mediators(m1), pretreatments(exper)),
+    `Null Model` = bind_cols(new_assign, mediators(m2), pretreatments(exper))
 ) |>
     bind_rows(.id = "source") |>
     pivot_longer(starts_with("mediator"), names_to = "mediator") |>
     ggplot() +
     geom_boxplot(
         aes(value, reorder(mediator, value, median), fill = treatment)
+    ) +
+    labs(
+        y = "Mediator",
+        x = "Mediator Value",
+        fill = "Status"
     ) +
     facet_grid(~source)
 ```
@@ -339,11 +344,12 @@ fdr_data <- bind_rows(fdr_direct, fdr_indirect, .id = "effect_type") |>
 ggplot(fdr_data, aes(effect, fdr_hat)) +
     geom_text_repel(
         data = filter(fdr_data, keep),
-        aes(label = outcome, col = source), size = 3, force = 10
+        aes(label = outcome, col = source),
+        size = 3, force = 10, max.overlaps = 10
     ) +
     labs(x = "Effect", y = expression(widehat(FDR)), col = "Data Source") +
     geom_point(aes(col = source, size = keep)) +
-    scale_size_discrete("Selected", range = c(.5, 3), guide = FALSE) +
+    scale_size_discrete("Selected", range = c(.5, 3), guide = "none") +
     scale_y_continuous(limits = c(-0.1, 0.55)) +
     facet_wrap(~effect_type, scales = "free_x") +
     theme(
