@@ -216,7 +216,7 @@ exper_df <- function(exper) {
 mediation_data <- function(
     x, outcomes, treatments, mediators, pretreatments = NULL) {
     result <- NULL
-    if ("SummarizedExperiment" %in% class(x)) {
+    if (is(x, "SummarizedExperiment")) {
         result <- from_summarized_experiment(
             x,
             outcomes,
@@ -224,7 +224,7 @@ mediation_data <- function(
             mediators,
             pretreatments
         )
-    } else if ("phyloseq" %in% class(x)) {
+    } else if (is(x, "phyloseq")) {
         result <- from_phyloseq(
             x,
             outcomes,
@@ -232,9 +232,7 @@ mediation_data <- function(
             mediators,
             pretreatments
         )
-    }
-
-    if ("data.frame" %in% class(x)) {
+    } else if (is(x, "data.frame")) {
         result <- from_data_frame(
             x,
             outcomes,
