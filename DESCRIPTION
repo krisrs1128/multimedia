@@ -1,6 +1,6 @@
 Package: multimedia
 Title: Multimodal Mediation Analysis
-Version: 0.2.1
+Version: 0.2.2
 Authors@R:
     c(person("Kris", "Sankaran", , "ksankaran@wisc.edu", role = c("aut", "cre"),
      comment = c(ORCID = "0000-0002-9415-1971")),
@@ -11,15 +11,15 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 VignetteBuilder: knitr
-biocViews: 
+biocViews:
     Coverage,
     Microbiome,
     Regression,
     Sequencing,
-    Software, 
-    StatisticalMethod, 
+    Software,
+    StatisticalMethod,
     StructuralEquationModels
-Depends: 
+Depends:
     R (>= 4.1.0),
     brms,
     glmnetUtils,
@@ -57,7 +57,7 @@ Suggests:
     vroom
 BugReports:
     https://github.com/krisrs1128/multimedia/issues/
-URL: 
+URL:
     https://krisrs1128.github.io/multimedia/,
     https://github.com/krisrs1128/multimedia/
 LazyData: false
